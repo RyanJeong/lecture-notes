@@ -1,44 +1,22 @@
 ---
 marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
 ---
 
-# 컴퓨터프로그래밍기초
-- 컴퓨터프로그래밍기초
-- A Tutorial Introduction
+# A Tutorial Introduction
 
+[//]: # (markdown comment!)
 
-# Contents
-- 컴퓨터프로그래밍기초
-- 2
-- Contents
-- Chapter 1 - A Tutorial Introduction
-- Chapter 2 - Types, Operators and Expressions
-- Chapter 3 - Control Flow
-- Chapter 4 - Functions and Program Structure
-- Chapter 5 - Pointers and Arrays
-- Chapter 6 - Structures
-- Chapter 7 - Input and Output
-- Chapter 8 - The UNIX System Interface
+## Goals of this Chapter
 
-
-# Goals of this Chapter
-- 컴퓨터프로그래밍기초
-- 3
-- Goals of this Chapter
 - 전체적으로 C 언어 훑기
-- C 언어 코드를 보면서 C 언어의 필수 기능들 살펴보기(without getting bogged down in details, rules, and exceptions)
+- C 언어 코드를 보면서 C 언어의 필수 기능들 살펴보기(without getting bogged down in details, rules, and exceptions)
 - C 언어의 기초적인 내용에 집중
 - e.g. variables and constants, arithmetic, control flow, functions, and the rudiments of input and output
 - C 언어 중요 내용은 넘김
 - pointers, structures, most of C's rich set of operators, several control-flow statements, and the standard library
 - C 언어 일부 중요 기능을 제외하면서 예시 코드가 간결하지 않거나 깔끔하지 못할 수 있음(drawbacks)
+
+---
 
 
 # Getting Started
