@@ -28,21 +28,26 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # package install
 RUN apt-get update && \
-    apt-get upgrade -y && \
     apt-get install -y \
       openssh-server \
       gcc \
       g++ \
       git \
-      wget \
       curl \
-      git \
-      vim \
-      vim-gtk && \
-    wget -qO- https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list && \
-    apt update && \
-    apt install -y google-chrome-stable
+      wget \
+      gnupg \
+      ca-certificates \
+      vim-nox
+
+# add google chrome's gpg key as a binary
+RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+
+# add google chrome repository specifying a key manually (signed-by option)
+RUN echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+    | tee /etc/apt/sources.list.d/google-chrome.list
+
+# install chrome
+RUN apt-get update && apt-get install -y google-chrome-stable
 
 # add a user and make a home directory
 RUN useradd -d "${USER_HOME}" -m "${USER}" && \
