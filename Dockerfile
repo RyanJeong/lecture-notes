@@ -110,8 +110,13 @@ USER "${USER}"
 RUN git config --global user.name "${GIT_NAME}" && \
     git config --global user.email "${GIT_EMAIL}"
 
+# clang-format
 WORKDIR "${USER_HOME}"
 RUN git clone git@github.com:RyanJeong/clang-format.git
+
+# lecture-notes
+WORKDIR "${USER_HOME}"
+RUN git clone git@github.com:RyanJeong/lecture-notes.git
 
 #### To be able to run SSH
 USER root
