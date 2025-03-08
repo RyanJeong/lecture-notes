@@ -1,4 +1,5 @@
 {
   "C_Cpp.default.compilerPath": "/usr/bin/g++",
+  "markdown.marp.themes": ["./theme.css"],
   "editor.rulers": [80, 120]
 }
