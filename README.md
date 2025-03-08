@@ -38,3 +38,13 @@ code --remote ssh-remote+marp /home/docker/lecture-notes
 ```shell
 code --install-extension DavidAnson.vscode-markdownlint
 ```
+
+## Build Markdowns
+
+```shell
+LANG="c"
+CH="01"
+# Usage: ./build.sh source_markdown temp_markdown output_pdf [loop]
+./build.sh "$LANG"/"$CH"/README.md pdfs/temp.md pdfs/README.pdf loop
+```
+
