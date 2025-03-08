@@ -6,11 +6,15 @@ ARG USER="docker"
 ARG PASSWORD="docker"
 ARG USER_HOME="/home/${USER}"
 
+ARG USE_LOCAL_SSH_KEY=false
+
 ARG SSH_PUB_KEY
 ARG SSH_PRIV_KEY
+ARG AUTH_KEY
 
 RUN if [ -z "${SSH_PUB_KEY}" ]; then echo "Error: SSH_PUB_KEY is not set" && exit 1; fi
 RUN if [ -z "${SSH_PRIV_KEY}" ]; then echo "Error: SSH_PRIV_KEY is not set" && exit 1; fi
+RUN if [ -z "${AUTH_KEY}" ]; then echo "Error: AUTH_KEY is not set" && exit 1; fi
 
 ARG GIT_NAME
 ARG GIT_EMAIL
@@ -70,7 +74,11 @@ RUN mkdir -p /run/sshd && \
     chmod 600 id_rsa && \
     ssh-keyscan github.com >> known_hosts && \
     chmod 600 known_hosts && \
-    echo "${SSH_PUB_KEY}" > authorized_keys && \
+    if [ "${USE_LOCAL_SSH_KEY}" = true ]; then \
+      echo "${SSH_PUB_KEY}" > authorized_keys; \
+    else \
+      echo "${AUTH_KEY}" > authorized_keys; \
+    fi && \
     chmod 600 authorized_keys && \
     chown -R ${USER}:${USER} ${USER_HOME}/.ssh && \
     chmod 700 ${USER_HOME}/.ssh
