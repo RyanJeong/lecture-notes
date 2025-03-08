@@ -1,5 +1,7 @@
 #!/bin/bash
-
-for file in $(find ../ -name "*.md" | grep -P '\d{2}\.md$'); do
-  echo $file
+EXT="pdf"
+for file in $(find ../ -name README.md | grep -P '\d{2}\/'); do
+  LECTURE=$(basename $(dirname $(dirname ${file})))
+  CHAPTER=$(basename $(dirname ${file}))
+  echo "convert ${file} to ${LECTURE}_${CHAPTER}.${EXT}"
 done
