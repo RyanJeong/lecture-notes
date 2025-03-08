@@ -37,7 +37,13 @@ RUN apt-get update && \
       wget \
       gnupg \
       ca-certificates \
-      vim-nox
+      vim-nox \
+      fonts-noto \
+      fonts-noto-cjk \
+      fonts-noto-cjk-extra \
+      fonts-nanum \
+      fonts-unfonts-core \
+      fonts-unfonts-extra
 
 # add google chrome's gpg key as a binary
 RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
