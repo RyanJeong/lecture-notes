@@ -1,0 +1,31 @@
+---
+marp: true
+theme: custom
+---
+
+<style>
+section h1 { font-size: 48px; }
+section h2 { font-size: 40px; }
+section h3 { font-size: 32px; }
+section h4 { font-size: 28px; }
+section h5 { font-size: 24px; }
+section h6 { font-size: 20px; }
+section ul, section ol { font-size: 24px; }
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 30px;
+}
+
+section {
+  width: 960px;
+  height: 720px;
+  font-size: 24px !important;
+}
+
+section * {
+  font-size: inherit !important;
+}
+</style>
