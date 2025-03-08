@@ -10,25 +10,12 @@ for file in $(find . -name "*.*" | grep -E "\.(c|h)$"); do
 done
 ```
 
-## Markdown Template
-
-```markdown
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-```
-
 ## Converting Markdowns
 
 ```shell
-marp --pdf -w --allow-local-files --theme ../theme.css README.md
-marp --pdf --allow-local-files --theme ../theme.css README.md
-marp --pptx --allow-local-files --theme ../theme.css README.md
+CHAPTER=01
+
+marp --pdf -w --allow-local-files --theme ../theme.css ${CHAPTER}/README.md
+marp --pdf --allow-local-files --theme ../theme.css ${CHAPTER}/README.md
+marp --pptx --allow-local-files --theme ../theme.css ${CHAPTER}/README.md
 ```
