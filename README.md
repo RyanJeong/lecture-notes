@@ -13,4 +13,6 @@ docker build \
   -t marp-dev ./
 
 docker run -p 33221:22 -v ${HOME}/share:/home/docker/share -itd --name marp-dev marp-dev
+
+code --remote ssh-remote+marp /home/docker/lecture-notes
 ```
