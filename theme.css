@@ -17,12 +17,12 @@ section * {
 }
 
 /* #, ##, ###, ####, #####, ###### */
-h1 { font-size: 32px !important; }
-h2 { font-size: 28px !important; }
-h3 { font-size: 24px !important; }
-h4 { font-size: 20px !important; }
-h5 { font-size: 18px !important; }
-h6 { font-size: 16px !important; }
+h1 { font-size: 28px !important; }
+h2 { font-size: 24px !important; }
+h3 { font-size: 20px !important; }
+h4 { font-size: 18px !important; }
+h5 { font-size: 16px !important; }
+h6 { font-size: 14px !important; }
 
 /* `*`, `-`, `ol`, `ul` */
 ul, ol {
@@ -56,6 +56,29 @@ pre code {
 img[alt~="center"] {
   display: block !important;
   margin: 0 auto !important;
+}
+
+/* Center-align the table */
+table {
+  margin: auto;  /* Centers the table */
+  border-collapse: collapse;
+  padding: 10px 10px;
+}
+
+/* Style table headers */
+th {
+  text-align: center;  /* Center-align header text */
+  font-size: 1.2em;  /* Increase header font size */
+  padding: 10px;
+  background-color: #f2f2f2;
+}
+
+/* Style table cells */
+td {
+  text-align: center;  /* Center-align content */
+  font-size: 1em;  /* Adjust text size */
+  padding: 8px;
+  border: 1px solid #ddd;
 }
 
 /* mathjax */
