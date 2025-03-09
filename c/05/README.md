@@ -17,10 +17,10 @@
 - Chapter 8 - The UNIX System Interface
 
 
-# Goals of this Chapter
+# Goals of This Chapter
 - 컴퓨터프로그래밍기초
 - 3
-- Goals of this Chapter
+- Goals of This Chapter
 - 포인터와 주소의 개념 이해
 - 단항 연산자 *, &
 - 포인터와 배열의 관계

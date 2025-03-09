@@ -17,10 +17,10 @@
 - Chapter 8 - The UNIX System Interface
 
 
-# Goals of this Chapter
+# Goals of This Chapter
 - 컴퓨터프로그래밍기초
 - ‹#›
-- Goals of this Chapter
+- Goals of This Chapter
 - 함수의 필요성 이해
 - 함수 선언의 필요성(implicit function declarations)
 - 외부 변수 선언과 정의

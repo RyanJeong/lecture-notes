@@ -17,10 +17,10 @@
 - Chapter 8 - The UNIX System Interface
 
 
-# Goals of this Chapter
+# Goals of This Chapter
 - 컴퓨터프로그래밍기초
 - 3
-- Goals of this Chapter
+- Goals of This Chapter
 - 변수와 상수
 - 형(type)과 각 형의 크기
 - 선언문

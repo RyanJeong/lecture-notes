@@ -17,10 +17,10 @@
 - Chapter 8 - The UNIX System Interface
 
 
-# Goals of this Chapter
+# Goals of This Chapter
 - 컴퓨터프로그래밍기초
 - ‹#›
-- Goals of this Chapter
+- Goals of This Chapter
 - 입출력 재정의 및 파이프 동작
 - 가변 인자 함수
 - 입출력 함수

@@ -4,20 +4,32 @@ marp: true
 
 # A Tutorial Introduction
 
-[//]: # (markdown comment!)
+## Goals of This Chapter
 
-## Goals of this Chapter
-
-- 전체적으로 C 언어 훑기
-- C 언어 코드를 보면서 C 언어의 필수 기능들 살펴보기(without getting bogged down in details, rules, and exceptions)
-- C 언어의 기초적인 내용에 집중
-- e.g. variables and constants, arithmetic, control flow, functions, and the rudiments of input and output
-- C 언어 중요 내용은 넘김
-- pointers, structures, most of C's rich set of operators, several control-flow statements, and the standard library
-- C 언어 일부 중요 기능을 제외하면서 예시 코드가 간결하지 않거나 깔끔하지 못할 수 있음(drawbacks)
+- 전체적으로 C 언어 훑어보기
+  - C 언어 코드를 보면서 C 언어의 필수 기능들 살펴보기
+- 세부 사항, 규칙, 예외 등은 이 장에서 다루지 않음
+  - C 언어의 기초적인 내용에 집중
+    - Variables and constants
+    - Arithmetic
+    - Control flow
+    - Functions
+    - The rudiments of input and output
+  - 다음 내용은 다루지 않음
+    - Pointers, structures, most of C's rich set of operators, several control-flow statements, and the standard library, ...
+  - C 언어의 기초적인 내용만을 소개함에 따라 코드가 간결하지 않거나 깔끔하지 못할 수 있음 (**drawbacks**)
 
 ---
 
+## Program
+
+- 기계어 명령들의 집합으로, 각 명령어는 매우 원시적인 수준의 연산 (extremely primitive)을 수행
+  - e.g., Adding two numbers, testing if a number is equal to zero, etc.
+- 인터넷 브라우저 크롬은 약 9천만 개의 원시적인 명령들의 집합
+
+![Alt text](image-1.png)
+
+[//]: # (INCLUDE: ./c/01/01.c)
 
 # Getting Started
 - 컴퓨터프로그래밍기초

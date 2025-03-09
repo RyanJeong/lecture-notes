@@ -17,10 +17,10 @@
 - Chapter 8 - The UNIX System Interface
 
 
-# Goals of this Chapter
+# Goals of This Chapter
 - 컴퓨터프로그래밍기초
 - ‹#›
-- Goals of this Chapter
+- Goals of This Chapter
 - 구조체 이해
 - 구조체 연산
 - 구조체 포인터와 구조체 배열

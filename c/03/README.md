@@ -17,10 +17,10 @@
 - Chapter 8 - The UNIX System Interface
 
 
-# Goals of this Chapter
+# Goals of This Chapter
 - 컴퓨터프로그래밍기초
 - 3
-- Goals of this Chapter
+- Goals of This Chapter
 - 문장과 블록
 - 제어흐름
 - if 문
