@@ -1,5 +1,18 @@
 {
   "C_Cpp.default.compilerPath": "/usr/bin/g++",
-  "markdown.marp.themes": ["./theme.css"],
-  "editor.rulers": [80, 120]
+  "markdown.marp.themes": [
+    "./theme.css"
+  ],
+  "emeraldwalk.runonsave": {
+    "commands": [
+        {
+            "match": "(^|.*/)\\d{2}/README\\.md$",
+            "cmd": "bash ${workspaceFolder}/build.sh ${file} ${workspaceFolder}/pdfs/temp.md ${workspaceFolder}/pdfs/temp.pdf"
+        }
+    ]
+  },
+  "editor.rulers": [
+    80,
+    120
+  ]
 }
