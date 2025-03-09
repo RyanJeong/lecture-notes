@@ -1,5 +1,9 @@
 *.pdf
 *.pptx
+
 error_file_lists.txt
+
 temp.md
 temp.pdf
+
+a.out
