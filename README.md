@@ -4,8 +4,19 @@ A collection of lecture notes, slides, and study materials
 
 ## Prerequisite
 
-* [VSCode](https://code.visualstudio.com/download)
 * [Docker](https://docs.docker.com/get-started/get-docker/)
+* [VSCode](https://code.visualstudio.com/download)
+  * `markdownlint`
+
+  ```shell
+  code --install-extension DavidAnson.vscode-markdownlint
+  ```
+
+  * `Run on Save`
+
+  ```shell
+  code --install-extension emeraldwalk.RunOnSave
+  ```
 
 ## Build `dockerfile`
 
@@ -31,12 +42,6 @@ docker run -p 33221:22 -v ${HOME}/share:/home/docker/share -itd --name marp-dev 
 
 ```shell
 code --remote ssh-remote+marp /home/docker/lecture-notes
-```
-
-(Opt.) Install `markdownlint` if you want to lint and formatting markdowns:
-
-```shell
-code --install-extension DavidAnson.vscode-markdownlint
 ```
 
 ## Build Markdowns
