@@ -25,7 +25,7 @@ A collection of lecture notes, slides, and study materials
   code --install-extension dzylikecode.md-paste-enhanced
   ```
 
-* [pngstate]
+* [pngstate](https://github.com/jcsalterego/pngpaste)
 
 ```shell
 brew install pngstate
