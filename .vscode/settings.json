@@ -7,7 +7,7 @@
     "commands": [
         {
             "match": "(^|.*/)\\d{2}/README\\.md$",
-            "cmd": "bash ${workspaceFolder}/build.sh ${file} ${workspaceFolder}/pdfs/temp.md ${workspaceFolder}/pdfs/temp.pdf"
+            "cmd": "bash ${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
         }
     ]
   },
