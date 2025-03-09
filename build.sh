@@ -72,7 +72,7 @@ process_file() {
 
   TYPE="${OUTPUT##*.}"
   echo "Converting to ${TYPE}..."
-  marp "--$TYPE" "$TMP_MD" --theme theme.css -o "$OUTPUT"
+  marp --no-stdin "--$TYPE" "$TMP_MD" --theme theme.css -o "$OUTPUT"
   echo "Conversion complete: ${OUTPUT}"
 }
 
