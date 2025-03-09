@@ -54,8 +54,8 @@ pre code {
 
 /* image alignmeht to center */
 img[alt~="center"] {
-  display: block;
-  margin: 0 auto;
+  display: block !important;
+  margin: 0 auto !important;
 }
 
 /* mathjax */
