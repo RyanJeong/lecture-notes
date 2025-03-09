@@ -47,7 +47,8 @@ RUN apt-get update && \
       fonts-noto-cjk-extra \
       fonts-nanum \
       fonts-unfonts-core \
-      fonts-unfonts-extra
+      fonts-unfonts-extra \
+      xclip
 
 # add google chrome's gpg key as a binary
 RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
