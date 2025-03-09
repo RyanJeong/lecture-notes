@@ -5,6 +5,7 @@ A collection of lecture notes, slides, and study materials
 ## Prerequisite
 
 * [Docker](https://docs.docker.com/get-started/get-docker/)
+
 * [VSCode](https://code.visualstudio.com/download)
   * `markdownlint`
 
@@ -17,6 +18,18 @@ A collection of lecture notes, slides, and study materials
   ```shell
   code --install-extension emeraldwalk.RunOnSave
   ```
+
+  * `paste image anywhere`
+
+  ```shell
+  code --install-extension dzylikecode.md-paste-enhanced
+  ```
+
+* [pngstate]
+
+```shell
+brew install pngstate
+``` 
 
 ## Build `dockerfile`
 
