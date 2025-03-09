@@ -6,651 +6,419 @@ marp: true
 
 ## Goals of This Chapter
 
-- 전체적으로 C 언어 훑어보기
-  - C 언어 코드를 보면서 C 언어의 필수 기능들 살펴보기
-- 세부 사항, 규칙, 예외 등은 이 장에서 다루지 않음
-  - C 언어의 기초적인 내용에 집중
-    - Variables and constants
-    - Arithmetic
-    - Control flow
-    - Functions
-    - The rudiments of input and output
-  - 다음 내용은 다루지 않음
-    - Pointers, structures, most of C's rich set of operators, several control-flow statements, and the standard library, ...
-  - C 언어의 기초적인 내용만을 소개함에 따라 코드가 간결하지 않거나 깔끔하지 못할 수 있음 (**drawbacks**)
+### 전체적으로 C 언어 훑어보기
+
+- C 언어 코드를 보면서 C 언어의 필수 기능들 살펴보기
+
+### 세부 사항, 규칙, 예외 등은 이 장에서 다루지 않음
+
+- C 언어의 기초적인 내용에 집중
+  - Variables and constants
+  - Arithmetic
+  - Control flow
+  - Functions
+  - The rudiments of input and output
+- 다음 내용은 다루지 않음
+  - Pointers, structures, most of C's rich set of operators, several control-flow statements, and the standard library, ...
+- C 언어의 기초적인 내용만을 소개함에 따라 코드가 간결하지 않거나 깔끔하지 못할 수 있음 (**drawbacks**)
 
 ---
 
-## Program
+## 프로그램 (Program)
 
 - 기계어 명령들의 집합으로, 각 명령어는 매우 원시적인 수준의 연산 (extremely primitive)을 수행
   - e.g., Adding two numbers, testing if a number is equal to zero, etc.
-- 인터넷 브라우저 크롬은 약 9천만 개의 원시적인 명령들의 집합
+- 인터넷 브라우저 크롬은 약 1.1억 개의 원시적인 명령들의 집합
 
-![Alt text](image-1.png)
+![center h:450](image.png)
 
-[//]: # (INCLUDE: ./c/01/01.c)
+---
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 4
-- Getting Started
-- Program
-- 기계어 명령들의 집합
-- each machine code instruction is extremely primitive:
-- adding two numbers
-- testing if a number is equal to zero
-- ...
-- e.g. Chrome is about 86 million machine instructions
+## 프로그램 동작 방식
 
+- 프로그램을 실행하면 운영체제 로더 (Loader)에 의해 프로그램은 메모리로 적재됨
+  - Loader: the part of an operating system that is responsible for **loading programs and libraries**
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 5
-- Getting Started
-- How Does a Program Run?
-- CPU runs a fetch/execute cycle.
-- 다음 두 과정 반복
-- RAM에 복사된 프로그램으로부터 명령어 하나를 CPU로 가져옴
-- CPU로 가져온 명령어 처리, e.g. do the addition
-- Software: Running Programs. (2023, March 5). Retrieved from https://web.stanford.edu/class/cs101/software-1.html
+![center h:200](image-1.png)
 
+- 메모리에 적재된 프로그램은 CPU에 의해 처리됨
+  - CPU runs a *fetch/execute* cycle.
+  - 다음 두 과정 반복
+    1. RAM에 복사된 프로그램으로부터 명령어 하나를 CPU로 가져옴
+    2. CPU로 가져온 명령어 처리, e.g. do the addition
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 6
-- Getting Started
-- How Does a Program Start?
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- Loader
-- the part of an operating system that is responsible for loading programs and libraries
-- J. Glenn Brookshear. 2008. Computer Science: An Overview (10th. ed.). Addison-Wesley Publishing Company, USA.
+![center h:150](image-2.png)
 
+---
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 7
-- Getting Started
-- How Does a Program Start? (Cont’d)
-- Software: Running Programs. (2023, March 5). Retrieved from https://web.stanford.edu/class/cs101/software-1.html
+## 프로그램 동작 방식 (Cont'd)
 
+![center h:500](image-3.png)
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 8
-- Getting Started
-- The only way to learn a new programming language is by writing programs in it.
-- Brian W. Kernighan, Dennis Ritchie (1988). “C Programming Language (ed. Prentice Hall, 1988)”
+---
 
+## 프로그램 생성 과정 - 컴파일 (Compilations)
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 9
-- Getting Started
-- “Hello, world”를 출력하는 프로그램
-- /* 표준 입출력 라이브러리의 함수를 이용 */
--     #include <stdio.h>
--     
--     /* 함수 main을 정의, 매개변수는 없다. */
--     int main(void)
--     /* main 함수 시작 */
--     {
--       /* 문자출력을 위해 printf 함수를 호출 */
--       printf("Hello, World\n");
--     
--       /* main 함수 종료 */
--       return 0;
--     }
+- CPU는 기계어 (machine code)를 처리하는 장치
+- 고급 언어 (e.g., C, C++, etc.)로 작성된 코드는 CPU가 이해할 수 없음
+- **컴파일러는 컴파일 과정을 통해 고급 언어를 CPU가 이해할 수 있는 기계어 (프로그램)로 변환함**
 
+![center h:150](image-4.png)
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 10
-- Getting Started
-- “Hello, world”를 출력하는 프로그램 (Cont’d)
-- #include 명령
-- 전처리 명령(preprocessor instruction)
+### 컴파일 과정
+
+![center](image-5.png)
+
+---
+
+## Getting Started
+
+> **The only way to learn a new programming language is by writing programs in it.**\
+Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice Hall, 1988)"
+
+### `Hello, World` 출력 프로그램
+
+[//]: # (INCLUDE: ./c/01/01_1.c)
+
+---
+
+## Getting Started (Cont'd - 1)
+
+### `#include` 명령 (전처리 명령, Preprocessor Instruction)
+
+```c
+#include <stdio.h>
+```
+
 - 보통 코드의 맨 윗부분에 위치
-- 컴파일 시 프로그램 작성에 필요한 정보들을 불러오는 기능 수행
-- <stdio.h>: the standard input/output library
-- /* 표준 입출력 라이브러리의 함수를 이용 */
--     #include <stdio.h>
--     
--     /* 함수 main을 정의, 매개변수는 없다. */
--     int main(void)
--     /* main 함수 시작 */
--     {
--       /* 문자출력을 위해 printf 함수를 호출 */
--       printf("Hello, World\n");
--     
--       /* main 함수 종료 */
--       return 0;
--     }
+- 프로그램 실행에 필요한 기능들을 프로그램 내에 포함시킴
+- e.g., `stdio.h`: 표준 입출력 (`stdio`: standard inputs and outputs) 관련 내용을 프로그램에 포함시킴
 
+### `main` 함수
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 11
-- Getting Started
-- “Hello, world”를 출력하는 프로그램 (Cont’d)
-- main 함수
-- 프로그램 시작 시 맨 처음 호출되는 함수
-- 
-- 함수 내용은 중괄호로 둘러싸여 있음
-- 위의 main 함수는 두 문장(printf, return)을 포함하는 함수
-- 
-- 모든 문장(statements)의 마지막에는 ;을 붙임
-- /* 표준 입출력 라이브러리의 함수를 이용 */
--     #include <stdio.h>
--     
--     /* 함수 main을 정의, 매개변수는 없다. */
--     int main(void)
--     /* main 함수 시작 */
--     {
--       /* 문자출력을 위해 printf 함수를 호출 */
--       printf("Hello, World\n");
--     
--       /* main 함수 종료 */
--       return 0;
--     }
+```c
+int main(void)
+{
+  /* ... */
+}
+```
 
+- **프로그램의 시작점**
+  - 프로그램 실행은 `main` 함수를 호출하는 것
+- 함수 내용은 중괄호 (`{`, `}`)로 둘러싸여 있음
+- 위의 `main` 함수는 두 문장 (statements, `printf` 문, `return` 문)을 포함하는 함수
+- **함수 내 모든 문장의 마지막에는 반드시 세미콜론 (`;`)을 사용해야 함**
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 12
-- Getting Started
-- “Hello, world”를 출력하는 프로그램 (Cont’d)
-- 함수 호출 시 함수의 이름을 사용해 호출
-- 
-- 함수 이름 뒤 뒤따르는 괄호에 전달인자(arguments)를 넘겨줄 수 있으며, 전달인자를 넘겨받은 함수는 이를 함수 내부에서 사용 가능
-- /* 표준 입출력 라이브러리의 함수를 이용 */
--     #include <stdio.h>
--     
--     /* 함수 main을 정의, 매개변수는 없다. */
--     int main(void)
--     /* main 함수 시작 */
--     {
--       /* 문자출력을 위해 printf 함수를 호출 */
--       printf("Hello, World\n");
--     
--       /* main 함수 종료 */
--       return 0;
--     }
+---
 
+## Getting Started (Cont'd - 2)
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 13
-- Getting Started
-- “Hello, world”를 출력하는 프로그램 (Cont’d)
-- 쌍따옴표 사이에 등장하는 문자들의 나열(e.g. "Hello, World\n")은 문자열(character string) 또는 문자열 상수(string constant)
-- /* 표준 입출력 라이브러리의 함수를 이용 */
--     #include <stdio.h>
--     
--     /* 함수 main을 정의, 매개변수는 없다. */
--     int main(void)
--     /* main 함수 시작 */
--     {
--       /* 문자출력을 위해 printf 함수를 호출 */
--       printf("Hello, World\n");
--     
--       /* main 함수 종료 */
--       return 0;
--     }
+### `return` 문 (반환문)
 
+```c
+return 0;
+```
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 14
-- Getting Started
-- “Hello, world”를 출력하는 프로그램 (Cont’d)
-- printf 함수에 문자열 상수를 전달인자로 전달
-- 연속으로 사용된 두 문자 '\', 'n'는 C 언어에서 개행문자(newline character)로 사용됨
-- 이스케이프 문자('\')가 사용된 문자 나열은 이스케이프 시퀀스(escape sequence)
-- C 언어에서 이스케이프 시퀀스는 한 문자로 간주
-- /* 표준 입출력 라이브러리의 함수를 이용 */
--     #include <stdio.h>
--     
--     /* 함수 main을 정의, 매개변수는 없다. */
--     int main(void)
--     /* main 함수 시작 */
--     {
--       /* 문자출력을 위해 printf 함수를 호출 */
--       printf("Hello, World\n");
--     
--       /* main 함수 종료 */
--       return 0;
--     }
+- 함수를 종료하는 문장
+  - `main` 함수의 종료는 프로그램의 종료를 의미
+- `return` 다음에 등장하는 표현식 (expressions)은 함수 호출 측 (caller)로 전달됨
+  - 터미널에서 프로그램을 실행한 경우, `main` 함수의 `return` 값 (반환값)은 터미널로 전달
 
+```shell
+$ ./hello
+Hello, World  # return 0; Terminal will receive it
+$ echo $?
+0
+```
 
-# Getting Started
-- 컴퓨터프로그래밍기초
-- 15
-- Getting Started
-- printf 함수의 다양한 형태:
-- /* the C compiler will produce an error message.
--        printf never supplies a newline character automatically */
--     printf("Hello, World\n"
--     );
-- 
--     printf("Hello, \nWorld");    
--     
-- 
--     /* several calls may be used to 
--        build up an output line in stages */
--     printf("Hello, "); 
--     printf("World"); 
--     printf("\n"); 
-- 
--     printf("Hello, World");
-- Hello,
-- World
-- Hello, World
-- Hello, World
+### `printf` 문
 
+```c
+printf("Hello, World\n");
+```
 
-# 컴파일 과정 (Steps of Compilation)
-- 컴퓨터프로그래밍기초
-- 16
-- 컴파일 과정 (Steps of Compilation)
-- An Executable File
-- Source Code(s)
-- (.h) file
-- (.c) file
-- Preprocessed code (.i) file
-- removed comments, added header file contents and more
-- Preprocessor
-- Compiler
-- Assembler
-- Linker
-- Assembly code(.s) file
-- Object code(.o) file
-- $ gcc -E code.c -o code.i
-- $ cat code.i | more
-- $ gcc -S code.i –o code.s
-- $ cat code.s
-- $ gcc -c code.s –o code.o
-- $ xxd code.o | more
-- $ gcc code.o
-- $ ls -al
+- `printf` 함수를 호출하는 문장
+- 전달인자 (arguments)를 콘솔 화면에 출력하는 역할 수행
+  - e.g., `printf("Hello, World\n");` 문장에서의 전달인자는 `"Hello, World\n"`
 
+---
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 17
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램
-- ℃ = (5÷9)×(℉−32)
-- 
-- 새롭게 등장하는 개념들
-- 주석(including comments)
-- 선언(declarations)
-- 변수(variables)
-- 산술 표현식(arithmetic expressions)
-- 반복(loops)
-- 형식에 따른 출력(formatted output)
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+## Getting Started (Cont'd - 3)
 
+### 문자열 (Strings)
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 18
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 주석
-- 내용 메모 또는 프로그램 설명
-- 프로그램의 구조와 중요 정보를 독자에게 전달할 수 있음
-- /*    */ 사이에 위치한 모든 문자는 전처리기에 의해 제거됨
-- may appear anywhere where a blank, tab or newline can
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+```c
+"Hello, World"
+"The C Programming Language"
+```
 
+- 큰따옴표 (`"`)를 사용해 표현한 값
+- 여러 문자들을 묶은 값
+- 문자열 (character string) 또는 문자열 상수 (string constant)라고 부름
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 19
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 형 종류
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
-- int    /* integer */
--     float  /* floating point */
-- 
--     char   /* character - a single byte */
--     short  /* short integer */
--     long   /* long integer */
--     double /* double-precision floating point */
+### 이스케이프 시퀀스 (Escape Sequence)
 
+```c
+"Character string\n"
+'\n'
+```
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 20
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 대입문
-- assignment statement
-- 변수 선언 시 해당 변수에는 쓰레기 값이 들어 있음
-- 변수 사용 전 반드시 초기 값을 명시적으로 지정해 변수를 초기화해야 함
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+- 백슬래시 (`\`) 뒤에 한 문자 또는 숫자 조합이 오는 문자 조합
+- **두 개 이상의 문자 조합이지만, 한 문자 (a character)로 간주**
+  - 작은따옴표 (`'`)를 사용해 표현한 값은 문자 하나를 의미
+- 데이터가 아닌 특수한 명령을 수행하는 용도로 사용
+  - e.g., `\n`: 터미널로 데이터 출력 시 한 줄 개행 (newline)
 
+---
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 21
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- while 반복문
-- 괄호 내 조건이 참인 동안 반복문 내 포함되어 있는 문장들을 반복 수행
-- 괄호 내 조건이 거짓이면 반복 수행 종료
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+## Getting Started (Cont'd - 4)
 
+### `printf` 문의 다양한 형태
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 22
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 두 산술 연산 문장의 차이:
-- 
-- 
-- 정수의 나눗셈 결과에서 소수부(fractional part)를 버림
-- 두 번째 문장은 변수 fahr에 어떠한 값이 오더라도 변수 celsius에는 0이 기록됨
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
-- celsius = 5 * (fahr - 32) / 9;
--     celsius = 5 / 9 * (fahr - 32);
+[//]: # (INCLUDE: ./c/01/01_2.c)
 
+---
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 23
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 형식에 따른 출력
-- printf 함수는 형식에 맞게 화면에 무언가를 출력할 때 사용
-- 함수의 첫 번째 전달인자는 화면에 실제로 출력되는 문자열이며, 이 문자열 안에는 형식 지정자가 포함될 수 있음
-- 형식 지정자는 맨 앞의 문자가 %인 문자 나열을 의미
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+## Variables and Arithmetic Expressions
 
+### 화씨 온도를 섭씨 온도로 변환하는 프로그램
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 24
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 형식 지정자(format specifier)
-- 각 형식 지정자는 첫 번째 전달인자 (형식 지정자가 포함된 문자열) 이후에 뒤따르는 전달인자와 하나씩 차례대로 대응됨
-- 형식 지정자의 표현 형과 해당 형식 지정자와 대응되는 전달인자의 형이 서로 일치해야 함
-- 첫 번째 전달인자에 포함되어 있는 형식 지정자의 수와 첫 번째 전달인자를 제외한 나머지 전달인자의 수는 서로 일치해야 함
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+- 공식은 다음과 같음:
 
+$$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 25
-- Variables and Arithmetic Expressions
-- 화씨 온도를 섭씨 온도로 변환하는 프로그램 (Cont’d)
-- 다양한 형식 지정자
-- #include <stdio.h>
--     
--     /* print Fahrenheit-Celsius table
--        for fahr = 0, 20, ..., 300 */
--     int main(void)
--     {
--       int fahr, celsius;
--       int lower, upper, step;
--     
--       lower = 0;   /* lower limit of temperature table */
--       upper = 300; /* upper limit */
--       step = 20;   /* step size */
--       fahr = lower;
--       while (fahr <= upper) {
--         celsius = 5 * (fahr - 32) / 9;
--         printf("%d\t%d\n", fahr, celsius);
--         fahr = fahr + step;
--       }
--     
--       return 0;
--     }
+[//]: # (INCLUDE: ./c/01/02_1.c)
 
+---
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 26
-- Variables and Arithmetic Expressions
-- 프로그램 작성 요령
-- 전체 코드가 구조적이어야 함
-- 들여쓰기는 프로그램의 논리적 구조를 강조
-- 들여쓰기, 빈칸 등이 적절히 사용된 프로그램은 사람이 해당 코드를 읽을 때 더 편하게 읽을 수 있음
-- 컴파일러는 들여쓰기, 빈칸 등 프로그램 형태를 상관하지 않지만, 프로그램 소스코드는 결국 사람이 작성하고 읽음
+## Variables and Arithmetic Expressions (Cont'd - 1)
 
+### 주석 (Comments)
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 27
-- Variables and Arithmetic Expressions
-- 프로그램 작성 요령
-- 한 줄엔 문장 하나만 사용
-- 
-- 
-- 
-- 연산자 양 옆에 빈칸 사용
-- 가독성 향상
-- 연산자와 피연산자 간 관계를 명확히 하기 위함
-- 일관성을 유지할 것
-- /* VERY poor readability */
--     int fahr, celsius; int lower, upper, step;
--     lower = 0; upper = 300; step = 20; fahr = lower;
--     while (fahr <= upper) { celsius = 5 * (fahr - 32) / 9; printf("%d\t%d\n", fahr, celsius); fahr = fahr + step; }
+- 프로그램 내에 메모를 하거나 해당 프로그램을 설명하는 용도
+- 프로그램의 구조와 중요 정보를 코드를 읽는 사람에게 전달할 수 있음
+- `/*  */` 사이에 위치한 모든 문자는 **전처리기**에 의해 제거
+- 프로그램 소스코드 내 공백 문자 (a blank, tab, or newline)가 등장할 수 있는 위치에 사용 가능
 
+[//]: # (INCLUDE: ./c/01/02_2.c)
 
-# Variables and Arithmetic Expressions
-- 컴퓨터프로그래밍기초
-- 28
-- Variables and Arithmetic Expressions
-- 산술 연산자
-- 표현식(expressions) 중 정수형 변수와 실수형 변수가 같이 사용된다면?
-- 
-- 정수형 값은 실수형 값으로 변환되어 처리
-- 형 변환(type conversion)
-- 프로그램 작성 시 형 변환을 항상 고려해야 함
-- 형 변환이 발생하는 부분이 있다면, 이를 명시적으로 표현해야 함
-- 코드를 보는 사람에게 이 부분은 실수가 아닌 작성자가 의도한 연산임을 독자에게 알릴 수 있음
-- celsius = 5 * (fahr – 32.0) / 9;
+---
 
+## Variables and Arithmetic Expressions (Cont'd - 2)
 
-# The for Statement
-- 컴퓨터프로그래밍기초
-- 29
-- The for Statement
-- 반복문의 또 다른 형태
-- for 반복문
-- #include <stdio.h>
--     /* print Fahrenheit-Celsius table */
--     int main(void)
--     {
--       int fahr;
--       for (fahr = 0; fahr <= 300; fahr = fahr + 20)
--         printf("%3d %6.1f\n", fahr, (5.0 / 9.0) * (fahr - 32));
--       return 0;
--     }
-- #include <stdio.h>
--     /* print Fahrenheit-Celsius table */
--     int main(void)
--     {
--       int fahr;
--       fahr = 0;
--       while (fahr <= 300) {
--         printf("%3d %6.1f\n", fahr, (5.0 / 9.0) * (fahr - 32));
--         fahr = fahr + 20;
--       }
--       return 0;
--     }
+### 변수 (Variables)
 
+```c
+int fahr, celsius;
+int lower, upper, step;
+```
+
+- 프로그램 내에서 데이터를 보관하는 용도
+- **모든 변수는 반드시 사용 전에 선언 (declarations)되어야 함**
+- 변수 선언은 사용할 형 (types)과 이름의 조합으로 구성:
+
+```c
+/* int : type
+   step: name */
+int step;
+```
+
+- 형 종류는 아래와 같음:
+
+```c
+int    /* integer */
+float  /* floating point */
+
+char   /* character - a single byte */
+short  /* short integer */
+long   /* long integer */
+double /* double-precision floating point */
+```
+
+---
+
+## Variables and Arithmetic Expressions (Cont'd - 3)
+
+### 대입문 (Assignment Statements)
+
+```c
+lower = 0;   /* lower limit of temperature table */
+upper = 300; /* upper limit */
+step = 20;   /* step size */
+fahr = lower;
+```
+
+- 변수에 값을 대입 (assignments)할 때 사용하는 문장
+- 대입 연산자 (`=`)를 사용해 변수에 값을 전달할 수 있음
+
+### `while` 반복문
+
+```c
+while (fahr <= upper) {
+    celsius = 5 * (fahr - 32) / 9;
+    printf("%d\t%d\n", fahr, celsius);
+    fahr = fahr + step;
+}
+```
+
+- `while` 키워드 다음에 등장하는 조건 (conditions)을 만족하는 동안 중괄호 내 각 문장들을 여러 번 반복할 수 있음
+
+---
+
+## Variables and Arithmetic Expressions (Cont'd - 4)
+
+### 산술 표현식 (Arithmetic Expressions)
+
+```c
+celsius = 5 * (fahr - 32) / 9;
+fahr = fahr + step;
+```
+
+- 산술 연산자를 사용하는 표현식
+
+| Operator | Description    | Example   | Result |
+|----------|--------------|-----------|--------|
+| `+`      | Addition      | `5 + 3`   | `8`    |
+| `-`      | Subtraction   | `5 - 3`   | `2`    |
+| `*`      | Multiplication | `5 * 3` | `15`   |
+| `/`      | Division      | `6 / 3`   | `2`    |
+
+#### 산술 연산자 사용 시 주의사항
+
+```c
+/* 1 */ celsius = 5 * (fahr - 32) / 9;
+/* 2 */ celsius = 5 / 9 * (fahr - 32);
+```
+
+- 2번 문장의 `5 / 9` 표현은 두 피연산자가 **정수** 값
+- **정수형 나눗셈에서의 나머지는 버려지므로, `5 / 9`의 값은 0으로 평가됨**
+
+---
+
+## Variables and Arithmetic Expressions (Cont'd - 5)
+
+### 형식에 따른 출력 (Formatted Output)
+
+```c
+/* 1 */ printf("Hello, World\n");
+/* 2 */ printf("%d\t%d\n", fahr, celsius);
+```
+
+- `printf` 함수의 첫 번째 전달인자는 화면에 실제로 출력되는 문자열
+- `printf` 함수는 출력을 형식화하는 기능을 지원함
+- 첫 번째 전달인자가 형식 지정자 (format specifiers)를 포함하면, 뒤따르는 전달인자와 조합하여 형식화된 출력 가능
+  - 형식 지정자: `%` 기호로 시작하는 연속된 문자열
+  - **첫 번째 전달인자 내 형식 지정자의 수와 뒤따르는 전달인자의 수는 일치해야 함**
+
+```c
+printf("%d + %d = %d\n", 1, 2, 1 + 2);
+printf("PI: %f\n", 3.141592);
+printf("PI: %d\n", 3.141592);  /* 3.141592 will convert to 3 by %d */
+```
+
+- `%d`는 연관되는 전달인자를 **정수** 값으로 출력
+- `%f`는 연관되는 전달인자를 **실수** 값으로 출력
+
+---
+
+## Variables and Arithmetic Expressions (Cont'd - 6)
+
+### 출력 형식이 개선된 화씨 온도를 섭씨 온도로 변환하는 프로그램
+
+[//]: # (INCLUDE: ./c/01/03.c)
+
+- `%3d`는 3칸 공간을 확보한 뒤 이에 대응되는 전달인자를 정수 값으로 출력
+- `%6d`는 6칸 공간을 확보한 뒤 이에 대응되는 전달인자를 정수 값으로 출력
+
+---
+
+## Variables and Arithmetic Expressions (Cont'd - 7)
+
+### 실수 값을 사용한 화씨 온도를 섭씨 온도로 변환하는 프로그램
+
+[//]: # (INCLUDE: ./c/01/04.c)
+
+- 산술 연산 표현에 실수 값과 정수 값이 같이 사용될 경우, **정수 값은 실수 값으로 처리됨**
+
+```c
+fahr = lower;  // 0 (the lower's value, int type) will be convert to 0.0 (float type)
+```
+
+---
+
+## 프로그램 작성 요령
+
+### 전체 코드가 구조적이어야 함
+
+- 들여쓰기는 프로그램의 논리적 구조를 강조함
+- 들여쓰기, 개행, 빈칸 등을 적절히 사용하면, 사람이 프로그램 코드를 읽을 때 더 편하게 읽을 수 있음
+- 컴파일러는 들여쓰기, 빈칸 등 논리적인 구조를 상관하지 않음
+  - 문법 구조만 확인하여 컴파일
+- **프로그램 코드는 결국 사람이 작성하고 읽음**
+  - 가독성을 중시할 것
+
+### 한 줄엔 하나의 문장만 작성할 것
+
+```c
+/* VERY poor readability */
+int lower, upper, step; lower = 0; upper = 300; step = 20;
+```
+
+```c
+/* Principle: One statement per line */
+
+/* variables */
+int lower, upper, step;
+
+/* initializations */
+lower = 0;   /* lower limit of temperature table */
+upper = 300; /* upper limit */
+step = 20;   /* step size */
+```
+
+---
+
+## 프로그램 작성 요령 (Cont'd)
+
+### 연산자 양 옆에 빈칸 사용
+
+- 연산자와 피연산자 간 관계를 명확히 하여 가독성을 높이기 위함
+
+```c
+celsius=5*(fahr-32)/9;
+```
+
+```c
+celsius = 5 * (fahr - 32) / 9;
+```
+
+### 일관성 (Consistency)을 유지할 것
+
+```c
+int i = 0;
+while (i < 10) { ++i; } /* Single-line while loop */
+while (i >= 0) {        /* Multi-line while loop */
+  --i;
+}
+```
+
+---
+
+## The for Statement
+
+### `for` 반복문을 사용한 화씨 온도를 섭씨 온도로 변환하는 프로그램
+
+[//]: # (INCLUDE: ./c/01/05.c)
+
+---
+
+## The for Statement (cont'd)
+
+### 기호 상수 (Symbolic Constants)가 추가된 화씨 온도를 섭씨 온도로 변환하는 프로그램
+
+[//]: # (INCLUDE: ./c/01/06.c)
+
+---
 
 # Symbolic Constants
 - 컴퓨터프로그래밍기초
