@@ -1,22 +1,24 @@
 #!/bin/bash
-# build.sh: Build PDF from Markdown with external code inclusion.
+# Change working directory to the directory of the script.
+cd "$(dirname "$0")"
+
+# build.sh: Build PDF/PPTX from Markdown with external code inclusion.
 # USAGE: ./build.sh source_markdown temp_markdown output_pdf [loop]
 # If "loop" is passed as the fourth argument, the script runs continuously.
 # Otherwise, it processes the file once.
 # This script watches the source Markdown file for changes and replaces
-# placeholders with code blocks before invoking marp-cli for PDF conversion.
+# placeholders with code blocks before invoking marp-cli for PDF/PPTX conversion.
 # The placeholder syntax used is Markdown-compatible:
 # [//]: # (INCLUDE: filename)
-# NOTE: Comments in this script are in English.
 
 if [ "$#" -lt 3 ]; then
   echo "Usage: $0 source_markdown temp_markdown output_pdf [loop]"
   exit 1
 fi
 
-SRC_MD="$1"      # Source Markdown file (with placeholders)
-TMP_MD="$2"      # Temporary Markdown file with included code
-OUT_PDF="$3"     # Output PDF file
+SRC_MD="$1"     # Source Markdown file (with placeholders)
+TMP_MD="$2"     # Temporary Markdown file with included code
+OUTPUT="$3"     # Output file
 LOOP_MODE="false"
 
 # Check if a fourth argument "loop" is passed.
@@ -68,10 +70,10 @@ process_file() {
     fi
   done < "$SRC_MD"
 
-  # Convert the processed Markdown to PDF using marp-cli
-  echo "Converting to PDF..."
-  marp "$TMP_MD" --theme theme.css -o "$OUT_PDF"
-  echo "Conversion complete: ${OUT_PDF}"
+  TYPE="${OUTPUT##*.}"
+  echo "Converting to ${TYPE}..."
+  marp "--$TYPE" "$TMP_MD" --theme theme.css -o "$OUTPUT"
+  echo "Conversion complete: ${OUTPUT}"
 }
 
 if [ "$LOOP_MODE" = "true" ]; then
