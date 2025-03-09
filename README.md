@@ -46,5 +46,5 @@ LANG="c"
 CH="01"
 # Usage: ./build.sh source_markdown temp_markdown output_pdf [loop]
 ./build.sh "$LANG"/"$CH"/README.md pdfs/temp.md pdfs/README.pdf loop
+./build.sh "$LANG"/"$CH"/README.md pptxs/temp.md pptxs/README.pptx
 ```
-
