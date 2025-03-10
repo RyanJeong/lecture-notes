@@ -452,7 +452,6 @@ for (fahr = 0; fahr <= 300; fahr = fahr + 20)
 
 ```c
 #define LOWER 0   /* lower limit of temperature table */
-#define UPPER 300 /* upper limit */
 ```
 
 - `#define` 전처리문 사용 시, `REPLACEMENT_TEXT` 뒤에 세미콜론을 사용하지 않도록 주의
@@ -507,8 +506,7 @@ char c = getchar();
 ```
 
 - `stdio.h` 헤더 파일 필요
-- 키보드는 데이터 소스 (data source)
-- 키보드를 누르면 데이터가 생성되어 입력 스트림 (input stream)에 기록됨
+- 키보드는 데이터 소스 (data source)로써, 키보드를 누르면 데이터가 생성되어 입력 스트림 (input stream)에 기록됨
 - `getchar` 함수는 입력 스트림에 기록된 문자 하나를 프로그램으로 읽어옴
 
 #### `putchar` 함수
@@ -521,8 +519,7 @@ putchar('a');
 
 - `stdio.h` 헤더 파일 필요
 - `putchar` 함수는 문자 하나를 전달인자로 넘겨받아 출력 스트림 (output stream)으로 내보냄
-- 출력 스트림에 있는 데이터는 모니터로 전달됨
-- 모니터는 데이터 싱크 (data sink)
+- 모니터는 데이터 싱크 (data sink)로써, 출력 스트림에 있는 데이터는 모니터로 전달되어 처리됨
 
 ---
 
