@@ -290,7 +290,7 @@ fahr = fahr + step;
 
 ```c
 /* 1 */ celsius = 5 * (fahr - 32) / 9;
-/* 2 */ celsius = 5 / 9 * (fahr - 32);
+/* 2 */ celsius = 5 / 9 * (fahr - 32); /* Isn't this more like the formula? */
 ```
 
 - 2번 문장의 `5 / 9` 표현은 두 피연산자가 **정수** 값
@@ -316,7 +316,7 @@ fahr = fahr + step;
 ```c
 printf("%d + %d = %d\n", 1, 2, 1 + 2);
 printf("PI: %f\n", 3.141592);
-printf("PI: %d\n", 3.141592);  /* 3.141592 will convert to 3 by %d */
+printf("PI: %d\n", 3.141592);  /* It will print 265890024, not 3 */
 ```
 
 - `%d`는 연관되는 전달인자를 **정수** 값으로 출력
