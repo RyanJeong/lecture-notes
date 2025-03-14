@@ -6,9 +6,13 @@
   "emeraldwalk.runonsave": {
     "commands": [
         {
-            "match": "(^|.*/)\\d{2}/README\\.md$",
-            "cmd": "bash ${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
-        }
+            "match": ".*/c/\\d{2}/README\\.md",
+            "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
+        },
+        // {
+        //     "match": ".*/cpp/\\d{2}/README\\.md",
+        //     "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
+        // }
     ]
   },
   "editor.rulers": [
