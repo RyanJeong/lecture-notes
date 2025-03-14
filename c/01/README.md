@@ -459,7 +459,7 @@ for (fahr = 0; fahr <= 300; fahr = fahr + 20)
 ```c
 #define COUNT 10;  /* loop 10 times */
 
-for (i < 0; i < COUNT; ++i) { /* ... */ } /* for (i < 0; i < COUNT;; ++i) -> Syntax error
+for (i < 0; i < COUNT; ++i) { /* ... */ } /* for (i < 0; i < COUNT;; ++i) -> Syntax error */
 ```
 
 ---

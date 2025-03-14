@@ -1,4 +1,4 @@
-#include <stdio.h> /* Already defined EOF(-1) in stdio.h */
+#include <stdio.h> /* Already defined EOF (-1) in stdio.h */
 
 /* copy input to output; 1st version */
 int main(void)
