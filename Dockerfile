@@ -33,6 +33,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # package install
 RUN apt-get update && \
     apt-get install -y \
+      sudo \
       openssh-server \
       gcc \
       g++ \
