@@ -108,6 +108,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     npm install -g @marp-team/marp-cli && \
     marp --version
 
+# get some permissions to modify marp highlight rules
+RUN chown "${USER}":"${USER}" /usr/lib/node_modules/@marp-team/marp-cli/node_modules/highlight.js/lib/languages/c.js && \
+    chown "${USER}":"${USER}" /usr/lib/node_modules/@marp-team/marp-cli/node_modules/highlight.js/lib/languages/cpp.js && \
+    chmod 700 /usr/lib/node_modules/@marp-team/marp-cli/node_modules/highlight.js/lib/languages/c.js && \
+    chmod 700 /usr/lib/node_modules/@marp-team/marp-cli/node_modules/highlight.js/lib/languages/cpp.js
+
 # vim
 WORKDIR "${USER_HOME}"
 RUN echo $'set number\n\
