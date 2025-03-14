@@ -7,7 +7,7 @@
     "commands": [
         {
             "match": ".*/c/\\d{2}/README\\.md",
-            "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
+            "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf && ${workspaceFolder}/add_c_keywords.sh $(dirname ${file})/temp.md > $(dirname ${file})/temp.txt"
         },
         // {
         //     "match": ".*/cpp/\\d{2}/README\\.md",
