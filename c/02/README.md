@@ -187,7 +187,7 @@ printf("Value: %u\n", x);
 
 - 정수형 값을 표현하는 비트 중 가장 중요한 역할을 하는 비트
 - 부호형 정수에서는 MSB가 **부호**를 결정
-  - `1` in MSB → Negative number (e.g., `10000000 = -128` **using two's complement**)
+  - `1` in MSB → Negative number (e.g., `1000 0000 = -128` **using two's complement**)
 
 | 7 (MSB) | 6 | 5 | 4 | 3 | 2 | 1 | 0 | Value (`signed char`) |
 |---|---|---|---|---|---|---|---|------------------|
@@ -207,7 +207,7 @@ printf("Value: %u\n", x);
 ## Data Types and Sizes (Cont'd - 7)
 
 - 무부호형 정수에서는 MSB가 **부호가 아닌 가장 큰 가중치**를 표현하는 데 사용됨
-  - **No negative numbers → `10000000` is `128`, `11111111` is `255`**.
+  - **No negative numbers → `1000 0000` is `128`, `1111 1111` is `255`**.
 
 | 7 (MSB) | 6 | 5 | 4 | 3 | 2 | 1 | 0 | Value (`unsigned char`) |
 |---|---|---|---|---|---|---|---|----------------------|
@@ -235,10 +235,10 @@ printf("Value: %u\n", x);
 - 음수를 처리하기 위해 **별도의 덧셈기가 필요**
 
 ```text
--5: 1101
-+3: 0011
+-5:   1101
++3:   0011
 --------
-  1 0000 != -2 (1010)
+    1 0000 != -2 (1010)
 ```
 
 ---
@@ -251,15 +251,15 @@ printf("Value: %u\n", x);
 - *n*진수는 *n*의 보수와 *n - 1*의 보수를 사용할 수 있음
   - 10진수는 10의 보수와 9의 보수를, 2진수는 2의 보수와 1의 보수 사용 가능
 
-- *n - 1*의 보수는 어떤 수 *X*에 대해, 다음과 같이 표현할 수 있음: $(n^k - 1) - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
-  - e.g., 10진수 `456 - 123`을 9의 보수를 사용해 계산
+- 임의의 *n*진수 *X*에 대한 *n - 1*의 보수는 다음과 같음: $(n^k - 1) - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
+  - e.g., `456 - 123`을 9의 보수를 사용해 계산
     1. `123`의 9의 보수 계산: `999 - 123 = 876 (k = 3)`
     2. `456` + (`-123` = `123`의 9의 보수) 계산: `456 + 876 = 1,332`
     3. 가장 왼쪽 자리 (올림수, carry) 제거: `1,332 -> 332`
     4. 제거한 올림수를 가장 오른쪽 자리에 더하여 보정: `332 + 1 = 333`
 
-- *n*의 보수는 어떤 수 *X*에 대해, 다음과 같이 표현할 수 있음: $n^k - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
-  - e.g., 10진수 `456 - 123`을 10의 보수를 사용해 계산
+- 임의의 *n*진수 *X*에 대한 *n*의 보수는 다음과 같음: $n^k - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
+  - e.g., `456 - 123`을 10의 보수를 사용해 계산
     1. `123`의 10의 보수 계산: `1,000 - 123 = 877 (k = 3)`
     2. `456` + (`-123` = `123`의 10의 보수) 계산: `456 + 877 = 1,333`
     3. 가장 왼쪽 자리 (올림수, carry) 제거: `1,333 -> 333`
@@ -272,13 +272,13 @@ printf("Value: %u\n", x);
 
 ![center](image-3.png)
 
-- 어떤 수 *X*의 모든 비트를 반전하여 1의 보수를 구할 수 있음
+- 임의의 2진수 *X*의 모든 비트를 반전하여 1의 보수를 구할 수 있음
 - **0을 표현하는 방법이 두 가지임**
 - **추가 보정 작업이 필요할 수 있어 비효율적임**
-- e.g., 2진수 `5 (0101) - 3 (0011)`을 1의 보수를 사용해 계산
+- e.g., `5 (0101) - 3 (0011)`을 1의 보수를 사용해 계산
   1. `3`의 1의 보수 계산: `1100`
-  2. `5` + (`-3` = `3`의 1의 보수) 계산: `0101 + 1100 = 1 0001`
-  3. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0001 -> 0001`
+  2. `5` + (`-3` = `3`의 1의 보수) 계산: `0101 + 1100 = 1 0001`
+  3. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0001 -> 0001`
   4. 제거한 올림수를 가장 오른쪽 자리에 더하여 보정: `0001 + 1 = 0010`
 
 ---
@@ -289,16 +289,16 @@ printf("Value: %u\n", x);
 
 ![center](image-4.png)
 
-- 어떤 수 *X*의 모든 비트를 반전한 뒤 1을 더해 2의 보수를 구할 수 있음
+- 임의의 2진수 *X*의 모든 비트를 반전한 뒤 1을 더해 2의 보수를 구할 수 있음
   - 2의 보수는 1의 보수를 계산한 뒤 1을 더한 값
 - **0을 유일하게 표현**
 - **추가 보정 작업 불필요**
   - 하나의 덧셈기로 뺄셈과 덧셈을 **덧셈으로 일관되게** 처리할 수 있음
-- e.g., 2진수 `5 (0101) - 3 (0011)`을 2의 보수를 사용해 계산
+- e.g., `5 (0101) - 3 (0011)`을 2의 보수를 사용해 계산
   1. `3`의 1의 보수 계산: `1100`
   2. `3`의 1의 보수로 변환한 값에 1을 더하여 2의 보수 계산: `1101`
-  3. `5` + (`-3` = `3`의 2의 보수) 계산: `0101 + 1101 = 1 0010`
-  4. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0010 -> 0010`
+  3. `5` + (`-3` = `3`의 2의 보수) 계산: `0101 + 1101 = 1 0010`
+  4. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0010 -> 0010`
 
 ---
 
@@ -310,12 +310,12 @@ printf("Value: %u\n", x);
 
 > The condition that occurs when a calculation produces a result that is greater in magnitude than that which a given register or storage location can store or represent.
 
-- 연산 결과 값 (magnitude)이 데이터 표헌 범위를 벗어날 경우 오버플로우 발생
+- 연산 결과 값 (magnitude)이 **데이터 표헌 범위를 벗어날 경우** 오버플로우 발생
   - e.g., 값 표현에 4비트를 사용한다고 가정
     - 양수를 표현할 수 있는 비트의 범위는 `0000 ~ 0111`
     - 음수를 표현할 수 있는 비트의 범위는 `1000 ~ 1111`
-  1. 2진수 `7 (0111)`에 1을 더하면 오버플로우 발생
-  2. 2진수 `-8 (1000)`에 1을 빼면 **오버플로우** 발생
+  1. `+7 (0111)`에 1을 더하면 오버플로우 발생 (8을 표현하려면 한 비트가 더 필요함)
+  2. `-8 (1000)`에 1을 빼면 **오버플로우** 발생 (-9를 표현하려면 한 비트가 더 필요함)
     > NB: The term **underflow** normally refers to floating point numbers only!
 
 ---
@@ -342,119 +342,143 @@ printf("Value: %u\n", x);
 
 ---
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 23
-- Data Types and Sizes
-- 고정 소수점 (fixed point)
+## Data Types and Sizes (Cont'd - 15)
 
+### 고정소수점 (Fixed-Point)
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 24
-- Data Types and Sizes
-- 고정 소수점 (fixed point)  (Cont’d)
-- 
-- 
-- 
-- 
-- e.g. 2 bytes 에서의 고정 소수점 표현
--  36.2510 : 0000 1001 0001 00002
--36.2510 : 1000 1001 0001 00002
-- 오차가 발생하지 않지만, 수를 표현할 수 있는 범위가 한정적임
+- 실수 값을 표현하는 **비표준 방식**이며, 필요에 따라 정의해 사용할 수 있음
+- 오차가 발생하지 않으나, **표현할 수 있는 값의 범위가 제한적인 방법**
+e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예시
 
+![center](image-8.png)
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 25
-- Data Types and Sizes
-- IEEE Standard for Floating-Point Arithmetic (IEEE 754)
-- a technical standard for floating-point arithmetic established in 1985 by the Institute of Electrical and Electronics Engineers (IEEE)
-- 
-- IEEE 754-1985 (The current version, IEEE 754-2019)
-- float (single precision), double (double precision), long double (extended precision)
-- long double 형은 double 형보다 더 높은 정밀도를 제공하지만, 컴파일러 구현 방법에 따라 상이함 (This is implementation-defined behavior and is not required, but allowed by the standard.)
-- e.g. Microsoft Visual C++은 long double 형 지원 안 함 (double 형으로 간주)
+| Size | Sign | Integer Part | Fractional Part |
+|----|----|-------------|---------------|
+| 1 byte | 1 bit | 4 bits | 3 bits |
+| 2 bytes | 1 bit | 9 bits | 6 bits |
+| 4 bytes | 1 bit | 15 bits | 16 bits |
 
+- e.g., 고정소수점을 사용해 `37.25`, `-37.25`를 2 bytes에 표현한 예
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 26
-- Data Types and Sizes
-- 단정도 부동 소수점 (single-precision floating-point)
-- 
-- 
-- Floating point format IEEE-754, 32 bits:  (−1)S × 1.M × 2E−127
-- 주황색 부분: 부호 (sign), 1 bit
-- 초록색 부분: 지수부 (exponent), 8 bits
-- 파란색 부분: 가수부 (mantissa), 23 bits
-- 실수를 정규화 (normalized)된 이진법 형태로 표현
-- 정규화된 가수부는 24비트의 정밀도를 가짐
+```text
+        S.(1) |   Int.(9)   | Frac.(6)    Fixed-Point Representation
++36.25:   0   | 0 0010 0100 | 01 0000   ->      0000 1001 0001 0000
+-36.25:   1   | 0 0010 0100 | 01 0000   ->      1000 1001 0001 0000
+```
 
+---
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 27
-- Data Types and Sizes
-- 단정도 부동 소수점 (single-precision floating-point)  (Cont’d)
-- 
-- 
-- 정규화된 가수부는 1과 같거나 크며, 102보다는 작음
-- 정규화된 이진법은 ± (1.xxx…) x 2 (exponent-bias) 형태
-- 
-- 실제 수 표현에 사용되는 비트 수는 24 bits
-- 23 bits + 1 bit
-- It is called the hidden or implicit bit
+## Data Types and Sizes (Cont'd - 16)
 
+### 부동소수점 (Floating-Point)
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 28
-- Data Types and Sizes
-- 단정도 부동 소수점 (single-precision floating-point)  (Cont’d)
-- 
-- 
-- e.g. 37.2510 : 0100 0010 0001 0101 0000 0000 0000 00002Floating Point Format IEEE-754, 32 bits:  (−1)S × 1.M × 2E−127
-- S = 0 (positive)
-- M = 0010101 (and fill the rest bits with 0)
-- E = 10000100 (to make the exponent of 2 equal to 5)
-- 37.2510    	= 100101.012
-- 100101.012 	= 1.00101012 x 25
+- 실수 값을 표현하는 **표준 방식**
+  - [IEEE Standard for Floating-Point Arithmetic (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754)
+  - `float` (single precision)
+  - `double` (double precision)
+  - `long double` (extended precision)
+    - 표준에서 허용하는 범위 내에서 구현된 자료형
+    - Implementation-defined behavior (컴파일러마다 동작이 상이할 수 있음)
+- 고정소수점 방식에 비해 복잡하고 많은 연산을 요구함
+- 오차가 발생할 수 있지만, **표현할 수 있는 값의 범위가 광범위함**
 
+---
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 29
-- Data Types and Sizes
-- 단정도 부동 소수점 (single-precision floating-point)  (Cont’d)
-- 
-- 
-- 미리 정의한 규칙 (특수한 경우)
-- E = 0, M = 0Underflow, S가 0이면 +0, S가 1이면 −0 (같은 0으로 봐도 무방)
-- E = 0, M ≠ 0Might be underflow, 정규화되지 않은 경우이며, 식  (−1)S × 0.M × 2E−126으로 처리
-- E = 255, M = 0Overflow, S가 0이면 양의 무한대 (+∞), S가 1이면 음의 무한대 (−∞)
-- E = 255, M ≠ 0NaN (Not a Number)를 의미하며, 연산이 잘못되어 알 수 없는 값이 나온 경우
+## Data Types and Sizes (Cont'd - 17)
 
+### 단정도 부동소수점 (Single-Precision Floating-Point)
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 30
-- Data Types and Sizes
-- 단정도 부동 소수점 (single-precision floating-point)  (Cont’d)
-- 
-- 
-- 단정도 부동 소수점으로 표현할 수 있는 가장 작은 수
-- 1.000 0000 0000 0000 0000 00002 × 2−126  (1.175494351 × 10-38)
-- 정규화되지 않았다면 (E = 0, M ≠ 0) 더 작은 값 표현 가능:0.000 0000 0000 0000 0000 00012 × 2−126 = 2-149
-- 단정도 부동 소수점으로 표현할 수 있는 가장 큰 수
-- 1.111 1111 1111 1111 1111 11112 × 2127  (3.402823466 × 1038)
+![center](image-9.png)
 
+$$(-1)^S \times 1.M \times 2^{E - 127}$$
 
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 31
-- Data Types and Sizes
-- 배정도 부동 소수점 (double-precision floating-point)
+- 4 bytes를 사용해 실수 데이터를 표현하는 방법
+- 부호부 (*S*, `sign`)는 1 bit, 지수부 (*E*, `exponent`)는 8 bits, 가수부 (*M*, `mantissa`)는 23 bits를 사용
+- 실수 데이터를 2진수로 변환한 뒤, **정규화**를 한 결과를 부호부, 지수부, 가수부에 표현
+- e.g., 단정도 부동소수점을 사용해 37.25를 표현한 예
+
+```text
+- Integer Part                             : 10 0101
+- Fractional Part                          :      01
+- Fixed-Point Representation               : 10 0101.01
+- Normalized Floating-Point Representation :       1.0010 101 x 2^5
+- IEEE 754 Floating-Point Representation   : (1). S: 0
+                                                  (positive: 0, negative: 1)
+                                             (2). E: 1000 0100
+                                                  (E - 127 = 5, E = 132)
+                                           : (3). M: 0010 101
+                                                  (fill the rest bits with 0)
+                                           : 0100 0010 0001 0101 0000 0000 0000 0000
+```
+
+- 가수부는 실제 23 bits의 정밀도를 갖는게 아닌, **24 bits의 정밀도를 가짐**
+  - 정규화된 형태는 1 bit가 암묵적으로 표현되므로, 이를 implicit bit 또는 hidden bit라고 부름
+
+---
+
+## Data Types and Sizes (Cont'd - 18)
+
+### 단정도 부동소수점의 미리 정의된 형태
+
+- `E = 0`, `M = 0`
+  - 부동소수점에서 0 (`±0`)을 표현하는 방식 (부호 비트에 따라 `+0` 또는 `-0`)
+- `E = 0`, `M != 0`
+  - 서브노멀 값 (subnormal number, denormalized number)을 표현: $(-1)^S \times 0.M \times 2^{-126}$
+  - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용 (언더플로우)**
+  - 정규화된 수와 달리 implicit bit (`1.XXX` 형태의 `1`)가 없으므로 정밀도가 더 낮음
+  - 연산 결과가 서브노멀 값보다도 작을 경우 **0으로 처리됨 (flush to zero)**
+- `E = 1 ~ 254`, `M = any value`
+  - 정규화된 수 (normalized number)를 표현: $(-1)^S \times 1.M \times 2^{E - 127}$
+  - 일반적인 부동소수점 값을 저장할 때 사용
+- `E = 255`, `M = 0`
+  - **연산 결과가 표현할 수 있는 최대치를 초과해 오버플로우가 발생한 경우**
+  - IEEE 754에서는 무한대 (`±∞`)로 처리됨 (부호 비트에 따라 `+∞` 또는 `-∞`)
+- `E = 255`, `M != 0`
+  - `NaN` (not a number)
+  - 정의되지 않은 연산 결과로 인해 숫자가 아닌 결과가 반환된 경우 (e.g., `0/0`, `∞ - ∞`, etc.)
+
+---
+
+## Data Types and Sizes (Cont'd - 19)
+
+### 단정도 부동소수점에서 표현할 수 있는 최대 및 최소값
+
+#### 정규화된 값 (Normalized Number)
+
+$$(-1)^S \times 1.M \times 2^{E - 127}$$
+
+- `S = 0`, `E = 254`, `M = 1111111...111`
+  - 가장 큰 정규화된 값 (양수): `+3.4028235 × 10^(+38)`
+- `S = 0`, `E = 1`, `M = 0000000...000`
+  - 가장 작은 정규화된 값 (양수): `+1.17549435 × 10^(-38)`
+- `S = 1`, `E = 254`, `M = 1111111...111`
+  - 가장 큰 정규화된 값 (음수): `-3.4028235 × 10^(+38)`
+- `S = 1`, `E = 1`, `M = 0000000...000`
+  - 가장 작은 정규화된 값 (음수): `-1.17549435 × 10^(-38)`
+
+#### 서브노멀 값 (Subnormal Number)
+
+$$(-1)^S \times 0.M \times 2^{-126}$$
+
+- `S = 0`, `E = 0`, `M = 0000000...001`
+  - 가장 작은 서브노멀 값 (양수): `+1.40129846 × 10^(-45)`
+- `S = 1`, `E = 0`, `M = 0000000...001`
+  - 가장 큰 서브노멀 값 (음수): `-1.40129846 × 10^(-45)`
+
+---
+
+## Data Types and Sizes (Cont'd - 20)
+
+### 배정도 부동소수점 (Double-Precision Floating-Point)
+
+---
+
+### 수직선 상에 표현한 배정도 부동소수점
+
+![center](floating-point-number-line.png)
+
+---
+
 - 
 - 
 - Floating point format IEEE-754, 64 bits:  (−1)S × 1.M × 2E−1,023
