@@ -1,31 +1,31 @@
 # Lecture Notes - C
 
-## Formatting Codes
+## Notation
+
+* `*_ignore.c` or `*_ignore.h`
+
+Code snippets required for lecture notes. Skip checking syntax.
+
+* `*_part1.c`, `*_part2.c`, ... , `*partn.c`
+
+Split code for attaching in lecture notes. Skip checking syntax.
+
+## Formatting
 
 ```shell
-for file in $(find . -name "*.*" | grep -E "\.(c|h)$"); do
-  echo $file
-  clang-format --style=file:/home/docker/clang-format/.clang-format-knr -i $file
-  chmod 755 $file
-done
+CHAPTER=01
+
+cd $CHAPTER
+../lint.sh
 ```
 
-## Test Codes
+## Checking Syntax
 
 ```shell
-FILE_NAME="error_file_lists.txt"
-MY_FLAGS="-c -fsyntax-only -ansi -Wall -Wextra -Werror -fno-builtin"
-> "$FILE_NAME"
-for file in $(find . -name "*.*" | grep -E "\.c$"); do
-  gcc $file $MY_FLAGS > /dev/null 2>&1
-  if [ $? -ne 0 ]; then
-    echo "$file" >> "$FILE_NAME"
-    gcc $file $MY_FLAGS >> "$FILE_NAME" 2>&1
-    echo "========================================" >> "$FILE_NAME"
-  fi
-done
+CHAPTER=01
 
-cat "$FILE_NAME"
+cd $CHAPTER
+../check_syntax.sh
 ```
 
 ## Converting Markdowns
