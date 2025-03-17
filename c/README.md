@@ -14,16 +14,18 @@ done
 
 ```shell
 FILE_NAME="error_file_lists.txt"
-MY_FLAGS="-c -fsyntax-only -ansi -Wall -Wextra -Werror"
+MY_FLAGS="-c -fsyntax-only -ansi -Wall -Wextra -Werror -fno-builtin"
 > "$FILE_NAME"
 for file in $(find . -name "*.*" | grep -E "\.c$"); do
-  echo $file
-  gcc $file $MY_FLAGS
+  gcc $file $MY_FLAGS > /dev/null 2>&1
   if [ $? -ne 0 ]; then
     echo "$file" >> "$FILE_NAME"
+    gcc $file $MY_FLAGS >> "$FILE_NAME" 2>&1
+    echo "========================================" >> "$FILE_NAME"
   fi
 done
-sort "$FILE_NAME" -o "$FILE_NAME"
+
+cat "$FILE_NAME"
 ```
 
 ## Converting Markdowns
