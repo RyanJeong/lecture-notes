@@ -401,7 +401,7 @@ celsius = 5 * (fahr - 32) / 9;
 int i = 0;
 while (i < 10) { ++i; } /* Single-line while loop */
 while (i >= 0) {        /* Multi-line while loop */
-  --i;
+    --i;
 }
 ```
 
@@ -417,7 +417,7 @@ while (i >= 0) {        /* Multi-line while loop */
   
 ```c
 for (/* 1: initialization */ ; /* 2: condition */ ; /* 3: updation */) {
-  /* body of the loop (statements to be executed) */
+    /* body of the loop (statements to be executed) */
 }
 ```
 
@@ -778,6 +778,7 @@ if ((c == ' ') || (c == '\n') || (c == '\t')) { /* ... */ }
 ```c
 if (c == '\n')
     /* ... */
+
 if ((c == ' ') || (c == '\n') || (c == '\t')) {
     /* ... */
 } else if (state == OUT) {
@@ -944,7 +945,7 @@ int power(int base, int n)
 ```
 
 - 함수 안에 선언된 변수는 지역 변수
-- 두 함수 (`main`, `power`)는 둘 다 지역변수 `i`를 선언해 사용
+- 두 함수 (`main`, `power`)는 둘 다 지역 변수 `i`를 선언해 사용
 - 서로 다른 함수는 **서로 다른 지역을 사용함**
 - `main` 함수의 `i`와 `power` 함수의 `i`는 **서로 이름이 같지만** 구분됨
 
@@ -1022,13 +1023,13 @@ print longest line
 
 ## Character Arrays (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/01/15_1.c)
+[//]: # (INCLUDE: ./c/01/15_part1.c)
 
 ---
 
 ## Character Arrays (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/01/15_2.c)
+[//]: # (INCLUDE: ./c/01/15_part2.c)
 
 ---
 
@@ -1058,10 +1059,10 @@ print longest line
 
 ## External Variables and Scope (Cont'd - 1)
 
-[//]: # (INCLUDE: ./c/01/16_1.c)
+[//]: # (INCLUDE: ./c/01/16_part1.c)
 
 ---
 
 ## External Variables and Scope (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/01/16_2.c)
+[//]: # (INCLUDE: ./c/01/16_part2.c)
