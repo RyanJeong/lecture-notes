@@ -24,7 +24,7 @@
 
 - Insert a space between a word and the opening parenthesis when using inline parentheses.
 
-- Useful characters: →
+- Useful characters: → ≠
 
 ### Files
 
