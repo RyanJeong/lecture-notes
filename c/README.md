@@ -1,14 +1,42 @@
 # Lecture Notes - C
 
-## Notation
+## MARKDOWN WRITING GUIDELINES FOR NOTES
 
-* `*_ignore.c` or `*_ignore.h`
+### GENERAL RULES
+
+- Capitalize **every word** in headings like `#`, `##`, `###`, etc., but keep conjunctions and prepositions like **and**, **or** in lowercase.
+
+- Begin **only the first word** with a capital letter in regular sentences.
+
+- Use **bullet points (`-`)** for concise, list-style sentences.
+
+- Use **bold (`**`)** text for emphasis.
+
+- Use **blockquotes (`>`)** for quotations and full-sentence content not written in list format.
+
+- Treat **each table cell** as a regular sentence.
+
+- Use **backticks (`)** to highlight values, expressions, function names, and keywords in code.
+
+- Write **mathematical expressions** using **MathJax**.
+
+- Use **superscript characters** such as `⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁽ ⁾` for inline power or notation expressions when MathJax is unnecessary or unavailable.
+
+- Insert a space between a word and the opening parenthesis when using inline parentheses.
+
+### Files
+
+- `1.c` or `1.h`
+
+Codes for attaching in lecture notes.
+
+- `*_ignore.c` or `*_ignore.h`
 
 Code snippets required for lecture notes. Skip checking syntax.
 
-* `*_part1.c`, `*_part2.c`, ... , `*partn.c`
+- `*_part1.c`, `*_part2.c`, ... , `*partn.c`
 
-Split code for attaching in lecture notes. Skip checking syntax.
+Split codes for attaching in lecture notes. Skip checking syntax.
 
 ## Formatting
 
