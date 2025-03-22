@@ -24,6 +24,8 @@
 
 - Insert a space between a word and the opening parenthesis when using inline parentheses.
 
+- Useful characters: →
+
 ### Files
 
 - `1.c` or `1.h`
