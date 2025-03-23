@@ -86,9 +86,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 ### `#include` 명령 (전처리 명령, Preprocessor Instruction)
 
-```c
-#include <stdio.h>
-```
+[//]: # (INCLUDE: ./c/01/getting_started_1_ignore.c)
 
 - 보통 코드의 맨 윗부분에 위치
 - 프로그램 실행에 필요한 기능들을 프로그램 내에 포함시킴
@@ -96,12 +94,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 ### `main` 함수
 
-```c
-int main(void)
-{
-    /* ... */
-}
-```
+[//]: # (INCLUDE: ./c/01/getting_started_2_ignore.c)
 
 - **프로그램의 시작점**
   - 프로그램 실행은 `main` 함수를 호출하는 것
@@ -115,9 +108,7 @@ int main(void)
 
 ### `return` 문 (반환문)
 
-```c
-return 0;
-```
+[//]: # (INCLUDE: ./c/01/getting_started_3_ignore.c)
 
 - 함수를 종료하는 문장
   - `main` 함수의 종료는 프로그램의 종료를 의미
@@ -133,11 +124,7 @@ $ echo $?
 
 ### `printf` 문
 
-```c
-#include <stdio.h>
-
-printf("Hello, World\n");
-```
+[//]: # (INCLUDE: ./c/01/getting_started_4_ignore.c)
 
 - `printf` 함수를 호출하는 문장
 - `stdio.h` 헤더 파일 필요
@@ -149,10 +136,7 @@ printf("Hello, World\n");
 
 ### 문자열 (Strings)
 
-```c
-"Hello, World"
-"The C Programming Language"
-```
+[//]: # (INCLUDE: ./c/01/getting_started_5_ignore.c)
 
 - 큰따옴표 (`"`)를 사용해 표현한 값
 - 여러 문자들을 묶은 값
@@ -160,10 +144,7 @@ printf("Hello, World\n");
 
 ### 이스케이프 시퀀스 (Escape Sequence)
 
-```c
-"Character string\n"
-'\n'
-```
+[//]: # (INCLUDE: ./c/01/getting_started_6_ignore.c)
 
 - 백슬래시 (`\`) 뒤에 한 문자 또는 숫자 조합이 오는 문자 조합
 - **두 개 이상의 문자 조합이지만, 한 문자 (a character)로 간주**
@@ -210,32 +191,17 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 ### 변수 (Variables)
 
-```c
-int fahr, celsius;
-int lower, upper, step;
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_1_ignore.c)
 
 - 프로그램 내에서 데이터를 보관하는 용도
 - **모든 변수는 반드시 사용 전에 선언 (declarations)되어야 함**
 - 변수 선언은 사용할 형 (types)과 이름의 조합으로 구성:
 
-```c
-/* int : type
-   step: name */
-int step;
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_2_ignore.c)
 
 - 형 종류는 아래와 같음:
 
-```c
-int    /* integer */
-float  /* floating point */
-
-char   /* character - a single byte */
-short  /* short integer */
-long   /* long integer */
-double /* double-precision floating point */
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_3_ignore.c)
 
 ---
 
@@ -243,12 +209,7 @@ double /* double-precision floating point */
 
 ### 대입문 (Assignment Statements)
 
-```c
-lower = 0;   /* lower limit of temperature table */
-upper = 300; /* upper limit */
-step = 20;   /* step size */
-fahr = lower;
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_4_ignore.c)
 
 - 변수에 값을 대입 (assignments)할 때 사용하는 문장
   - **상수에는 값을 대입할 수 없음**
@@ -256,13 +217,7 @@ fahr = lower;
 
 ### `while` 반복문
 
-```c
-while (fahr <= upper) {
-    celsius = 5 * (fahr - 32) / 9;
-    printf("%d\t%d\n", fahr, celsius);
-    fahr = fahr + step;
-}
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_5_ignore.c)
 
 - `while` 키워드 다음에 등장하는 조건 (conditions)을 만족하는 동안 중괄호 내 각 문장들을 여러 번 반복할 수 있음
 
@@ -272,10 +227,7 @@ while (fahr <= upper) {
 
 ### 산술 표현식 (Arithmetic Expressions)
 
-```c
-celsius = 5 * (fahr - 32) / 9;
-fahr = fahr + step;
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_6_ignore.c)
 
 - 산술 연산자를 사용하는 표현식
 
@@ -288,10 +240,7 @@ fahr = fahr + step;
 
 #### 산술 연산자 사용 시 주의사항
 
-```c
-/* 1 */ celsius = 5 * (fahr - 32) / 9;
-/* 2 */ celsius = 5 / 9 * (fahr - 32); /* Isn't this more like the formula? */
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_7_ignore.c)
 
 - 2번 문장의 `5 / 9` 표현은 두 피연산자가 **정수** 값
 - **정수형 나눗셈에서의 나머지는 버려지므로, `5 / 9`의 값은 0으로 평가됨**
@@ -302,10 +251,7 @@ fahr = fahr + step;
 
 ### 형식에 따른 출력 (Formatted Output)
 
-```c
-/* 1 */ printf("Hello, World\n");
-/* 2 */ printf("%d\t%d\n", fahr, celsius);
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_8_ignore.c)
 
 - `printf` 함수의 첫 번째 전달인자는 화면에 실제로 출력되는 문자열
 - `printf` 함수는 출력을 형식화하는 기능을 지원함
@@ -313,14 +259,10 @@ fahr = fahr + step;
   - 형식 지정자: `%` 기호로 시작하는 연속된 문자열
   - **첫 번째 전달인자 내 형식 지정자의 수와 뒤따르는 전달인자의 수는 일치해야 함**
 
-```c
-printf("%d + %d = %d\n", 1, 2, 1 + 2);
-printf("PI: %f\n", 3.141592);
-printf("PI: %d\n", 3.141592);  /* It will print 265890024, not 3 */
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_9_ignore.c)
 
-- `%d`는 연관되는 전달인자를 **정수** 값으로 출력
-- `%f`는 연관되는 전달인자를 **실수** 값으로 출력
+- `%d`는 대응되는 전달인자를 **정수** 값으로 출력
+- `%f`는 대응되는 전달인자를 **실수** 값으로 출력
 
 ---
 
@@ -343,9 +285,7 @@ printf("PI: %d\n", 3.141592);  /* It will print 265890024, not 3 */
 
 - 한 표현에 실수 값과 정수 값이 같이 사용될 경우, **정수 값은 실수 값으로 처리됨**
 
-```c
-fahr = lower;  // 0 (the lower's value, int type) will be convert to 0.0 (float type)
-```
+[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_A_ignore.c)
 
 ---
 
@@ -423,7 +363,7 @@ for (/* 1: initialization */ ; /* 2: condition */ ; /* 3: updation */) {
 
 - 세 개의 표현식 사용
   - 초기화 (1번 표현식)는 반복문 시작 시점에 한 번만 실행됨
-  - 이후 **조건 (2번 표현식) -> 반복문 본문 (loop body) 실행 -> 갱신 (3번 표현식)** 과정을 반복함
+  - 이후 **조건 (2번 표현식) → 반복문 본문 (loop body) 실행 → 갱신 (3번 표현식)** 과정을 반복함
   - 조건이 더 이상 만족되지 않을 때 반복문 종료
 
 ---
@@ -527,7 +467,7 @@ putchar('a');
 
 ### ASCII (American Standard Code for Information Interchange)
 
-- 컴퓨터에서 문자 하나를 표현하기 위해 0 ~ 255 사이의 정수 값으로 연관한 표준
+- 컴퓨터에서 문자 하나를 표현하기 위해 0 ~ 255 사이의 정수 값으로 연결한 표준
 - 키보드에서 `'A'`를 입력하면, 실제로 텍스트 입력 스트림에 전달되는 값은 `0x41` (`65`)
 - 텍스트 출력 스트림에 `0x41` (`65`) 값이 존재할 경우, 모니터에 표현되는 결과는 `'A'`
 
@@ -654,9 +594,9 @@ c = getchar();
 
 ```c
 int i = 3;
-++i;  // now i is 4
+++i;  /* now i is 4 */
 float f = 3.5;
-++f;  // now f is 4.5
+++f;  /* now f is 4.5 */
 ```
 
 ---
@@ -748,7 +688,7 @@ if (c == '\n') { /* ... */ }
 nl = nw = nc = 0;
 ```
 
-- 표현식 내 연산자들은 결합 방향에 따라 연산자 주변 피연산자와 연관
+- 표현식 내 연산자들은 결합 방향에 따라 연산자 주변 피연산자와 결합
 - 대입 연산자 (`=`)는 **오른쪽에서 왼쪽으로 결합**
 - `nl = nw = nc = 0;` 문장은 아래와 같이 결합되어 평가됨:
 
@@ -904,8 +844,8 @@ int main(void)
 ### 함수 선언 (Function Declarations)
 
 ```c
-int power(int m, int n);     // function declaration
-int power(int base, int n)   // function definition
+int power(int m, int n);     /* function declaration */
+int power(int base, int n)   /* function definition */
 {
     /* ... */
 }
@@ -971,7 +911,7 @@ printf("%d %d %d\n", i, power(2, i), power(-3, i));
 ```c
 int power(int m, int n);
 
-power(4, i);  // return value (int) will be ignored
+power(4, i);  /* return value (int) will be ignored */
 ```
 
 ---

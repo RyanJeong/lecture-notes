@@ -1,0 +1,2 @@
+"Character string\n"
+'\n'

@@ -58,6 +58,12 @@ process_file() {
       # Append the content of the file (if exists); if not, create an empty file using touch.
       if [ -f "$filename" ]; then
         cat "$filename" >> "$TMP_MD"
+
+        # Check whether the last character is a newline
+        if [ -n "$(tail -c1 "$filename" | tr -d '\n')" ]; then
+          # Last character is NOT a newline → add one
+          echo >> "$TMP_MD"
+        fi
       else
         echo "// Warning: File ${filename} not found; creating empty file." >> "$TMP_MD"
         touch "$filename"
