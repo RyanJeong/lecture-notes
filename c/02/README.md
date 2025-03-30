@@ -40,7 +40,7 @@ int 2nd_trial;    /* error: invalid suffix "nd_trial" on integer constant
 
 - ANSI C (ISO C90) 표준은 `_`로 시작하는 식별자 (변수명)를 표준 라이브러리 및 구현 내부에서 사용함
   - 변수명 첫 글자에 밑줄은 사용 가능하나, **사용하지 않는 것을 권장**
-  - **표준 헤더파일 포함 시 충돌날 수 있음**
+  - **표준 헤더파일과 충돌날 수 있음**
 
 ```c
 int _is_modified; /* ok, but don't use it */
@@ -78,12 +78,12 @@ int a, A;         /* ok, `a` and `A` are difrerent variables */
 
 | Type   | Description |
 |--------|------------|
-| `char`   | Represents a single character, typically 1 byte in size. |
-| `int`    | Represents an integer value, **usually 4 bytes** in size. |
-| `float`  | Represents a floating-point number with single precision, typically 4 bytes in size. |
-| `double` | Represents a floating-point number with double precision, typically 8 bytes in size. |
-| `short` | Represents a short integer, typically 2 bytes in size. |
-| `long` | Represents a long integer, typically 4 or 8 bytes in size depending on the system. |
+| `char`   | Represents a single character, typically 1 byte in size |
+| `int`    | Represents an integer value, **usually 4 bytes** in size |
+| `float`  | Represents a floating-point number with single precision, typically 4 bytes in size |
+| `double` | Represents a floating-point number with double precision, typically 8 bytes in size |
+| `short` | Represents a short integer, typically 2 bytes in size |
+| `long` | Represents a long integer, typically 4 or 8 bytes in size depending on the system |
 
 ---
 
@@ -109,11 +109,11 @@ int a, A;         /* ok, `a` and `A` are difrerent variables */
 
 - `char`, `int` 형은 한정사를 사용해 부호 값 또는 무부호 값을 표현할 수 있음
 - 무부호 값은 0과 양수만 표현 가능 (**음수 표현 불가**)
-  - e.g., `char` 형은 1 바이트 크기를 가지므로, `unsigned char` 형의 표현 범위는 `0 ~ 255` ($2^8 - 1$)
+  - e.g., `char` 형은 1 바이트 크기를 가지므로, `unsigned char` 형의 표현 범위는 `0` ~ `255`
 - 부호 값은 양수와 음수 모두 표현 가능 (2의 보수 표현 사용)
-  - e.g., `char` 형은 1 바이트 크기를 가지므로, `char` 형의 표현 범위는 `-128 ~ 127`
+  - e.g., `char` 형은 1 바이트 크기를 가지므로, `char` 형의 표현 범위는 `-128` ~ `127`
 - 문자형은 사용 환경에 따라 부호형 또는 무부호형일 수 있음 (machine-dependent)
-  - 화면에 출력할 문자들은 `0 ~ 127` 범위에 정의되어 있으며, 부호형과 무부호형 둘 다 문자를 올바르게 표현 가능
+  - 화면에 출력할 문자들은 `0` ~ `127` 범위에 정의되어 있으며, 부호형과 무부호형 둘 다 문자를 올바르게 표현 가능
 - 정수형은 부호형을 기본값으로 사용
   - `short` 형은 `signed short` 형
   - `int` 형은 `signed int` 형
@@ -187,7 +187,7 @@ printf("Value: %u\n", x);
 
 - 정수형 값을 표현하는 비트 중 가장 중요한 역할을 하는 비트
 - 부호형 정수에서는 MSB가 **부호**를 결정
-  - `1` in MSB → Negative number (e.g., `1000 0000 = -128` **using two's complement**)
+  - `1` in MSB → Negative number (**using two's complement**, `1000 0000` is `-128` )
 
 | 7 (MSB) | 6 | 5 | 4 | 3 | 2 | 1 | 0 | Value (`signed char`) |
 |---|---|---|---|---|---|---|---|------------------|
@@ -207,7 +207,7 @@ printf("Value: %u\n", x);
 ## Data Types and Sizes (Cont'd - 7)
 
 - 무부호형 정수에서는 MSB가 **부호가 아닌 가장 큰 가중치**를 표현하는 데 사용됨
-  - **No negative numbers → `1000 0000` is `128`, `1111 1111` is `255`**.
+  - No negative numbers → `1000 0000` is `128`, `1111 1111` is `255`.
 
 | 7 (MSB) | 6 | 5 | 4 | 3 | 2 | 1 | 0 | Value (`unsigned char`) |
 |---|---|---|---|---|---|---|---|----------------------|
@@ -226,7 +226,7 @@ printf("Value: %u\n", x);
 
 ## Data Types and Sizes (Cont'd - 8)
 
-### 음의 정수 표현 방법 1 - 부호화 절대치 (Sign-magnitude)
+### 음의 정수 표현 방법 1 - 부호화 절대치 (Sign-Magnitude)
 
 ![center](image-2.png)
 
@@ -238,7 +238,7 @@ printf("Value: %u\n", x);
 -5:   1101
 +3:   0011
 --------
-    1 0000 != -2 (1010)
+    1 0000 ≠ -2 (1010)
 ```
 
 ---
@@ -248,44 +248,56 @@ printf("Value: %u\n", x);
 ### 음의 정수 표현 방법 2 - 보수화 (Complement)
 
 - 뺄셈을 컴퓨터 내부에서 쉽게 수행하기 위해 뺄셈을 덧셈으로 치환하는 과정
-- *n*진수는 *n*의 보수와 *n - 1*의 보수를 사용할 수 있음
+- *n*진수는 ***n*의 보수**와 ***n - 1*의 보수**를 사용할 수 있음
   - 10진수는 10의 보수와 9의 보수를, 2진수는 2의 보수와 1의 보수 사용 가능
 
-- 임의의 *n*진수 *X*에 대한 *n - 1*의 보수는 다음과 같음: $(n^k - 1) - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
-  - e.g., `456 - 123`을 9의 보수를 사용해 계산
-    1. `123`의 9의 보수 계산: `999 - 123 = 876 (k = 3)`
-    2. `456` + (`-123` = `123`의 9의 보수) 계산: `456 + 876 = 1,332`
-    3. 가장 왼쪽 자리 (올림수, carry) 제거: `1,332 -> 332`
-    4. 제거한 올림수를 가장 오른쪽 자리에 더하여 보정: `332 + 1 = 333`
+### 임의의 *n*진수 *X*에 대한 *n - 1*의 보수
 
-- 임의의 *n*진수 *X*에 대한 *n*의 보수는 다음과 같음: $n^k - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
-  - e.g., `456 - 123`을 10의 보수를 사용해 계산
-    1. `123`의 10의 보수 계산: `1,000 - 123 = 877 (k = 3)`
-    2. `456` + (`-123` = `123`의 10의 보수) 계산: `456 + 877 = 1,333`
-    3. 가장 왼쪽 자리 (올림수, carry) 제거: `1,333 -> 333`
+$(n^k - 1) - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
+
+### 임의의 *n*진수 *X*에 대한 *n*의 보수
+
+$n^k - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
 
 ---
 
 ## Data Types and Sizes (Cont'd - 10)
 
-### 1의 보수 (1's complement)
+- 10진수에 대한 9의 보수 계산 예
+  - e.g., `456` - `123`을 9의 보수를 사용해 계산
+    1. `123`의 9의 보수 계산: `999` - `123` = `876` (*k* = 3)
+    2. `456` + (`-123` = `123`의 9의 보수) 계산: `456` + `876` = `1,332`
+    3. 가장 왼쪽 자리 (올림수, carry) 제거: `1,332` → `332`
+    4. 제거한 올림수를 가장 오른쪽 자리에 더하여 보정: `332` + `1` = `333`
+
+- 10진수에 대한 10의 보수 계산 예
+  - e.g., `456` - `123`을 10의 보수를 사용해 계산
+    1. `123`의 10의 보수 계산: `1,000` - `123` = `877` (*k* = 3)
+    2. `456` + (`-123` = `123`의 10의 보수) 계산: `456` + `877` = `1,333`
+    3. 가장 왼쪽 자리 (올림수, carry) 제거: `1,333` → `333`
+
+---
+
+## Data Types and Sizes (Cont'd - 11)
+
+### 1의 보수 (1's Complement)
 
 ![center](image-3.png)
 
 - 임의의 2진수 *X*의 모든 비트를 반전하여 1의 보수를 구할 수 있음
 - **0을 표현하는 방법이 두 가지임**
 - **추가 보정 작업이 필요할 수 있어 비효율적임**
-- e.g., `5 (0101) - 3 (0011)`을 1의 보수를 사용해 계산
+- e.g., `5` (`0101`) - `3` (`0011`)을 1의 보수를 사용해 계산
   1. `3`의 1의 보수 계산: `1100`
-  2. `5` + (`-3` = `3`의 1의 보수) 계산: `0101 + 1100 = 1 0001`
-  3. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0001 -> 0001`
-  4. 제거한 올림수를 가장 오른쪽 자리에 더하여 보정: `0001 + 1 = 0010`
+  2. `5` + (`-3` = `3`의 1의 보수) 계산: `0101` + `1100` = `1 0001`
+  3. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0001` → `0001`
+  4. 제거한 올림수를 가장 오른쪽 자리에 더하여 보정: `0001` + `1` = `0010`
 
 ---
 
-## Data Types and Sizes (Cont'd - 11)
+## Data Types and Sizes (Cont'd - 12)
 
-### 2의 보수 (2's complement)
+### 2의 보수 (2's Complement)
 
 ![center](image-4.png)
 
@@ -294,15 +306,15 @@ printf("Value: %u\n", x);
 - **0을 유일하게 표현**
 - **추가 보정 작업 불필요**
   - 하나의 덧셈기로 뺄셈과 덧셈을 **덧셈으로 일관되게** 처리할 수 있음
-- e.g., `5 (0101) - 3 (0011)`을 2의 보수를 사용해 계산
+- e.g., `5` (`0101`) - `3` (`0011`)을 2의 보수를 사용해 계산
   1. `3`의 1의 보수 계산: `1100`
   2. `3`의 1의 보수로 변환한 값에 1을 더하여 2의 보수 계산: `1101`
-  3. `5` + (`-3` = `3`의 2의 보수) 계산: `0101 + 1101 = 1 0010`
-  4. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0010 -> 0010`
+  3. `5` + (`-3` = `3`의 2의 보수) 계산: `0101` + `1101` = `1 0010`
+  4. 가장 왼쪽 자리 (올림수, carry) 제거: `1 0010` → `0010`
 
 ---
 
-## Data Types and Sizes (Cont'd - 12)
+## Data Types and Sizes (Cont'd - 13)
 
 ### Integer Overflow
 
@@ -312,15 +324,15 @@ printf("Value: %u\n", x);
 
 - 연산 결과 값 (magnitude)이 **데이터 표헌 범위를 벗어날 경우** 오버플로우 발생
   - e.g., 값 표현에 4비트를 사용한다고 가정
-    - 양수를 표현할 수 있는 비트의 범위는 `0000 ~ 0111`
-    - 음수를 표현할 수 있는 비트의 범위는 `1000 ~ 1111`
-  1. `+7 (0111)`에 1을 더하면 오버플로우 발생 (8을 표현하려면 한 비트가 더 필요함)
-  2. `-8 (1000)`에 1을 빼면 **오버플로우** 발생 (-9를 표현하려면 한 비트가 더 필요함)
+    - 양수를 표현할 수 있는 비트의 범위는 `0000` ~ `0111`
+    - 음수를 표현할 수 있는 비트의 범위는 `1000` ~ `1111`
+  1. `+7` (`0111`)에 1을 더하면 오버플로우 발생 (`+8`을 표현하려면 한 비트가 더 필요함)
+  2. `-8` (`1000`)에 1을 빼면 **오버플로우** 발생 (`-9`를 표현하려면 한 비트가 더 필요함)
     > NB: The term **underflow** normally refers to floating point numbers only!
 
 ---
 
-## Data Types and Sizes (Cont'd - 13)
+## Data Types and Sizes (Cont'd - 14)
 
 > Counting just 50,000 sheep should do the trick... What?
 
@@ -328,7 +340,7 @@ printf("Value: %u\n", x);
 
 ---
 
-## Data Types and Sizes (Cont'd - 14)
+## Data Types and Sizes (Cont'd - 15)
 
 > 다음 코드의 실행 결과는?
 
@@ -342,7 +354,7 @@ printf("Value: %u\n", x);
 
 ---
 
-## Data Types and Sizes (Cont'd - 15)
+## Data Types and Sizes (Cont'd - 16)
 
 ### 고정소수점 (Fixed-Point)
 
@@ -358,7 +370,7 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 | 2 bytes | 1 bit | 9 bits | 6 bits |
 | 4 bytes | 1 bit | 15 bits | 16 bits |
 
-- e.g., 고정소수점을 사용해 `37.25`, `-37.25`를 2 bytes에 표현한 예
+- e.g., 고정소수점을 사용해 `37.25`, `-37.25`를 2 bytes로 표현한 예
 
 ```text
         S.(1) |   Int.(9)   | Frac.(6)    Fixed-Point Representation
@@ -368,7 +380,7 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 
 ---
 
-## Data Types and Sizes (Cont'd - 16)
+## Data Types and Sizes (Cont'd - 17)
 
 ### 부동소수점 (Floating-Point)
 
@@ -384,7 +396,7 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 
 ---
 
-## Data Types and Sizes (Cont'd - 17)
+## Data Types and Sizes (Cont'd - 18)
 
 ### 단정도 부동소수점 (Single-Precision Floating-Point)
 
@@ -392,22 +404,19 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 
 $$(-1)^S \times 1.M \times 2^{E - 127}$$
 
-- 4 bytes를 사용해 실수 데이터를 표현하는 방법
-- 부호부 (*S*, `sign`)는 1 bit, 지수부 (*E*, `exponent`)는 8 bits, 가수부 (*M*, `mantissa`)는 23 bits를 사용
+- **4 bytes**를 사용해 실수 데이터를 표현하는 방법
+- 부호부 (*S*, sign)는 **1 bit**, 지수부 (*E*, exponent)는 **8 bits**, 가수부 (*M*, mantissa)는 **23 bits**를 사용
 - 실수 데이터를 2진수로 변환한 뒤, **정규화**를 한 결과를 부호부, 지수부, 가수부에 표현
-- e.g., 단정도 부동소수점을 사용해 37.25를 표현한 예
+- e.g., 단정도 부동소수점을 사용해 `37.25`를 표현한 예
 
 ```text
 - Integer Part                             : 10 0101
 - Fractional Part                          :      01
 - Fixed-Point Representation               : 10 0101.01
-- Normalized Floating-Point Representation :       1.0010 101 x 2^5
-- IEEE 754 Floating-Point Representation   : (1). S: 0
-                                                  (positive: 0, negative: 1)
-                                             (2). E: 1000 0100
-                                                  (E - 127 = 5, E = 132)
-                                           : (3). M: 0010 101
-                                                  (fill the rest bits with 0)
+- Normalized Floating-Point Representation :       1.0010 101 × 2⁵
+- IEEE 754 Floating-Point Representation   : (1). S:         0 (positive: 0, negative: 1)
+                                             (2). E: 1000 0100 (E - 127 = 5, E = 132)
+                                             (3). M:  001 0101 (fill the rest bits with 0)
                                            : 0100 0010 0001 0101 0000 0000 0000 0000
 ```
 
@@ -416,628 +425,508 @@ $$(-1)^S \times 1.M \times 2^{E - 127}$$
 
 ---
 
-## Data Types and Sizes (Cont'd - 18)
+## Data Types and Sizes (Cont'd - 19)
 
 ### 단정도 부동소수점의 미리 정의된 형태
 
-- `E = 0`, `M = 0`
+- *E* = `0`, *M* = `0`
   - 부동소수점에서 0 (`±0`)을 표현하는 방식 (부호 비트에 따라 `+0` 또는 `-0`)
-- `E = 0`, `M != 0`
+- *E* = `0`, *M* ≠ `0`
   - 서브노멀 값 (subnormal number, denormalized number)을 표현: $(-1)^S \times 0.M \times 2^{-126}$
   - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용 (언더플로우)**
   - 정규화된 수와 달리 implicit bit (`1.XXX` 형태의 `1`)가 없으므로 정밀도가 더 낮음
   - 연산 결과가 서브노멀 값보다도 작을 경우 **0으로 처리됨 (flush to zero)**
-- `E = 1 ~ 254`, `M = any value`
+- *E* = `1` ~ `254`, *M* = any value
   - 정규화된 수 (normalized number)를 표현: $(-1)^S \times 1.M \times 2^{E - 127}$
   - 일반적인 부동소수점 값을 저장할 때 사용
-- `E = 255`, `M = 0`
+- *E* = `255`, *M* = `0`
   - **연산 결과가 표현할 수 있는 최대치를 초과해 오버플로우가 발생한 경우**
   - IEEE 754에서는 무한대 (`±∞`)로 처리됨 (부호 비트에 따라 `+∞` 또는 `-∞`)
-- `E = 255`, `M != 0`
+- *E* = `255`, *M* ≠ `0`
   - `NaN` (not a number)
-  - 정의되지 않은 연산 결과로 인해 숫자가 아닌 결과가 반환된 경우 (e.g., `0/0`, `∞ - ∞`, etc.)
-
----
-
-## Data Types and Sizes (Cont'd - 19)
-
-### 단정도 부동소수점에서 표현할 수 있는 최대 및 최소값
-
-#### 정규화된 값 (Normalized Number)
-
-$$(-1)^S \times 1.M \times 2^{E - 127}$$
-
-- `S = 0`, `E = 254`, `M = 1111111...111`
-  - 가장 큰 정규화된 값 (양수): `+3.4028235 × 10^(+38)`
-- `S = 0`, `E = 1`, `M = 0000000...000`
-  - 가장 작은 정규화된 값 (양수): `+1.17549435 × 10^(-38)`
-- `S = 1`, `E = 254`, `M = 1111111...111`
-  - 가장 큰 정규화된 값 (음수): `-3.4028235 × 10^(+38)`
-- `S = 1`, `E = 1`, `M = 0000000...000`
-  - 가장 작은 정규화된 값 (음수): `-1.17549435 × 10^(-38)`
-
-#### 서브노멀 값 (Subnormal Number)
-
-$$(-1)^S \times 0.M \times 2^{-126}$$
-
-- `S = 0`, `E = 0`, `M = 0000000...001`
-  - 가장 작은 서브노멀 값 (양수): `+1.40129846 × 10^(-45)`
-- `S = 1`, `E = 0`, `M = 0000000...001`
-  - 가장 큰 서브노멀 값 (음수): `-1.40129846 × 10^(-45)`
+  - 정의되지 않은 연산 결과로 인해 숫자가 아닌 결과가 반환된 경우 (e.g., `0 / 0`, `∞ - ∞`, etc.)
 
 ---
 
 ## Data Types and Sizes (Cont'd - 20)
 
-### 배정도 부동소수점 (Double-Precision Floating-Point)
+### 단정도 부동소수점에서 정규화된 값으로 표현할 수 있는 최대 및 최소값
+
+$$(-1)^S \times 1.M \times 2^{E - 127}$$
+
+- *S* = `0`, *E* = `254`, *M* = `1111111...111` (23 bits)
+  - 가장 큰 정규화된 값 (양수): `+3.4028235 × 10³⁸`
+- *S* = `0`, *E* = `1`, *M* = `0000000...000` (23 bits)
+  - 가장 작은 정규화된 값 (양수): `+1.17549435 × 10⁻³⁸`
+- *S* = `1`, *E* = `254`, *M* = `1111111...111` (23 bits)
+  - 가장 큰 정규화된 값 (음수): `-3.4028235 × 10³⁸`
+- *S* = `1`, *E* = `1`, *M* = `0000000...000` (23 bits)
+  - 가장 작은 정규화된 값 (음수): `-1.17549435 × 10⁻³⁸`
+
+### 단정도 부동소수점에서 서브노멀 값으로 표현할 수 있는 최대 및 최소값
+
+$$(-1)^S \times 0.M \times 2^{-126}$$
+
+- *S* = `0`, *E* = `0`, *M* = `0000000...001` (맨 마지막 비트만 1)
+  - 가장 작은 서브노멀 값 (양수): `+1.40129846 × 10⁻⁴⁵`
+- *S* = `1`, *E* = `0`, *M* = `0000000...001` (맨 마지막 비트만 1)
+  - 가장 큰 서브노멀 값 (음수): `-1.40129846 × 10⁻⁴⁵`
 
 ---
 
-### 수직선 상에 표현한 배정도 부동소수점
+## Data Types and Sizes (Cont'd - 21)
+
+### 배정도 부동소수점 (Double-Precision Floating-Point)
+
+![center](image-10.png)
+
+$$(-1)^S \times 1.M \times 2^{E - 1023}$$
+
+- **8 bytes**를 사용해 실수 데이터를 표현하는 방법  
+- 부호부 (*S*, sign)는 **1 bit**, 지수부 (*E*, exponent)는 **11 bits**, 가수부 (*M*, mantissa)는 **52 bits**를 사용  
+- 실수 데이터를 2진수로 변환한 뒤, **정규화**를 한 결과를 부호부, 지수부, 가수부에 표현  
+- e.g., 배정도 부동소수점을 사용해 `37.25`를 표현한 예
+
+```text
+- Integer Part                             : 10 0101
+- Fractional Part                          :      01
+- Fixed-Point Representation               : 10 0101.01
+- Normalized Floating-Point Representation :       1.0010 101 × 2⁵
+- IEEE 754 Floating-Point Representation   : (1). S:              0
+                                             (2). E:  100 0000 0100
+                                             (3). M:       001 0101
+                                           : 0100 0000 0100 0010 1010 .... 0000
+```
+
+- 가수부는 실제 52 bits의 정밀도를 갖는 게 아닌, **53 bits의 정밀도를 가짐**  
+
+---
+
+## Data Types and Sizes (Cont'd - 22)
+
+### 배정도 부동소수점의 미리 정의된 형태
+
+- *E* = `0`, *M* = `0`  
+  - 부동소수점에서 **0** (`±0`)을 표현하는 방식 (부호 비트에 따라 `+0` 또는 `-0`)  
+- *E* = `0`, *M* ≠ `0`  
+  - 서브노멀 값 (subnormal number, denormalized number)을 표현:  
+    $$(-1)^S \times 0.M \times 2^{-1022}$$  
+  - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용 (언더플로우)**  
+  - 정규화된 수와 달리 **implicit bit**가 없으므로 정밀도가 더 낮음  
+  - 연산 결과가 서브노멀 값보다도 작을 경우 **0으로 처리됨 (flush to zero)**  
+- *E* = `1` ~ `2046`, *M* = any value  
+  - 정규화된 수 (normalized number)를 표현:  
+    $$(-1)^S \times 1.M \times 2^{E - 1023}$$  
+  - 일반적인 부동소수점 값을 저장할 때 사용  
+- *E* = `2047`, *M* = `0`  
+  - **연산 결과가 표현할 수 있는 최대치를 초과해 오버플로우가 발생한 경우**  
+  - IEEE 754에서는 무한대 (`±∞`)로 처리됨 (부호 비트에 따라 `+∞` 또는 `-∞`)  
+- *E* = `2047`, *M* ≠ `0`  
+  - **NaN** (Not a Number)  
+  - 정의되지 않은 연산 결과로 인해 숫자가 아닌 결과가 반환된 경우 (e.g., `0 / 0`, `∞ - ∞`, etc.)
+
+---
+
+## Data Types and Sizes (Cont'd - 23)
+
+### 배정도 부동소수점에서 정규화된 값으로 표현할 수 있는 최대 및 최소값
+
+$$(-1)^S \times 1.M \times 2^{E - 1023}$$
+
+- *S* = `0`, *E* = `2046`, *M* = `111111...111` (52 bits)  
+  - 가장 큰 정규화된 값 (양수): `+1.7976931348623157 × 10³⁰⁸`  
+- *S* = `0`, *E* = `1`, *M* = `000000...000` (52 bits)  
+  - 가장 작은 정규화된 값 (양수): `+2.2250738585072014 × 10⁻³⁰⁸`  
+- *S* = `1`, *E* = `2046`, *M* = `111111...111` (52 bits)  
+  - 가장 큰 정규화된 값 (음수): `-1.7976931348623157 × 10³⁰⁸`  
+- *S* = `1`, *E* = `1`, *M* = `000000...000` (52 bits)  
+  - 가장 작은 정규화된 값 (음수): `-2.2250738585072014 × 10⁻³⁰⁸`
+
+### 배정도 부동소수점에서 서브노멀 값으로 표현할 수 있는 최대 및 최소값
+
+$$(-1)^S \times 0.M \times 2^{-1022}$$
+
+- *S* = `0`, *E* = `0`, *M* = `000000...001` (맨 마지막 비트만 1)
+  - 가장 작은 서브노멀 값 (양수): `+4.9406564584124654 × 10⁻³²⁴`  
+- *S* = `1`, *E* = `0`, *M* = `000000...001` (맨 마지막 비트만 1)
+  - 가장 큰 서브노멀 값 (음수): `-4.9406564584124654 × 10⁻³²⁴`
+
+---
+
+## Data Types and Sizes (Cont'd - 24)
 
 ![center](floating-point-number-line.png)
 
 ---
 
-- 
-- 
-- Floating point format IEEE-754, 64 bits:  (−1)S × 1.M × 2E−1,023
-- 주황색 부분: 부호 (sign), 1 bit
-- 초록색 부분: 지수부 (exponent), 11 bits
-- 파란색 부분: 소수부 (mantissa), 52 bits
-- 정규화된 (normalized) 가수부는 1과 같거나 크며, 102보다는 작음
-- 정규화된 가수부는 53비트의 정밀도를 가짐
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 32
-- Data Types and Sizes
-- 배정도 부동 소수점 (double-precision floating-point)  (Cont’d)
-- 
-- 
-- 단정도 부동 소수점 형에서 미리 정의한 규칙들 그대로 사용
-- E = 0, M = 0Underflow, S가 0이면 +0, S가 1이면 −0 (같은 0으로 봐도 무방)
-- E = 0, M ≠ 0Might be underflow, 정규화되지 않은 경우이며, 식  (−1)S × 0.M × 2E−1,022으로 처리
-- E = 2,047, M = 0Overflow, S가 0이면 양의 무한대 (+∞), S가 1이면 음의 무한대 (−∞)
-- E = 2,047, M ≠ 0NaN (Not a Number)를 의미하며, 연산이 잘못되어 알 수 없는 값이 나온 경우
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 33
-- Data Types and Sizes
-- 배정도 부동 소수점 (double-precision floating-point)  (Cont’d)
-- 
-- 
-- 배정도 부동 소수점이 나타낼 수 있는 가장 작은 수
-- 1.0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00002 × 2−1022  (2.2250738585072014 × 10-308)
-- 정규화되지 않았다면 (E = 0, M ≠ 0) 더 작은 값 표현 가능:0.0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00012 × 2−1022 = 2-1074
-- 배정도 부동 소수점이 나타낼 수 있는 가장 큰 수
-- 1.1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 11112 × 21023  (1.7976931348623158 × 10308)
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 34
-- Data Types and Sizes
-- Underflow (Arithmetic underflow)
-- The condition in a computer program that can occur when the true result of a floating point operation is smaller in magnitude  (that is, closer to zero) than the smallest value representable as a normal floating point number in the target datatype.
-- 
-- 
-- 언더플로우 발생 시, 다음 중 한 가지 방법으로 처리됨:
-- 0으로 처리 (-0 or +0)
-- 형에서 표현할 수 있는 최소값으로 처리
-- NaN으로 처리
-- float a = 1e-30;  /* smallest positive normal number of single-precision: 1.175494351 10-38 */
--     a /= 1e20;        /* Underflow! */
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 35
-- Data Types and Sizes
-- 값에 오차가 발생하면 안 되는 경우 고정 소수점 사용 
-- 은행, 군사무기체계 등
-- 값의 크기가 크거나 작을수록 메모리 사용량 증가
-- 
-- 연산 속도가 중요할 경우 단정도 부동 소수점 (float) 사용
-- 
-- 단정도 부동 소수점 형보다 정밀하게 값을 표현해야 할 경우 배정도 부동 소수점 (double) 사용
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 36
-- Data Types and Sizes
-- 다음 코드의 실행 결과는?
-- #include <stdio.h>
--     
--     int main (void)
--     {
--       float f1, f2, f3, f4, f5, f6, f7;
--     
--       f1 = 9999876.0;  /* 7 자리, 값이 정확히 출력될 것을 보장 */
--       f2 = 99998765.0; /* 8 자리, 값이 정확히 출력될 것을 보장받지 못함*/
--       f3 = 16777216.0; /* 1.0000 0000 0000 0000 0000 0000 X 2^24 */
--       f4 = 16777216.5; /* f4 표현할 bit 수 부족 > f3과 동일한 결과 */
--       f5 = 16777217.0; /* f5 표현할 bit 수 부족 > f3과 동일한 결과 */
--       f6 = 16777218.0; /* 1.0000 0000 0000 0000 0000 0010 X 2^24 */
--       f7 = 27.1;       /*  (271 / 10), 10은 2^n 형태로 표현 불가 -> 순환소수 */
--       printf ("A single-precision only has about 7 decimal digits of precision.\n"
--           "before: 9999876.0, after: %10.1f\n"
--           "before: 99998765.0, after: %10.1f\n\n", f1, f2);
--       printf ("16777216.0, 16777216.5, 16777217.0 are represented exactly "
--           "by the same value in the single-precision data type.\n"
--           "before: 16777216.0, after: %10.1f\n"
--           "before: 16777216.5, after: %10.1f\n"
--           "before: 16777217.0, after: %10.1f\n"
--           "before: 16777218.0, after: %10.1f\n\n", f3, f4, f5, f6);
--       printf ("27.1  (may be simply 271/10) cannot be expressed as 2^n.\n"
--           "27.1  (precision is 6): %.6f\n"
--           "27.1  (precision is 8): %.8f\n"
--           "27.1  (precision is 10): %.10f\n\n", f7, f7, f7);
--     
--       return 0;
--     }
-- A single-precision only has about 7 decimal digits of precision.
-- before:  9999876.0, after:  9999876.0
-- before: 99998765.0, after: 99998768.0
-- 
-- 16777216.0, 16777216.5, 16777217.0 are represented exactly by the same value in the single-precision data type.
-- before: 16777216.0, after: 16777216.0
-- before: 16777216.5, after: 16777216.0
-- before: 16777217.0, after: 16777216.0
-- before: 16777218.0, after: 16777218.0
-- 
-- 27.1  (may be simply 271/10) cannot be expressed as 2^n.
-- 27.1  (precision is  6): 27.100000
-- 27.1  (precision is  8): 27.10000038
-- 27.1  (precision is 10): 27.1000003815
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 37
-- Data Types and Sizes
-- The Patriot Missile Failure
-- On February 25, 1991, during the Gulf War, an American Patriot Missile battery in Dharan, Saudi Arabia, failed to track and intercept an incoming Iraqi Scud missile.
-- The Scud struck an American Army barracks, killing 28 soldiers and injuring around 100 other people.
-- It turns out that the cause was an inaccurate calculation of the time since boot due to computer arithmetic errors.
-- The Patriot Missile Failure.  (2023, March 20). Retrieved from http://www-users.math.umn.edu/~arnold/disasters/patriot.html
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 38
-- Data Types and Sizes
-- The Patriot Missile Failure  (Cont’d)
-- 초를 계산하기 위해 내부 시스템 클럭 값에 1/1010을 곱해 사용
-- 데이터 표현에 24 비트 고정 소수점형 사용
-- 1/1010을 이진수로 표현 시 0.000 1100 1100 1100 ...2,24비트 고정 소수점형으로 표현 시0.000 1100 1100 1100 1100 11002
-- 0.000 0000 0000 0000 0000 0000 1100 1100 ...2 오차 발생 (십진수 표현 시 약 0.00000009510)
-- 100 시간 경과 시 누적 오차는 약 0.34 초
-- 0.00000009510 × 100 (시간) × 60 (시) × 60 (분) × 10 (초) = 0.34 초
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 39
-- Data Types and Sizes
-- 메모리에 값을 저장하는 방법 (endianness)
-- 빅 엔디언 (big endian)
-- MSB가 메모리 앞쪽에 위치
-- e.g. 0x1234 5678
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 소프트웨어 디버그 용이
-- 리틀 엔디언 (little endian)
-- MSB가 메모리 뒤쪽에 위치
-- e.g. 0x1234 5678
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 하위 바이트부터 계산하므로 계산 효율 관점에서 빅 엔디언보다 우수
-
-
-# Data Types and Sizes
-- 컴퓨터프로그래밍기초
-- 40
-- Data Types and Sizes
-- 다음 코드의 실행 결과는?
-- 실행 환경의 endianness는 little endian이라고 가정
-- #include <stdio.h>
--     
--     int main (void)
--     {
--       char *str;
--       char c0, c1, c2, c3;
--       int i;
--       float f;
--     
--       str = "DJU"; /* 'D' (44), 'J' (4A), 'U' (55), '\0' (00) */
--       c0 = str[0];
--       c1 = str[1];
--       c2 = str[2];
--       c3 = str[3];
--       i = * ( (int *) str);
--       f = * ( (float *) str);
--       printf ("1. string: %s\n", str);
--       printf ("2. char: \n"
--           "\tchar str[0] : %1c (%02X), \n"
--           "\tchar str[1] : %1c (%02X), \n"
--           "\tchar str[2] : %1c (%02X), \n"
--           "\tchar str[3] : %2c (%02X), \n",
--           c0, c0, c1, c1, c2, c2, c3, c3);
--       printf ("3. int: %d (%08X)\n", i, i);
--       printf ("4. float: %e\n", f);
--     
--       return 0;
--     }
-- 1. string: DJU
-- 2. char: 
--         char str[0] : D (44), 
--         char str[1] : J (4A), 
--         char str[2] : U (55), 
--         char str[3] :   (00), 
-- 3. int: 5589572 (00554A44)
-- 4. float: 7.832659e-39
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 41
-- Constants
-- 정수 (integer)
-- int
-- 1234
-- long
-- int 형보다 큰 정수형을 표현할 때 사용하며, 정수형 상수에 접미사 l 또는 L 사용
-- 123456789L
-- unsigned
-- 무부호형 정수를 표현할 때 사용하며, 정수형 상수에 접미사 u 또는 U 사용
-- 123456789U
-- 접미사 ul 또는 UL은 unsigned long 형을 표현할 때 사용
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 42
-- Constants
-- 정수 (integer)  (Cont’d)
-- 8진수 (octal)
-- 정수형 상수에 접두사 0 사용
-- e.g. 3110은 037로 표현 가능
-- 16진수 (hexadecimal)
-- 정수형 상수에 접두사 0x 또는 0X 사용
-- e.g. 810은 0x8 또는 0X8로 표현 가능
-- e.g. 3110은 0x1f 또는 0X1F로 표현 가능
-- 8진수 또는 16진수 상수 표현 시 정수형 접미사 (e.g. l or L, u or U) 사용 가능 
-- e.g. 0XFUL은 unsigned long 형이며, 1510를 나타냄
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 43
-- Constants
-- 부동 소수점 (floating-point)
-- 소수점 (123.4) 또는 지수 (1e-2) 형태로 표현
-- 기본 형은 double
-- 실수형 상수에 접미사 f 또는 F 사용 시 float 형 표현 가능
-- 실수형 상수에 접미사 l 또는 L 사용 시 long double 형 표현 가능
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 44
-- Constants
-- 문자 (character)
-- 작은따옴표 (single quote) 사용 
-- ASCII 문자표에 각 문자 별 고유 정수값으로 정의되어 있음
-- e.g. '0'은 정수 값으로 4810
-- 숫자 0과 전혀 관련 없음
-- 문자 표기 시 반드시 문자 상수를 사용할 것
-- 문자 상수는 환경에 독립적임
-- e.g. ASCII 코드를 사용하는 환경에서 '0'은 4810이지만, EBCDIC 코드를 사용하는 환경에서 '0'은 24010
-- ASCII.  (2023, March 20). Retrieved from https://en.wikipedia.org/wiki/ASCII
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 45
-- Constants
-- 문자 (character)  (Cont’d)
-- 문자 상수는 정수 연산에 사용될 수 있음
-- 
-- 
-- 이스케이프 문자와 비트 패턴 (bit pattern)을 사용하면 8진수 혹은 16진수로 하나의 문자 상수 표현 가능
-- '\ooo' (1-3 octal digits)
-- '\xhh' (1-2 hexadecimal digits)
-- if  (c >= '0' && c <= '9')
--       ++ndigit[c-'0'];
-- #define UPPER_Z '\132'  /* 90 to octal */
-- #define VTAB    '\013'  /* ASCII vertical tab */
-- #define BELL    '\007'  /* ASCII bell character */
-- 
-- #define UPPER_Z '\x5A'  /* 90 to hexadecimal */
-- #define VTAB    '\xB'   /* ASCII vertical tab */
-- #define BELL    '\x7'   /* ASCII vertical tab */
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 46
-- Constants
-- 문자 (character)  (Cont’d)
-- 이스케이프 시퀀스 (complete set of escape sequence)
-- 타자기.  (2023, March 20). Retrieved from https://ko.wikipedia.org/wiki/타자기
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 47
-- Constants
-- 상수 수식 (constant expression)
-- 상수만으로 구성된 수식
-- 컴파일 시 값이 결정되어야 함
-- 상수가 사용될 수 있는 곳이라면 어디든지 사용 가능
-- #define MAXLINE 1000
--     char line[MAXLINE+1];
-- 
--     #define LEAP 1 /* in leap years */
--     int days[31+28+LEAP+31+30+31+30+31+31+30+31+30+31];
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 48
-- Constants
-- 문자열 상수 (string constant or string literal)
-- 큰따옴표 (double quote) 사이에 문자가 존재하지 않거나 하나 이상의 문자가 구성될 수 있음
-- 
-- 큰따옴표는 문자열 상수 안에 포함되지 않음
-- 문자열 상수임을 알리기 위한 역할 (구분자, delimiter)
-- 문자열 상수 내 큰따옴표를 구성하고자 할 때 이스케이프 시퀀스 (\")를 사용해 구분자가 아닌 문자열 상수 내 구성 문자임을 명시해야 함
-- 문자열 상수의 나열은 컴파일 시 연결됨
-- "I am a string"
--     "" /* the empty string */
-- "Hello, " "World!"     /* is equivalent to */
--     "Hello, World!"
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 49
-- Constants
-- 문자열 상수 (string constant or string literal)  (Cont’d)
-- e.g. 나열된 문자열 상수 연결 예:
-- 
-- 
-- 
-- 문자열 상수는 char 형 배열
-- 문자열의 끝을 나타내는 기호로 널 (NULL, '\0') 문자가 사용됨
-- char 형 배열의 크기는 저장하고자 하는 문자열의 길이보다 1 만큼 더 필요 ('\0')
-- printf ("This is useful for splitting up long strings across several source lines.\n");
--   
--     printf ("This is useful "
--         "for splitting up long strings "
--         "across several source lines.\n");
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 50
-- Constants
-- 문자열 상수 (string constant or string literal)  (Cont’d)
-- 널 (NULL) 문자 사용 예:
-- <string.h> 헤더 파일 내에 strlen 함수가 정의되어 있음
-- /* strlen: return length of s */
--     int strlen (char s[])
--     {
--       int i;
--       i = 0;
--       while  (s[i] != '\0')
--         ++i;
--       return i;
--     }
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 51
-- Constants
-- 문자열 상수 (string constant or string literal)  (Cont’d)
-- 문자 상수와 문자열 상수 반드시 구분할 것
-- 'x'와 "x"는 같지 않음
-- 'x'는 해당 환경에서 사용하는 문자 집합 (character set) 중 'x'를 표현하는 정수
-- "x"는 char 형 배열이며, 두 개의 문자 (문자 x와 널 문자 '\0')가 사용된 문자열
-
-
-# Constants
-- 컴퓨터프로그래밍기초
-- 52
-- Constants
-- 열거 상수 (enumeration constant) 
-- 정수형 상수 열거
-- 값을 따로 지정하지 않은 상수는 이전 상수의 값보다 1 큰 값을 가짐
-- 목록 내 첫 번째 상수에 값 지정을 하지 않는다면 0으로 초기화
-- 목록 내 상수의 이름은 고유해야 하며, 각 상수는 값은 같을 수 있음
-- enum boolean { NO, YES };
--     enum escapes {
--         BELL      = '\a',  
--         BACKSPACE = '\b',  
--         TAB       = '\t', 
--         NEWLINE   = '\n', 
--         VTAB      = '\v',    
--         RETURN    = '\r' };
--     enum months {
--         JAN = 1, FEB, MAR, 
--         APR, MAY, JUN, 
--         JUL, AUG, SEP, 
--         OCT, NOV, DEC }; /* FEB is 2, MAR is 3, etc. */
-
-
-# Declarations
-- 컴퓨터프로그래밍기초
-- 53
-- Declarations
-- 모든 변수는 반드시 사용 전에 선언되어야 함
-- 타입과 하나 이상의 변수 명으로 구성됨
-- 선언할 변수의 개수만큼 줄을 할당할 경우 공간은 더 많이 차지하지만, 각 변수에 대한 설명을 주석 형태로 남기거나 후에 변수 선언 수정 시 더 편리할 수 있음
-- int lower, upper, step;
--     char c, line[1000];
--     
--     int lower;
--     int upper;
--     int step;
--     char c;
--     char line[1000];
-
-
-# Declarations
-- 컴퓨터프로그래밍기초
-- 54
-- Declarations
-- 변수는 선언과 동시에 초기화할 수 있음
-- 
-- 
-- 
-- 변수 선언 시 변수명 다음에 = 기호와 표현식 (expressions)이 뒤따르면, 변수는 표현식으로 초기화됨
-- char esc = '\\';
--     int i = 0;
--     int limit =  (MAXLINE + 1);
--     float eps = 10e-5;
-
-
-# Declarations
-- 컴퓨터프로그래밍기초
-- 55
-- Declarations
-- 지역변수 (local variable or automatic variable)는 해당 변수를 포함하는 함수가 호출되면 선언 수행
-- 선언식에 초기화가 명시되어 있지 않다면, 해당 변수는 쓰레기 값 (undefined value)을 가짐
-- 초기화 식에는 아무 표현식이나 올 수 있음
-- 전역변수 (global variable or external variable) 또는 정적변수 (static variable)는 프로그램 실행 시 한 번만 선언 및 초기화 수행
-- 선언식에 초기화가 명시되어 있지 않다면, 해당 변수는 값 0으로 초기화
-- 초기화 식에는 무조건 상수 표현식이 와야 함
-
-
-# Declarations
-- 컴퓨터프로그래밍기초
-- 56
-- Declarations
-- 한정사 const
-- 변수 선언 시 해당 변수의 값이 변경되는 것을 방지하기 위해 사용
-- 읽기 전용 변수
-- 
-- 
-- 
-- const 변수의 값을 수정하려고 할 때, 결과는 각 프로그래밍 언어의 구현 방법에 따라 정의되어 있는 방법을 따름
-- 절대 수정 불가, 최초 한 번만 수정 허용, ...
-- const double e = 2.71828182845905;
--     const char msg[] = "warning: ";
--     
--     int strlen (const char[]);  /* 매개변수로 받는 값은 고정임 */
-
-
-# Arithmetic Operators
-- 컴퓨터프로그래밍기초
-- 57
-- Arithmetic Operators
-- 덧셈 (+), 뺄셈 (-), 곱셈 (*), 나눗셈 (/), 나머지 (%)
-- 
-- 정수 나눗셈 연산 결과는 소수점 이하 무시됨
-- 
-- 나머지 연산 (modulus, %)
-- x % y
-- x를 y로 나누었을 때의 나머지 값이며, x가 y로 나누어 떨어지면 값은 0
-- float 형, double 형에는 % 연산자 적용할 수 없음
-
-
-# Arithmetic Operators
-- 컴퓨터프로그래밍기초
-- 58
-- Arithmetic Operators
-- 음수 나눗셈 연산 결과는 확정할 수 없음
-- 기계 종속적
-- −111 / 11 결과는 −10 또는 −11
-- 
-- 음수 나머지 연산 결과는 확정할 수 없음
-- 기계 종속적
-- −111 % 11 결과는 −1 또는 10
-- 나머지 연산은 식 a ==  (a / b) * b + a % b을 만족하도록 구현되어 있음
-- e.g.  (a / b)가 -10일 경우, a % b는 -1
-- e.g.  (a / b)가 -11일 경우, a % b는 10
-
-
-# Arithmetic Operators
-- 컴퓨터프로그래밍기초
-- 59
-- Arithmetic Operators
-- 윤년 판단하는 프로그램
-- 4로 나누어 떨어지지만 100으로 나누어 떨어지지 않아야 한다.
-- 400으로 나누어 떨어지는 해는 윤년으로 한다. (예: 2000년, 2400년)
-- /* leap year */
--     if  ( (year % 4 == 0 && year % 100 != 0) ||  (year % 400 == 0))
--       printf ("%d is a leap year\n", year);
--     else
--       printf ("%d is not a leap year\n", year);
-
-
-# Arithmetic Operators
-- 컴퓨터프로그래밍기초
-- 60
-- Arithmetic Operators
-- 산술 연산자 (arithmetic operators) 
-- 덧셈, 뺄셈 연산은 우선 순위가 같음
-- 덧셈, 뺄셈 연산은 곱셈, 나눗셈, 나머지 연산보다 우선 순위가 낮음
-- 곱셈, 나눗셈, 나머지 연산은 단항 (unary) 연산보다 우선 순위가 낮음
-- 연산 시 좌에서 우로 결합
-
-
-# Relational and Logical Operators
-- 컴퓨터프로그래밍기초
-- 61
-- Relational and Logical Operators
-- 관계 연산자 (relational operators)
-- >, >=, <, <=, ==, !=
-- 관계 연산자는 산술 연산자보다 우선 순위가 낮음
-- if  (i < lim - 1) { ... }  /* i <  (lim - 1) */
-
-
-# Relational and Logical Operators
-- 컴퓨터프로그래밍기초
-- 62
-- Relational and Logical Operators
-- 논리 연산자 (logical operators)
-- &&, ||
-- 연산 시 좌에서 우로 결합
-- 평가할 표현식이 남았음에도 참 또는 거짓이 판정되면 즉시 검사를 마침
-- SCE, short circuit evaluation
-- 논리 연산자는 관계 연산자보다 우선 순위가 낮음
-- if  (i < lim - 1 &&  (c = getchar ()) != '\n' && c != EOF) { ... }
-
-
-# Relational and Logical Operators
-- 컴퓨터프로그래밍기초
-- 63
-- Relational and Logical Operators
-- 관계 연산자 또는 논리 연산자의 평가 결과가 참이면 1, 거짓이면 0으로 평가됨
-- 
-- 
-- valid == 0 형태보다 !valid 형태가 valid가 아니면이라는 의미를 잘 전달함
-- valid == 0 형태는 표현식이 길어지거나 복잡해지면 가독성을 해칠 수 있음
-- if  (!valid) { ... }
--     
--     if  (valid == 0) { ... }
+## Data Types and Sizes (Cont'd - 25)
+
+### 상황 별 실수형 데이터 표현
+
+#### 고정소수점
+
+- 값에 오차가 발생하면 안 되는 경우 (e.g., 은행, 군사 무기체계, etc.)
+  - **오차가 발생하지 않음**
+  - 값의 표현 범위가 넓어질수록 메모리 사용량이 증가하는 구조
+
+#### 단정도 부동소수점
+
+- 가장 보편적인 방법
+  - **연산 속도가 배정도 부동소수점보다 빠름**
+
+#### 배정도 부동소수점
+
+- 단정도 부동소수점보다 **높은 정밀도**를 필요로 하거나, 단정도 부동소수점으로 표현할 수 없는 값을 표현해야 할 경우
+  - **연산 속도가 단정도 부동소수점보다 느림**
+
+---
+
+## Data Types and Sizes (Cont'd - 26)
+
+[//]: # (INCLUDE: ./c/02/02.c)
+
+---
+
+## Data Types and Sizes (Cont'd - 27)
+
+```text
+A single-precision only has about 7 decimal digits of precision.
+before:  9999876.0, after:  9999876.0
+before: 99998765.0, after: 99998768.0
+
+16777216.0, 16777216.5, 16777217.0 are represented exactly by the same value in the single-precision data type.
+before: 16777216.0, after: 16777216.0
+before: 16777216.5, after: 16777216.0
+before: 16777217.0, after: 16777216.0
+before: 16777218.0, after: 16777218.0
+
+27.1  (may be simply 271/10) cannot be expressed as 2^n.
+27.1  (precision is  6): 27.100000
+27.1  (precision is  8): 27.10000038
+27.1  (precision is 10): 27.1000003815
+```
+
+---
+
+## Data Types and Sizes (Cont'd - 28)
+
+### The Patriot Missile Failure
+
+![center](image-11.png)
+
+> On February 25, 1991, during the Gulf War, an American Patriot Missile battery in Dharan, Saudi Arabia, failed to track and intercept an incoming Iraqi Scud missile.
+> The Scud struck an American Army barracks, killing 28 soldiers and injuring around 100 other people.
+> It turns out that the cause was *an inaccurate calculation of the time since boot due to computer arithmetic errors*.
+
+- 시스템은 내부 클럭 주기를 기준으로 시간을 계산하는 방식이었음
+  - 이 시스템의 클럭은 0.1초 단위로 동작하며, 매 tick마다 누적된 tick 수에 `0.1`을 곱해 실제 경과 시간을 계산
+- 시스템은 24비트 고정소수점 방식으로 실수를 표현
+  - 부호부, 가수부 없이 실수부만을 표현하는 방식 (`0.xxx`)
+- `0.1`을 곱하는 과정에서 오차가 누적되었음:
+  1. `0.1`을 2진수로 재표현하면 `0.0001 1001 1001 1001 ...` (순환 소수 형태)
+  2. `0.1`을 24비트 고정소수점 방식으로 표현하면 `0.0001 1001 1001 1001 1001 1001`
+  3. 매 tick마다 누적되는 오차는 약 `0.0000 0000 0000 0000 0000 0000 1001 ...` ≈ 0.0000 0009 5 초
+  4. 시스템이 100 시간 경과할 경우 누적되는 오차는 약 0.34 초
+- 당시 scud missile의 속도는 초당 1,676 m
+  - **누적 오차가 약 0.34 초라고 가정한다면, 미사일은 약 570 m를 이동하게 됨**
+
+---
+
+## Constants
+
+### 정수형 상수
+
+- 기본 진법은 10진법이며, 접두사를 사용해 8진법 또는 16진법 표현 가능
+
+| Prefix | Meaning              | Base | Example     |
+|--------|----------------------|------|-------------|
+| (none) | Decimal (base 10)    | 10   | `123`       |
+| `0`    | Octal (base 8)       | 8    | `0755`      |
+| `0x` / `0X` | Hexadecimal (base 16) | 16  | `0x1A3F`    |
+
+- 기본 자료형은 `int` 형이며, 접미사를 통해 다른 자료형 표현 가능
+  - `long` 자료형 표현 시 소문자 `l`은 숫자 `1`과 비슷하므로, 혼동 방지를 위해 **대문자 `L` 사용 권장**
+
+| Suffix     | Type                      | Description                      | Example      |
+|------------|---------------------------|----------------------------|--------------|
+| (none)     | `int`                     | 기본 자료형                  | `123`        |
+| `U` / `u`  | `unsigned int`            | 무부호형 정수             | `123U`       |
+| `L` / `l`  | `long`                | 기본 자료형보다 더 넓은 수 표현 | `123L`       |
+| `UL` / `ul` / `Ul` / `uL` / `LU` / `lu` / etc. | `unsigned long` | 순서 상관없음, 대소문자 섞기 가능 | `123UL` |
+
+---
+
+## Constants (Cont'd - 1)
+
+### 실수형 상수
+
+- 기본 자료형은 `double` 형이며, 접미사를 통해 다른 자료형 표현 가능
+  - `long double` 자료형 표현 시 소문자 `l`은 숫자 `1`과 비슷하므로, 혼동 방지를 위해 **대문자 `L` 사용 권장**
+
+| Suffix   | Type           | Description                              | Example   |
+|----------|----------------|------------------------------------------|-----------|
+| (none)   | `double`       | 기본 자료형   | `3.14`    |
+| `f` / `F`| `float`        | 단정도 부동소수점            | `3.14f`   |
+| `l` / `L`| `long double`  | 배정도 부동소수점         | `3.14L`   |
+
+---
+
+## Constants (Cont'd - 2)
+
+### 문자 상수
+
+- `'A'`, `'1'`, `'\n'`처럼 작은 따옴표로 감싼 값
+- **프로그램은 문자 상수를 정수형 값으로 처리**
+  - 문자 인코딩 표 (e.g., ASCII, EBCDIC, etc.)를 참조해 특정 정수 값으로 대응
+
+#### 문자 상수 사용 시 주의사항
+
+- 문자 상수 표현 시 반드시 문자 상수를 쓸 것
+
+[//]: # (INCLUDE: ./c/02/constants_1_ignore.c)
+
+- 1번 문장은 문자 상수 `'A'`를 현재 사용중인 시스템의 문자 인코딩 표를 참조하여 특정 정수 값으로 변환
+  - ASCII를 사용하는 시스템에서는 `0x41` (`65`)
+  - EBCDIC를 사용하는 시스템에서는 `0xC1` (`193`)
+- **2번 문장은 ASCII를 문자 인코딩 표준으로 사용하는 시스템에서만 유효한 문장**
+  - 특정 문자 인코딩 표준에 종속되므로 다른 문자 인코딩을 사용하는 시스템에서 사용 불가
+
+---
+
+## Constants (Cont'd - 3)
+
+![center](image-12.png)
+
+### 이스케이프 시퀀스 - 터미널 동작 제어
+
+| Escape Sequence | Meaning                         | ASCII Code (Decimal) |
+|------------------|----------------------------------|-----------------------|
+| `\a`             | Bell (alert)                     | `7`                     |
+| `\b`             | Backspace                        | `8`                    |
+| `\f`             | Form feed                        | `12`                   |
+| `\n`             | Newline (line feed)              | `10`                  |
+| `\r`             | Carriage return                  | `13`                 |
+| `\t`             | Horizontal tab                   | `9`                    |
+| `\v`             | Vertical tab                     | `11`                   |
+
+---
+
+## Constants (Cont'd - 4)
+
+### 이스케이프 시퀀스 - 리터럴 문자 표현
+
+| Escape Sequence | Meaning                         | ASCII Code (Decimal) |
+|------------------|----------------------------------|-----------------------|
+| `\\`             | Backslash                        | `92`                    |
+| `\'`             | Single quote                     | `39`                    |
+| `\"`             | Double quote                     | `34`                    |
+| `\?`             | Question mark                    | `63`                    |
+| `\0`             | Null character                   | `0`                     |
+
+[//]: # (INCLUDE: ./c/02/constants_2_ignore.c)
+
+```text
+This is a backslash: \, single quote: ', double quote: " and question mark: ?,
+with null character at the end
+'|
+??!
+```
+
+---
+
+## Constants (Cont'd - 5)
+
+### 이스케이프 시퀀스 - 숫자 기반 문자 인코딩
+
+| Escape Sequence | Meaning                         | ASCII Code (Decimal) |
+|------------------|----------------------------------|-----------------------|
+| `\ooo`           | Octal value (e.g., `\132`)       | up to `255`             |
+| `\xhh`           | Hex value (e.g., `\x41`)          | up to `255`            |
+
+[//]: # (INCLUDE: ./c/02/constants_3_ignore.c)
+
+---
+
+## Constants (Cont'd - 6)
+
+### 상수 표현식 (Constant Expressions)
+
+- 표현식 중 일부는 반드시 상수를 사용해 표현해야 함
+  - 상수 표현은 컴파일 시 값이 결정되어 있는 상태 (compile time)
+  - 변수는 런타임 시 값이 결정되는 상태 (runtime)
+
+[//]: # (INCLUDE: ./c/02/constants_4_ignore.c)
+
+---
+
+## Constants (Cont'd - 7)
+
+### 문자열 상수 (String Constants or String Literals)
+
+- `"Hello"`, `""`처럼 큰 따옴표로 감싼 값
+- 문자열 상수는 문자열 내에 문자가 존재하지 않거나 하나 이상의 문자가 구성될 수 있음
+- 문자열로 큰 따옴표(`"`)를 표현해야 할 경우 이스케이프 문자를 사용해 표현해야 함 (`\"`)
+- 문자열 상수의 나열은 컴파일 시 하나의 문자열로 연결됨
+
+[//]: # (INCLUDE: ./c/02/constants_5_ignore.c)
+
+- `char` 형 배열은 문자열 상수를 보관할 수 있으며, 마지막 배열 원소는 반드시 널 문자 (`'\0'`)로 저장되어야 함
+  - 보관할 문자열의 길이가 `SIZE`라면, `char` 형 배열은 최소 `SIZE + 1` 크기 이상이여야 함
+- 다음 주어진 두 표현 `'x'`와 `"x"`는 **같지 않음**
+  - `'x'`는 정수로 표현되는 문자 상수
+  - `"x"`는 `'x'`, `'\0'`으로 표현되는 문자열 상수
+
+---
+
+## Constants (Cont'd - 8)
+
+### 널 문자를 활용한 표준 문자열 함수 `strlen`
+
+[//]: # (INCLUDE: ./c/02/06.c)
+
+[//]: # (INCLUDE: ./c/02/06_example.c)
+
+---
+
+## Constants (Cont'd - 9)
+
+### 열거 상수 (Enumeration Constants)
+
+- 키워드 `enum`을 사용해 여러 개의 정수형 상수를 선언할 수 있음
+- 열거된 이름에 값을 지정하지 않을 경우 다음 규칙을 따름:
+  1. 열거된 이름에 값이 지정되지 않은 경우 이전 이름의 값보다 1 큰 값을 가진다.
+  2. 만약 첫 번째로 열겨된 이름에 값이 지정되지 않았다면 값 0을 갖는다.
+- 열거된 이름들은 고유해야 하지만, 각 이름은 같은 값을 가질 수 있음
+
+[//]: # (INCLUDE: ./c/02/constants_6_ignore.c)
+
+---
+
+## Declarations
+
+- 코드 내 등장하는 이름 (함수, 변수, etc.)는 사용 전에 반드시 선언되어야 함
+
+[//]: # (INCLUDE: ./c/02/declarations_1_ignore.c)
+
+- 첫 번째 단락은 줄을 적게 사용하여 선언하는 형태
+- 두 번째 단락은 줄을 많이 사용하나, 선언 수정 또는 선언 별 주석 첨부가 용이한 형태
+
+### 변수에서의 선언
+
+- 변수는 선언과 동시에 **초기화** (initialization)할 수 있으며, 초기화 구문 (initialization syntax)은 다음과 같음:
+
+```text
+declarator = initializer  ← NB: '=' is not an assignment operator
+```
+
+[//]: # (INCLUDE: ./c/02/declarations_2_ignore.c)
+
+---
+
+## Declarations (Cont'd)
+
+### 지역 변수 선언
+
+- 지역 변수 (local variable or automatic variable)는 선언 시 쓰레기 값 (undefined value)을 갖는 변수가 생성됨
+- 지역 변수 초기화에 사용하는 초기치 (initializer)에는 아무 표현식이나 사용 가능
+
+### 전역 변수 선언
+
+- 전역 변수는 선언 시 0으로 초기화된 변수가 생성됨
+- 전역 변수 초기화에 사용하는 초기치에는 **상수 표현식**만 사용 가능
+
+### 한정사 `const`
+
+- 변수 선언 시 한정사 `const`를 사용할 경우 **읽기 전용 변수**가 생성됨
+
+[//]: # (INCLUDE: ./c/02/declarations_3_ignore.c)
+
+---
+
+## Operators
+
+### 산술 연산자 (Arithmetic Operators)
+
+- `+`, `-` 연산자는 `*`, `/`, `%` 연산자보다 우선순위가 낮음
+
+| Operator | Description    | Example   | Result| Associativity |
+|----------|--------------|-----------|---------|--------|
+| `+`      | Addition       | `5 + 3` | `8`     |Left-to-right|
+| `-`      | Subtraction    | `5 - 3` | `2`     |Left-to-right|
+| `*`      | Multiplication | `5 * 3` | `15`    |Left-to-right|
+| `/`      | Division       | `6 / 3` | `2`     |Left-to-right|
+| `%`      | Modulus        | `7 % 4` | `3`     |Left-to-right|
+
+---
+
+## Operators (Cont'd - 1)
+
+### 나눗셈 연산
+
+- 정수끼리의 나눗셈 연산 결는 **소수점 이하를 버린 몫**만 남음에 유의
+  - e.g., `7 / 4` → `1`
+- 음수 나눗셈 연산 결과는 **확정할 수 없음**
+  - 결과는 기계 종속적
+  - e.g., `-111 / 10` 결과는 `-11` 또는 `-12`
+    - 기계에 따라 `-111`을 `(-11 * 10) + (-1)` 또는 `(-12 * 10) + (9)`로 계산함
+
+### 나머지 연산
+
+- 나머지 연산은 두 정수 값을 나누었을 때의 **나머지**를 반환
+  - e.g., `7 % 4` → `3`
+- 나머지 연산의 두 피연산자는 **반드시 정수형**이여야 함
+  - `float` 또는 `double` 형에 대해 `%` 연산자는 사용할 수 없음
+- 음수 나눗셈 연산 결과는 **확정할 수 없음**
+  - 결과는 기계 종속적
+  - ANSI C는 피제수 *a*에 대하여 나머지 연산이 다음 식을 만족하도록 구현됨:
+    - `a == (a / b) * b + (a % b)`
+  - e.g., `-111 / 10` 결과는 `-1` 또는 `9`
+    - 몫 `(a / b)`: `-11`, 제수 `b`: `10`, 나머지 `(a % b)`: `-1`
+    - 몫 `(a / b)`: `-12`, 제수 `b`: `10`, 나머지 `(a % b)`: `10`
+
+---
+
+## Operators (Cont'd - 2)
+
+### 관계 연산자 (Relational Operators)
+
+- 관계 연산자는 산술 연산자보다 **우선순위가 낮음**
+  - 다음 표현식 `idx < size - 1`은 `idx < (size - 1)`로 평가됨
+
+| Operator | Description    | Example   | Associativity |
+|--------|------|------|-----|
+| `==` | Equal to | `a == b` |Left-to-right|
+| `!=` | Not equal to | `a != b` |Left-to-right|
+| `<`  | Less than | `a < b` |Left-to-right|
+| `>`  | Greater than | `a > b` |Left-to-right|
+| `<=` | Less than or equal to | `a <= b` |Left-to-right|
+| `>=` | Greater than or equal to | `a >= b` |Left-to-right|
+
+---
+
+## Operators (Cont'd - 3)
+
+### 논리 연산자 (Logical Operators)
+
+- 논리 연산자는 관계 연산자보다 우선순위가 낮음
+
+| Operator | Description    | Example   | Associativity |
+|--------|------|------|-----|
+| `&&` | Logical and | `c >= '0' && c <= '9'` | Left-to-right|
+| `⎮⎮` | Logical or | `(c == ' ') ⎮⎮ (c == '\n') ⎮⎮ (c == '\t')` |Left-to-right|
+
+- Short-circuit evaluation (SCE) 적용:
+  - `&&`: 현재 항의 계산 결과가 거짓이면 즉시 계산을 중지하고 전체 항을 거짓으로 평가
+  - `⎮⎮`: 현재 항의 계산 결과가 참이면 즉시 계산을 중지하고 전체 항을 참으로 평가
+
+#### 관계 / 논리 연산의 평가 결과
+
+- 평가 결과는 항상 `0` (거짓) 또는 `1` (참)
+- `if`, `while`, `for` 등에서 조건 표현식의 값은 **`0`이면 거짓, 그 외 값은 참**으로 처리함
+
+[//]: # (INCLUDE: ./c/02/operators_1_ignore.c)
+
+---
 
 
 # Type Conversions
