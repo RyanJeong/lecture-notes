@@ -1,4 +1,4 @@
-int max_sum_score;
+int max_sum_score; /* Store the highest total score ever */
 
 int sum_score(int score[], int size)
 {

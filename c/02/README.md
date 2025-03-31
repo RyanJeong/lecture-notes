@@ -780,7 +780,7 @@ with null character at the end
 
 ## Constants (Cont'd - 8)
 
-### 널 문자를 활용한 표준 문자열 함수 `strlen`
+### 널 문자를 활용한 예 - 표준 함수 `strlen`
 
 [//]: # (INCLUDE: ./c/02/06.c)
 
@@ -816,7 +816,7 @@ with null character at the end
 - 변수는 선언과 동시에 **초기화** (initialization)할 수 있으며, 초기화 구문 (initialization syntax)은 다음과 같음:
 
 ```text
-declarator = initializer  ← NB: '=' is not an assignment operator
+declarator = initializer;  ← NB: '=' is not an assignment operator
 ```
 
 [//]: # (INCLUDE: ./c/02/declarations_2_ignore.c)
@@ -928,550 +928,402 @@ declarator = initializer  ← NB: '=' is not an assignment operator
 
 ---
 
+## Operators (Cont'd - 4)
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 64
-- Type Conversions
-- 형이 다른 피연산자끼리 연산 수행 시 형 변환 발생
-- 
-- 자동 변환 (automatic conversion)
-- convert a narrower operand into a wider one without losing information
-- 반대의 경우도 형 변환은 가능하지만, 정보 손실이 발생할 수 있음 (컴파일 경고 발생)
+### 전위 증감 연산자 (Prefix Increment and Decrement Operators)
 
+| Operator | Description                  | Example | Associativity   |
+|----------|------------------------------|---------|-----------------|
+| `++`      | Increments the value first   | `++i`     | Right-to-left   |
+| `--`      | Decrements the value first   | `--i`     | Right-to-left   |
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 65
-- Type Conversions
-- 문자는 하나의 정수
-- char 형은 int 형보다 표현 범위가 좁기 때문에 자동 변환 규칙이 적용됨
-- 산술 연산자와 자유롭게 사용 가능한 이유이며, 해당 규칙은 코드 작성 시 엄청난 융통성을 발휘함
-- 
-- e.g. 문자를 정수로 변환하는 예 1:
-- <stdlib.h> 헤더 파일 내에 atoi 함수가 정의되어 있음
-- /* atoi: convert s to integer */
--     int atoi (char s[])
--     {
--       int i, n;
--     
--       n = 0;
--       for  (i = 0; s[i] >= '0' && s[i] <= '9'; ++i)
--         n = 10 * n +  (s[i] - '0');
--     
--       return n;
--     }
+### 후위 증감 연산자 (Postfix Increment and Decrement Operators)
 
+| Operator | Description                           | Example | Associativity   |
+|----------|---------------------------------------|---------|-----------------|
+| `++`      | Uses the value first, then increments | `i++`     | Right-to-left   |
+| `--`      | Uses the value first, then decrements | `i--`     | Right-to-left   |
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 66
-- Type Conversions
-- 문자는 하나의 정수  (Cont’d)
-- e.g. 문자를 정수로 변환하는 예 2:
-- <ctype.h> 헤더 파일 내에 tolower 함수가 정의되어 있음
-- ASCII 문자 체계를 사용하는 기계에만 적용 가능하며, EBCDIC 등 다른 문자 체계를 사용하는 환경에서는 사용 불가
-- 
-- ASCII 문자 체계의 특징을 활용:
-- 'A'와 'Z' 사이에 대문자만 등장
-- 'a'와 'z' 사이에 소문자만 등장
-- 대문자와 소문자 간 차이가 항상 일정
-- /* lower: convert c to lower case; ASCII only */
--     int lower (int c)
--     {
--       if  (c >= 'A' && c <= 'Z')
--         return  (c + 'a' - 'A');
--       else
--         return c;
--     }
+```c
+/* ++i: Increments the value first */
+i = i + 1;
+return i;
 
+/* i++: Uses the value first, then increments */
+int temp = i;
+i = i + 1;
+return temp;
+```
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 67
-- Type Conversions
-- 암묵적인 산술 변환 (implicit arithmetic conversion)
-- 서로 다른 두 형 간 연산을 할 때, 무부호형 피연산자가 없다면:
--  표현식 내 long double 형이 있으면 둘 다 long double 형으로 변환
--  Otherwise, 표현식 내 double 형이 있으면 둘 다 double 형으로 변환
--  Otherwise, 표현식 내 float 형이 있으면 둘 다 float 형으로 변환
--  Otherwise, 표현식 내 char 형 또는 short 형을 int 형으로 변환
--  Then, 표현식 내 long 형인 피연산자가 있다면 모두 long 형으로 변환
-- 
-- 실수 값 표현 시 기본형은 float 형
-- 표현식 내 char 형 또는 short 형이 있다면 이는 int 형으로 변환되나, float 형 표현이 있을 경우 double 형으로 형 변환되지 않음
-- 저장 공간 또는 계산 시간 절약 목적
+---
 
+## Operators (Cont'd - 5)
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 68
-- Type Conversions
-- 암묵적인 산술 변환 (implicit arithmetic conversion)  (Cont’d)
-- 서로 다른 두 형 간 연산 시 무부호형 피연산자가 있다면, 기계와 정수형의 크기에 따라 계산 결과가 상이할 수 있음
-- 정수형 자료형의 크기는 기계 (혹은 OS)에 따라 결정되며, 따라서 무부호형 정수와 부호형 정수 간 비교는 기계 종속적
-- Implicit conversions:
-- If the unsigned type has conversion rank greater than or equal to the rank of the signed type, then the operand with the signed type is implicitly converted to the unsigned type.
-- e.g. 임의의 환경에서의 int 형 크기는 16-bit, long 형 크기는 32-bit라고 가정:
-- −1L < 1U (1U은 signed long 형으로 형 변환)
-- −1L > 1UL (−1L은 unsigned long 형으로 형 변환)
-- MSB를 부호가 아닌 가중치로 평가함에 따라 -1L은 음수이지만 큰 수처럼 평가됨
+### 전위/후위 사용 예제
 
+```c
+int a, b;
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 69
-- Type Conversions
-- 암묵적 형 변환 (implicit type conversions)
-- 대입 연산 시 두 피연산자의 형이 서로 다를 경우 우측 피연산자 (r-value) 형이 좌측 피연산자 (l-value) 형으로 변환
-- 
-- 
-- 
-- 
-- 
-- 실수 값이 정수형으로 형 변환이 발생하면, 소수점 부분은 무시됨
-- 배정도 부동 소수점 형 값이 단정도 부동 소수점 형으로 형 변환이 발생하면, 값이 반올림되거나 잘릴 수 있음
-- 구체적인 동작은 구현 방법에 따라 정의
-- int i = 256;
--     char c = 'A';    /* ASCII 코드표를 참고하면, 글자로 표현 가능한 문자들은 
--                         부호형이든 무부호형이든 양수로 표현될 수 있는 범위 (0~127)에 할당되어 있음 */
--     float f = 3.14;  /* 실수형 상수의 기본 형은 double이지만, float 형으로 형 변환 발생 */
--     c = i;  /* 0 */
--     i = c;  /* 0 */
--     i = f;  /* 3 */
--     f = i;  /* 3.00 */
+b = 3;
+a = b++; /* a = 3, b = 4 */
+a = b;   /* a = 4, b = 4 */
+a = ++b; /* a = 5, b = 5 */
+```
 
+### 증감 연산자를 활용한 예 - 사용자 정의 함수 `squeeze`
 
-# Type Conversions
-- 컴퓨터프로그래밍기초
-- 70
-- Type Conversions
-- 명시적 형 변환 (explicit type conversions)
-- 
-- 단일 연산자와 동일한 우선 순위
-- e.g. 명시적 형 변환 사용 예:
-- <stdlib.h> 헤더 파일 내에 rand, srand 함수가 정의되어 있음
--  (type-name) expression;
-- unsigned long int next = 1;
--     /* rand: return pseudo-random integer on 0 ... 32,767 */
--     int rand (void)
--     {
--       next =  (next * 1103515245) + 12345;
-- 
--       /* right shift by 16 bits then reduces the range to 0~32,767 */      return  (unsigned int)  (next / 65536) % 32768;
--     }
--     /* srand: set seed for rand () */
--     void srand (unsigned int seed)
--     {
--       next = seed;
--     }
+[//]: # (INCLUDE: ./c/02/12.c)
 
+---
 
-# Increment and Decrement Operators
-- 컴퓨터프로그래밍기초
-- 71
-- Increment and Decrement Operators
-- 증가 연산자 (increment operator)
-- 
-- 감소 연산자 (decrement operator)
-- 
-- 전위 (prefix)연산자와 후위 (postfix)연산자의 동작 차이
-- ++i;
--     i++;
---i;
--     i--;
+## Operators (Cont'd - 6)
 
+### 증감 연산자를 활용한 예 - 표준 함수 `strcat`
 
-# Increment and Decrement Operators
-- 컴퓨터프로그래밍기초
-- 72
-- Increment and Decrement Operators
-- 전위 증감 연산자는 증감을 수행하기 전 해당 값 사용
-- 
-- 
-- 후위 증감 연산자는 증감을 수행한 뒤 해당 값 사용
-- /* ++i */
--     i = i + 1;
--     return i;
-- /* i++ */
--     const int temp = i;
--     i = i + 1;
--     return temp;
+[//]: # (INCLUDE: ./c/02/13.c)
 
+[//]: # (INCLUDE: ./c/02/13_example.c)
 
-# Increment and Decrement Operators
-- 컴퓨터프로그래밍기초
-- 73
-- Increment and Decrement Operators
-- 전위 증가 연산자와 후위 증가 연산자의 사용 예:
-- b = 3;
--     a = b++; /* a = 3, b = 4 */
--     a = b;   /* a = 4, b = 4 */
--     a = ++b; /* a = 5, b = 5 */
+---
 
+## Operators (Cont'd - 7)
 
-# Increment and Decrement Operators
-- 컴퓨터프로그래밍기초
-- 74
-- Increment and Decrement Operators
-- 증감 연산자 사용 예 1:
-- squeeze 함수는 사용자 정의 함수
-- /* squeeze: delete all c from s */
--     void squeeze (char s[], int c)
--     {
--       int i, j;
--       for  (i = j = 0; s[i] != '\0'; ++i) {
--         if  (s[i] != c)
--           s[j++] = s[i];
--       }
--       s[j] = '\0';
--     }
+### 비트 연산자 (Bitwise Operators)
 
+- 비트 연산자는 피연산자에 대해 비트 연산 수행
+  - 부호형 피연산자의 이동 연산 (shift operators, `>>`, `<<`)은 해당 기계에 따라 결과가 다름
+  - **비트 연산 시 무부호형 정수 피연산자 사용 권장**
+- 이동 연산 시 우측 피연산자는 반드시 무부호형 정수여야 함
+- 이동 연산 시 좌측 피연산자는 부호 여부에 따라 결과가 다름
+  - 좌측 피연산자가 무부호형 정수일 때, 왼쪽 이동 연산은 이동한 만큼 오른쪽에 `0`으로 채움
+  - 좌측 피연산자가 부호형 정수일 때, 오른쪽 이동 연산 중 오버플로우가 발생할 경우 UB (undefined behavior)
+  - 우측 피연산자가 무부호형 정수일 때, 왼쪽 이동 연산은 이동한 만큼 오른쪽에 `0`으로 채움 (logical shift)
+  - 우측 피연산자가 부호형 정수일 때, 오른쪽 이동 연산은 이동한 만큼 오른쪽에 MSB로 채움 (arithmetic shift)
 
-# Increment and Decrement Operators
-- 컴퓨터프로그래밍기초
-- 75
-- Increment and Decrement Operators
-- 증감 연산자 사용 예 2:
-- <string.h> 헤더 파일 내에 strcat 함수가 정의되어 있음
-- /* strcat: concatenate t to end of s; s must be big enough */
--     void strcat (char s[], char t[])
--     {
--       int i, j;
--       i = j = 0;
--       while  (s[i] != '\0') /* find end of s */
--         ++i;
--       while  ( (s[i++] = t[j++]) != '\0') {} /* copy t */
--     }
+| Operator | Description                  | Example | Associativity   |
+|---|---|---|---|
+| `&`        | Bitwise AND               | `a & b` | Left-to-right |
+| `⎮`       | Bitwise OR                | `a ⎮ b` | Left-to-right |
+| `^`       | Bitwise XOR               | `a ^ b` | Left-to-right |
+| `<<`       | Left shift (logical)      | `a << 1` | Left-to-right |
+| `>>`       | Right shift (logical or arithmetic) | `a >> b` | Left-to-right |
+| `~`        | One's complement (bitwise NOT) | `~a` | Right-to-left |
 
+---
 
-# Bitwise Operators
-- 컴퓨터프로그래밍기초
-- 76
-- Bitwise Operators
-- 피연산자가 정수형일 때 적용 가능하며, 부호형 피연산자는 시프트 연산 (shift) 시 기계에 따라 결과가 다름
-- &   (AND)
-- |   (OR)
-- ^   (Exclusive OR)
-- <<  (Left shift)
-- 연산자의 오른쪽 항은 항상 양의 정수여야 하며, 오른쪽 비트는 0으로 채워짐 (logical shift)
-- >>  (Right shift)
-- 연산자의 오른쪽 항은 항상 양의 정수여야 하며, 왼쪽 비트는 무부호형일 경우 0 (logical shift),부호형일 경우 MSB의 값으로 채워짐 (arithmetic shift)
-- ~	   (1’s complement)
+## Operators (Cont'd - 8)
 
+### 비트 연산자 예제
 
-# Bitwise Operators
-- 컴퓨터프로그래밍기초
-- 77
-- Bitwise Operators
-- 비트 연산자 사용 예 1:
-- #include <stdio.h>
--     int main (void)
--     {
--       /* a = 5, 0000 0101,
--          b = 9, 0000 1001 */
--       unsigned char a = 5, b = 9;
-- 
--       printf ("a & b = %d\n", a & b);    /* 0000 0001 */
--       printf ("a | b = %d\n", a | b);    /* 0000 1101 */
--       printf ("a ^ b = %d\n", a ^ b);    /* 0000 1100 */
--       printf ("~a = %d\n", a = ~a);      /* 1111 1010 */
--       printf ("b << 1 = %d\n", b << 1);  /* 0001 0010 */
--       printf ("b >> 1 = %d\n", b >> 1);  /* 0000 0100 */
-- 
--       return 0;
--     }
-- a & b  = 1
-- a | b  = 13
-- a ^ b  = 12
-- ~a     = 250
-- b << 1 = 18
-- b >> 1 = 4
+[//]: # (INCLUDE: ./c/02/14.c)
 
+---
 
-# Bitwise Operators
-- 컴퓨터프로그래밍기초
-- 78
-- Bitwise Operators
-- 비트 연산자 사용 예 2:
-- #include <stdio.h>
--     int main (void)
--     {
--       /* x = 248, 1111 1000 */
--       unsigned char x = 248;
--       /* mask operation example */
--       printf ("x & 077 = %d\n", x & 077);    /* 0011 1000 */
--       /* set operation example */
--       printf ("x | 07 = %d\n", x | 07);      /* 1111 1111 */
-- 
--       printf ("x & ~077 = %d\n", x & ~077);  /* 1100 0000 */
--       /* 
--        * 0x300, which assumes that x is a 8-bit quantity
--        * ~077 is independent of word length
--        * => better than 0x300
--        */
--       return 0;
--     }
-- x & 077  = 56
-- x | 07   = 255
-- x & ~077 = 192
+## Operators (Cont'd - 9)
 
+### 비트 연산자를 활용한 비트 마스킹
 
-# Bitwise Operators
-- 컴퓨터프로그래밍기초
-- 79
-- Bitwise Operators
-- 비트 연산자 사용 예 3:
-- x: 0110 1101
-- p: 4
-- n: 3
-- p + 1 − n = 2
-- x >> 2 = 0001 10112
-- ~0 << n = ... 1111 10002
-- ~ (... 1111 1000) = ... 0000 01112
-- /* getbits: get n bits from position p */
--     unsigned getbits (unsigned x, int p, int n)
--     {
--       return  (x >>  (p + 1 - n)) & ~ (~0 << n);
--     }
+[//]: # (INCLUDE: ./c/02/15.c)
 
+---
 
-# Assignment Operators and Expressions
-- 컴퓨터프로그래밍기초
-- 80
-- Assignment Operators and Expressions
-- 지정 연산자 (assignment operators)
-- 
-- 
-- 
-- op= 형태를 갖는 연산자들
-- +, −, *, /, %, <<, >>, &, ^, |
-- 부정 (~) 연산자는 사용할 수 없음
-- 
-- 지정 연산자 사용 시 양변의 수식이 같은지 확인할 필요 없음
-- expr1 op= expr2;
--     /* expr1 op= expr2 is equivalent to expr1 = expr1 op expr2 */
--     expr1 = expr1 op expr2;
-- 
--     i += 2; /* i = i + 2 */
-- yyval[yypv[p3+p4] + yypv[p1]] += 2;
--     yyval[yypv[p3+p4] + yypv[p1]] = yyval[yypv[p3+p4] + yypv[p1]] + 2;
+## Operators (Cont'd - 10)
 
+### 비트 마스킹을 활용한 예 - 사용자 정의 함수 `getbits`
 
-# Assignment Operators and Expressions
-- 컴퓨터프로그래밍기초
-- 81
-- Assignment Operators and Expressions
-- 지정 연산자 (assignment operators)  (Cont’d)
-- 산술 연산자보다 우선 순위가 낮음
-- 
-- 
-- 
-- 관계 연산자보다 우선 순위가 낮음
-- x *= y + 1;
--     /* 
--      * 1. x *=  (y + 1)
--      * 2. x = x *  (y + 1)
--      */
-- if  (x >>= 3 != 0) { /* do something */ }
--     /* 
--      * 1. x >>=  (3 != 0)
--      * 2. x = x >>  (3 != 0)
--      */
+[//]: # (INCLUDE: ./c/02/16.c)
 
+```text
+x: 0110 1101 (binary)
+p: 4         (decimal)
+n: 3         (decimal)
 
-# Assignment Operators and Expressions
-- 컴퓨터프로그래밍기초
-- 82
-- Assignment Operators and Expressions
-- 지정 연산자 사용 예 1:
-- bitcount 함수는 사용자 정의 함수
-- /* bitcount: count 1 bits in x */
--     int bitcount (unsigned x)
--     {
--       int b;
--       for  (b = 0; x != 0; x >>= 1) {
--         if  (x & 01)
--           ++b;
--       }
--       return b;
--     }
+1. p + 1 - n = 2
+2. x >> 2 = 0001 1011
+3. ~0 << n = 1111 1111 1111 1111 1111 1111 1111 1000
+4. ~(1111 1111 1111 1111 1111 1111 1111 1000)
+   = 0000 0000 0000 0000 0000 0000 0000 0111
+```
 
+---
 
-# Assignment Operators and Expressions
-- 컴퓨터프로그래밍기초
-- 83
-- Assignment Operators and Expressions
-- 지정 연산자 사용 예 2:
-- bitcount 함수는 사용자 정의 함수
-- #include <stdio.h>
--     /* bitcount: faster version of the bitcount */
--     void bitcount (unsigned x)
--     {
--       int count;
--       for  (count = 0; x; ++count)
--         x &=  (x - 1);
--       printf ("count: %d\n", count);
--     }
+## Operators (Cont'd - 11)
+
+### 지정 연산자 (Assignment Operators)
+
+- 지정 연산자는 대입 연산자 (`=`)와 복합 대입 연산자 (`op=`)가 있음
+- 복합 대입 연산자의 형태 `exp1 op= exp2`는 `exp1 = exp1 op exp2` 형태의 축약 표현
+- 복합 대입 연산자의 형태 중 `op`에는 이항 연산자가 사용될 수 있음
+  - `+`, `-`, `*`, `/`, `%`, `>>`, `<<`, `&`, `^`, `⎮`
+  - **부정 연산자 (`~`)는 사용 불가 (단항 연산자, unary operators)**
+- 복합 대입 연산자는 표현을 간결하게 해주며, 특히 아래의 경우처럼 피연산자의 식별자가 복잡한 경우 유용함
+
+```c
+yyval[yypv[p3+p4] + yypv[p1]] = yyval[yypv[p3+p4] + yypv[p1]] + 2;
+yyval[yypv[p3+p4] + yypv[p1]] += 2;
+```
+
+- **산술 연산자, 관계 연산자보다 우선순위가 낮음**
+
+```c
+x *= y + 1;
+/* 
+ * 1. x *= (y + 1)
+ * 2. x = x * (y + 1)
+ */
+
+if (x >>= 3 != 0) { /* do something */ }
+/* 
+ * 1. x >>= (3 != 0)
+ * 2. x = x >> (3 != 0)
+ */
+```
+
+---
+
+## Operators (Cont'd - 12)
+
+### 지정 연산자를 활용한 예 - 사용자 정의 함수 `bitcount`
+
+[//]: # (INCLUDE: ./c/02/17.c)
+
+[//]: # (INCLUDE: ./c/02/18.c)
+
+---
+
+## Type Conversions
+
+- 서로 다른 자료형의 피연산자 간 연산이 수행되면 형 변환이 발생함
+
+### 자동 형 변환 (Implicit Conversion, Automatic Conversion)
+
+```c
+int a = 'A';     /* Converting a narrower operand into a wider one is ok */
+char c = 12345;  /* Convertint a wider operand into a narrower one like this
+                    could cause information to be lost (Warning) */
+```
+
+### 명시적 형 변환 (Explicit Conversion)
+
+- `(type) expression` 형태를 사용하면 `expression` 형을 `type` 으로 형 변환
+  - `(type)`은 **형 변환 연산자 (type conversion operator)**
+    - 결합 방향은 오른쪽에서 왼쪽
+- 사용자가 직접 지정함에 따라 의도를 명확하기 표현할 수 있으며, 정보 손실 가능성 존재
+  - **사용자가 명시적으로 형 변환을 할 경우 정보 손실 발생 시 경고를 출력하지 않음**
+
+```c
+float pi = (float) 3.14;
+int area = (int) (11 * 11 * pi);  /* decimal dropped,
+                                     but warning is suppressed */
+```
+
+---
+
+## Type Conversions (Cont'd - 1)
+
+### 형 변환을 활용한 예 - 표준 함수 `atoi`
+
+- 문자는 하나의 정수 값으로 표현됨 (e.g. 문자 상수 `'A'`는 정수 값 `65`를 의미)
+- `char`는 `int`보다 표현 범위가 좁기 때문에 연산 시 자동으로 `int`로 변환됨
+
+[//]: # (INCLUDE: ./c/02/08.c)
+
+[//]: # (INCLUDE: ./c/02/08_example.c)
+
+---
+
+## Type Conversions (Cont'd - 2)
+
+### 형 변환을 활용한 예 - 사용자 정의 함수 `lower` (ASCII 기준)
+
+[//]: # (INCLUDE: ./c/02/09.c)
+
+- 표준 함수 중에는 사용자 정의 함수 `lower`와 동일한 역할을 하는 함수가 있음 (`tolower`)
+
+[//]: # (INCLUDE: ./c/02/09_example.c)
+
+---
+
+## Type Conversions (Cont'd - 3)
+
+### 암묵적 산술 형 변환 (Implicit Arithmetic Conversion)
+
+- 서로 다른 산술형 간 연산이 일어날 때 다음 규칙 적용:
+  1. `long double`이 있으면 모두 `long double`로 변환
+  2. 그렇지 않고 `double`이 있으면 모두 `double`로 변환
+  3. 그렇지 않고 `float`이 있으면 모두 `float`로 변환
+  4. 그렇지 않고 `char`, `short`는 `int`로 변환
+  5. 이후, 둘 중 하나가 `long`이면 모두 `long`으로 변환
+- `int` 형과 `float` 형이 같이 사용된다면, `int` 형은 `float` 형으로 변환되지만 **`double` 형으로 변환되진 않음**
+  - `float` 형은 `double` 형보다 메모리를 적게 사용하며 연산 속도가 빠름
+  - 프로그램을 효율적으로 실행하기 위한 목적
+- 무부호형과 부호형이 혼합될 경우, 다음 규칙이 적용됨:
+  - 무부호형의 변환 순위 (rank)가 부호형보다 크거나 같으면, 부호형이 무부호형으로 변환됨
+  - e.g., 16-bit `int`, 32-bit `long`인 환경에서:
+    - `-1L < 1U` (`1U` → `signed long`)
+    - `-1L > 1U` (`1L` → `unsigned long`, 음수 표현식이 더 큰 값으로 평가됨)
+
+---
+
+## Type Conversions (Cont'd - 4)
+
+### 대입 시 암묵적 형 변환
+
+- 대입 연산에서 좌변 (l-value)과 우변 (r-value)의 형이 다르면 우변이 좌변의 형으로 변환됨
+  - 실수 형에서 정수 형으로 변환 시 소수 부분은 버려짐
+  - `double` 형에서 `float` 형 변환 시 반올림 또는 절단 발생 가능 (정확도 손실)
+
+```c
+int i = 256;
+char c = 'A';     /* ASCII 'A' = 65 */
+float f = 3.14;
+
+c = i;  /* c = 0 (overflow) */
+i = c;  /* i = 0 */
+i = f;  /* i = 3 (decimal dropped) */
+f = i;  /* f = 3.0 */
+```
+
+---
+
+## Type Conversions (Cont'd - 5)
+
+### 명시적 형 변환을 활용한 예 - 표준 함수 `rand`, `srand`
+
+[//]: # (INCLUDE: ./c/02/11.c)
+
+[//]: # (INCLUDE: ./c/02/11_example.c)
+
+---
+
+## Conditional Expressions
+
+### 삼항 연산자 (Ternary operator)
+
+- 삼항 연산자의 형태 `condition ? expr_if_true : expr_if_false`는 `if` 조건문을 축약한 형태
+- `expr_if_true`와 `expr_if_false`의 형이 다르다면, 형 변환 법칙이 적용됨
+
+```c
+int n = 100;
+float f = 3.14;
+
+(n > 0) ? f : n;  /* the evaluated type is float */
+```
+
+- 표현식이 등장할 수 있는 곳이라면 어디든 사용 가능
+
+```c
+int n = 2;
+
+/*
+can be replace this else-if statement with ternary operator:
+if (n == 1)
+    printf("You have %d item\n", n);
+else
+    printf("You have %d items\n", n);
+*/
+printf("You have %d item%c\n", n, (n == 1) ? '\0' : 's');
+```
+
+---
+
+## Conditional Expressions (Cont'd)
+
+### 삼항 연산자 예제
+
+[//]: # (INCLUDE: ./c/02/19.c)
+
+---
+
+## Precedence and Order of Evaluation
+
+![center h:640](image-13.png)
+
+---
+
+## Precedence and Order of Evaluation (Cont'd - 1)
+
+### 연산자의 우선순위 (Precedence)와 결합 방향 (Associativity) 적용 규칙
+
+1. 아직 결합되지 않은 표현식들 중에서, 우선순위가 가장 높은 연산자가 있는 표현식을 먼저 찾는다.
+2. 선택된 연산자에 대해, 결합 방향 (왼쪽에서 오른쪽, 또는 오른쪽에서 왼쪽)에 따라 해당 표현식을 먼저 결합한다.
+3. 결합되지 않은 표현식이 아직 2개 이상 남아 있다면, 다시 1단계로 돌아간 뒤 우선순위가 가장 높은 연산자를 찾아 처리한다.
+4. 모든 연산이 결합되면, 최종적으로 결합된 표현식을 순서대로 평가 (evaluate)한다.
+
+```c
+x++ * y * z + w++;
+
+/*
+ * 1. [1] '++' has the highest precedence
+ * 2. [2] '++' is right-to-left associative:
+ *        => x++ * y * z + (w++)
+ *        => (x++) * y * z + (w++)
+ *
+ * 3. [1] '*' has the next highest precedence
+ * 4. [2] '*' is left-to-right associative:
+ *        => ((x++) * y) * z + (w++)
+ *        => (((x++) * y) * z) + (w++)
+ *
+ * 5. [1] '+' has the next precedence
+ * 6. [2] '+' is left-to-right associative:
+ *        => ((((x++) * y) * z) + (w++))
+ */
+```
+
+---
+
+## Precedence and Order of Evaluation (Cont'd - 2)
+
+### 평가 순서 (Evaluation Order)
+
+- 피연산자들의 값을 계산 (evaluation)하고, 그 부수 효과 (side effects)를 실행하는 순서
+
+```c
+int i = 2;
+++i;  /* side effect: i + 1 */
+```
+
+- **대부분의 연산자는 평가 순서가 정의되지 않거나 (unspecified), 명시적으로 지정되어 있지 않음 (unsequenced)**
+  - 동일한 코드라도 컴파일러에 따라 다른 결과를 초래할 수 있음
+  - 특히 증감 연산자, 함수 호출과 같이 부수 효과가 있는 표현식에서는 주의 필요
+- 평가 순서가 정해진 연산자들은 논리 연산자 (`&&`, `⎮⎮`), 쉼표 연산자 (`,`), 삼항 연산자 (`?:`)가 있음
+
+---
+
+## Precedence and Order of Evaluation (Cont'd - 3)
+
+### 평가 순서가 보장되지 않는 경우들
+
+```c
+/* Case 1:
+   If both functions f() and g() have side effects on global variables, the
+   result of f() + g() may vary depending on which function is evaluated first.
+   e.g., extern int a = 4, b = 5, c = 6;
+         f(): increments all global variables by 1, then returns their sum.
+         g(): multiplies all global variables by 2, then returns their sum. */
+int x = f() + g();
 
 
-# Conditional Expressions
-- 컴퓨터프로그래밍기초
-- 84
-- Conditional Expressions
-- 삼항 연산자 (ternary operator)
-- 
-- 
-- 
-- 
-- 표현식이 사용될 수 있는 곳이라면 어디든 사용 가능
-- expr1 ? expr2 : expr3;
--     
--     if  (a > b)
--       c = a;
--     else
--       c = b;                c =  (a > b) ? a : b;
+/* Case 2:
+   The value of `n` is incremented before being printed, but the order of
+   evaluation between arguments is unspecified. Depending on whether n or
+   power(2, n) is evaluated first, the printed values may differ. */
+int n = 5;
+printf("%d %d\n", ++n, power(2, n));
 
 
-# Conditional Expressions
-- 컴퓨터프로그래밍기초
-- 85
-- Conditional Expressions
-- 삼항 연산자 (ternary operator)  (Cont’d)
-- 
-- expr2와 expr3의 형이 다른 경우, 형 변환 법칙 적용
-- 아래 표현식에서 n은 int 형, f는 float 형이라고 가정하면, 해당 식은 조건 결과와 상관 없이 float 형으로 평가됨
-- 
-- 삼항 연산자의 우선순위는 매우 낮지만, 구조를 명확히 하기 위해 각 표현식에 괄호를 사용하는 것을 추천
--  (n > 0) ? f : n;
-- expr1 ? expr2 : expr3;
+/* Case 3:
+   This causes undefined behavior. The variable `i` is modified (`i++`) and read
+   (`a[i]`) in the same expression without an intervening sequence point. */
+int i = 0;
+a[i] = i++;
 
 
-# Conditional Expressions
-- 컴퓨터프로그래밍기초
-- 86
-- Conditional Expressions
-- 삼항 연산자 사용 예 1:
-- int n = 24;
--     int i;
-- 
--     /*
--     can be replace this for-statement with ternary operator:
--     for  (int i = 1; i <= n; ++i) {
--       if  (! (i % 10) || i == n)
--         printf ("%2d\n", i);
--       else
--         printf ("%2d ", i);
--     }
--     */
--     for  (int i = 1; i <= n; ++i)
--       printf ("%2d%c", i,  (! (i % 10) || i == n) ? '\n' : ' ');
-- 1  2  3  4  5  6  7  8  9 10
-- 11 12 13 14 15 16 17 18 19 20
-- 21 22 23 24
-
-
-# Conditional Expressions
-- 컴퓨터프로그래밍기초
-- 87
-- Conditional Expressions
-- 삼항 연산자 사용 예 2:
-- int n = 2;
-- 
--     /*
--     can be replace this else-if statement with ternary operator:
--     if  (n == 1)
--       printf ("You have %d item\n", n);
--     else
--       printf ("You have %d items\n", n);
--     */
--     printf ("You have %d item%c\n", n,  (n == 1) ? '\0' : 's');
-- You have 2 items
-
-
-# Precedence and Order of Evaluation
-- 컴퓨터프로그래밍기초
-- 88
-- Precedence and Order of Evaluation
-- 평가 순서에 의존하여 프로그래밍하는 것은 권장하지 않음
-- 가독성을 해치지 않는 선에서 괄호를 적극적으로 사용할 것
-- 
-- 자주 사용되는 규칙들
-- 산술 연산자는 관계, 논리 연산자보다 우선 순위가 높음
-- 지정 연산자는 관계, 논리 연산자보다 우선 순위가 낮음
-
-
-# Precedence and Order of Evaluation
-- 컴퓨터프로그래밍기초
-- 89
-- Precedence and Order of Evaluation
-- Brian W. Kernighan and Dennis M. Ritchie. 1988. The C Programming Language  (2nd. ed.). Prentice Hall Professional Technical Reference, USA.
-
-
-# Precedence and Order of Evaluation
-- 컴퓨터프로그래밍기초
-- 90
-- Precedence and Order of Evaluation
-- 연산의 우선순위와 결합법칙 (associativity)
-- 아직 결합되지 않은 표현식 중에서 우선 순위가 높은 연산자가 포함된  표현식을 찾음
-- 찾은 표현식을 결합 방향에 맞게 결합
-- 아직 결합되지 않은 표현식이 존재하면 (처리해야 할 항의 개수가 2개 이상 존재한다면), 1번 과정으로 돌아감
-- 결합된 표현식들에 대한 평가 수행
-- x++ * y * z + w++;
--     /*
--      * 1. [1] ++ 연산자 우선순위가 가장 높음 
--      * 2. [2] ++ 연산자의 결합 방향은 오른쪽에서 왼쪽 방향이므로,
--      *        x++ * y * z +  (w++)
--      *         (x++) * y * z +  (w++)
--      * 3. [1] * 연산자의 우선순위가 다음으로 높음
--      * 4. [2] * 연산자의 결합 방향은 왼쪽에서 오른쪽 방향이므로, 
--      *         ( (x++) * y) * z +  (w++)
--      *         ( ( (x++) * y) * z) +  (w++)
--      * 5. [1] + 연산자의 우선순위가 다음으로 높음
--      * 6. [2] + 연산자의 결합 방향은 왼쪽에서 오른쪽 방향이므로, 
--      *         ( ( ( (x++) * y) * z) +  (w++))
--      */
-
-
-# Precedence and Order of Evaluation
-- 컴퓨터프로그래밍기초
-- 91
-- Precedence and Order of Evaluation
-- C언어의 대부분 연산자들은 피연산자를 평가할 때 정해진 순서가 없음 (unsequenced)
-- 평가 순서는 컴파일러에 구현된 내용에 따라 결정됨 (unspecified)
-- 구현된 내용에 따라 다른 결과 반환
-- 평가 순서에 영향을 받는 표현식을 사용하지 않도록 주의해야 함
-- 
-- 평가 순서가 정해진 연산자들
-- 논리 연산자 (&&, ||)
-- 쉼표 연산자 (,)
-- 삼항 연산자 (?:)
-
-
-# Precedence and Order of Evaluation
-- 컴퓨터프로그래밍기초
-- 92
-- Precedence and Order of Evaluation
-- 평가 순서에 따라 결과가 바뀔 수 있는 표현식
-- /* Case 1.
--      * 전역 변수에 대한 side effect가 있는 함수일 경우,     * 결과가 달라질 수 있음
--      * e.g. extern int a = 4, b = 5, c = 6;
--      *   f (): 모든 global variable의 값을 1 더한 뒤,     *        모든 global variable의 값을 더해서 반환
--      *   g (): 모든 global variable의 값을 2 곱한 뒤,
--      *        모든 global variable의 값을 더해서 반환
--      */
--     int x = f () + g ();
--     /* Case 2.
--      * ++n;
--      * printf ("%d %d\n", n, power (2, n));
--      */
--     int n = 5;
--     printf ("%d %d\n", ++n, power (2, n));
-- /* Case 3. */
--     int i = 0;
--     a[i] = i++;
--     /* Case 4. */
--     int i = 2;
--     i + i + ++i;  /* 2 + 2 + 3?  3 + 3 + 3? */
--     i + i + i++;  /* 2 + 2 + 2?  3 + 3 + 2? */
-
+/* Case 4:
+   These expressions are also undefined behavior. Because `i` is both modified
+   and accessed multiple times in the same expression without a sequence point,
+   the result is unpredictable. */
+int i = 2;
+i + i + ++i;   /* Could be 2 + 2 + 3 or 3 + 3 + 3, etc. */
+i + i + i++;   /* Could be 2 + 2 + 2 or 3 + 3 + 2, etc. */
+```
