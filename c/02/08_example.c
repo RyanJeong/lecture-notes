@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* to use stdlib() */
+#include <stdlib.h> /* to use atoi() */
 
 int main(void)
 {
