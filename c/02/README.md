@@ -370,7 +370,7 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 | 2 bytes | 1 bit | 9 bits | 6 bits |
 | 4 bytes | 1 bit | 15 bits | 16 bits |
 
-- e.g., 고정소수점을 사용해 `37.25`, `-37.25`를 2 bytes로 표현한 예
+- e.g., 고정소수점을 사용해 `36.25`, `-36.25`를 2 bytes로 표현한 예
 
 ```text
         S.(1) |   Int.(9)   | Frac.(6)    Fixed-Point Representation
@@ -609,6 +609,40 @@ before: 16777218.0, after: 16777218.0
 ---
 
 ## Data Types and Sizes (Cont'd - 28)
+
+### 올바른 실수 값 비교 방법
+
+- `float` 형의 기계 앱실론 (machine epsilon, 이론적으로 표현 가능한 가장 작은 상대 오차값)은 1.19 × 10⁻⁷
+  - 실제 계산에서는 오차가 더 누적되므로, 허용 오차는 1 × 10⁻⁵, (`1e-5`) 사용
+- `double` 형의 기계 앱실론은 2.22 × 10⁻¹⁶
+  - 실제 계산에서는 오차가 더 누적되므로, 허용 오차는 1 × 10⁻¹² ~ 1 × 10⁻¹⁴ (`1e-12` ~ `1e-14`) 사용
+
+```c
+#include <stdio.h>
+
+#define ABS(x) ((x) * ((x > 0) - (x < 0)))
+
+int main(void)
+{
+    float a = 0.0f;
+    float b = 1.0f;
+
+    for (int i = 0; i < 10; ++i)
+        a = a + 0.1f;
+
+    if (a == b)
+        printf("a == b (same)\n");
+
+    if (ABS(a - b) < 1e-5f)
+        printf("ABS(a - b) < 1e-5 (same)\n");
+
+    return 0;
+}
+```
+
+---
+
+## Data Types and Sizes (Cont'd - 29)
 
 ### The Patriot Missile Failure
 
@@ -882,7 +916,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
     - `a == (a / b) * b + (a % b)`
   - e.g., `-111 / 10` 결과는 `-1` 또는 `9`
     - 몫 `(a / b)`: `-11`, 제수 `b`: `10`, 나머지 `(a % b)`: `-1`
-    - 몫 `(a / b)`: `-12`, 제수 `b`: `10`, 나머지 `(a % b)`: `10`
+    - 몫 `(a / b)`: `-12`, 제수 `b`: `10`, 나머지 `(a % b)`: `9`
 
 ---
 
@@ -1134,11 +1168,9 @@ int area = (int) (11 * 11 * pi);  /* decimal dropped,
 
 ## Type Conversions (Cont'd - 2)
 
-### 형 변환을 활용한 예 - 사용자 정의 함수 `lower` (ASCII 기준)
+### 형 변환을 활용한 예 - 표준 함수 `tolower` (ASCII 기준)
 
 [//]: # (INCLUDE: ./c/02/09.c)
-
-- 표준 함수 중에는 사용자 정의 함수 `lower`와 동일한 역할을 하는 함수가 있음 (`tolower`)
 
 [//]: # (INCLUDE: ./c/02/09_example.c)
 
