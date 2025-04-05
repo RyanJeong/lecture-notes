@@ -62,7 +62,6 @@ img[alt~="center"] {
 table {
   margin: auto;  /* Centers the table */
   border-collapse: collapse;
-  display: block;
   margin-top: 0;
 }
 
