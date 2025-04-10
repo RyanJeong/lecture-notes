@@ -1024,22 +1024,22 @@ a = ++b; /* a = 5, b = 5 */
 
 ### 비트 연산자 (Bitwise Operators)
 
-- 비트 연산자는 피연산자에 대해 비트 연산 수행
-  - 부호형 피연산자의 이동 연산 (shift operators, `>>`, `<<`)은 해당 기계에 따라 결과가 다름
-  - **비트 연산 시 무부호형 정수 피연산자 사용 권장**
-- 이동 연산 시 우측 피연산자는 반드시 무부호형 정수여야 함
-- 이동 연산 시 좌측 피연산자는 부호 여부에 따라 결과가 다름
-  - 좌측 피연산자가 무부호형 정수일 때, 왼쪽 이동 연산은 이동한 만큼 오른쪽에 `0`으로 채움
-  - 좌측 피연산자가 부호형 정수일 때, 오른쪽 이동 연산 중 오버플로우가 발생할 경우 UB (undefined behavior)
-  - 우측 피연산자가 무부호형 정수일 때, 왼쪽 이동 연산은 이동한 만큼 오른쪽에 `0`으로 채움 (logical shift)
-  - 우측 피연산자가 부호형 정수일 때, 오른쪽 이동 연산은 이동한 만큼 오른쪽에 MSB로 채움 (arithmetic shift)
+- 비트 연산자는 피연산자에 대해 비트 연산을 수행하며, **피연산자는 반드시 정수형이여야 함**
+  - 실수형 피연산자는 사용 불가하며, `char` 또는 `short` 형은 **암묵적으로 `int`형이 됨 (integral promotions)**
+- 이동 연산 (`<<`, `>>`) 시 좌측 피연산자는 **부호 여부에 따라 결과가 달라지며**, 우측 피연산자는 **반드시 0 이상**이여야 함
+  - **우측 피연산자가 음수일 경우 UB (undefined behavior)**
+- 왼쪽 이동 연산은 비트를 왼쪽으로 이동시키며, 오른쪽은 항상 `0`으로 채워짐 (논리 이동)
+  - **부호형 정수의 왼쪽 이동 연산 결과가 표현 범위를 넘으면 UB (undefined behavior)**
+- 오른쪽 이동 연산은 비트를 오른쪽으로 이동시키며, 왼쪽은 **좌측 피연산자의 부호 여부에 따라 달라짐**
+  - 무부호형 정수의 오른쪽 이동 시 왼쪽은 항상 `0`으로 채워짐 (논리 이동)
+  - 부호형 정수의 오른쪽 이동 시 왼쪽은 **구현된 정의를 따름 (implementation-defined)** (보통 산술 이동을 채택)
 
 | Operator | Description                  | Example | Associativity   |
 |---|---|---|---|
 | `&`        | Bitwise AND               | `a & b` | Left-to-right |
 | `⎮`       | Bitwise OR                | `a ⎮ b` | Left-to-right |
 | `^`       | Bitwise XOR               | `a ^ b` | Left-to-right |
-| `<<`       | Left shift (logical)      | `a << 1` | Left-to-right |
+| `<<`       | Left shift (logical)      | `a << b` | Left-to-right |
 | `>>`       | Right shift (logical or arithmetic) | `a >> b` | Left-to-right |
 | `~`        | One's complement (bitwise NOT) | `~a` | Right-to-left |
 
@@ -1089,7 +1089,7 @@ n: 3         (decimal)
 - 복합 대입 연산자의 형태 `exp1 op= exp2`는 `exp1 = exp1 op exp2` 형태의 축약 표현
 - 복합 대입 연산자의 형태 중 `op`에는 이항 연산자가 사용될 수 있음
   - `+`, `-`, `*`, `/`, `%`, `>>`, `<<`, `&`, `^`, `⎮`
-  - **부정 연산자 (`~`)는 사용 불가 (단항 연산자, unary operators)**
+  - **관계 연산자, 논리 연산자, 비트 부정 연산자는 사용 불가**
 - 복합 대입 연산자는 표현을 간결하게 해주며, 특히 아래의 경우처럼 피연산자의 식별자가 복잡한 경우 유용함
 
 ```c
@@ -1106,10 +1106,10 @@ x *= y + 1;
  * 2. x = x * (y + 1)
  */
 
-if (x >>= 3 != 0) { /* do something */ }
+if (x >>= y != 0) { /* do something */ }
 /* 
- * 1. x >>= (3 != 0)
- * 2. x = x >> (3 != 0)
+ * 1. x >>= (y != 0)
+ * 2. x = x >> (y != 0)
  */
 ```
 
@@ -1125,9 +1125,58 @@ if (x >>= 3 != 0) { /* do something */ }
 
 ---
 
+## Type Promotions
+
+### ANSI C (C89) §3.2.1.1 "Integral Promotions" (정수 승격)
+
+> A "char", a "short int", or an enumerated type may be used in an expression whenever an "int" or "unsigned int" may be used. If an "int" can represent all values of the original type, the value is converted to an int; otherwise, it is converted to an unsigned int.
+
+- 정수 승격은 표현식을 평가할 때 **항상** 발생
+- 정수 승격 시 **데이터 모델**에 따라 자료형 표현 범위가 다르므로 다음 **조건**에 따라 발생
+  - 변환되어야 할 자료형의 값을 `int` 형으로 원본 값을 표현할 수 있다면 `int`로 승격
+  - 그렇지 않다면 `unsigned int`로 승격
+
+```c
+char a = 127;
+char b = 127;
+short c = a + b;  /* 1. a + b -> (int) a + (int) b = 254 (to prevent overflow)
+                     2. short c = (short) 254 */
+```
+
+```c
+/* Assume that both short and int are 2-byte data types. */
+unsigned short x = 65535;  /* USHRT_MAX */
+int i = x;  /* An int can't represent `x`; it's converted to an unsigned int */
+```
+
+---
+
+## Type Promotions (Cont'd)
+
+### ANSI C (C89) §3.2.1.5 — "Floating Promotions" (실수 승격)
+
+> A float expression may be promoted to double when used in an expression.
+
+- 실수 승격은 가변 인자 함수로 `float` 형 전달인자를 전달할 때 발생
+- 실수 승격 시 배정도 부동소수점은 항상 단정도 부동소수점보다 높은 정밀도를 가지므로 조건 없이 `double` 형으로 승격됨
+
+```c
+/* Although 'f' is a float, when passed to printf (a variadic function),
+   it is promoted to double. So we must use %f, not %lf. */
+printf("float promoted to double: %f\n", f);
+
+/* double works the same way here */
+double d = 2.718;
+printf("double remains double: %f\n", d);
+```
+
+---
+
 ## Type Conversions
 
 - 서로 다른 자료형의 피연산자 간 연산이 수행되면 형 변환이 발생함
+- 정수 승격, 실수 승격을 포함하는 더 포괄된 개념
+  - e.g., 정수형을 실수형으로, 또는 실수형을 정수형으로 변환
 
 ### 자동 형 변환 (Implicit Conversion, Automatic Conversion)
 
@@ -1157,8 +1206,8 @@ int area = (int) (11 * 11 * pi);  /* decimal dropped,
 
 ### 형 변환을 활용한 예 - 표준 함수 `atoi`
 
-- 문자는 하나의 정수 값으로 표현됨 (e.g. 문자 상수 `'A'`는 정수 값 `65`를 의미)
-- `char`는 `int`보다 표현 범위가 좁기 때문에 연산 시 자동으로 `int`로 변환됨
+- 문자는 하나의 정수 값으로 표현됨 (e.g. 문자 상수 `'A'`는 **정수 승격에 의해** 정수 값 `65`를 의미)
+  - 문자 상수와 정수형 상수를 같이 사용할 수 있는 이유
 
 [//]: # (INCLUDE: ./c/02/08.c)
 
@@ -1180,30 +1229,34 @@ int area = (int) (11 * 11 * pi);  /* decimal dropped,
 
 ### 암묵적 산술 형 변환 (Implicit Arithmetic Conversion)
 
-- 서로 다른 산술형 간 연산이 일어날 때 다음 규칙 적용:
-  1. `long double`이 있으면 모두 `long double`로 변환
-  2. 그렇지 않고 `double`이 있으면 모두 `double`로 변환
-  3. 그렇지 않고 `float`이 있으면 모두 `float`로 변환
-  4. 그렇지 않고 `char`, `short`는 `int`로 변환
-  5. 이후, 둘 중 하나가 `long`이면 모두 `long`으로 변환
-- `int` 형과 `float` 형이 같이 사용된다면, `int` 형은 `float` 형으로 변환되지만 **`double` 형으로 변환되진 않음**
-  - `float` 형은 `double` 형보다 메모리를 적게 사용하며 연산 속도가 빠름
-  - 프로그램을 효율적으로 실행하기 위한 목적
-- 무부호형과 부호형이 혼합될 경우, 다음 규칙이 적용됨:
-  - 무부호형의 변환 순위 (rank)가 부호형보다 크거나 같으면, 부호형이 무부호형으로 변환됨
-  - e.g., 16-bit `int`, 32-bit `long`인 환경에서:
-    - `-1L < 1U` (`1U` → `signed long`)
-    - `-1L > 1U` (`1L` → `unsigned long`, 음수 표현식이 더 큰 값으로 평가됨)
+- 서로 다른 산술형 간 연산 (binary arithmetic operations)이 일어날 때 다음 규칙 적용:
+  1. 정수 승격
+      - `char`, `signed char`, `unsigned char`, `short`, `unsigned short`, `enum` 형은 `int` 또는 `unsigned int` 형으로 승격
+  2. 산술 형 변환
+      1. 두 피연산자 중 하나라도 `long double` 형이면 둘 다 `long double` 형으로 변환
+      2. 그렇지 않고 하나라도 `double` 형이면 둘 다 `double` 형으로 변환
+      3. 그렇지 않고 하나라도 `float` 형이면 둘 다 `float` 형으로 변환
+  3. 정수 변환 - 변환 순위 (rank, `int` < `long`)와 부호 여부 (signedness)를 고려하여 변환
+      1. 두 피연산자 중 하나라도 `unsigned` 형이면서 `unsigned` 형 변환 순위가 `signed` 형보다 높거나 같다면 `signed` 형은 `unsigned` 형으로 변환
+      2. 그렇지 않고 하나라도 `unsigned` 형이면서 `signed` 형 변환 순위가 `unsigned` 형보다 높다면 `unsigned` 형은 `signed` 형으로 변환
+      3. 그렇지 않고 하나라도 `unsigned` 형이면서 `signed` 형 변환 순위가 `unsigned` 형보다 높지만 `signed` 형이 `unsigned` 형의 모든 값을 표현할 수 없다면 둘 다 `unsigned` 형 중에서 더 높은 변환 순위로 변환
+      4. 그렇지 않고 두 피연산자가 모두 `unsigned` 형이라면 더 높은 변환 순위로 변환
 
 ---
 
 ## Type Conversions (Cont'd - 4)
 
+[//]: # (INCLUDE: ./c/02/type_conversion.c)
+
+---
+
+## Type Conversions (Cont'd - 5)
+
 ### 대입 시 암묵적 형 변환
 
 - 대입 연산에서 좌변 (l-value)과 우변 (r-value)의 형이 다르면 우변이 좌변의 형으로 변환됨
   - 실수 형에서 정수 형으로 변환 시 소수 부분은 버려짐
-  - `double` 형에서 `float` 형 변환 시 반올림 또는 절단 발생 가능 (정확도 손실)
+  - `double` 형에서 `float` 형 변환 시 오차가 발생할 수 있음 (정밀도가 부족한 경우 반올림 발생)
 
 ```c
 int i = 256;
@@ -1218,7 +1271,7 @@ f = i;  /* f = 3.0 */
 
 ---
 
-## Type Conversions (Cont'd - 5)
+## Type Conversions (Cont'd - 6)
 
 ### 명시적 형 변환을 활용한 예 - 표준 함수 `rand`, `srand`
 
