@@ -710,7 +710,7 @@ int main(void)
 ### 문자 상수
 
 - `'A'`, `'1'`, `'\n'`처럼 작은 따옴표로 감싼 값
-- **프로그램은 문자 상수를 정수형 값으로 처리**
+- **프로그램은 문자 상수를 정수 (`int`)형 값으로 처리**
   - 문자 인코딩 표 (e.g., ASCII, EBCDIC, etc.)를 참조해 특정 정수 값으로 대응
 
 #### 문자 상수 사용 시 주의사항
@@ -1161,6 +1161,7 @@ int i = x;  /* An int can't represent `x`; it's converted to an unsigned int */
 - 실수 승격 시 배정도 부동소수점은 항상 단정도 부동소수점보다 높은 정밀도를 가지므로 조건 없이 `double` 형으로 승격됨
 
 ```c
+float f = 3.14;
 /* Although 'f' is a float, when passed to printf (a variadic function),
    it is promoted to double. So we must use %f, not %lf. */
 printf("float promoted to double: %f\n", f);
