@@ -6,7 +6,7 @@ int main(void)
     printf("Hello, world!\n");
 
 jump_before_return_stmt:
-    printf("Bye\n"); /* labeled-statement: identifier : statement */
+    printf("Bye\n"); /* identifier : statement (labeled-statement) */
 
     return 0;
 }
