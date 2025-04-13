@@ -2,6 +2,7 @@
 - 컴퓨터프로그래밍기초
 - Pointers and Arrays
 
+- chapter2에서 endian + 코드부분 포인터 공부 후 소개
 
 # Contents
 - 컴퓨터프로그래밍기초
