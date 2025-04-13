@@ -147,7 +147,7 @@ selection-statement:
 ```c
 /* statement -> expression-statement */
 if (x > 0)
-    y = 1;  /* expression-statement: (assignment) followed by ; */
+    y = 1;
 ```
 
 ```c
@@ -213,7 +213,7 @@ if (n > 0)
   1. 가장 내부에 있는 코드부터 해석한다.
   2. 해석 시 가장 긴 문법 규칙을 따른다 (Longest Match Rule, Greedy Rule).
 - 컴파일러의 문법 해석 규칙에 따라 **`else`는 항상 가장 가까운 `if`문과 연결됨**
-- 만약 `else`를 다른 `if`문과 대응하도록 하고 싶다면 아래와 같이 복합문을 사용:
+- 만약 `else`가 다른 `if`문과 대응되어야 한다면 아래와 같이 복합문을 사용:
 
 ```c
 /* if (expression) [compound-statement] else [expression-statement] */
@@ -252,7 +252,7 @@ if (n > 0) {
 selection-statement:
     if ( expression ) statement
     if ( expression ) statement else statement
-    switch ( expression ) statement      ←
+    switch ( expression ) statement            ←
 
 labeled-statement:
     identifier : statement
@@ -293,7 +293,7 @@ default:
     - `default`문이 존재한다면 `default`문의 문장부터 실행이 시작됨
     - `default`문이 존재하지 않는다면 어떠한 문장도 실행되지 않음
 - 레이블문은 실행될 문장을 가리키는 용도로만 사용되며, **제어 흐름에 영향을 주지 않음**
-- `break` 생략 시 fall-through 발생
+- **`break` 생략 시 fall-through 발생**
 
 ---
 
@@ -305,14 +305,14 @@ default:
 jump-statement:
     goto identifier ;
     continue ;
-    break ; ←
+    break ;                  ←
     return expression(opt) ;
 ```
 
 [//]: # (INCLUDE: ./c/03/switch2.c)
 
 - `break`문은 반복문 (an iteration statement) 또는 `switch`문애서만 사용 가능
-- `break`문을 가장 가까이 감싸고 있는 반복문 또는 `switch`문의 실행을 **즉시 종료**
+- **`break`문을 가장 가까이 감싸고 있는 반복문 또는 `switch`문의 실행을 즉시 종료**
 
 ---
 
@@ -321,17 +321,17 @@ jump-statement:
 ### Switch 해석 구조
 
 ```c
-/* switch (expression) statement */
+/*   switch (expression) statement
+  -> switch (expression) [compound-statement] */
 switch (1) {
-/* case constant-expression : statement */
 case 1:
-    printf("One\n");    /* labeled-statement -> statement */
-    break;              /* jump-statement    -> statement */
+    putchar('A'); /* case constant-expression : statement (labeled-statement) */
+    break;        /* statement (jump-statement) */
 case 2:
-    printf("Two\n");    /* labeled-statement -> statement */
-    break;              /* jump-statement    -> statement */
+    putchar('B');
+    break;
 default:
-    printf("Other\n");  /* labeled-statement -> statement */
+    putchar('-'); /* default : statement (labeled-statement) */
 }
 ```
 
@@ -339,7 +339,7 @@ default:
 
 ```c
 case 1:
-    int x = 10;  /* it's not a statement (declaration) -> error */
+    int x = 10; /* Invalid: declaration not allowed directly after case label */
     break;
 ```
 
@@ -347,7 +347,7 @@ case 1:
 
 ```c
 case 1: {
-    int x = 10;
+    int x = 10;  /* Valid: declaration is inside a compound-statement */
     break;
 }
 ```
@@ -367,6 +367,7 @@ case 1: {
 ### Switch - Multiple Case Labels
 
 - `case`문은 여러 개 중첩해 사용할 수 있음
+  - `case constant-expression : statement`에서 `statement`를 `labeled-statement`로 반복 해석
 
 ```c
 /* You can replace the following phrase with `switch`:
@@ -417,6 +418,12 @@ iteration-statement:
   - 세 번째 항은 하위 문장을 수행한 뒤에 수행되며, `for`문의 조건 재초기화 (갱신)를 담당
 - `for`문의 두 번째 항은 생략될 경우 **암묵적으로 `0`이 아닌 상수로 설정됨**
 
+```c
+for (;;) {  /* the second expression is not equal to 0 -> loop */
+    /* do something ... */
+}
+```
+
 ---
 
 ## Iteration-Statements (Cont'd - 1)
@@ -426,7 +433,7 @@ iteration-statement:
 ```text
 jump-statement:
     goto identifier ;
-    continue ; ←
+    continue ;               ←
     break ;
     return expression(opt) ;
 ```
@@ -437,6 +444,16 @@ jump-statement:
   - 해당 반복문의 `continue`문은 `goto contin`문과 동일한 동작 수행
 
 ![center](image-2.png)
+
+- `continue`문은 코드의 들여쓰기 수준을 낮출 수 있다는 장점이 있지만, 자주 사용할 경우 코드 가독성이 떨어짐
+
+```c
+for (i = 0; i < n; ++i) {
+    if (a[i] < 0)  /* skip negative elements */
+        continue;
+    /* only positive elements present here. */
+}
+```
 
 ---
 
@@ -452,7 +469,7 @@ jump-statement:
     return expression(opt) ;
 
 labeled-statement:
-    identifier : statement   ←
+    identifier : statement               ←
     case constant-expression : statement
     default : statement
 ```
@@ -470,7 +487,7 @@ labeled-statement:
 
 - `continue`문을 소개하기 위해 `goto`문을 소개했으나, **이론적으로 전혀 필요하지 않음**
   - `goto`문은 다른 문법으로 충분히 대체 가능하며, 실제로 TCPL 책에서도 `goto`문을 사용하지 않음
-- 몇몇 경우에서는 `goto`문을 사용하는 것이 편리한 경우가 있음
+- 자주 발생하지는 않으나 `goto`문을 사용하는 것이 편리한 경우가 있음
 
 ```c
     for (found = i = 0; (i < n) && !found; ++i) {
@@ -553,8 +570,8 @@ foo(a, (t = 3, t + 2), c);
 
 - 쉼표 연산자는 꼭 필요한 경우에만 사용해야 함
 - 다음과 같이 서로 **강하게 연관**되는 경우에만 사용할 것을 권장
-- `for`문의 본문은 서로 강하게 연관되어 있으므로 해당 본문을 쉼표 연산자를 사용해 더욱 간략화할 수 있음
-  - `for`문의 본문은 두 요소의 값을 교환하며, 항상 같이 사용되어야 하는 문장들임
+- `reverse` 함수의 `for`문의 본문은 서로 강하게 연관되므로 쉼표 연산자를 사용해 더욱 간략화할 수 있음
+  - 두 요소의 값을 교환하는 문장들이므로 항상 같이 사용되어야 유효한 문장들임
 
 ```c
 for (i = 0, j = (strlen(s) - 1); i < j; ++i, --j)
@@ -569,13 +586,14 @@ for (i = 0, j = (strlen(s) - 1); i < j; ++i, --j)
 
 [//]: # (INCLUDE: ./c/03/07.c)
 
-- `do-while`문은 본문이 단일문인 경우에도 **복합문을 사용하는 것을 권장**
+- `do-while`문은 본문이 단일문인 경우에도 **`while`문과 구분하기 위한 목적으로 복합문을 사용하는 것을 권장**
+  - 반복문의 본문이 없는 경우 `;` 대신 비어있음을 강조하기 위해 `{}` 사용 권장
 
 ```c
 /* this do-while statement uses a single statement */
 do
     s[i++] = (n % 10) + '0';
-while ((n /= 10) > 0);  /* It may be caused 
+while ((n /= 10) > 0);  /* It can be confused with a while without a body */
 ```
 
 ---
