@@ -1,5 +1,14 @@
 # Lecture Notes - C
 
+## TODOS
+
+- Add an OT note
+- Add a dockerfile
+- Add a description how to setup a build environment using the dockerfile
+- Add a compile option `pedantic-errors`
+- Consider how to manage snippet code
+- Rename code and images
+
 ## MARKDOWN WRITING GUIDELINES FOR NOTES
 
 ### GENERAL RULES
