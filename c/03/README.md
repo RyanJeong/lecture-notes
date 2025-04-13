@@ -1,622 +1,591 @@
-# 컴퓨터프로그래밍기초
-- 컴퓨터프로그래밍기초
-- Control Flow
+---
+marp: true
+---
 
+# Control Flow
 
-# Contents
-- 컴퓨터프로그래밍기초
-- 2
-- Contents
-- Chapter 1 - A Tutorial Introduction
-- Chapter 2 - Types, Operators and Expressions
-- Chapter 3 - Control Flow
-- Chapter 4 - Functions and Program Structure
-- Chapter 5 - Pointers and Arrays
-- Chapter 6 - Structures
-- Chapter 7 - Input and Output
-- Chapter 8 - The UNIX System Interface
+## Goals of This Chapter
 
+### 문장 (Statements)과 블록 (Blocks)의 개념
 
-# Goals of This Chapter
-- 컴퓨터프로그래밍기초
-- 3
-- Goals of This Chapter
-- 문장과 블록
-- 제어흐름
-- if 문
-- switch 문
-- for 반복문
-- while 반복문
-- do-while 반복문
-- break 문
-- continue 문
-- goto 문과 레이블
+```text
+statement:
+    labeled-statement
+    expression-statement
+    compound-statement
+    selection-statement
+    iteration-statement
+    jump-statement
+```
 
+### 제어 흐름을 위한 제어문
 
-# Statements and Blocks
-- 컴퓨터프로그래밍기초
-- 4
-- Statements and Blocks
-- 문장(statement)
-- 문장의 끝에는 항상 세미콜론(;)이 위치하며, 표현식(expression) + ; 형태로 표현
-- 
-- 
-- 복합문(compound statement or block) 
-- 중괄호({})를 사용해 여러 개의 선언문 또는 문장을 묶는 데 사용
-- 함수의 내용, while, for, if-else, ...
-- 컴파일러는 코드 분석 시 복합문을 단일 문장(single statement)으로 간주하며, 복합문 뒤에는 세미콜론을 사용하지 않음
-- x = 0;
--     ++i;
--     printf("Hello, world!");
+- `if`문
+- `switch`문
+- `for`문
+- `while`문
+- `do-while`문
+- `break`문
+- `continue`문
+- `goto`문과 레이블문
 
+---
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 5
-- If-Else
-- 조건 표현에 사용
-- 
-- 
-- 조건부(표현식)의 평가 결과가 0인지 아닌지를 검사
-- expression 평가 결과가 0이면 거짓(false), 0이 아니면 참(true)으로 간주
-- 복잡한 조건부는 가독성(readability)이 좋지 못하므로, 간결하게 표현할 것
-- 
-- 
-- else는 선택사항(optional)이며, expression 평가 결과가 참이면 statement1, expression 평가 결과가 거짓이면서 else가 존재한다면 statement2 수행
-- expression이 거짓이면서 else가 존재하지 않는다면 아무런 동작을 수행하지 않음
-- if (expression)
--       statement1
--     else
--       statement2
-- /* if (expression != 0) */
--     if (expression)
+## Statements and Blocks
 
+### 문장의 종류
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 6
-- If-Else
-- if 문의 평가 결과는 단일문
-- 
-- 
-- statement에는 하나의 단일 문장 또는 복합문이 사용될 수 있음
-- statement가 단일문일 경우 괄호 생략 가능
-- statement가 복합문일 경우 괄호 필수
-- if (expression)
--       statement1
--     else
--       statement2
-- if (expression) /* if the expression is true */
--       statement1
--     else
--       statement2
-- if (expression) /* if the expression is false */
--       statement1
--     else
--       statement2
+- 문법적으로 정의한 문장 종류:
 
+```text
+statement:
+    labeled-statement          ← identifier (label), case, default
+    expression-statement
+    compound-statement
+    selection-statement        ← if, if-else, switch
+    iteration-statement        ← for, while, do-while
+    jump-statement             ← return, break, continue, goto
+```
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 7
-- If-Else
-- 모호성(ambiguity)
-- 중첩된(nested) if 문에서 else가 생략됨에 따라 발생하는 문제
-- 
-- 
-- 
-- else는 사용된 if 문 중에서 가장 가까운 if 문과 대응
-- if (n > 0)
--       if (a > b)
--         z = a;
--       else
--         z = b;
+### 표현식 (Expressions)
 
+- 값을 계산하거나 어떤 부수효과 (side-effect)를 일으키는 단위
+  - 표현식 자체가 **값**을 나타냄
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 8
-- If-Else
-- 모호성(ambiguity) (Cont’d)
-- 다음 코드에서 else는 어느 if 문에 대응될 것인가?
-- 
-- 
-- 
-- else가 바깥 if 문과 대응되어야 한다면 괄호를 사용해 if 문의 범위를 명확하게 표현해야 함
-- if (n > 0)
--       if (a > b)
--         z = a;
--     else
--       z = b;
-- if (n > 0) {
--       if (a > b) 
--         z = a;
--     } else {
--       z = b;
--     }
+```c
+a = 10 /* Assignment expression: evaluates to 10 (the assigned value) */
+b + c  /* Addition expression: evaluates to the sum of b and c */
+x++    /* Post-increment expression: evaluates to the current value of x, then
+          increments x by 1 */
+f(x)   /* Function call expression: evaluates to the return value of function f
+          with argument x */
+```
 
+---
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 9
-- If-Else
-- 모호성(ambiguity) (Cont’d)
-- 모호성 문제는 컴파일 시 오류를 발생하지 않으며, 이러한 유형의 오류 발견은 쉽지 않음
-- 프로그램의 오동작(논리 오류, logical error) 초래
-- if (n >= 0)
--       for (i = 0; i < n; ++i) 
--         if (s[i] > 0) {
--           printf("positive number found\n");
--           return i;
--         }
--     else /* WRONG */
--       printf(“error – n is negative\n");
+## Statements and Blocks (Cont'd - 1)
 
+### 문장 (Statements)
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 10
-- If-Else
-- 모호성(ambiguity) (Cont’d)
-- 컴파일러는 들여쓰기 수준을 고려해 코드를 분석하는 것이 아닌 정해진 문법 규칙에 따라 코드를 분석
-- 중괄호를 사용해 if 문의 범위를 명확히 표현하면 모호성 문제를 해결할 수 있음
-- if (n >= 0) {
--       for (i = 0; i < n; ++i) 
--         if (s[i] > 0) {
--           printf("positive number found\n");
--           return i;
--         }
--     } else {  /* WRONG */
--       printf(“error – n is negative\n");
--     }
+```text
+statement:
+    expression-statement
+```
 
+```text
+expression-statement:
+    expression(opt) ;
+```
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 11
-- If-Else
-- 다중 조건 검사를 할 수 있는 구조(construction) 1
-- 
-- 
-- 
-- 
-- 여러 개의 if 문이 중첩된 형태 
-- e.g. expression2가 참이면 statement2 수행
-- 마지막 else는 해당 구조의 모든 표현식이 거짓일 경우 가리킴
-- 열거된 조건들을 만족하지 못하는 예외를 처리하기 위한 목적으로 사용됨
-- 마지막 else 생략 가능
-- if (expression1)
--       statement1
--     else if (expression2)
--       statement2
--     else if (expression3)
--       statement3
--     else
--       statement4
+- 하나의 표현식 (an expression) 뒤에 세미콜론 (`;`)이 붙은 형태
+- **표현식을 수행하기 위한 완전한 실행 단위**
+  - 모든 표현식은 문장을 통해 값으로 치환되며, 치환 중에 부수효과가 발생할 수도 있음
+- **빈 표현식 (an empty expression)도 표현식으로 간주**
+  - `expression` 뒤에 `(opt)` (optional) 조건이 사용되었음
+  - 빈 표현식은 값으로 바뀌거나 부수효과가 발생하지 않음 (no-op)
+  - **문법적으로만 허용하는 형태**
 
+```c
+x = 0;
+++i;
+printf("Hello, world!");
+```
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 12
-- If-Else
-- 이진 탐색(binary search)
-- 이미 정렬되어 있는 배열 안에 찾고자 하는 값이 있는지 탐색하는 알고리즘 
-- 세 가지 조건 검사를 통해 탐색 수행
-- Binary search algorithm. (2023, March 25). Retrieved from https://en.wikipedia.org/wiki/Binary_search_algorithm
+```c
+/* Following statements are also valid (use empty expressions) */
+;           /* no operation */
+for (;;) {} /* loop */
+```
 
+---
 
-# If-Else
-- 컴퓨터프로그래밍기초
-- 13
-- If-Else
-- 이진 탐색(binary search) (cont’d)
-- <stdlib.h> 헤더 파일 내에 bsearch 함수가 정의되어 있음
-- e.g. 4를 찾고자 하는 경우:
-- /* binsearch: find x in v[O] <= v[1] <= ... <= v[n-1] */
--     int binsearch(int x, int v[], int n)
--     {
--       int low, high, mid;
--       low = 0;
--       high = n - 1;
--       while (low <= high) {
--         mid = (low + high) / 2;
--         if (x < v[mid])
--           high = mid - 1;
--         else if (x > v[mid])
--           low = mid + 1;
--         else
--           return mid; /* found match */
--       }
--       return -1; /* no match */
--     }
-- low
-- high
-- mid
-- low
-- high
-- mid
-- low
-- high
-- mid
+## Statements and Blocks (Cont'd - 2)
 
+### 복합문 (Compound Statements, Blocks)
 
-# Switch
-- 컴퓨터프로그래밍기초
-- 14
-- Switch
-- 다중 조건 검사를 할 수 있는 구조 2
-- 
-- 
-- switch 문의 표현식 평가 결과와 case 레이블의 상수 표현식의 값을 서로 비교해 switch 문의 시작 위치를 결정
-- e.g. expression의 평가 결과와 const-expr2의 값이 서로 일치한다면, statement2 문장부터 계산 시작(statement1 문장은 무시됨)
-- 모든 case 레이블의 상수 표현식은 서로 달라야 함
-- default 레이블은 일반적으로 switch 문의 가장 아래에 위치하며, 생략 가능
-- switch 문의 표현식 평가 결과가 주어진 case 레이블의 상수 표현식의 값과 모두 다르고, default 레이블이 생략되었다면 아무런 동작을 수행하지 않음
-- switch (expression) {
--       case const-expr1: statement1
--       case const-expr2: statement2
--       defaults: statement
--     }
-- switch (expression) { /* == const-expr1 */
--       case const-expr1: statement1
--       case const-expr2: statement2
--       defaults: statement
--     }
-- switch (expression) { /* == const-expr2 */
--       case const-expr1: statement1
--       case const-expr2: statement2
--       defaults: statement
--     }
+```text
+statement:
+    compound-statement
+```
 
+```text
+compound-statement:
+    { declaration-list(opt) statement-list(opt) }
 
-# Switch
-- 컴퓨터프로그래밍기초
-- 15
-- Switch
-- Else-if 구조를 switch 문으로 바꾼 예:
-- #include <stdio.h>
--     /* count digits, white space, others */
--     int main(void)
--     {
--       int c, i, nwhite, nother, ndigit[10];
--       nwhite = nother = 0;
--       for (i = 0; i < 10; ++i)
--         ndigit[i] = 0;
--       while ((c = getchar()) != EOF) {
--         switch (c) {
--           case '0': case '1': case '2': case '3': case '4':
--           case '5': case '6': case '7': case '8': case '9':
--             ++ndigit[c-'0'];
--             break;
--           case ' ': case '\n': case '\t':
--             ++nwhite;
--             break;
--           default:
--             ++nother;
--             break;
--         }
--       }      /* ... skipped ... */      return 0;
--     }
-- if (c >= '0' && c <= '9')
--       ++ndigit[c-'0'];
--     else if ((c == ' ') || (c == '\n') || (c == '\t'))
--       ++nwhite;
--     else
--       ++nother;
+declaration-list:
+    declaration
+    declaration-list declaration
 
+statement-list:
+    statement
+    statement-list statement
+```
 
-# Switch
-- 컴퓨터프로그래밍기초
-- 16
-- Switch
-- Else-if 구조를 switch 문으로 바꾼 예: (Cont’d)
-- break 문
-- switch 문을 벗어날 때 사용
-- #include <stdio.h>
--     /* count digits, white space, others */
--     int main(void)
--     {
--       int c, i, nwhite, nother, ndigit[10];
--       nwhite = nother = 0;
--       for (i = 0; i < 10; ++i)
--         ndigit[i] = 0;
--       while ((c = getchar()) != EOF) {
--         switch (c) {
--           case '0': case '1': case '2': case '3': case '4':
--           case '5': case '6': case '7': case '8': case '9':
--             ++ndigit[c-'0'];
--             break;
--           case ' ': case '\n': case '\t':
--             ++nwhite;
--             break;
--           default:
--             ++nother;
--             break;
--         }
--       }      /* ... skipped ... */      return 0;
--     }
+- 중괄호 (`{`, `}`)를 사용해 여러 개의 선언문 또는 문장을 하나로 묶은 형태
+  - e.g., 함수 본문, `while`문 본문, `if`문 본문, `for`문 본문, etc.
+- 복합문은 **여러 문장을 문맥상 하나의 문장 (a single statement)으로 취급**
+  - 문법적 단위로써 하나의 문장으로 간주
+  - 문장의 실행 순서는 보장함
+- 복합문 뒤에는 세미콜론을 붙이지 않음에 유의
 
+---
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 17
-- Loops - While and For
-- while 반복문
-- 
-- expression 평가:
-- 참일 경우, statement 수행 후 expression 재평가
-- 거짓일 경우, 반복문 종료
-- while (expression)
--       statement
+## Selection-Statements
 
+### If-Else
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 18
-- Loops - While and For
-- for 반복문
-- 
-- 
-- for 문은 세 개의 항이 필요하며, 각 항은 세미콜론(;)으로 구분됨
-- for 문의 각 항에는 표현식을 사용하며, 일반적으로 expr1에는 초기식, expr2에는 관계식, expr3에는 expr2 평가 결과에 영향을 주는 증감식 사용
-- for 문의 각 항은 생략 가능하나, 세미콜론은 남겨두어야 함
-- expr2 생략 시 for 문의 관계식은 항상 참인 상태가 됨
-- 
-- for 문 문장 내에 특별한 지시(e.g. break 문)가 없는 한 무한 반복
-- expr1 
--     while (expr2) {
--       statement
--       expr3
--     }
-- for (expr1; expr2; expr3)
--       statement
-- for (;;)
--       statement
+```text
+selection-statement:
+    if ( expression ) statement                ←
+    if ( expression ) statement else statement ←
+    switch ( expression ) statement
+```
 
+- 표현식의 평가 결과가 `0`이 아니면 `if`문 의 하위 문장 (substatement), `0`이면 `else`의 하위 문장이 수행됨
+- 표현식이 필수인 구조이므로 `expression(opt)`이 아닌 `expression` 사용
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 19
-- Loops - While and For
-- while 문과 for 문 중 어느 반복문을 써야 할까?
-- largely a matter of personal preference
-- 초기식과 증감식이 필요 없는 경우
-- 
-- 초기식과 증감식이 필요한 경우
-- 
-- 초기식, 증감식 등을 사용한다면, for 문 사용 권장
-- for 문 헤더에 초기식, 관계식, 증감식을 한 번에 확인할 수 있으며, 이는 가독성을 높임
-- while ((c = getchar()) != EOF) {}
-- for (i = 0; s[i] >= '0' && s[i] <= '9'; ++i) {}
+```c
+/* statement -> expression-statement */
+if (x > 0)
+    y = 1;  /* expression-statement: (assignment) followed by ; */
+```
 
+```c
+/* statement -> compound-statement */
+if (x > 0) {
+    int y = 10;
+    y += 5;
+}
+```
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 20
-- Loops - While and For
-- <stdlib.h> 헤더 파일 내에 atoi 함수가 정의되어 있음
-- #include <ctype.h>
--     /* atoi: convert s to integer; version 2 */
--     int atoi(char s[])
--     {
--       int i, n, sign;
--       /* skip white space */
--       for (i = 0; isspace(s[i]); ++i) {}
--       sign = (s[i] == '-') ? (-1) : 1;
--       /* skip sign */
--       if ((s[i] == '+') || (s[i] == '-'))
--         ++i;
--       for (n = 0; isdigit(s[i]); ++i)
--         n = (n * 10) + (s[i] - '0');
--       return sign * n;
--     }
+```c
+/* statement -> selection-statement */
+if (x > 0)
+    if (y > 0)
+        z = 1;
+```
 
+---
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 21
-- Loops - While and For
-- Shellsort algorithm
-- 배열 안에 있는 값들을 정렬
-- shellsort 함수는 사용자 정의 함수
-- e.g. 11개의 정수 정렬 예:
-- /* shellsort: sort v[0] ... v[n-1] into increasing order */
--     void shellsort(int v[], int n)
--     {
--       int gap, i, j, temp;
--       for (gap = (n / 2); gap > 0; gap /= 2) {
--         for (i = gap; i < n; ++i) {
--           for (j = i - gap; j >= 0 && v[j] > v[j+gap]; j -= gap) {
--             temp = v[j];
--             v[j] = v[j+gap];
--             v[j+gap] = temp;
--           }
--         }
--       }
--     }
+## Selection-Statements (Cont'd - 1)
 
+### 모호성 (Ambiguity)
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 22
-- Loops - While and For
-- 쉼표(,) 연산자
-- 쉼표 연산자를 사용해 표현식들을 열거했다면, 열거된 표현식들은 왼쪽에서 오른쪽 방향으로 평가됨
-- 쉼표 연산자를 사용해 열거된 표현식들의 평가 결과는 가장 오른쪽에 있는 표현식의 형과 값
+> 다음 코드에서 `else`는 어느 `if`문과 대응되는가?
 
+```c
+if (n > 0)
+    if (a > b)
+        z = a;
+else
+    z = b;
+```
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 23
-- Loops - While and For
-- reverse 함수는 사용자 정의 함수
-- #include <string.h>
--     /*reverse: reverse string s in place*/
--     void reverse(char s[])
--     {
--       int c, i, j;
--       for (i = 0, j = (strlen(s) - 1); i < j; ++i, --j) {
--         c = s[i];
--         s[i] = s[j];
--         s[j] = c;
--       }
--     }
+- 들여쓰기 수준에 맞게 논리적으로 분석하면 `else`는 첫 번째 `if`문 (`if (n > 0)`)과 대응되는 것처럼 보임
+- 문법적으로 아래와 같은 분석이 가능한 것처럼 보임:
 
+```text
+  if (expression) statement else statement
+→ if (expression) [if (expression) statement] else statement
+→ if (expression) [if (expression) [expression-statement]] else [expression-statement]
+```
 
-# Loops - While and For
-- 컴퓨터프로그래밍기초
-- 24
-- Loops - While and For
-- 쉼표 연산자와 표기는 같지만 쉼표 연산자가 아닌 경우:
-- 왼쪽에서 오른쪽으로 평가됨을 보장하지 않음
-- separate function arguments, variables in declarations, etc.
-- 쉼표 연산자를 무분별하게 사용하면 가독성에 좋지 않음
-- 쉼표 연산자가 유용한 경우:
-- 문장들을 한 줄로 표현해야 할 때
-- 
-- 서로 연관된 표현식들이 짧게 표현된 경우
-- #define TEST_MALLOC(x) ((x) = malloc(sizeof(*x)), assert(x))
-- for (i = 0, j = (strlen(s) - 1); i < j; ++i, --j)
--       c = s[i], s[i] = s[j], s[j] = c;
+- **하지만 `else`는 두 번째 `if`문 (`if (a > b)`)과 대응됨**
 
+```c
+/* if (expression) [if (expression) statement else statement] */
+if (n > 0)
+    if (a > b)
+        z = a;
+    else
+        z = b;
+```
 
-# Loops - Do-While
-- 컴퓨터프로그래밍기초
-- 25
-- Loops - Do-While
-- 문장을 먼저 수행한 후에 조건 검사
-- 
-- 
-- 조건의 참 거짓 여부와 관계 없이 statement가 무조건 한 번은 수행됨을 보장
-- statement 수행 후, expression 평가:
-- 참일 경우, statement 수행 후 expression 재평가
-- 거짓일 경우, 반복문 종료
-- 세미콜론이 사용됨에 주의할 것
-- do-while 문의 문장이 단일 문장일 경우에도 중괄호를 사용할 것을 권장
-- 
-- 
-- do-while 문을 while 문으로 착각할 수 있음
-- do
--       statement
--     while (expression);
-- do
--       s[i++] = (n % 10) + '0'; /* get next digit */
--     while ((n /= 10) > 0); /* delete it */
+---
 
+## Selection-Statements (Cont'd - 2)
 
-# Loops - Do-While
-- 컴퓨터프로그래밍기초
-- 26
-- Loops - Do-While
-- itoa 함수는 사용자 정의 함수
-- /* itoa: convert n to characters in s */
--     void itoa(int n, char s[])
--     {
--       int i, sign;
--       if ((sign = n) < 0) /* record sign */
--         n = (-n); /* make n positive */
--       i = 0;
--       do {
--         s[i++] = (n % 10) + '0'; /* get next digit */
--       } while ((n /= 10) > 0); /* delete it */
--       if (sign < 0)
--         s[i++] = '-';
--       s[i] = '\0';
--       /* reverse function is not a standard library */
--       reverse(s);
--     }
+### Dangling Else
 
+- `else`가 선택적으로 사용될 경우 중첩된 조건문이 모호해지는 문제
+  - C 언어의 문법 구조는 해석 방법에 따라 여러 형태로 해석될 수 있음
+- 모호성을 해결하고자 컴파일러는 코드를 문법적으로 해석할 때 다음 규칙을 따름:
+  1. 가장 내부에 있는 코드부터 해석한다.
+  2. 해석 시 가장 긴 문법 규칙을 따른다 (Longest Match Rule, Greedy Rule).
+- 컴파일러의 문법 해석 규칙에 따라 **`else`는 항상 가장 가까운 `if`문과 연결됨**
+- 만약 `else`를 다른 `if`문과 대응하도록 하고 싶다면 아래와 같이 복합문을 사용:
 
-# Break and Continue
-- 컴퓨터프로그래밍기초
-- 27
-- Break and Continue
-- break 문
-- 구조를 벗어나는 데 사용되는 특별한 지시 중 하나
-- switch 문, for 반복문, while 반복문, do-while 반복문을 벗어나고자 할 때 사용
-- 
-- trim 함수는 사용자 정의 함수
-- #include <string.h>
--     /* trim: remove trailing blanks, tabs, newlines */
--     int trim(char s[])
--     {
--       int n;
--       for (n = (strlen(s) - 1); n >= 0; --n) {
--         if (s[n] != ' ' && s[n] != '\t' && s[n] != '\n')
--           break;
--       }
--       s[n+1] = '\0';
--       return n;
--     }
+```c
+/* if (expression) [compound-statement] else [expression-statement] */
+if (n > 0) {
+    if (a > b)
+        z = a;
+} else
+    z = b;
+```
 
+---
 
-# Break and Continue
-- 컴퓨터프로그래밍기초
-- 28
-- Break and Continue
-- continue 문
-- 반복문에서만 사용 가능
-- 반복문 수행 중 continue 문을 만나면 뒤따르는 문장들 무시 가능:
-- for 반복문은 증감식 부분으로 이동
-- while, do-while 반복문은 조건부로 이동
-- 반복문 내에 switch 문이 사용됐다면 switch 문 내에서도 사용 가능
-- continue 문은 불필요한 코드 작성을 피하거나 들여쓰기 수준을 낮출 수 있음
-- for (i = 0; i < n; ++i) {
--       if (a[i] < 0) /* skip negative elements */
--         continue;
--       /* do positive elements */
--     }
+## Selection-Statements (Cont'd - 3)
 
+### 이진 탐색 (Binary Search)
 
-# Goto and Labels
-- 컴퓨터프로그래밍기초
-- 29
-- Goto and Labels
-- goto 문은 이론적으로 전혀 필요하지 않으며, goto 문은 충분히 다른 문법으로 대체할 수 있음
-- 제어변수 사용, 사용자 정의 함수, etc.
-- TCPL 책에서는 goto 문을 사용하지 않음
-- 몇몇 경우에서는 goto 문이 상당히 유용함
-- 중첩된 반복문 내부에서 오류 혹은 특별한 경우가 발생함에 따라 중첩된 반복문 구조를 한 번에 벗어나야 하는 경우
-- break 문은 한 번에 한 개의 구조만 벗어날 수 있음
-- 오류 처리 코드가 간단하지 않고(non-trivial), 오류가 여러 곳에서 발생할 가능성이 있는 경우
+- **이미 정렬되어 있는 배열**로부터 찾고자 하는 값을 빠르게 탐색하는 방법
 
+![center h:320](image.png)
 
-# Goto and Labels
-- 컴퓨터프로그래밍기초
-- 30
-- Goto and Labels
-- 레이블(labels)은 변수 이름과 동일한 형식을 가지며, 레이블 뒤에 콜론(:)이 사용됨
-- 
-- 레이블은 goto 문이 사용된 함수 내에 위치해야 함
-- 레이블의 적용 범위는 레이블이 위치한 함수(지역) 전체
-- 
-- 레이블은 문장이 등장할 수 있는 위치에 어디든지 사용 가능
+---
 
+## Selection-Statements (Cont'd - 4)
 
-# Goto and Labels
-- 컴퓨터프로그래밍기초
-- 31
-- Goto and Labels
-- goto 문 사용 예:
-- for (i = 0; i < n; ++i) {
--         for (j = 0; j < m; ++j) {
--           if (a[i] == b[j])
--             goto found;
--         }
--       }
--       /* didn't find any common elements */
-- 
--     found:
--       /* got one: a[i] == b[j]*/
-- int found = 0;
--     for (i = 0; (i < n) && !found; ++i) {
--       for (j = 0; (j < m) && !found; ++j) {
--         if (a[i] == b[j])
--           found = 1;
--       }
--     }
--     if (found)
--       /* got one: a[i] == b[j] */
--     else
--       /* didn't find any common element */
+[//]: # (INCLUDE: ./c/03/01.c)
 
+![center h:200](image-1.png)
+
+---
+
+## Selection-Statements (Cont'd - 5)
+
+### Switch
+
+```text
+selection-statement:
+    if ( expression ) statement
+    if ( expression ) statement else statement
+    switch ( expression ) statement      ←
+
+labeled-statement:
+    identifier : statement
+    case constant-expression : statement ←
+    default : statement                  ←
+```
+
+- `statement`는 `switch`문 내부에서만 유효한 레이블문 (`case`문, `default`문)을 사용하기 위해 주로 복합문 사용
+
+```c
+switch (x)  /* This form is valid, but we can't use `default`. */
+case 1:
+    printf("OK");
+```
+
+```c
+switch (x) {  /* This form can utilize both `case` and `default`. */
+case 1:
+    printf("One");
+    break;
+default:
+    printf("Other");
+}
+```
+
+---
+
+## Selection-Statements (Cont'd - 6)
+
+### Switch - `case`문과 `default`문
+
+[//]: # (INCLUDE: ./c/03/switch1.c)
+
+- **`switch`문의 표현식과 `case`문의 상수식은 반드시 정수형 (`int`)이여야 함**
+- 표현식을 평가한 값과 상수식을 평가한 값을 서로 비교
+  - 두 값을 비교했을 때 서로 일치하는 `case`문의 문장부터 실행이 시작됨
+  - 두 값을 비교했을 때 서로 일치하는 경우가 없다면 `default`문 유무에 따라 실행될 문장이 결정됨
+    - `default`문이 존재한다면 `default`문의 문장부터 실행이 시작됨
+    - `default`문이 존재하지 않는다면 어떠한 문장도 실행되지 않음
+- 레이블문은 실행될 문장을 가리키는 용도로만 사용되며, **제어 흐름에 영향을 주지 않음**
+- `break` 생략 시 fall-through 발생
+
+---
+
+## Selection-Statements (Cont'd - 7)
+
+### Switch - `break`문
+
+```text
+jump-statement:
+    goto identifier ;
+    continue ;
+    break ; ←
+    return expression(opt) ;
+```
+
+[//]: # (INCLUDE: ./c/03/switch2.c)
+
+- `break`문은 반복문 (an iteration statement) 또는 `switch`문애서만 사용 가능
+- `break`문을 가장 가까이 감싸고 있는 반복문 또는 `switch`문의 실행을 **즉시 종료**
+
+---
+
+## Selection-Statements (Cont'd - 8)
+
+### Switch 해석 구조
+
+```c
+/* switch (expression) statement */
+switch (1) {
+/* case constant-expression : statement */
+case 1:
+    printf("One\n");    /* labeled-statement -> statement */
+    break;              /* jump-statement    -> statement */
+case 2:
+    printf("Two\n");    /* labeled-statement -> statement */
+    break;              /* jump-statement    -> statement */
+default:
+    printf("Other\n");  /* labeled-statement -> statement */
+}
+```
+
+- 다음과 같이 선언문을 구성하면 `case`문을 올바르게 해석할 수 없으므로 오류
+
+```c
+case 1:
+    int x = 10;  /* it's not a statement (declaration) -> error */
+    break;
+```
+
+- 복합문을 사용하면 `case`문에서 선언문 사용 가능
+
+```c
+case 1: {
+    int x = 10;
+    break;
+}
+```
+
+---
+
+## Selection-Statements (Cont'd - 9)
+
+### `break`문을 활용한 예 - 사용자 정의 함수 `trim`
+
+[//]: # (INCLUDE: ./c/03/08.c)
+
+---
+
+## Selection-Statements (Cont'd - 10)
+
+### Switch - Multiple Case Labels
+
+- `case`문은 여러 개 중첩해 사용할 수 있음
+
+```c
+/* You can replace the following phrase with `switch`:
+
+if (c >= '0' && c <= '9')
+    ++ndigit[c-'0'];
+else if ((c == ' ') || (c == '\n') || (c == '\t'))
+    ++nwhite;
+else
+    ++nother;
+*/
+
+switch (c) {
+/* case constant-expression : case constant-expression : ... : statement */
+case '0': case '1': case '2': case '3': case '4':
+case '5': case '6': case '7': case '8': case '9':
+    ++ndigit[c-'0'];
+    break;
+case ' ': case '\n': case '\t':
+    ++nwhite;
+    break;
+default:
+    ++nother;
+    break;
+}
+```
+
+---
+
+## Iteration-Statements
+
+### While, Do-While, and For
+
+```text
+iteration-statement:
+    while ( expression ) statement                                        ←
+    do statement while ( expression ) ;                                   ←
+    for ( expression(opt) ; expression(opt) ; expression(opt) ) statement ←
+```
+
+- `while`문은 표현식의 평가 결과가 `0`이 아닌 동안 `while`문의 하위 문장을 반복 수행
+- `while`문과 `do-while`문의 차이는 조건 검사 (test)를 어느 시점에 수행하는가에 차이가 있음:
+  - `while`문은 먼저 조건 검사를 수행한 후 하위 문장 수행
+  - `do-while`문은 하위 문장 수행 후 조건 검사 수행
+- `for`문은 세 개의 표현식으로 구성되며, 각 항은 선택사항임:
+  - 첫 번째 항은 한 번만 수행되며, 주로 `for`문의 조건 초기화를 담당
+  - 두 번째 항은 하위 문장을 수행하기 전에 수행되며, `0`이 아닌 동안 `for`문의 하위 문장을 반복 수행
+  - 세 번째 항은 하위 문장을 수행한 뒤에 수행되며, `for`문의 조건 재초기화 (갱신)를 담당
+- `for`문의 두 번째 항은 생략될 경우 **암묵적으로 `0`이 아닌 상수로 설정됨**
+
+---
+
+## Iteration-Statements (Cont'd - 1)
+
+### `continue`문
+
+```text
+jump-statement:
+    goto identifier ;
+    continue ; ←
+    break ;
+    return expression(opt) ;
+```
+
+- 반복문 내에만 등장할 수 있는 문장
+- `continue`문을 가장 가까이 감싸고 있는 반복문의 **다음 반복 단계로 이동**시킴
+  - 해당 반복문의 마지막 문장에 암묵적으로 레이블문 (`goto contin`)이 생성됨
+  - 해당 반복문의 `continue`문은 `goto contin`문과 동일한 동작 수행
+
+![center](image-2.png)
+
+---
+
+## Iteration-Statements (Cont'd - 2)
+
+### `goto`문
+
+```text
+jump-statement:
+    goto identifier ;        ←
+    continue ;
+    break ;
+    return expression(opt) ;
+
+labeled-statement:
+    identifier : statement   ←
+    case constant-expression : statement
+    default : statement
+```
+
+- 레이블 이름 (`identifier`)을 사용하는 레이블문으로 즉시 이동할 수 있는 문장
+- **`goto`문의 레이블은 반드시 같은 함수 내에 존재해야 함**
+
+[//]: # (INCLUDE: ./c/03/goto.c)
+
+---
+
+## Iteration-Statements (Cont'd - 3)
+
+### `goto`문 사용 예
+
+- `continue`문을 소개하기 위해 `goto`문을 소개했으나, **이론적으로 전혀 필요하지 않음**
+  - `goto`문은 다른 문법으로 충분히 대체 가능하며, 실제로 TCPL 책에서도 `goto`문을 사용하지 않음
+- 몇몇 경우에서는 `goto`문을 사용하는 것이 편리한 경우가 있음
+
+```c
+    for (found = i = 0; (i < n) && !found; ++i) {
+        for (j = 0; (j < m) && !found; ++j) {
+            if (a[i] == b[j])
+                found = 1;
+        }
+    }
+    if (!found)
+        return;  /* didn't find any common element */
+    /* got one: a[i] == b[j] */ : 
+```
+
+- `goto`문을 사용한 형태:
+
+```c
+    for (i = 0; i < n; ++i) {
+        for (j = 0; j < m; ++j) {
+            if (a[i] == b[j])
+                goto found;
+        }
+    }
+    return;  /* didn't find any common elements */
+found:
+    /* got one: a[i] == b[j]*/
+```
+
+---
+
+## Iteration-Statements (Cont'd - 4)
+
+### 반복문을 활용한 예 - 표준 함수 `atoi`
+
+[//]: # (INCLUDE: ./c/03/03.c)
+
+---
+
+## Iteration-Statements (Cont'd - 5)
+
+[//]: # (INCLUDE: ./c/03/03_example.c)
+
+---
+
+## Iteration-Statements (Cont'd - 6)
+
+### 반복문을 활용한 예 - 사용자 정의 함수 `shellsort`
+
+[//]: # (INCLUDE: ./c/03/04.c)
+
+![center](image-3.png)
+
+---
+
+## Iteration-Statements (Cont'd - 7)
+
+### Comma Operator (`,`)
+
+- 표현식들이 쉼표를 사용하여 열거된 형태
+- 쉼표 연산자를 기준으로 가장 좌측 항부터 **차례대로 평가**됨
+- 전체 표현식에 대한 값과 형은 **가장 우측 항을 따름**
+  - 평가된 좌측 항들은 평가 이후 무시됨
+
+[//]: # (INCLUDE: ./c/03/comma.c)
+
+- 쉼표 표현이 **특별한 의미**를 갖는 문맥에서는 **괄호를 사용해 쉼표 연산자를 표현해야 함**
+  - e.g., lists of function arguments (§A7.3.2), lists of initializers (§A8.7), etc.
+
+```c
+/* The function foo has three arguments, the second of which has the value 5 */
+foo(a, (t = 3, t + 2), c);
+```
+
+---
+
+## Iteration-Statements (Cont'd - 8)
+
+### 쉼표 연산자를 활용한 예 - 사용자 정의 함수 `reverse`
+
+[//]: # (INCLUDE: ./c/03/05.c)
+
+- 쉼표 연산자는 꼭 필요한 경우에만 사용해야 함
+- 다음과 같이 서로 **강하게 연관**되는 경우에만 사용할 것을 권장
+- `for`문의 본문은 서로 강하게 연관되어 있으므로 해당 본문을 쉼표 연산자를 사용해 더욱 간략화할 수 있음
+  - `for`문의 본문은 두 요소의 값을 교환하며, 항상 같이 사용되어야 하는 문장들임
+
+```c
+for (i = 0, j = (strlen(s) - 1); i < j; ++i, --j)
+    c = s[i], s[i] = s[j], s[j] = c;
+```
+
+---
+
+## Iteration-Statements (Cont'd - 9)
+
+### 반복문을 활용한 예 - 사용자 정의 함수 `itoa`
+
+[//]: # (INCLUDE: ./c/03/07.c)
+
+- `do-while`문은 본문이 단일문인 경우에도 **복합문을 사용하는 것을 권장**
+
+```c
+/* this do-while statement uses a single statement */
+do
+    s[i++] = (n % 10) + '0';
+while ((n /= 10) > 0);  /* It may be caused 
+```
+
+---
+
+## Appendix A. Grammar of `statement` in ANSI C (C89)
+
+![center](image-4.png)
+
+---
+
+## Appendix A. Grammar of `statement` in ANSI C (C89) (Cont'd)
+
+![center](image-5.png)
