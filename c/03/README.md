@@ -311,8 +311,8 @@ jump-statement:
 
 [//]: # (INCLUDE: ./c/03/switch2.c)
 
-- `break`문은 반복문 (an iteration statement) 또는 `switch`문애서만 사용 가능
 - **`break`문을 가장 가까이 감싸고 있는 반복문 또는 `switch`문의 실행을 즉시 종료**
+  - 다른 문장은 `break`문 사용 불가
 
 ---
 
