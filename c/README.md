@@ -8,6 +8,7 @@
 - Add a compile option `pedantic-errors`
 - Consider how to manage snippet code
 - Rename code and images
+- Improve "Goals of This Chaper"
 
 ## MARKDOWN WRITING GUIDELINES FOR NOTES
 
