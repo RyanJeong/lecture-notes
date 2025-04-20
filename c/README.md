@@ -9,6 +9,9 @@
 - Consider how to manage snippet code
 - Rename code and images
 - Improve "Goals of This Chaper"
+- `nolint`, `nobuild`
+- Watermark (email address)
+- pptx build process
 
 ## MARKDOWN WRITING GUIDELINES FOR NOTES
 
