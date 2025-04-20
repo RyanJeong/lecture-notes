@@ -201,7 +201,14 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 - 형 종류는 아래와 같음:
 
-[//]: # (INCLUDE: ./c/01/variables_and_arithmetic_expressions_3_ignore.c)
+```text
+char   → character - a single byte
+short  → short ingeger
+int    → integer
+long   → long integer
+float  → single-precision floating point
+double → double-precision floating point
+```
 
 ---
 
