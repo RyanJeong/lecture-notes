@@ -1,3 +1,4 @@
+/* Simplified example; not actual implementation(s). */
 #include <ctype.h>
 
 /* atoi: convert s to integer; version 2 */
