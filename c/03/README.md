@@ -6,28 +6,23 @@ marp: true
 
 ## Goals of This Chapter
 
-### 문장 (Statements)과 블록 (Blocks)의 개념
+### 문장과 블록 이해
 
-```text
-statement:
-    labeled-statement
-    expression-statement
-    compound-statement
-    selection-statement
-    iteration-statement
-    jump-statement
-```
+- ANSI C 문법이 정의하는 6가지 문장 종류와 블록 (복합문)의 역할 소개
 
-### 제어 흐름을 위한 제어문
+### 선택 제어
 
-- `if`문
-- `switch`문
-- `for`문
-- `while`문
-- `do-while`문
-- `break`문
-- `continue`문
-- `goto`문과 레이블문
+- `if`, `if-else`, `switch‑case`문을 사용한 조건 분기 학습
+- Dangling else 문제를 해결하는 방법 소개
+
+### 반복 제어
+
+- `while`, `do‑while`, `for` 문의 동작 순서 비교
+- `break`, `continue`문을 사용한 흐름 조절 기법 학습
+
+### 분기문
+
+- `goto`문과 레이블문의 제약을 이해하고 필요한 경우에만 사용하는 이유 소개
 
 ---
 
@@ -440,8 +435,8 @@ jump-statement:
 
 - 반복문 내에만 등장할 수 있는 문장
 - `continue`문을 가장 가까이 감싸고 있는 반복문의 **다음 반복 단계로 이동**시킴
-  - 해당 반복문의 마지막 문장에 암묵적으로 레이블문 (`goto contin`)이 생성됨
-  - 해당 반복문의 `continue`문은 `goto contin`문과 동일한 동작 수행
+  - 흐름 관점에서 봤을 때 식별자 `contin`이 블록 마지막에 생성되는 것과 동일한 효과를 보임
+  - `continue`문은 `goto contin`문으로 치환되어 블록 마지막의 `contin`으로 이동 (jump)
 
 ![center](image-2.png)
 
@@ -498,7 +493,7 @@ labeled-statement:
     }
     if (!found)
         return;  /* didn't find any common element */
-    /* got one: a[i] == b[j] */ : 
+    /* got one: a[i] == b[j] */
 ```
 
 - `goto`문을 사용한 형태:
