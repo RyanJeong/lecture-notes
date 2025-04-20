@@ -5,11 +5,10 @@
 - Add an OT note
 - Add a dockerfile
 - Add a description how to setup a build environment using the dockerfile
-- Add a compile option `pedantic-errors`
 - Consider how to manage snippet code
 - Rename code and images
 - Improve "Goals of This Chaper"
-- `nolint`, `nobuild`
+- `nolint`, `nobuild` + Add a compile option `pedantic-errors`
 - Watermark (email address)
 - pptx build process
 
