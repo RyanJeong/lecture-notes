@@ -1323,7 +1323,7 @@ printf("You have %d item%c\n", n, (n == 1) ? '\0' : 's');
 
 ## Precedence and Order of Evaluation
 
-![center h:640](image-13.png)
+![center](image-13.png)
 
 ---
 
