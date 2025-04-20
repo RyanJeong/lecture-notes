@@ -582,7 +582,6 @@ for (i = 0, j = (strlen(s) - 1); i < j; ++i, --j)
 [//]: # (INCLUDE: ./c/03/07.c)
 
 - `do-while`문은 본문이 단일문인 경우에도 **`while`문과 구분하기 위한 목적으로 복합문을 사용하는 것을 권장**
-  - 반복문의 본문이 없는 경우 `;` 대신 비어있음을 강조하기 위해 `{}` 사용 권장
 
 ```c
 /* this do-while statement uses a single statement */
