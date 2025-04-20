@@ -49,14 +49,14 @@ int _is_modified; /* ok, but don't use it */
 - 변수명의 대소문자는 구분됨
 
 ```c
-int a, A;         /* ok, `a` and `A` are difrerent variables */
+int a, A;         /* ok, `a` and `A` are different variables */
 ```
 
 ---
 
 ## Variable Names (Cont'd)
 
-- 예약어 (keysords)는 변수명으로 사용 불가
+- 예약어 (keywords)는 변수명으로 사용 불가
   - `while`, `for`, `int`, `float`, etc.
 - 변수명은 사용 목적에 맞는 적합한 이름을 사용해야 함
 - 지역 변수 (local variables)는 짧은 변수명을, 전역 변수 (global variables)는 긴 변수명을 사용할 것을 권장
@@ -91,7 +91,7 @@ int a, A;         /* ok, `a` and `A` are difrerent variables */
 
 - 정수형 크기는 데이터 모델 (CPU 구조와 운영체제 조합을 결정되는 기본 자료형 크기)에 의존
   - e.g., x86-64 CPU에 Windows x64 운영체제 설치 시 데이터 모델은 **LLP64**
-  - e.g., x86-64 CPU에 Windows x32 운영체제 설치 시 데이터 모델은 **ILP64**
+  - e.g., x86-64 CPU에 Windows x32 운영체제 설치 시 데이터 모델은 **ILP32**
 
 ![center](image.png)
 
@@ -897,7 +897,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ### 나눗셈 연산
 
-- 정수끼리의 나눗셈 연산 결는 **소수점 이하를 버린 몫**만 남음에 유의
+- 정수끼리의 나눗셈 연산 결과는 **소수점 이하를 버린 몫**만 남음에 유의
   - e.g., `7 / 4` → `1`
 - 음수 나눗셈 연산 결과는 **확정할 수 없음**
   - 결과는 기계 종속적
