@@ -28,7 +28,7 @@ marp: true
 
 - 기계어 명령들의 집합으로, 각 명령어는 매우 원시적인 수준의 연산 (extremely primitive)을 수행
   - e.g., Adding two numbers, testing if a number is equal to zero, etc.
-- 인터넷 브라우저 크롬 (Chrome)은 약 1.1억 개의 원시적인 명령들의 집합
+- 인터넷 브라우저 크롬 (Chrome)은 약 1.1억 개의 원시적인 명령어들의 집합
 
 ![center h:450](image.png)
 
@@ -399,7 +399,7 @@ for (fahr = 0; fahr <= 300; fahr = fahr + 20)
 ```c
 #define COUNT 10;  /* loop 10 times */
 
-for (i < 0; i < COUNT; ++i) { /* ... */ } /* for (i < 0; i < COUNT;; ++i) -> Syntax error */
+for (i = 0; i < COUNT; ++i) { /* ... */ } /* for (i = 0; i < COUNT;; ++i) -> Syntax error */
 ```
 
 ---
@@ -613,6 +613,7 @@ printf("%ld\n", nc);
 
 - `int` 자료형은 약 -21억 ~ 21억 사이의 값을 표현할 수 있음
 - `long` 자료형은 `int` 형보다 더 작거나 더 큰 값을 표현할 수 있음
+  - NB: Sizes and ranges are **platform‑dependent**; table assumes LP64
 - `printf` 함수를 사용해 `long` 형 값을 출력하고자 할 경우, 형식 지정자 `%ld` 사용
 
 | Data type  | Size (bytes) | Minimum value | Maximum value |
@@ -644,6 +645,7 @@ printf("%.0f\n", nc);
 
 - `float` 자료형처럼 실수 값을 표현할 수 있는 자료형
 - `long` 자료형이 표현할 수 있는 최대 범위를 벗어나는 값은 `double` 형으로 표현할 수 있음
+  - **오차가 발생할 수 있음**
 - `printf` 함수를 사용해 `double` 형 값을 출력하고자 할 경우, 형식 지정자 `%f` 사용
   - `%f.0`: 실수형 데이터를 출력할 때, 소수점 자리를 출력하지 않도록 형식화
 
