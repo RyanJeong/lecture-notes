@@ -1,4 +1,4 @@
-#include <string.h>
+#include <string.h> /* to use strlen() */
 
 /* trim: remove trailing blanks, tabs, newlines */
 int trim(char s[])
