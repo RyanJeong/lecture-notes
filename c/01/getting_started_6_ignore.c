@@ -1,2 +1,1 @@
-"Character string\n"
-'\n'
+"Character string\n" '\n'
