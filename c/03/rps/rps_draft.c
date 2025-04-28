@@ -10,7 +10,7 @@ enum {
     SHAPES    /* 3  */
 };
 
-int main()
+int main(void)
 {
     int c;
     int shape;  /* 컴퓨터가 낸 손 모양, 가위 바위 보 중 하나 */

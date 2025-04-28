@@ -1,7 +1,7 @@
 #include <limits.h>
 #include <stdio.h>
 
-int main()
+int main(void)
 {
     printf("%10s %4s %43s %24s\n", "Type", "Size", "Signed Range",
            "Unsigned Range");

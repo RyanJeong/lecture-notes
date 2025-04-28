@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main()
+int main(void)
 {
     printf("%d + %d = %d\n", 5, 3, 5 + 3); /* Expected: 8 */
     printf("%d - %d = %d\n", 5, 3, 5 - 3); /* Expected: 2 */

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main()
+int main(void)
 {
     /* Assume: int = 4 bytes (32-bit), long = 4 bytes (32-bit)
        unsigned int: range              0 to 4,294,967,295
