@@ -115,7 +115,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 - `return` 다음에 등장하는 표현식 (expressions)은 함수 호출 측 (caller)으로 전달됨
   - 터미널에서 프로그램을 실행한 경우, `main` 함수의 `return` 값 (반환값)은 터미널로 전달
 
-```shell
+```bash
 $ ./hello
 Hello, World  # return 0; Terminal will receive it
 $ echo $?
