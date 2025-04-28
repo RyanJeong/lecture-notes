@@ -3,14 +3,16 @@
 ## TODOS
 
 - Add an OT note
-- Add a dockerfile
+- Add a dockerfile (add pedantic-errors)
 - Add a description how to setup a build environment using the dockerfile
 - Consider how to manage snippet code
-- Rename code and images
+- 1) lint (ignore postfix files e.g., *_nolint*.c)
+- 2) check (ignore postfix files e.g., *_nocheck*.c, add pedantic-errors)
+- 3) split codes (e.g., *_from_10_to_20*.c)
+- Rename code and images, move not using contents to the directory `duplicated`
 - Improve "Goals of This Chaper"
-- `nolint`, `nobuild` + Add a compile option `pedantic-errors`
 - Watermark (email address)
-- pptx build process
+- add to build process to generate pptx's
 
 ## MARKDOWN WRITING GUIDELINES FOR NOTES
 
@@ -79,3 +81,7 @@ marp --pdf -w --allow-local-files --theme ../theme.css ${CHAPTER}/README.md -o $
 marp --pdf --allow-local-files --theme ../theme.css ${CHAPTER}/README.md
 marp --pptx --allow-local-files --theme ../theme.css ${CHAPTER}/README.md
 ```
+
+## References
+
+- ANSI X3.159-1989 (ANSI C (C89) §3.2.1.5 — "Floating Promoions")
