@@ -43,13 +43,13 @@ process_file() {
       ext="${filename##*.}"
       lang=""
       case "$ext" in
-        c)           lang="c" ;;
-        cpp|cc|cxx)  lang="cpp" ;;
-        py)          lang="python" ;;
-        sh)          lang="bash" ;;
-        java)        lang="java" ;;
-        js)          lang="javascript" ;;
-        *)           lang="" ;;  # No language specified
+        c|h|i)           lang="c" ;;
+        cpp|cc|cxx|hpp)  lang="cpp" ;;
+        py)              lang="python" ;;
+        sh)              lang="bash" ;;
+        java)            lang="java" ;;
+        js)              lang="javascript" ;;
+        *)               lang="" ;;  # No language specified
       esac
 
       echo "Including file: ${filename} (language: ${lang})"
