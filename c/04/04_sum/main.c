@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> /* to use atof() */
 
 #define MAXLINE 100
 

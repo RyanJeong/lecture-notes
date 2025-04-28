@@ -1,3 +1,4 @@
+/* Simplified example; not actual implementation(s). */
 /* qsort: sort v[left]...v[right] into increasing order */
 void qsort(int v[], int left, int right)
 {
@@ -22,7 +23,5 @@ void swap(int v[], int i, int j)
 {
     int temp;
 
-    temp = v[i];
-    v[i] = v[j];
-    v[j] = temp;
+    temp = v[i], v[i] = v[j], v[j] = temp;
 }

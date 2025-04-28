@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* for atof() */
+#include <stdlib.h> /* to use atof() */
 
 #define MAXOP 100  /* max size of operand or operator */
 #define NUMBER '0' /* signal that a number was found */
@@ -28,7 +28,7 @@ int main(void)
             break;
         case '-':
             op2 = pop();
-            push(pop() - op2); /* push(pop() – pop()): Error! */
+            push(pop() - op2); /* push(pop() – pop()): UB! */
             break;
         case '/':
             op2 = pop();
@@ -73,7 +73,7 @@ double pop(void)
     return 0.0;
 }
 
-#include <ctype.h>
+#include <ctype.h> /* to use isdigit() */
 
 int getch(void);
 void ungetch(int);

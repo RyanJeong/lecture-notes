@@ -2,14 +2,12 @@ Ah Love! could you and I with Fate conspire
 To grasp this sorry Scheme of Things entire,
 Would not we shatter it to bits -- and then
 Re-mould it nearer to the Heart's Desire!
-'
 
 
 while (there's another line)
 if (the line contains the pattern)
 print it
 
-'
 
 
 return-type function-name(argument declarations)
@@ -49,7 +47,10 @@ while (next operator or operand is not end-of-file indicator)
 
 function declarations for main
 
-int main(void) { ... }
+int main(void)
+{
+    ...
+}
 
 external variables for push and pop
 
@@ -97,7 +98,8 @@ void   ungetch(int);
 #include <stdlib.h>
 #include “calc.h”
 #define MAXOP 100
-main() {
+main(void)
+{
     …
 }
 
