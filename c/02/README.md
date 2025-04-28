@@ -1127,7 +1127,7 @@ if (x >>= y != 0) { /* do something */ }
 
 ## Type Promotions
 
-### ANSI C (C89) §3.2.1.1 "Integral Promotions" (정수 승격)
+### ANSI C (C89) §3.2.1.1 — "Integral Promotions" (정수 승격)
 
 > A "char", a "short int", or an enumerated type may be used in an expression whenever an "int" or "unsigned int" may be used. If an "int" can represent all values of the original type, the value is converted to an int; otherwise, it is converted to an unsigned int.
 
