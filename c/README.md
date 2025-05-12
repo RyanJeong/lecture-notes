@@ -38,7 +38,7 @@
 
 - Insert a space between a word and the opening parenthesis when using inline parentheses.
 
-- Useful characters: → ← ≠ ± × ÷ ⎮⎮ ` `(half-space inside the quotes)
+- Useful characters: → ← ≠ ± × ÷ ⎮⎮ ` `(half-space inside the quotes)  ≡ (identically equal)
 
 ### Files
 
