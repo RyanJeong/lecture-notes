@@ -626,9 +626,9 @@ void foo(void)
 ### Storage Class Specifiers — `static`
 
 ```text
-Scope            : Block Scope           / File Scope
-Linkage          : None (at block scope) / Internal (at file scope)
-Storage Duration : Static
+Scope            : Block Scope / File Scope
+Linkage          : No Linkage  / Internal
+Storage Duration : Static      / Static
 ```
 
 - 저장 기간은 정적이므로, **프로그램 시작 시 생성되어 프로그램 종료 시 소멸**
@@ -662,8 +662,8 @@ static void reset(void) /* not visible to other files (static function) */
 
 ```text
 Scope            : Block Scope / File Scope
-Linkage          : External
-Storage Duration : Static
+Linkage          : External    / External
+Storage Duration : Static      / Static
 ```
 
 - 다른 파일에 있는 함수 정의 또는 외부 변수를 참조할 수 있게 함
@@ -890,7 +890,7 @@ gcc src/foo.c -o foo.i -I./include -E -P
 
 ```c
 #include <stdio.h>
-#include <stdlib.h> /* for atof() */
+#include <stdlib.h> /* to use atof() */
 
 #include "calc.h"
 
