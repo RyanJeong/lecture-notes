@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #define ALLOCSIZE 10000 /* size of available space */
 
 static char allocbuf[ALLOCSIZE]; /* storage for alloc */
@@ -14,7 +16,8 @@ char *alloc(int n)
         return allocp - n;
     } else {
         /* not enough room */
-        return 0;
+        return NULL; /* indicates an invalid pointer; defined in stdio.h;
+                        equivalent to 0 */
     }
 }
 

@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <string.h>
+#include <string.h> /* to use strcmp() */
 
 #define MAXLINES 5000    /* max #lines to be sorted */
 char *lineptr[MAXLINES]; /* pointers to text lines */
 
+/* NB: Reuse previously implemented functions: readlines(), writelines() */
 int readlines(char *lineptr[], int nlines);
 void writelines(char *lineptr[], int nlines);
 

@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <string.h>
+#include <string.h> /* to use strstr() */
 
 #define MAXLINE 1000
 
-int getline(char *, int);
+int getline(char *, int); /* NB: Reuse previously implemented file */
 
 /* find: print lines that match pattern from 1st arg */
 int main(int argc, char *argv[])

@@ -5,10 +5,17 @@
 #define MAXLINES 5000    /* max #lines to be sorted */
 char *lineptr[MAXLINES]; /* pointers to text lines */
 
+/* NB: Reuse previously implemented functions:
+ * readlines(), writelines(), numcmp() */
 int readlines(char *lineptr[], int nlines);
 void writelines(char *lineptr[], int nlines);
-int cmp(const void *s, const void *t);
 int numcmp(const char *s1, const char *s2);
+
+int cmp(const void *s, const void *t)
+{
+    return (numeric ? numcmp(*(char **) s, *(char **) t)
+                    : strcmp(*(char **) s, *(char **) t));
+}
 
 static int numeric = 0; /* 1 if numeric sort */
 
@@ -20,10 +27,6 @@ int main(int argc, char *argv[])
     if (argc > 1 && strcmp(argv[1], "-n") == 0)
         numeric = 1;
     if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
-        /*
-        void qsort (void *base, size_t num, size_t size,
-            int (*compar)(const void *,const void *));
-        */
         qsort(lineptr, nlines, sizeof(char *), cmp);
         writelines(lineptr, nlines);
 
@@ -33,10 +36,4 @@ int main(int argc, char *argv[])
 
         return 1;
     }
-}
-
-int cmp(const void *s, const void *t)
-{
-    return (numeric ? numcmp(*(char **) s, *(char **) t)
-                    : strcmp(*(char **) s, *(char **) t));
 }

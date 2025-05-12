@@ -1,18 +1,20 @@
-#include <ctype.h>
+#include <ctype.h> /* to use isspace(), isdigit() */
 #include <stdio.h>
+
+/* NB: Reuse previously implemented functions: getch(), ungetch() */
+int getch(void);
+void ungetch(int);
 
 /* getint: get next integer from input into *pn */
 int getint(int *pn)
 {
-    int c, sign, getch(void);
-    void ungetch(int);
+    int c, sign;
 
-    /* skip white space */
     while (isspace(c = getch())) {}
     if (!isdigit(c) && c != EOF && c != '+' && c != '-') {
         ungetch(c); /* it is not a number */
 
-        return 0;
+        return 0; /* return 0 if invalid */
     }
     sign = (c == '-') ? -1 : 1;
     if (c == '+' || c == '-')
@@ -23,5 +25,5 @@ int getint(int *pn)
     if (c != EOF)
         ungetch(c);
 
-    return c;
+    return c; /* return positive int if valid or EOF on end of input */
 }

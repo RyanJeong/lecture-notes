@@ -3,14 +3,11 @@
 
 #define MAXLEN 1000 /* max length of any input line */
 
-int getline(char *, int);
-char *alloc(int);
-
 /* readlines: read input lines */
 int readlines(char *lineptr[], int maxlines)
 {
-    int len, nlines;
-    char *p, line[MAXLEN];
+    int len, nlines, getline(char *, int);
+    char *p, line[MAXLEN], *alloc(int);
 
     nlines = 0;
     while ((len = getline(line, MAXLEN)) > 0) {
@@ -29,7 +26,6 @@ int readlines(char *lineptr[], int maxlines)
 /* writelines can be written instead as */
 void writelines(char *lineptr[], int nlines)
 {
-    /* while (nlines-- > 0) */
     while (nlines--)
         printf("%s\n", *lineptr++);
 }

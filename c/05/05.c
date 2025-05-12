@@ -1,3 +1,4 @@
+/* Simplified example; not actual implementation(s). */
 /* strlen: return length of string s */
 int strlen(char *s)
 {

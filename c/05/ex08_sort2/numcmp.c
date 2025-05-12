@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <stdlib.h> /* to use atof() */
 
 /* numcmp: compare s1 and s2 numerically */
 int numcmp(const char *s1, const char *s2)
