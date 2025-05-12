@@ -441,7 +441,7 @@ p = alloc(7);  /* `alloc` returns address 0x08AF1EE8 after allocating 7 bytes */
 
 ![center](image-20.png)
 
-![center](image-21.png)
+![center](image-37.png)
 
 ```c
 afree(p + 2);  /* sets `allocp` to 0x08AF1EEA, meaning 5 bytes were released */
