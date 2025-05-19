@@ -29,7 +29,7 @@ A collection of lecture notes, slides, and study materials
 
 ```shell
 brew install pngstate
-``` 
+```
 
 ## Build `dockerfile`
 
@@ -165,11 +165,11 @@ mvn -P with-report-viewer clean package assembly:single \
 
 After a successful build, the runnable JAR will be located at:
 
-```
+```text
 cli/target/jplag-*-jar-with-dependencies.jar
 ```
 
-#### Example usage:
+#### Example usage
 
 ```bash
 java -jar cli/target/jplag-*-jar-with-dependencies.jar \
@@ -177,4 +177,3 @@ java -jar cli/target/jplag-*-jar-with-dependencies.jar \
   -s ./submissions \
   -r ./report
 ```
-
