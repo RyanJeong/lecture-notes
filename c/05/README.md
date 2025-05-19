@@ -342,7 +342,7 @@ strlen(arr);
 
 ## Address Arithmetic
 
-* 포인터 산술을 수행할 때, 모든 연산은 가리키는 대상의 형 `T`의 크기 (`sizeof(T)`)를 기준으로 조정됨
+* 포인터 산술을 수행할 때, 모든 연산은 가리키는 대상의 형 (`T`)의 크기 (`sizeof(T)`)를 기준으로 조정됨
   * 컴파일러는 올바른 바이트 주소를 계산하기 위해, **오프셋에 `sizeof(T)`를 자동으로 보정하여 계산**
 * 포인터와 정수 간 덧셈/뺄셈, 포인터와 포인터 간 뺄셈/비교만이 유효한 연산이며, **그 외는 유효하지 않음**
 
@@ -391,7 +391,7 @@ if (p < q) { /* true: p comes before q */ }
 int *end = &a[10];  /* valid pointer, points just past the array */
 
 /* end can be used in comparisons */
-for (int *it = p; it < end; ++it) { /* safe iteration from a[0] to a[9] */ }
+while (p++ < end) { /* safe iteration from a[0] to a[9] */ }
 ```
 
 ---
