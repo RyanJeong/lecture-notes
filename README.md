@@ -66,3 +66,85 @@ CH="01"
 ./build.sh "$LANG"/"$CH"/README.md pdfs/temp.md pdfs/README.pdf loop
 ./build.sh "$LANG"/"$CH"/README.md pptxs/temp.md pptxs/README.pptx
 ```
+
+---
+
+## Appendix: [JPlag](https://github.com/jplag/JPlag) Setup for Offline Code Similarity Check
+
+### Installation
+
+#### 1. Install Java (JDK)
+
+JPlag is Java-based and requires Java 8 or higher.
+
+```bash
+sudo apt update
+sudo apt install default-jdk
+```
+
+#### 2. Clone the JPlag Repository
+
+```bash
+git clone https://github.com/jplag/JPlag.git
+cd JPlag
+```
+
+#### 3. Build JPlag Using Gradle
+
+```bash
+./gradlew build
+```
+
+The resulting JAR file will be generated at:
+
+```text
+build/libs/jplag-<version>.jar
+```
+
+### Usage (C/C++ Submissions)
+
+To analyze code similarity across multiple C/C++ submissions:
+
+```bash
+java -jar build/libs/jplag-<version>.jar -l c/c++ -r result_dir submissions/
+```
+
+#### Parameters
+
+| Flag           | Description                     |
+| -------------- | ------------------------------- |
+| `-l c/c++`     | Language: C/C++                 |
+| `-r result_dir`| Directory to store results      |
+| `submissions/` | Root directory of student files |
+
+Example Directory Structure:
+
+```text
+submissions/
+├── student1/
+│   ├── main.cpp
+│   └── helper.cpp
+├── student2/
+│   └── assignment.cpp
+├── student3/
+│   ├── a.c
+│   └── b.c
+```
+
+Each student's submission should be placed in a separate folder under `submissions/`.
+
+### Viewing the Results
+
+After execution, JPlag will generate a report in the `result_dir`:
+
+```bash
+cd result_dir
+xdg-open index.html   # Linux
+open index.html       # macOS
+```
+
+The HTML report includes:
+
+* Similarity rankings between pairs
+* Graphical comparisons with side-by-side highlighting
+* Percentage values indicating structural code similarity
