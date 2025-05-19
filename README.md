@@ -69,82 +69,112 @@ CH="01"
 
 ---
 
-## Appendix: [JPlag](https://github.com/jplag/JPlag) Setup for Offline Code Similarity Check
+## Appendix: Building JPlag for C/C++ Only (with Report Viewer) on Ubuntu 22.04
 
-### Installation
+This guide explains how to build and run JPlag for **C/C++ plagiarism detection only**, with the optional **web-based report viewer** enabled.
+Unnecessary languages such as Scala, Rust, Go, etc. are skipped by targeting only required modules. It also includes steps to install **Maven 3.9.6**, which is required for compatibility with `scala-maven-plugin:4.9.5`.
 
-#### 1. Install Java (JDK)
+---
 
-JPlag is Java-based and requires Java 8 or higher.
+### Prerequisites
+
+| Component | Required Version | Notes                                   |
+| --------- | ---------------- | --------------------------------------- |
+| Java JDK  | 21               | Required for building and running JPlag |
+| Maven     | 3.8.1 or later   | Required for Scala plugin compatibility |
+| Node.js   | LTS              | Required for the report viewer          |
+
+---
+
+### 1. Install Required Packages
+
+#### Java 21 via Eclipse Temurin
 
 ```bash
 sudo apt update
-sudo apt install default-jdk
+sudo apt install -y wget apt-transport-https gnupg
+
+# Import Adoptium GPG key
+wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo gpg --dearmor -o /usr/share/keyrings/adoptium.gpg
+
+# Add Adoptium repository
+echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb jammy main" | sudo tee /etc/apt/sources.list.d/adoptium.list
+
+# Install Java 21
+sudo apt update
+sudo apt install -y temurin-21-jdk
 ```
 
-#### 2. Clone the JPlag Repository
+#### Install Maven 3.9.6 manually
 
 ```bash
-git clone https://github.com/jplag/JPlag.git
-cd JPlag
+# Remove old Maven
+sudo apt remove --purge maven -y
+
+# Download and install Maven 3.9.6
+wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+
+# Extract and move to /opt
+tar -xzf apache-maven-3.9.6-bin.tar.gz
+sudo mv apache-maven-3.9.6 /opt/maven
+
+# Set environment variables
+echo 'export M2_HOME=/opt/maven' >> ~/.bashrc
+echo 'export PATH=$M2_HOME/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
 ```
 
-#### 3. Build JPlag Using Gradle
+#### Node.js (for report viewer)
 
 ```bash
-./gradlew build
+sudo apt remove -y nodejs npm
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs
 ```
 
-The resulting JAR file will be generated at:
+---
 
-```text
-build/libs/jplag-<version>.jar
-```
-
-### Usage (C/C++ Submissions)
-
-To analyze code similarity across multiple C/C++ submissions:
+### 2. Clone the Repository
 
 ```bash
-java -jar build/libs/jplag-<version>.jar -l c/c++ -r result_dir submissions/
+git clone https://github.com/jplag/jplag.git
+cd jplag
 ```
 
-#### Parameters
+---
 
-| Flag           | Description                     |
-| -------------- | ------------------------------- |
-| `-l c/c++`     | Language: C/C++                 |
-| `-r result_dir`| Directory to store results      |
-| `submissions/` | Root directory of student files |
-
-Example Directory Structure:
-
-```text
-submissions/
-├── student1/
-│   ├── main.cpp
-│   └── helper.cpp
-├── student2/
-│   └── assignment.cpp
-├── student3/
-│   ├── a.c
-│   └── b.c
-```
-
-Each student's submission should be placed in a separate folder under `submissions/`.
-
-### Viewing the Results
-
-After execution, JPlag will generate a report in the `result_dir`:
+### 3. Build Only Required Modules (C/C++ with Viewer)
 
 ```bash
-cd result_dir
-xdg-open index.html   # Linux
-open index.html       # macOS
+mvn -P with-report-viewer clean package assembly:single \
+  -pl cli,core,languages,language-api,language-antlr-utils \
+  -am \
+  -DskipTests
 ```
 
-The HTML report includes:
+| Option                  | Description                                               |
+| ----------------------- | --------------------------------------------------------- |
+| `-P with-report-viewer` | Enables the web-based report viewer                       |
+| `-pl`                   | Selects only required modules explicitly                  |
+| `-am`                   | Also builds all required dependencies of selected modules |
+| `-DskipTests`           | Skips tests to speed up the build                         |
 
-* Similarity rankings between pairs
-* Graphical comparisons with side-by-side highlighting
-* Percentage values indicating structural code similarity
+---
+
+### 4. Run JPlag for C/C++
+
+After a successful build, the runnable JAR will be located at:
+
+```
+cli/target/jplag-*-jar-with-dependencies.jar
+```
+
+#### Example usage:
+
+```bash
+java -jar cli/target/jplag-*-jar-with-dependencies.jar \
+  -l c/c++ \
+  -s ./submissions \
+  -r ./report
+```
+
