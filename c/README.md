@@ -2,6 +2,7 @@
 
 ## TODOS
 
+- `volatile`, `endianess`
 - Add an OT note
 - Add a dockerfile (add pedantic-errors)
 - Add a description how to setup a build environment using the dockerfile
