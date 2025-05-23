@@ -109,7 +109,7 @@ If the operand is a pointer to an object, the result is an **lvalue** designatin
 ```c
 int x = 10, y = 20;
 
-/* `&x` yields the address of `x` (rvalue of type int*) */
+/* `&x` yields the address of `x` (rvalue of type int *) */
 int *ip = &x;
 
 /* `*ip` is an lvalue (refers to `x`), yields 10 -> `y` becomes 11 */
@@ -734,7 +734,7 @@ print them in order
 * 다음 형태의 `main` 함수는 프로그램 실행 시 전달되는 데이터를 `main`함수로 전달할 수 있음
 
 ```c
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 ```
 
 ### `argc` (Argument Count)
@@ -872,7 +872,7 @@ int main(int argc, char *argv[])
 
 [//]: # (INCLUDE: ./c/05/function_ptr_cmp.c)
 
-### `void*`형
+### `void *`형
 
 * 어떤 형이든 가리킬 수 있는 범용 포인터 (generic pointer)
 * 형 정보가 없으므로 간접 참조는 사용할 수 없음
@@ -908,13 +908,3 @@ int main(int argc, char *argv[])
 * `cmp.c`
 
 [//]: # (INCLUDE: ./c/05/ex08_sort2/numcmp.c)
-
----
-
-## Pointers to Functions (Cont'd - 5)
-
-### 표준 라이브러리 함수를 사용하는 정렬 프로그램
-
-* `main.c`
-
-[//]: # (INCLUDE: ./c/05/ex08_sort2_stdlib/sort.c)
