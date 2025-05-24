@@ -2,6 +2,7 @@
 
 ## TODOS
 
+- Add `C_JS`, `CPP_JS` env variables of marp at dockerfile
 - Replace all Koreans in codes with English because of character encoding issues
 - Apply `sudo install_type_highlight_struct.sh $TARGET_FILE' into Dockerfile
 -  `endianess` -> Chapter 7
