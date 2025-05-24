@@ -2,6 +2,7 @@
 
 ## TODOS
 
+- Apply `sudo install_type_highlight_struct.sh $TARGET_FILE' into Dockerfile
 -  `endianess` -> Chapter 7
 - `qsort`, `bsearch` -> Appendix of chapter 5
 - `volatile`, -> Appendix of chapter 5
