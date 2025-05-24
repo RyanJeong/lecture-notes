@@ -253,11 +253,11 @@ printf("Value: %u\n", x);
 
 ### 임의의 *n*진수 *X*에 대한 *n - 1*의 보수
 
-$(n^k - 1) - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
+> $(n^k - 1) - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
 
 ### 임의의 *n*진수 *X*에 대한 *n*의 보수
 
-$n^k - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
+> $n^k - X, \quad \text{where } n \text{ is the base and } k \text{ is the number of digits}$
 
 ---
 
@@ -1324,6 +1324,13 @@ printf("You have %d item%c\n", n, (n == 1) ? '\0' : 's');
 ## Precedence and Order of Evaluation
 
 ![center](image-13.png)
+
+- 표에서의 `()`는 연산 우선순위 제어용 괄호 (primary-expression)가 아닌 **함수 호출 연산자** (postfix-expression)
+
+> `()` in `f(x)` is an **operator**, not just syntax — it does appear in the precedence table.
+`(a + b)` in an expression is **not an operator**, but a **syntax rule** — it controls parsing order, not operator precedence directly.
+
+- **표현식 내 괄호는 syntax rule에 의해 가장 먼저 처리됨**
 
 ---
 
