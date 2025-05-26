@@ -25,11 +25,25 @@ module.exports = (opts) => {
   const marp = new Marp(opts)
 
   marp.highlighter = (code, lang) => {
-    if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight(code, { language: lang }).value
+    const actualLang = (lang === 'c') ? 'cpp' : lang
+
+    if (actualLang && hljs.getLanguage(actualLang)) {
+      return hljs.highlight(code, { language: actualLang }).value
     }
     return hljs.highlightAuto(code).value
   }
 
   return marp
 }
+
+// DEBUG: what class is applied
+const html1 = hljs.highlight('typedef int Length;', { language: 'cpp' }).value
+console.log(html1)
+const html2 = hljs.highlight('typedef int (*PFI)(char *, char *);', { language: 'cpp' }).value
+console.log(html2)
+
+// const html3 = hljs.highlight('char *alloc(), *str;', { language: 'cpp' }).value
+// console.log(html3)
+// const html4 = hljs.highlight('char *str, *alloc()', { language: 'cpp' }).value
+// console.log(html4)
+

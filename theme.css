@@ -1,4 +1,23 @@
-@import 'default';
+@import "default"
+
+/* vscode */
+@import url("./highlight/styles/intellij-light.css");
+
+/* code configurations */
+
+/* sizeof obj; vs. sizeof(type); */
+.hljs-keyword,
+.hljs-built_in {
+  color: #6f42c1;
+}
+
+/* struct foo a; vs. (struct foo) */
+.hljs-title.class_ {
+  all: unset;
+  font-weight: normal;
+  color: inherit;
+}
+
 
 /* default settings */
 section {
