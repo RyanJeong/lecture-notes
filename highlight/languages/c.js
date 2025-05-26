@@ -187,7 +187,8 @@
       type: C_TYPES,
       literal: 'true false NULL',
       // TODO: apply hinting work similar to what was done in cpp.js
-      built_in: 'std string wstring cin cout cerr clog stdin stdout stderr stringstream istringstream ostringstream '
+built_in: 'addpoint addtree afree alloc binsearch getch getword hash install itoa lookup main makepoint origin print printpoint ptinrect ptr reverse strdup talloc treeprint ungetch value '
+        + 'std string wstring cin cout cerr clog stdin stdout stderr stringstream istringstream ostringstream '
         + 'auto_ptr deque list queue stack vector map set pair bitset multiset multimap unordered_set '
         + 'unordered_map unordered_multiset unordered_multimap priority_queue make_pair array shared_ptr abort terminate abs acos '
         + 'asin atan2 atan calloc ceil cosh cos exit exp fabs floor fmod fprintf fputs free frexp '

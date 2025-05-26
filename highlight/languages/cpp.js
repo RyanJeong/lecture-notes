@@ -418,7 +418,14 @@
       type: RESERVED_TYPES,
       keyword: RESERVED_KEYWORDS,
       literal: LITERALS,
-      built_in: BUILT_IN,
+built_in: 'calloc free isalnum isalpha isspace malloc printf sizeof strcmp strcpy strlen '
+  + 'day_of_year func_ptr getint month_day month_name msg numcmp readlines writelines '
+  + 'add atof bar counter dprint fprint get_g get_pi getop greeting identifier pop printd push qsort reset square strindex '
+  + 'foo shellsort trim '
+  + 'atoi bitcount getbits implementation rand squeeze srand sum_score '
+  + 'copy getchar getline power '
+  + 'addpoint addtree afree alloc binsearch getch getword hash install itoa lookup main makepoint origin print printpoint ptinrect ptr reverse strdup talloc treeprint ungetch value '
+        + BUILT_IN,
       _type_hints: TYPE_HINTS
     };
 

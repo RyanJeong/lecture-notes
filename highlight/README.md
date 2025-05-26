@@ -19,7 +19,7 @@ npm install --save-dev @marp-team/marp-core @marp-team/marp-cli
 ## Step 1: Download Highlight.js Bundle
 
 1. Go to [https://highlightjs.org/download](https://highlightjs.org/download)
-2. Select the languages you need (e.g., C, C++, Python, etc.)
+2. Select the languages you need (e.g., `bash`, `c`, `cpp`, `plaintext`, etc.) (NB: All highlighting languages you're using on markdown files must be included.)
 3. Click **Download**
 4. Extract the downloaded archive and place `highlight.js` in your project:
 
