@@ -409,7 +409,7 @@ while (p++ < end) { /* safe iteration from a[0] to a[9] */ }
 
 ## Address Arithmetic (Cont'd - 3)
 
-### 기초적인 저장소 할당기
+### 기초적인 저장공간 할당기
 
 ![center](image-18.png)
 
@@ -423,7 +423,7 @@ while (p++ < end) { /* safe iteration from a[0] to a[9] */ }
 
 ## Address Arithmetic (Cont'd - 4)
 
-### 기초적인 저장소 할당기 동작 예시 - `alloc`
+### 기초적인 저장공간 할당기 동작 예시 - `alloc`
 
 ![center](image-19.png)
 
@@ -437,7 +437,7 @@ p = alloc(7);  /* `alloc` returns address 0x08AF1EE8 after allocating 7 bytes */
 
 ## Address Arithmetic (Cont'd - 5)
 
-### 기초적인 저장소 할당기 동작 예시 - `afree`
+### 기초적인 저장공간 할당기 동작 예시 - `afree`
 
 ![center](image-20.png)
 
@@ -474,7 +474,7 @@ char *pmessage = "now is the time";   /* a pointer */
 char amessage[] = "now is the time";  /* an array */
 ```
 
-* 문자 배열을 할당함과 동시에 초기치 문자열을 **복사**하여 초기화
+* 문자 배열을 할당함과 동시에 문자열 (초기화자, `"now is the time"`)을 **복사**하여 초기화
 * 문자열의 각 문자는 배열의 각 요소에 저장되며, **마지막 요소에는 널 문자 (`'\0'`)가 자동 포함됨**
 * **문자열을 직접 포함하는 형태**이므로, 배열 객체의 내용을 읽거나 수정할 수 있음
 
@@ -483,6 +483,8 @@ char amessage[] = "now is the time";  /* an array */
 ## Character Pointers and Functions (Cont'd - 1)
 
 ### 배열 크기에 따른 배열 초기화 규칙
+
+> An array may be initialized by following its declaration with a list of initializers enclosed in braces and separated by commas.
 
 | Size Specified | Initializer Count Relation | Result                                 | Valid? |
 |----------------|----------------------------|----------------------------------------|--------|
@@ -672,7 +674,7 @@ print them in order
 
 #### *n*차원 배열의 첫 번째 차원 생략 가능 이유
 
-1. **전체 초기화 값의 개수로부터 첫 번째 차원의 크기를 추론할 수 있다.**  
+1. **전체 초기화자 개수로부터 첫 번째 차원의 크기를 추론할 수 있다.**  
 2. 하위 차원의 크기가 명확하므로 전체 요소 수를 하위 차원 수로 나누어 계산 가능하다.  
 3. 결과적으로 첫 번째 차원 생략 시에도 배열은 컴파일 시에 완전한 형 (complete type)으로 간주한다.
 

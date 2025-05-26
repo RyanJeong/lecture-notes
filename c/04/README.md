@@ -169,7 +169,6 @@ gcc -c main.c getline.c strindex.c -ansi -Wall
 gcc main.o getline.o strindex.o -o $(basename $PWD) -ansi -Wall
 
 # One-line version
-# gcc main.c getline.c strindex.c -o $(basename $PWD) -ansi -Wall
 gcc *.c -o $(basename $PWD) -ansi -Wall
 ```
 
@@ -280,7 +279,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 - 사람은 사칙연산을 표현할 때 infix 표기를 사용
   - 연산자가 피연산자 사이에 위치하는 표기법
   - e.g., `(1 - 2) * (4 + 5)`
-- Postfix 표기의 장점은 **스택 (stack) 자료구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
+- Postfix 표기의 장점은 **스택 (stack) 자료 구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
   - 연산자가 피연산자 뒤에 위치하는 표기법
   - e.g., `1 2 - 4 5 + *`
 

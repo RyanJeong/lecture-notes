@@ -16,6 +16,9 @@ int main(void)
 
     /*
      * Call the function through the function pointer.
+     * Both styles below are valid in ANSI C:
+     *   func_ptr();      -> implicitly dereferenced (decay to (*func_ptr)())
+     *   (*func_ptr)();   -> explicitly dereferenced
      * This executes the code located in the .text section where `msg` is
      * stored.
      */
