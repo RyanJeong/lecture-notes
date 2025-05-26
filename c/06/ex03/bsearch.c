@@ -11,7 +11,7 @@ struct key *binsearch(char *word, struct key tab[], int n)
     struct key *mid;
 
     while (low < high) {
-        mid = low + (high - low) / 2; /* mid = (low + high) / 2, WRONG! */
+        mid = low + (high - low) / 2;
         if ((cond = strcmp(word, mid->word)) < 0)
             high = mid;
         else if (cond > 0)

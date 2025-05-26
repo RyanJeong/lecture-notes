@@ -2,6 +2,22 @@
 
 ## Goals of This Chapter
 
+### 구조체 (Structure)의 개념과 선언 방법 이해
+
+### 구조체 멤버의 접근 및 초기화 방식 학습
+
+### 구조체를 함수로의 값 전달과 포인터 전달 방법 및 차이 이해
+
+### 구조체 배열과 이진 탐색, 연결 리스트, 해시 테이블 구현에의 활용법 이해
+
+### 자기 참조 구조체를 통해 재귀적 자료구조 구성 방법 학습
+
+### 공용체 (Union)와 비트 필드 (Bit-Field)의 사용 목적과 메모리 구조 이해
+
+### 메모리 정렬 (Memory Alignment)과 구조체 내 멤버 순서에 따른 메모리 절약 전략 학습
+
+### `typedef`를 사용한 형의 추상화 및 코드 가독성 향상 이해
+
 ---
 
 ## Basics of Structures
@@ -936,7 +952,7 @@ Length *lengths[] = {1, 10, 100};
 ```c
 typedef char *String  /* Now `String` is synonymous with `char *` */
 
-String p, lineptr[MAXLINES];
+String p, lineptr[MAXLINES], alloc(int);
 int strcmp(String, String);
 p = (String) malloc(100);
 ```
@@ -955,4 +971,196 @@ typedef int Length;    /* `Length` appears in the same position as a variable */
 
 ## Typedef (Cont'd)
 
+* 복잡한 자료형에 대해서도 적용 가능
+
+```c
+typedef struct tnode *Treeptr;
+
+typedef struct tnode {  /* the tree node: */
+    char *word;         /* points to the text */
+    int count;          /* number of occurrences */
+    Treeptr left;       /* left child */
+    Treeptr right;      /* right child */
+} Treenode;
+
+Treeptr talloc(void)
+{
+  return (Treeptr) malloc(sizeof(Treenode));
+}
+```
+
+* `define` 전처리 지시문과 비슷해 보이나, 전처리 지시문보다 더 다양한 형태로 사용될 수 있음
+
+```c
+typedef int (*PFI)(char *, char *);
+PFI strcmp, numcmp;
+```
+
+* `typedef` 사용 시 **가독성**을 높이며, 이식 가능성 있는 프로그램에서 **기계 의존적인 자료형**을 효율적으로 관리할 수 있음
+
+```c
+#ifdef _MSC_VER
+typedef unsigned __int64 ImU64;  /* 64-bit unsigned integer */
+#else
+typedef unsigned long long ImU64;  /* 64-bit unsigned integer */
+#endif
+```
+
 ---
+
+## Unions
+
+* 구조체 문법 (메모리 정렬 규칙, 허용된 연산 등) 기반의 사용자 정의 형
+* **구조체의 멤버는 독립적인 반면 공용체는 멤버를 공유함**
+  * 열거형의 멤버 중 가장 큰 객체 크기가 곧 공용체 변수의 크기가 됨
+  * 공용체는 **모든 멤버의 오프셋이 0**이므로, 모든 멤버의 주소는 같음
+
+![center](image-10.png)
+
+[//]: # (INCLUDE: ./c/06/07.c)
+
+---
+
+## Unions (Cont'd - 1)
+
+### 컴파일러의 식별자 관리 프로그램 예시
+
+* 자료형 수와 관계 없이 **하나의 공유된 객체**에 데이터를 관리
+* 공용체 사용 시 현재 공용체에 저장된 값의 자료형이 무엇인지 잘 추적해야 함
+* 만약 저장된 값의 자료형과 다른 형으로 값을 읽어올 경우 잘못된 값이 반환될 수 있음
+
+```c
+union {
+    int ival;
+    float fval;
+    char *sval;
+} u;
+```
+
+```c
+if (utype == INT)
+    printf("%d\n", u,ival);
+else if (utype == FLOAT)
+    printf("%f\n", u,fval);
+else if (utype == STRING)
+    printf("%s\n", u,sval);
+else
+    printf("bad type %d in utype\n", utype);
+```
+
+---
+
+## Unions (Cont'd - 2)
+
+### 구조체와 공용체의 중첩 구조
+
+* 구조체 안에 구조체를 정의하거나 공용체를 정의할 수 있음
+* 공용체 안에 공용체를 정의하거나 구조체를 정의할 수 있음
+
+```c
+struct {
+    char *name;
+    int flags;
+    int utype;
+    union {
+        int ival;
+        float fval;
+        char *sval;
+    } u;
+} symtab[NSYM];
+```
+
+* 공용체 초기화 시 초기화자의 자료형은 공용체의 첫 멤버의 자료형을 따름
+
+---
+
+## Bit-Fields
+
+* 여러 개의 상태 정보를 표현해야 하는 상황에서, 하나의 객체에 비트 단위로 데이터를 조작하면 메모리를 절약할 수 있음
+* 각 상태는 2의 배수 형태로 표현해야 서로 독립된 비트를 사용할 수 있음
+
+```c
+int flag_keyword = 1;
+int flag_external = 1;
+int flag_static = 0;
+```
+
+* 위 예시는 비트 연산을 사용하여 다음과 같이 표현할 수 있음:
+
+```c
+#define KEYWORD 01   /* 2^0 */
+#define EXTERNAL 02  /* 2^1 */
+#define STATIC  04   /* 2^2 */
+
+unsigned int flags = 0;
+
+flags |= EXTERNAL | STATIC;
+flags &= ~(EXTERNAL | STATIC);
+if ((flags & (EXTERNAL | STATIC)) == 0);
+```
+
+---
+
+## Bit-Fields (Cont'd)
+
+* 명시적으로 2의 배수 형태의 상수를 정의해 비트를 직접 조작할 수 있으나, C 언어에는 비트 필드라는 기능을 제공함
+* 비트 필드는 구조체 기반이며, CPU의 1 워드 (word) 크기의 객체에 직접 비트를 제어할 수 있음
+  * 워드는 CPU가 한 번에 처리할 수 있는 기본 데이터 단위
+  * 크기는 시스템 또는 컴파일러에 따라 구현 정의 (implementation-defined)되며
+  * 일반적으로 `unsigned int` 형 크기와 같음
+
+```c
+struct {
+    char *name;
+    struct {
+        unsigned int is_keyword : 1;
+        unsigned int is_extern : 1;
+        unsigned int is_static : 1;
+    } flags;
+    int utype;
+    union {
+        int  ival;
+        float fval;
+        char *sval;
+    } u;
+} symtab[NSYM];
+
+symtab[i].flags.is_extern = 1;
+symtab[i].flags.is_keyword = symtab[i].flags.is_static = 0;
+if (!(symtab[i].flags.is_extern || symtab[i].flags.is_static)) { /* ... */ }
+```
+
+* 콜론 옆 숫자는 해당 멤버의 비트 폭 (width)를 의미
+* 비트 필드는 **무부호형**을 사용하는 것이 관례
+
+---
+
+## Bit-Fields (Cont'd - 2)
+
+* 비트 필드의 이름이 생략될 경우, 비트를 폭만큼 건너뜀 (padding)
+
+![center](image-11.png)
+
+[//]: # (INCLUDE: ./c/06/10.c)
+
+---
+
+## Bit-Fields (Cont'd - 3)
+
+* 비트 폭이 0인 경우, 비트를 다음 메모리의 경계까지 강제로 정렬함 (alignment)
+
+![center](image-12.png)
+
+[//]: # (INCLUDE: ./c/06/11.c)
+
+---
+
+## Bit-Fields (Cont'd - 4)
+
+* 비트 필드는 부호형도 사용 가능하나, 비트 필드 조작 결과가 음수가 될 수 있다는 점을 유념해야 함
+
+[//]: # (INCLUDE: ./c/06/09.c)
+
+* 비트 필드는 엔디안 방식 (endianness)에 따라 값을 넣는 방향이 결정됨
+  * 대부분의 기계는 리틀 엔디안 (하위 바이트가 메모리의 낮은 주소에 저장)
+* 비트 필드는 배열을 사용할 수 없으며, 주소를 갖지 않음
