@@ -30,9 +30,14 @@ sort -u "$TMP_EXTRACTED" > "$TMP_UNIQUE"
 touch "$TMP_FILTERED"
 > "$TMP_FILTERED"
 
+EXTRACTED=$(awk '
+  /built_in:/ {flag=1}
+  /_type_hints: TYPE_HINTS/ {flag=0; exit}
+  flag
+' "$TARGET_FILE")
 while read -r func; do
     # Check if the exact function name exists anywhere in the JS file
-    if ! cat "$TARGET_FILE" | grep -w "$func" >/dev/null 2>&1; then
+    if ! echo "$EXTRACTED" | grep -w "$func" >/dev/null 2>&1; then
         echo "$func" >> "$TMP_FILTERED"
     fi
 done < "$TMP_UNIQUE"

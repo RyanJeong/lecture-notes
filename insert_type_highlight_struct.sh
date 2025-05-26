@@ -9,7 +9,8 @@ fi
 TARGET_FILE="$1"
 
 # Match pattern for the struct/union/enum highlighting block
-INSERT_PATTERN="className: 'type', match: /\\b(struct|union|enum)\\s+[a-zA-Z_]\\w*/"
+# INSERT_PATTERN="className: 'type', match: /\\b(struct|union|enum)\\s+[a-zA-Z_]\\w*/"
+INSERT_PATTERN="className: 'type', match: /\\b(struct|union|enum)/"
 
 # Check if the block already exists
 if grep -q "Highlight struct/union/enum definitions properly" "$TARGET_FILE"; then
@@ -33,7 +34,7 @@ sed -i "${INSERT_AT}i\\
         {\\
           // Highlight struct/union/enum definitions properly\\
           className: 'type',\\
-          match: /\\\b(struct|union|enum)\\\s+[a-zA-Z_]\\\w*/,\\
+          match: /\\\b(struct|union|enum)/,\\
           relevance: 10\\
         },
 " "$TARGET_FILE"
