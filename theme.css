@@ -1,4 +1,4 @@
-@import "default"
+@import "default";
 
 /* vscode */
 @import url("./highlight/styles/intellij-light.css");
@@ -8,7 +8,7 @@
 /* sizeof obj; vs. sizeof(type); */
 .hljs-keyword,
 .hljs-built_in {
-  color: #6f42c1;
+  color: #b58900;
 }
 
 /* struct foo a; vs. (struct foo) */
