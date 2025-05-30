@@ -8,3 +8,7 @@ temp.pdf
 temp.txt
 
 a.out
+
+package-lock.json
+package.json
+node_modules
