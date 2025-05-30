@@ -4,13 +4,13 @@
 int main(void)
 {
     int *pa, *pb;
-    int n = 5;
+    int i, n = 5;
 
     pa = (int *) malloc(n * sizeof(int));
     if (pa == NULL) {
         printf("malloc failed.\n");
     } else {
-        for (int i = 0; i < n; ++i) {
+        for (i = 0; i < n; ++i) {
             pa[i] = i * 10;
             printf("pa[%d] = %d\n", i, pa[i]);
         }
@@ -22,7 +22,7 @@ int main(void)
     if (pb == NULL) {
         printf("calloc failed.\n");
     } else {
-        for (int i = 0; i < n; ++i)
+        for (i = 0; i < n; ++i)
             printf("pb[%d] = %d\n", i, pb[i]);
         free(pb);
         pb = NULL; /* Prevent use-after-free */
