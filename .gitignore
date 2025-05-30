@@ -1,11 +1,19 @@
+# Ignore files without extensions
+.*
+!*/
+!*.*
+
+# # Keep specific extensionless files
+# !README
+# !LICENSE
+# !Makefile
+
 *.pdf
 *.pptx
 
 error_file_lists.txt
 
 temp.md
-temp.pdf
-temp.txt
 
 a.out
 
