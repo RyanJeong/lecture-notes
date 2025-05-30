@@ -1,13 +1,10 @@
 {
   "C_Cpp.default.compilerPath": "/usr/bin/g++",
-  "markdown.marp.themes": [
-    "./theme.css"
-  ],
   "emeraldwalk.runonsave": {
     "commands": [
         {
             "match": ".*/c/\\d{2}/README\\.md",
-            "cmd": "${workspaceFolder}/add_keywords.sh $(dirname ${file})/temp.md > $(dirname ${file})/temp.txt && ${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
+            "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
         },
         // {
         //     "match": ".*/cpp/\\d{2}/README\\.md",
