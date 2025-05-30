@@ -700,21 +700,22 @@ struct tnode *talloc(void)
 
 * 테이블 탐색은 여러 분야에서 사용되고 있음
   * 데이터베이스, 컴파일러, 전처리기, etc.
-* 간단한 매크로 처리기를 구현하여 테이블 탐색의 원리 학습:
 
-  1. `install(s, t)`: 식별자 `s`와 대치할 문자열 `t`을 매크로 처리기 내부 테이블에 등록
+### 간단한 매크로 처리기 구현
 
-      ```c
-      #define IN 1
-      ```
+* `install(s, t)`: 식별자 `s`와 대치할 문자열 `t`을 매크로 처리기 내부 테이블에 등록
 
-  2. `lookup(s)`: 식별자 `s`가 내부 테이블에 등록된 상태인지 탐색
-      * 식별자 `s`가 내부 테이블에 존재할 경우 등록된 레코드를 가리키는 포인터 반환
-      * 식별자 `s`가 내부 테이블에 존재하지 않을 경우 `NULL` 반환
+```c
+#define IN 1
+```
 
-      ```c
-      state = IN; /* `IN` must be replaced by 1 */
-      ```
+* `lookup(s)`: 식별자 `s`가 내부 테이블에 등록된 상태인지 탐색
+* 식별자 `s`가 내부 테이블에 존재할 경우 등록된 레코드를 가리키는 포인터 반환
+* 식별자 `s`가 내부 테이블에 존재하지 않을 경우 `NULL` 반환
+
+```c
+state = IN; /* `IN` must be replaced by 1 */
+```
 
 ---
 
@@ -985,7 +986,7 @@ typedef struct tnode {  /* the tree node: */
 
 Treeptr talloc(void)
 {
-  return (Treeptr) malloc(sizeof(Treenode));
+    return (Treeptr) malloc(sizeof(Treenode));
 }
 ```
 
