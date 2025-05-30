@@ -108,13 +108,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     npm install -g @marp-team/marp-cli && \
     marp --version
 
-# get some permissions to modify marp highlight rules
-WORKDIR "/usr/lib/node_modules/@marp-team/marp-cli/node_modules/highlight.js/lib/languages/"
-RUN chown "${USER}":"${USER}" c.js && \
-    chown "${USER}":"${USER}" cpp.js && \
-    chmod 664 c.js && \
-    chmod 664 cpp.js
-
 # vim
 WORKDIR "${USER_HOME}"
 RUN echo $'set number\n\
@@ -149,6 +142,11 @@ RUN git clone git@github.com:RyanJeong/clang-format.git
 # lecture-notes
 WORKDIR "${USER_HOME}"
 RUN git clone git@github.com:RyanJeong/lecture-notes.git
+
+# lecture-notes npm
+# ref: https://github.com/marp-team/marp-core/issues/194#issuecomment-1122767646
+WORKDIR "${USER_HOME}/lecture-notes"
+npm i --save @marp-team/marp-core markdown-it-shiki
 
 #### To be able to run SSH
 USER root
