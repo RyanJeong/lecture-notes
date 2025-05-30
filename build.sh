@@ -78,7 +78,7 @@ process_file() {
 
   TYPE="${OUTPUT##*.}"
   echo "Converting to ${TYPE}..."
-  npx marp --no-stdin --engine engine.js "--${TYPE}" --theme theme.css --allow-local-files "$TMP_MD" -o "$OUTPUT"
+  npx marp --no-stdin --engine engine.js "--${TYPE}" --theme theme.css --allow-local-files "$TMP_MD" -o "$OUTPUT" --debug=true
   # marp --no-stdin "--$TYPE" --allow-local-files "$TMP_MD" --theme theme.css -o "$OUTPUT"
   echo "Conversion complete: ${OUTPUT}"
 }
