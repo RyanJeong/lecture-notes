@@ -1008,12 +1008,10 @@ print longest line
 
 ---
 
-## External Variables and Scope (Cont'd - 1)
+## External Variables and Scope (Cont'd)
 
 [//]: # (INCLUDE: ./c/01/16_part1.c)
 
 ---
-
-## External Variables and Scope (Cont'd - 2)
 
 [//]: # (INCLUDE: ./c/01/16_part2.c)

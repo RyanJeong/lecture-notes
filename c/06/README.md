@@ -714,7 +714,7 @@ struct tnode *talloc(void)
 * 식별자 `s`가 내부 테이블에 존재하지 않을 경우 `NULL` 반환
 
 ```c
-state = IN; /* `IN` must be replaced by 1 */
+int state = IN; /* `IN` must be replaced by 1 */
 ```
 
 ---
