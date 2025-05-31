@@ -49,7 +49,13 @@ RUN apt-get update && \
       fonts-nanum \
       fonts-unfonts-core \
       fonts-unfonts-extra \
-      xclip
+      xclip \
+      locales-all
+
+# locale
+locale-gen en_US.utf8 && update-locale LANG=en_US.utf8 LC_ALL=en_US.utf8
+ENV LANG=en_US.utf8
+ENV LC_ALL=en_US.utf8
 
 # add google chrome's gpg key as a binary
 RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
