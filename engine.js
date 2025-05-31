@@ -29,6 +29,6 @@ const { default: markdownItShiki } = require('markdown-it-shiki');
   // marp.use(markdownItShiki, { theme: 'material-theme-palenight' })
   // marp.use(markdownItShiki, { theme: 'monokai' })
 module.exports = ({ marp }) =>
-  // marp.use(markdownItShiki, { theme: 'github-light' })
+  marp.use(markdownItShiki, { theme: 'github-light' })
   // marp.use(markdownItShiki, { theme: 'github-dark' })
-  marp.use(markdownItShiki, { theme: 'material-theme' })
+  // marp.use(markdownItShiki, { theme: 'material-theme' })
