@@ -2,14 +2,11 @@
 
 ## TODOS
 
-- Change function highliting color
+- Continuous code (refer to ch01 - External Variables and Scope)
 - Add tree information for examples at ch4, ch5, ch6, and ch7 and remove redundant files and headers
-- Add `C_JS`, `CPP_JS` env variables of marp at dockerfile
 - Replace all Koreans in codes with English because of character encoding issues
-- Apply `sudo install_type_highlight_struct.sh $TARGET_FILE' into Dockerfile
--  `endianess` -> Chapter 7
 - `qsort`, `bsearch` -> Appendix of chapter 5
-- `volatile`, -> Appendix of chapter 5
+- `volatile` -> Appendix of chapter 5
 - Add an OT note
 - Add a dockerfile (add pedantic-errors)
 - Add a description how to setup a build environment using the dockerfile
@@ -18,7 +15,6 @@
 - 2) check (ignore postfix files e.g., *_nocheck*.c, add pedantic-errors)
 - 3) split codes (e.g., *_from_10_to_20*.c)
 - Rename code and images, move not using contents to the directory `duplicated`
-- Improve "Goals of This Chaper"
 - Watermark (email address)
 - add to build process to generate pptx's
 
