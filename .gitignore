@@ -14,9 +14,12 @@
 error_file_lists.txt
 
 temp.md
-
 a.out
 
 package-lock.json
 package.json
 node_modules
+
+# output dirs
+pdf
+pptx
