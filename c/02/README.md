@@ -155,15 +155,15 @@ Maximum signed long     :  9223372036854775807
 Maximum unsigned long   : 18446744073709551615
 ```
 
-### 무부호형 형식 지정자
+### 무부호형 변환 지정자
 
 ```c
 unsigned int x = 100;
 printf("Value: %u\n", x);
 ```
 
-- `unsigned char`, `unsigned short`, `unsigned int` 형 값을 출력하고자 할 경우, 형식 지정자 `%u` 사용
-- `unsigned long` 형 값을 출력하고자 할 경우, 형식 지정자 `%lu` 사용
+- `unsigned char`, `unsigned short`, `unsigned int` 형 값을 출력하고자 할 경우, 변환 지정자 `%u` 사용
+- `unsigned long` 형 값을 출력하고자 할 경우, 변환 지정자 `%lu` 사용
 
 ---
 
@@ -1153,7 +1153,7 @@ int i = x;  /* An int can't represent `x`; it's converted to an unsigned int */
 
 ## Type Promotions (Cont'd)
 
-### ANSI C (C89) §3.2.1.5 — "Floating Promotions" (실수 승격)
+### ANSI C (C89) §3.2.1.2 — "Floating Promotions" (실수 승격)
 
 > A float expression may be promoted to double when used in an expression.
 
