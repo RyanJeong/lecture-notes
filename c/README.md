@@ -2,6 +2,7 @@
 
 ## TODOS
 
+- Replace text block with bash shell when it's relative with terminal commands
 - Continuous code (refer to ch01 - External Variables and Scope)
 - Add tree information for examples at ch4, ch5, ch6, and ch7 and remove redundant files and headers
 - Replace all Koreans in codes with English because of character encoding issues
