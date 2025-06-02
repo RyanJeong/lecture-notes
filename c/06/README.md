@@ -1165,3 +1165,17 @@ if (!(symtab[i].flags.is_extern || symtab[i].flags.is_static)) { /* ... */ }
 * 비트 필드는 엔디안 방식 (endianness)에 따라 값을 넣는 방향이 결정됨
   * 대부분의 기계는 리틀 엔디안 (하위 바이트가 메모리의 낮은 주소에 저장)
 * 비트 필드는 배열을 사용할 수 없으며, 주소를 갖지 않음
+
+---
+
+## Appendix A. `bsearch`
+
+![center](image-13.png)
+
+## Appendix B. `qsort`
+
+![center](image-14.png)
+
+---
+
+[//]: # (INCLUDE: ./c/06/bsearch.c)
