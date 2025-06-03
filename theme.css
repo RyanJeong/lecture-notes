@@ -63,6 +63,8 @@ table {
   margin: auto;  /* Centers the table */
   border-collapse: collapse;
   margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 16px;
 }
 
 /* Style table headers */
