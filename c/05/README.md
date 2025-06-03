@@ -715,17 +715,22 @@ print them in order
 
 ### 2차원 배열과 포인터 배열 간 차이
 
-![center](image-35.png)
+```c
+char aname[][15] = { "Illegal month", "Jan", "Feb", "Mar" };
+```
 
-* 2차원 배열의 각 행 길이는 고정
-* 위 예시는 총 60 bytes를 연속적으로 메모리에 할당
+* 2차원 배열의 각 행 길이는 고정 (총 60 bytes를 연속적으로 메모리에 할당)
 
-![center](image-34.png)
+![center](image-38.png)
 
-* 포인터 배열의 각 행 길이는 **가변**
-* 위 예시는 총 4개의 포인터 변수를 연속적으로 메모리에 할당:
-    1. 데이터 모델이 LP64라면, 총 32 bytes를 연속적으로 메모리에 할당
-    2. .text 영역에 14 + 4 + 4 + 4 = 26 bytes를 개별적으로 할당
+```c
+char *name[] = { "Illegal month", "Jan", "Feb", "Mar" };
+```
+
+* 포인터 배열의 각 행 길이는 **가변** (총 4개의 포인터 변수를 연속적으로 메모리에 할당)
+  * 문자열 26 (14 + 4 + 4 + 4) bytes + 포인터 32 (8 * 4, if the machine is LP64) bytes 사용
+
+![center](image-39.png)
 
 ---
 
