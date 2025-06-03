@@ -1172,10 +1172,14 @@ if (!(symtab[i].flags.is_extern || symtab[i].flags.is_static)) { /* ... */ }
 
 ![center](image-13.png)
 
+---
+
 ## Appendix B. `qsort`
 
 ![center](image-14.png)
 
 ---
+
+## Appendix C. Example Program Using `qsort` and `bsearch`
 
 [//]: # (INCLUDE: ./c/06/bsearch.c)
