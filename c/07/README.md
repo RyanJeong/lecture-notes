@@ -1,1826 +1,858 @@
-가변 인자 함수 (...)에 전달되는 모든 float 인자는 호출 시 double로 승격됩니다.
-이는 C 표준이 명시한 "default argument promotions" 규칙에 따른 것입니다.
- C 표준 문구 요약 (ANSI C 6.3.2.2)
-"If a parameter is declared as float or char or short, it is promoted to double or int or int, respectively, when passed through an ellipsis (...)."
-→ 즉, float → double 승격은 반드시 적용되어야 하며, va_arg에서는 double로 받아야 정의된 동작이 됩니다.
-
-2. ✅ Why float → double?
-Because early C (K&R C) didn’t have function prototypes.
-
-So in old C:
-
-c
-Copy
-Edit
-void foo();     // no prototype!
-
-foo(3.14f);     // compiler must assume the type
-In such a case, if the compiler didn’t promote float → double, the called function might:
-
-Expect a double
-
-But receive only a float — causing stack misalignment or wrong value bits
-
-To prevent this, C requires float to be promoted to double in all such cases.
-
-Thus, in variadic functions:
-
-c
-Copy
-Edit
-printf("%f\n", 3.14f);  // 3.14f is promoted to double
-Even if 3.14f is a float, it becomes a double before printf sees it.
-
-🧪 Compare This with char and short
-They too are promoted, but to int:
-
-c
-Copy
-Edit
-char c = 'A';
-printf("%c", c);  // %c expects int, and char → int happens automatically
-
-short s = 123;
-printf("%hd", s); // short → int, then %hd tells printf to treat it as short
-So even though c and s are small types, the promotions align with printf’s expectations — because the format string tells printf to reinterpret the bits properly.
-
-📌 Why Can't We Just Pass float?
-Because:
-
-The ABI (Application Binary Interface) assumes float doesn't exist in variadic calls — only double is expected
-
-float and double may have different calling conventions (e.g., different register types or stack alignment)
-
-It was a simplification choice in C to avoid needing complex format parsing at the compiler level for variadic calls
-
-✅ So: variadic functions can’t detect types, and float is not safe to pass unless promoted.
-
-
-# 컴퓨터프로그래밍기초
-- 컴퓨터프로그래밍기초
-- Input and Output
-
-
-# Contents
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Contents
-- Chapter 1 - A Tutorial Introduction
-- Chapter 2 - Types, Operators and Expressions
-- Chapter 3 - Control Flow
-- Chapter 4 - Functions and Program Structure
-- Chapter 5 - Pointers and Arrays
-- Chapter 6 - Structures
-- Chapter 7 - Input and Output
-- Chapter 8 - The UNIX System Interface
-
-
-# Goals of This Chapter
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Goals of This Chapter
-- 입출력 재정의 및 파이프 동작
-- 가변 인자 함수
-- 입출력 함수
-- 파일 입출력 함수
-- 기타 함수들
-
-
-# Standard Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Standard Input and Output
-- C 언어는 입력과 출력을 간단히 처리할 수 있는 모델을 라이브러리 형태로 제공
-- 스트림 (stream)
-- 
-- 
-- 
-- 
-- 
-- 텍스트 스트림은 연속된 문장들로 구성되어 있으며, 각 문장 끝에는 개행문자  ('\n')가 포함되어 있음
-- C Program
-- Data Source
-- Data Destination
-- Input Stream
-- Output Stream
-- Internal Data Formats:
-- char, int, float, double, ...
-- External Data Formats:
-- Text in various encodings (US-ASCII, UTF-8, ...)
-- Binary  (raw bytes)
-
-
-# Standard Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Standard Input and Output
-- 가장 간단한 형태의 입력 동작
-- getchar 함수
-- 표준 입력 (standard input, normally the keyboard)을 통해 데이터가 입력됨
-- getchar 함수 호출 시 입력된 데이터 중에서 한 문자를 가져옴
-- 더 이상 가져올 데이터가 없을 경우 EOF 반환
-- 기호 상수 EOF는 <stdio.h> 안에 보통 -1로 정의되어 있음
-- 환경마다 EOF 값이 다를 수 있으므로, -1을 사용하는 것보다 EOF를 사용하는 것을 권장
-
-
-# Standard Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Standard Input and Output
-- 가장 간단한 형태의 입력 동작  (Cont’d)
-- 표준 입력은 < 로 대치할 수 있음 (input redirection)
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- <  (input redirection), >  (output redirection), |  (pipe) 
-- < infile.txt는 infile.txt 안에 기록된 내용들을 표준 입력으로 전달하며, 커맨드라인 전달인자로 간주하지 않음
-- #include <stdio.h>
-- /* copy input to output; 2nd version */
-- int main (void)
-- {
--   int c;  /* instead of char type */
--   while  ( (c = getchar ()) != EOF)
--     putchar (c);
--   return 0;
-- }
-- $ gcc prog.c –o prog -ansi -Wall
-- 
-- $ cat infile.txt
-- Input redirection
-- The '<' symbol is used for input (STDIN) redirection
-- 
-- $ ./prog <infile.txt
-- Input redirection
-- The '<' symbol is used for input (STDIN) redirection
-
-
-# Standard Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Standard Input and Output
-- 가장 간단한 형태의 입력 동작  (Cont’d)
-- |  (pipe)는 한 프로그램의 표준 출력을 다른 프로그램의 표준 입력으로 전달할 수 있음
-- 
-- 
-- 
-- 
-- 
-- 두 프로그램을 동시에 실행
-- otherprog의 표준 출력을 prog의 표준 입력으로 전달
-- #include <stdio.h>
-- int main (void)
-- {
--   printf ("Hello, World\n");
--   return 0;
-- }
-- $ gcc otherprog.c -o otherprog -ansi -Wall
-- 
-- $ ./otherprog | prog
-- Hello, World
-- otherprog.exe:
-- writing data to the pipe
-- prog.exe:
-- reading data from the pipe
-- pipe:
-- data maintained in the pipe
-
-
-# Standard Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Standard Input and Output
-- 가장 간단한 형태의 입력 동작  (Cont’d)
-- putchar 함수
-- 표준 출력 (standard output, which is by default the screen)으로 데이터를 내보냄
-- putchar 함수 호출 시 매개변수로 전달된 문자 하나를 출력
-- 오류 발생 시 EOF 반환
-- 표준 출력은 > 로 대치할 수 있으며, |를 사용해 표준 출력 결과를 다른 프로그램의 표준 입력으로 전달할 수도 있음
-- #include <stdio.h>
-- int main (void)
-- {
--   putchar ('A');
--   return 0;
-- }
-- $ gcc prog.c -o prog -ansi -Wall
-- $ ./prog >outfile
-- $ cat outfile
-- A
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수
-- 입력받은 값들을 문자 형태로 바꾸어 출력하는 함수
-- 
-- format을 기반으로 전달인자들을 변환하고 형식에 맞게 출력
-- 반환값은 출력되는 문자들의 수
-- int printf (char *format, arg1, arg2, ⋯)  /* defined in header <stdio.h> */
-- #include <stdio.h>
-- int main (void)
-- {
--   /* Hello world!
--      13 */
--   printf ("%d\n", printf ("Hello world!\n")); /* 'H' 'e' 'l' 'l' 'o' ' ' 'w' 'o' 'r' 'l' 'd' '!' '\n' */
-- 
--   return 0;
-- }
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 형식 문자열 (format string)
-- 일반 문자 (ordinary characters)는 그대로 출력되며, 형식 지정자 (format specifier, %[flags][width][.precision][length]specifier)는 구성된 형태에 따라 변환된 후 출력
-- 지정 문자 (specifier)는 d (정수 출력), f (실수 출력), c (문자 출력), s (문자열 출력) 등이 있음
-- [flags] 위치에 – (a minus sign) 입력 시 왼쪽 정렬
-- printf 함수의 기본 정렬은 오른쪽 정렬
-- [width] 값은 해당 형식 지정자 위치에 출력될 최소 문자 수 지정
-- 숫자를 사용하거나, * 문자를 사용해 전달인자로부터 값을 대응할 수도 있음
-- printf ("%6d\n", 100);
--     printf ("%-6d\n", 100);
--     printf ("%6d\n", 1000000);
--     printf ("%*d\n", 10, 1000000);
-- ···100
-- 100···
-- 1000000
-- ···1000000
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 문자열 (s) 지정자에서의 정밀도 ([.precision])
-- 해당 형식 지정자 위치에 출력될 문자열의 최대 문자 수 지정
-- 정밀도가 설정되어 있지 않다면 '\0' 문자를 만날 때까지 출력
-- char *s = "Hello, world";  /* 12 */
--     /* string with precision */
-- printf (":%s:\n", s);
-- printf (":%10s:\n", s);
-- printf (":%.10s:\n", s);
-- printf (":%-10s:\n", s);
-- printf (":%15s:\n", s);
-- printf (":%.15s:\n", s);
-- printf (":%-15s:\n", s);
-- printf (":%15.10s:\n", s);
-- printf (":%-15.10s:\n", s);
-- :Hello, world:
-- :Hello, world:
-- :Hello, wor:
-- :Hello, world:
-- :···Hello, world:
-- :Hello, world:
-- :Hello, world···:
-- :·····Hello, wor:
-- :Hello, wor·····:
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 실수 (f, e, E) 지정자에서의 정밀도 ([.precision])
-- f는 실수 값을 고정 소수점 형태로, e (or E)는 실수 값을 과학적 표기 형태로 출력
-- 해당 형식 지정자 위치에 출력될 소수부의 최대 문자 수를 지정하며, 지정되어 있지 않다면 기본값인 6 사용
-- printf ("%8.5f\n", 1.25);
-- printf ("%-8.5f\n", 1.25);
-- printf ("%9.3f\n", 3.141592);
-- printf ("%-9.3f\n", 3.141592);
-- printf ("%9f\n", 3.141592);
-- printf ("%-9f\n", 3.141592);
-- printf ("%10.3e\n", 3.141592);
-- printf ("%-10.3E\n", 3.141592);
-- ·1.25000
-- 1.25000·
-- ····3.142
-- 3.142····
-- ·3.141592
-- 3.141592·
-- ·3.142e+00
-- 3.142E+00·
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 실수 (g, G) 지정자에서의 정밀도 ([.precision])
-- 출력할 실수값을 과학적 표기 형태로 표현했을 때, 지수 값이 -4보다 작거나 소수부의 정밀도가 precision의 값보다 크거나 같다면 지정자 e, E 사용
-- 그 외의 경우에는 지정자 f 사용 
-- 해당 형식 지정자 위치에 출력될 실수값의 최대 문자 수를 지정하며, 지정되어 있지 않다면 기본값인 6 사용
-- 출력될 실수값의 소수부 정밀도 값이 사용자가 지정한 정밀도 값보다 낮다면, 뒤따르는 소수부의 0은 제거됨
-- double d1 = 0.125;               /* 1 ÷ 8 */
-- double d2 = 0.0000152587890625;  /* 1 ÷ 65,536 */
-- double d3 = 1234.56;
-- printf ("%f\n", d1);
-- printf ("%e\n", d1);
-- printf ("%g\n", d1);
-- printf ("%f\n", d2);
-- printf ("%E\n", d2);
-- printf ("%G\n", d2);
-- printf ("%e\n", d3);
-- printf ("%.3g\n", d3);
-- printf ("%.4g\n", d3);
-- 0.125000
-- 1.250000e-01
-- 0.125
-- 
-- 0.000015
-- 1.525879E-05
-- 1.52588E-05
-- 
-- 1.234560e+03 1.23e+03
-- 1235
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 정수 (d, i, o, x, X) 지정자에서의 정밀도 ([.precision])
-- 해당 형식 지정자 위치에 출력될 정수의 최소 문자 수 지정
-- 출력될 정수의 정밀도 값이 사용자가 지정한 정밀도 값보다 작다면 빈 공간을 0으로 채워 출력
-- printf ("%.5d\n",  12);
-- printf ("%5.5d\n", 1234);
-- printf ("%8.5d\n", 1234);
-- printf ("%-8.5d\n", 1234);
-- printf ("%8.5d\n", 123456);
-- printf ("%-8.5d\n", 123456);
-- 00012
-- 01234
-- ···01234
-- 01234···   
-- ··123456
-- 123456··
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 정수 (d, i) 지정자에서의 길이 ([length])
-- 길이가 생략되었다면 형식 지정자의 출력 결과는 int 형
-- 길이가 h일 경우 형식 지정자의 출력 결과는 short 형
-- 길이가 l일 경우 형식 지정자의 출력 결과는 long 형
-- printf ("%d\n", 1 << 16);
-- printf ("%hd\n", 1 << 16);
-- printf ("%6hd\n", 1 << 16);
-- printf ("%d\n",  (long) 1 << 32);
-- printf ("%ld\n",  (long) 1 << 32);
-- printf ("%-12ld\n",  (long) 1 << 32);
-- 65536
-- 0
-- ·····0
-- 
-- 0
-- 4294967296
-- 4294967296··
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 지정자 (specifier)
-- Brian W. Kernighan and Dennis M. Ritchie. 1988. The C Programming Language  (2nd. ed.). Prentice Hall Professional Technical Reference, USA.
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- 지정자 (specifier)
-- o는 정수를 8진수로 출력
-- h는 정수를 16진수로 출력
-- u는 정수를 무부호형으로 출력
-- p는 전달인자의 객체 주소 출력
-- %는 % 문자 출력
-- printf ("%3d %3o %3x %3X\n",
--     i, i, i, i);
-- printf ("%3d %3o %3x %3X\n",
--     o, o, o, o);
-- printf ("%3d %3o %3x %3X\n",
--     h, h, h, h);
-- printf ("%u\n", u);
-- printf ("%3c %3d %3x %3X\n",
--     c, c, c, c);
-- printf ("%p\n", &d3);
-- printf ("%%\n");
-- ·15 ·17 ··f ··F
-- 
-- ·63 ·77 ·3f ·3F
-- 
-- 255 377 ·ff ·FF
-- 
-- 2147483648
-- ··Z ·90 ·5a ·5A
-- 
-- 0x7ffff59b4910
-- %
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- printf 함수  (Cont’d)
-- printf 함수의 첫 번째 전달인자는 형식 문자열이 위치하며, 해당 형식 문자열 내에 형식 지정자가 n개 구성된다면, printf 함수의 전달인자의 개수는 n + 1
-- n: 형식 지정자와 대응되어야 할 전달인자의 개수
-- 1: 형식 문자열
-- 
-- 다음 경우에서는 잘못된 결과를 출력:
-- 형식 문자열 내 형식 지정자의 수가 n개일 때, printf 함수의 전달인자의 개수가 n + 1이 아닐 경우
-- 형식 지정자에서의 지정자 형과 해당 형식 지정자와 대응되는 전달인자의 형이 서로 일치하지 않는 경우
-- printf (s);          /* Fail if s contains '%' */
-- printf ("%s\n", s);  /* Safe */
-
-
-# Formatted Output - Printf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Output - Printf
-- sprintf 함수
-- 동작은 printf 함수와 동일하나, 매개변수들을 형식에 맞게 변환한 결과 문자열을 표준 출력이 아닌 문자 배열에 기록
-- 
-- 
-- 포인터 s는 문자 배열의 시작 주소이며, 문자 배열은 결과를 저장할 수 있도록 저장공간이 충분해야 함
-- /* defined in header <stdio.h> */ 
-- int sprintf (char *s, char *format, arg1, arg2, ⋯)
-- #include <stdio.h>
-- int main (void)
-- {
--   char s[100];
--   int len, a, b;
--   a = 3, b = 5;
--   len = sprintf (s, "%d + %d = %d", a, b, a + b);
--   /* 3 + 5 = 8, return value of sprintf () : 9 */
--   printf ("%s, return value of sprintf (): %d\n", s, len);
--   return 0;
-- }
-
-
-# Variable-length Argument Lists
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Variable-length Argument Lists
-- 가변 인자 매개변수 목록과 가변 인자 함수
-- printf 함수는 가변 인자 함수
-- 
-- ... (가변 인자 매개변수 목록, variable-length argument lists)은 해당 함수의 매개변수가 결정되지 않은 상태임을 의미
-- 함수의 매개변수 목록 중 마지막 위치에만 사용 가능
-- <stdarg.h> 헤더 파일에 정의되어 있는 인터페이스를 사용하면 가변 인자 매개변수 목록을 활용한 가변 인자 함수를 사용할 수 있음
-- int printf (char *format, ...)
-
-
-# Variable-length Argument Lists
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Variable-length Argument Lists
-- va_list 형
-- 가변 인자를 한 번에 하나씩 참조할 수 있는 포인터
-- va_start 매크로
-- va_list 형 변수가 첫 번째 가변 인자를 가리키며, va_list 형 변수 사용 전 반드시 호출되어야 함
-- 가변 인자 함수는 적어도 한 개 이상의 이름이 사용된 매개변수가 있어야 하며, 이름이 있는 마지막 매개변수를 사용해야 함
-- #include <stdio.h>   /* printf */
-- #include <stdarg.h>  /* va_list, va_start, va_arg, va_end */
-- int findmax (int, ...);
-- int main (void)
-- {
--   int max;
--   max = findmax (5, 23, 1, 52, -3, 7);
--   printf ("The largest value is %d.\n", max);
--   return 0;
-- }
-- int findmax (int n, ...)
-- {
--   va_list ap;  /* points to each unnamed arg in turn */
--   int i, val, largest;
--   va_start (ap, n);  /* make ap point to 1st unnamed arg */
--   largest = va_arg (ap, int);
--   for  (i = 1; i < n; ++i) {
--     val = va_arg (ap, int);
--     largest =  (val > largest) ? val : largest;
--   }
--   va_end (ap); /* clean up when done */
--   return largest;
-- }
-
-
-# Variable-length Argument Lists
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Variable-length Argument Lists
-- va_arg 매크로
-- va_list 포인터가 가리키는 요소를 지정한 형으로 가져옴
-- va_arg 매크로를 사용하면 va_list 포인터는 다음 요소를 가리킴
-- va_end 매크로
-- 가변 인자를 처리하기 위해 사용한 자원들을 반환 (cleanup)
-- va_end 매크로를 사용해 사용한 자원들을 반환하지 않은 상태로  va_start 매크로 사용 시 결과는 알 수 없음 (undefined behavior)
-- #include <stdio.h>   /* printf */
-- #include <stdarg.h>  /* va_list, va_start, va_arg, va_end */
-- int findmax (int, ...);
-- int main (void)
-- {
--   int max;
--   max = findmax (5, 23, 1, 52, -3, 7);
--   printf ("The largest value is %d.\n", max);
--   return 0;
-- }
-- int findmax (int n, ...)
-- {
--   va_list ap;  /* points to each unnamed arg in turn */
--   int i, val, largest;
--   va_start (ap, n);  /* make ap point to 1st unnamed arg */
--   largest = va_arg (ap, int);
--   for  (i = 1; i < n; ++i) {
--     val = va_arg (ap, int);
--     largest =  (val > largest) ? val : largest;
--   }
--   va_end (ap); /* clean up when done */
--   return largest;
-- }
-
-
-# Variable-length Argument Lists
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Variable-length Argument Lists
-- minprintf 함수
-- 사용자 정의 함수
-- 가변 인자 함수
-- printf 함수의 최소 기능만을 구현
-- #include <stdio.h>
-- #include <stdarg.h>  /* va_list, va_start, va_arg, va_end */
-- /* minprintf: minimal printf with variable argument list */
-- void minprintf (char *fmt, ...)
-- {
--   va_list ap;  /* points to each unnamed arg in turn */
--   char *p, *sval;
--   int ival;
--   double dval;
--   /* make ap point to 1st unnamed arg */
--   va_start (ap, fmt);
--   for  (p = fmt; *p; ++p) { ⋯
--   va_end (ap); /* clean up when done */
-- }
-
-
-# Variable-length Argument Lists
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Variable-length Argument Lists
-- minprintf 함수  (Cont’d)
-- 형식 문자열 분석
-- 형식 지정자가 아니라면 해당 문자를 그대로 출력
-- 형식 지정자라면 변환 문자에 따라 적절한 형태로 변환한 뒤 출력
-- for  (p = fmt; *p; ++p) { ⋯
--     if  (*p != '%') {  /* ordinary characters */
--       putchar (*p);
--       continue;
--     }
--     switch  (*++p) {  /* conversion specifications */
--     case 'd':
--       ival = va_arg (ap, int);
--       printf ("%d", ival);
--       break;
--     case 'f':
--       dval = va_arg (ap, double);
--       printf ("%f", dval);
--       break;
--     case 's':
--       for  (sval = va_arg (ap, char *); *sval; ++sval)
--         putchar (*sval);
--       break;
--     default:
--       putchar (*p);
--       break;
--     }
--   }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수
-- 표준 입력으로부터 문자열을 읽어와 형식 문자열에 따라 입력된 문자열 처리
-- 
-- 형식 문자열 내 형식 지정자의 개수가 n 개라면, 뒤따르는 전달인자의 수 또한 n개여야 함
-- 반환값은 형식 문자열에 따라 변환된 결과들의 수를 의미
-- #include <stdio.h>
-- int main (void)
-- {
--   int a, b, c;
--   printf ("%d\n", scanf ("%d %d %d", &a, &b, &c));   /* > 3 */
--   return 0;
-- }
-- int scanf (char *format, ...)  /* defined in header <stdio.h> */
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 형식 지정자 형태: %[*][width][length]specifier
-- printf 함수와 상당히 유사함
-- 두 함수 모두 가변 인자 함수이며, 형식 문자열을 사용함
-- 형식 문자열 내 형식 지정자의 수가 n개라면, 형식 문자열 뒤에 등장하는 전달인자의 수 또한 n개여야 함
-- scanf 함수는 표준 입력으로부터 데이터를 가져옴
-- printf 함수는 표준 출력으로 데이터를 내보냄
-- 각 매개변수는 반드시 포인터여야 함
-- scanf 함수 호출 시 변환 결과를 저장할 변수들의 주소 전달
-- scanf 함수 내에서 형식 문자열에 따라 처리가 완료된 결과는 이와 대응되는 매개변수의 주소를 간접 참조해 값을 간접적으로 전달
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 형식 문자열 내 형식 지정자를 모두 처리했거나, 입력된 문자열과 형식 문자열 간 대응에 실패하면 scanf 함수는 중지됨
-- #include <stdio.h>
-- int main (void) /* rudimentary calculator */
-- {
--   double sum, v;
--   sum = 0;
--   /* warning: the arguments to scanf and sscanf
--      must be pointers. */
--   /* > +1 -2 3.0 4.5e1 s */
--   while  (scanf ("%lf", &v) == 1)
--     printf ("\t%.2f\n", sum += v);
--   /*
--         1.00
--         -1.00
--         2.00
--         47.00
--   */
--   return 0;
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 반환값은 입력 데이터가 성공적으로 형식 지정자와 대응된 개수이며, 더 이상 입력이 없는 경우 EOF 반환
-- 반환값이 0인 경우와 EOF인 경우를 구분해야 함
-- 반환값이 0인 경우는 형식 문자열 내에 입력된 데이터와 대응되는 형식 지정자가 없었음을 의미
-- 반환값이 EOF인 경우는 표준 입력으로부터 가져올 수 있는 데이터가 더 이상 없음을 의미
-- #include <stdio.h>
-- int main (void)
-- {
--   int a, b;
--   /* 
--      $ gcc test_scanf.c -o test_scanf -ansi -Wall
--      Case #1
--      $ cat in1
--      1 3 2 4
--      $ ./test_scanf.c < in1
--      1 + 3 = 4
--      2 + 4 = 6
--      Case #2
--      $ cat in2
--      100 200 300
--      $ ./test_scanf.c < in1
--      100 + 200 = 300
--      300 + 200 = 500
--   */
--   /* while  (scanf ("%d %d", &a, &b) != 2) */
--   while  (scanf ("%d %d", &a, &b) != EOF)
--     printf ("%d + %d = %d\n", a, b, a + b);
--   return 0;
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 형식 지정자 뒤에 빈칸이 존재하면 뒤따르는 공백문자 무시:
-- C89, 7.9.6.2.A directive composed of white-space character (s) is executed by reading input up to thefirst non-white-space character (which remains unread), or until nomore characters can be read.
-- #include <stdio.h>
-- int main (void)
-- {
--   int n;
--   char c;
--   /* > 1 d */
--   scanf ("%d", &n);
--   scanf ("%c", &c);
--   /* int: 1, char: */
--   printf ("int: %d, char: %c\n", n, c);
--   return 0;
-- }
-- 
--   /* Solution #1 */  /* A directive composed of ' ' will be ignore
--      following while-spaces */
--   scanf ("%d %c", &n, &c);
--   
--   /* Solution #2 */  scanf ("%d", &n);
--   getchar ();  /* use getchar () to consume a white-space */
--   scanf ("%c", &c);
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 형식 문자열 내 형식 지정자를 제외한 일반 문자 (ordinary characters)는 입력 스트림으로부터 읽어온 문자열의 문자와 순서가 서로 일치해야 함
-- 형식 문자열의 문자와 입력 받은 문자열의 문자가 서로 일치하지 않으면 scanf 함수는 중지됨
-- #include <stdio.h>
-- int main (void)
-- {
--   int day, month, year;
--   /* 
--      case #1
--      > 05/15/21
--      3
--      month: 5, day: 15, year: 21
--      case #2
--      > 05 15 21
--      1
--      month: 5, day: ??, year: ?? 
--   */
--   printf ("%d\n", scanf ("%d/%d/%d", &month, &day, &year));
--   printf ("month: %d, day: %d, year: %d\n", month, day, year);
--   return 0;
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 형식 지정자에 억제 문자 (suppressing character, *) 사용 시 해당 형식 지정자로부터 처리된 데이터는 무시됨
-- 형식 지정자에서 [width]를 설정하면 입력 받은 문자열로부터 [width] 값만큼 가져와 변환 문자 형으로 처리
-- 형식 지정자 처리 도중에 공백 문자가 등장하면 처리 종료
-- #include <stdio.h>
-- int main (void)
-- {
--   char str1[2], str2[10], str3[10];
--   int a, b, c;
--   /* > suppression */
--   scanf ("%2c %*2c %4s %6s", str1, str2, str3);
-- 
--   /* su ress ion */
--   printf ("%c%c %s %s\n", str1[0], str1[1], str2, str3);
-- 
--   /* > 123 456789 */
--   scanf ("%2d %d %*4d %d", &a, &b, &c);
-- 
--   /* 12 3 89 */
--   printf ("%d %d %d\n", a, b, c);
--   return 0;
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 정수 (d, i) 지정자에서의 길이 ([length])
-- 길이가 생략되었다면 형식 지정자의 처리 결과는 int 형
-- 길이가 h일 경우 형식 지정자의 처리 결과는 short 형
-- 길이가 l일 경우 형식 지정자의 처리 결과는 short 형
-- #include <stdio.h>
-- int main (void)
-- {
--   short s;
--   int i;
--   long l;
-- 
--   scanf ("%hd %d %ld", &s, &i, &l);
--   return 0;
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 실수 (f , e , g) 지정자에서의 길이 ([length])
-- 길이가 생략되었다면 형식 지정자의 처리 결과는 float 형
-- 길이가 l일 경우 형식 지정자의 처리 결과는 double 형
-- 길이가 L일 경우 형식 지정자의 처리 결과는 long double 형
-- #include <stdio.h>
-- int main (void)
-- {
--   float f, f1, f2;
--   double d;
--   long double ld;
-- 
--   /* > 3.14 1.23e1 */
--   scanf ("%f %f", &f1, &f2);
--   printf ("%.2f %.2f\n", f1, f2);
--   /* > 3.14 1.23e-1 */
--   scanf ("%e %e", &f1, &f2);
--   printf ("%.2f %.2f\n", f1, f2);
--   /* > 3.14 1.23e0 */
--   scanf ("%g %g", &f1, &f2);
--   printf ("%.2f %.2f\n", f1, f2);
-- 
--   scanf ("%f %lf %Lf", &f, &d, &ld);
--   return 0;
-- }
-- 3.14 12.30
-- 
-- 
-- 3.14 0.12
-- 
-- 
-- 3.14 1.23
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 지정자 (specifier)
-- Brian W. Kernighan and Dennis M. Ritchie. 1988. The C Programming Language  (2nd. ed.). Prentice Hall Professional Technical Reference, USA.
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수  (Cont’d)
-- 지정자 (specifier)
-- d는 정수를 10진수로 처리
-- o는 정수를 8진수로 처리
-- h는 정수를 16진수로 처리
-- i는 정수를 입력 받은 문자열의 형태에 따라 유연하게 처리
-- u는 정수를 무부호형으로 처리
-- %는 입력받은 문자열 중 하나의 % 문자 처리
-- #include <stdio.h>
-- int main (void)
-- {
--   int i, o, h;
--   unsigned u;
--   /* > 100 077 0xFF */
--   scanf ("%d %o %x", &i, &o, &h);
--   printf ("%d %d %d\n", i, o, h);
--   /* > 100 077 0xFF */
--   scanf ("%i %i %i", &i, &o, &h);
--   printf ("%d %d %d\n", i, o, h);
--   /* > 2147483648 */
--   scanf ("%u", &u);
--   printf ("%u\n", u);
--   /* > %4 */
--   scanf ("%%%d", &i);
--   printf ("%d\n", i);
--   return 0;
-- }
-- 100 63 255
-- 
-- 
-- 
-- 100 63 255
-- 
-- 
-- 
-- 2147483648
-- 
-- 
-- 
-- 4
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- sscanf 함수
-- 동작은 scanf 함수와 동일하나, 표준 입력으로부터 문자열을 읽어오는 것이 아닌, 문자 배열로부터 문자열을 읽어옴
-- 
-- 
-- 포인터 s는 읽어올 문자열을 가리키는 포인터
-- 실수 값을 다룰 때 scanf 함수와 printf 함수의 변환 문자에 차이가 있음에 유의할 것
-- /* defined in header <stdio.h> */ 
-- int sscanf (char *s, char *format, arg1, arg2, ⋯)
-- #include <stdio.h>
-- int main (void)
-- {
--   char s[] = "1 12.3 12.3 12.3 sscanf";
--   int i;
--   float f;
--   double d;
--   long double ld;
--   char str[10];
--   sscanf (s, "%d %f %lf %Lf %s", &i, &f, &d, &ld, str);
--   /* 1 12.300000 12.300000 12.300000 sscanf */
--   printf ("%d %f %f %Lf %s\n", i, f, d, ld, str);
--   return 0;
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- sscanf 함수  (Cont’d)
-- 형식 문자열 내에 일반 문자가 사용될 수 있음을 활용해 날짜 문자열을 받아오는 예:
-- int month, day, year;
-- char monthname[20];
-- while  (getline (line, sizeof (line)) > 0) {
--   if  (sscanf (line, "%d %s %d", &day, monthname, &year) == 3)
--     printf ("valid: %s\n", line);  /* 25 Dec 1998 form */
--       else if  (sscanf (line, "%d/%d/%d", &month, &day, &year) == 3)
--     printf ("valid: %s\n", line);  /* mm/dd/yy form */
--   else
--     printf ("invalid: %s\n", line);  /* invalid form */
-- }
-
-
-# Formatted Input - Scanf
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Formatted Input - Scanf
-- scanf 함수와 sscanf 함수 사용 시 주의사항
-- scanf 함수와 sscanf 함수의 가변 인자들은 기록될 대상을 가리키는 주소값이어야 함
-- 변수 자체를 전달하는 것이 아닌 주소를 가리키는 포인터를 전달인자로 넘겨주어야 함
-- 
-- 
-- 가변 인자에 주소값이 아닌 값을 전달인자로 넘겨주어도 컴파일 시 오류가 발생하지 않으므로 주의해서 사용해야 함
-- scanf ("%d", n);   /* ERROR! */
--  scanf ("%d", &n);  /* OK */
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- 프로그램이 파일을 읽거나 파일에 쓰기 위해서는 먼저 fopen 함수를 사용해 열어야 함 (be opened)
-- 운영체제에 해당 파일을 사용하겠다고 알림
-- 운영체제는 파일로부터 데이터를 읽거나 파일에 데이터를 쓸 수 있도록 파일에 접근 가능한 포인터 (file pointer) 반환
-- 파일 포인터는 프로그램과 외부 파일을 연결해주는 객체를 가리킴
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- 파일 포인터
-- 파일과 관련된 정보들이 들어있는 구조체를 가리키는 포인터
-- 스트림 인터페이스가 사용하는 임시 저장 공간 (buffer)
-- 버퍼에서 현재 가리키고 있는 문자
-- 다른 프로그램에서의 해당 파일 사용 여부
-- 파일 사용 도중 파일의 끝에 도달했거나 (end of file) 오류 발생에 대한 여부
-- 표준 라이브러리는 사용자가 간편히 파일을 사용할 수 있도록 인터페이스 제공
-- <stdio.h> 헤더 파일 내에 파일 구조체 선언이 포함되어 있으며, 사용자는 더 이상 파일 관련 세부 정보들을 알 필요가 없음
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- 파일 포인터 사용 예
-- 
-- 
-- FILE 형은 파일 관련된 정보들을 보관하고 있는 구조체에 typedef 키워드를 사용해 해당 구조체 형을 FILE로 지정한 것
-- fp는 FILE 형을 가리키는 포인터 변수
-- fopen은 파일에 접근 가능한 포인터를 반환하는 함수
-- 프로그램과 외부 파일 간 연결 정보를 기록하고 있는 FILE 형 객체를 가리킴
-- /* defined in header <stdio.h> */ 
-- FILE *fp;
-- FILE *fopen (char *name, char *mode);
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- fopen 함수
-- 
-- 첫 번째 매개변수에는 사용할 파일의 경로를 문자열 형태로 전달
-- 두 번째 매개변수에는 파일을 어떻게 사용할 것인지를 문자열 형태로 전달
-- r : 읽기 (read)
-- w : 쓰기 (write)
-- a : 추가 (append)
-- 몇몇 환경에서는 ASCII 코드들로 작성된 텍스트 파일과 2진 코드들로 작성된 바이너리 파일을 구분함 (e.g. Microsoft Windows)
-- 텍스트 파일과 바이너리 파일을 구분해 처리하는 운영체제에서 바이너리 파일을 대상으로 할 경우, 문자 b를 추가해야 함
-- e.g. rb, wb, ab
-- fp = fopen (name, mode);
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- fopen 함수  (Cont’d)
-- 파일을 쓰기 (w) 또는 추가 (a) 목적으로 열고자 할 때, 열고자 하는 파일이 존재하지 않을 경우 파일을 새로 생성함 (if possible)
-- 파일을 쓰기 (w) 목적으로 열고자 할 때, 열고자 하는 파일이 존재한다면 해당 파일에 있는 내용은 모두 삭제됨
-- 열고자 하는 파일이 존재하고, 해당 파일의 내용을 유지하고 싶다면 추가 (a) 목적으로 파일을 열어야 함
-- 파일을 읽기 (r) 목적으로 열고자 할 때, 파일이 존재하지 않거나 열고자 하는 파일에 대한 접근 권한이 없을 경우 오류 발생
-- fopen 함수 호출 시 오류가 발생한다면, NULL 반환
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- getc 함수
-- fopen 함수를 호출해 열린 파일로부터 문자를 하나씩 읽어옴
-- 
-- 전달인자로 열린 파일을 가리키는 파일 포인터를 넘겨줌
-- 파일 포인터는 fopen 함수를 통해 열어놓은 파일 관련 정보들을 저장하고 있는 객체를 가리킴
-- 객체에는 입력 스트림 정보가 포함되어 있으며, 입력 스트림은 가져올 문자를 가리키고 있음
-- 함수가 호출되면 스트림으로부터 문자 하나를 읽어옴
-- 문자 하나를 성공적으로 읽어왔다면 getc 함수는 읽어온 문자를 반환하고, 스트림은 방금 읽어온 문자의 다음 문자를 가리킴
-- 파일 포인터가 가리키는 대상이 EOF이거나 스트림 버퍼로부터 읽어오는 과정 중에 오류 발생 시 EOF 반환
-- int getc (FILE *fp)  /* defined in header <stdio.h> */
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- putc 함수
-- fopen 함수를 호출해 열린 파일에 문자를 하나씩 내보냄
-- 
-- 전달인자로 출력할 문자와 열린 파일을 가리키는 파일 포인터를 넘겨줌
-- 파일 포인터는 fopen 함수를 통해 열어놓은 파일 관련 정보들을 저장하고 있는 객체를 가리킴
-- 객체에는 출력 스트림 정보가 포함되어 있으며, 출력 스트림은 문자가 기록될 위치를 가리키고 있음
-- 함수가 호출되면 스트림이 가리키고 있는 위치에 문자를 내보냄
-- 문자 하나를 성공적으로 내보냈다면 putc 함수는 내보낸 문자를 반환하고, 스트림은 방금 문자가 기록된 위치의 다음을 가리킴
-- 오류 발생 시 EOF 반환
-- int putc (int c, FILE *fp)  /* defined in header <stdio.h> */
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- C 프로그램이 실행되면 세 개의 파일은 자동으로 열리며, 각 열린 파일들을 이용할 수 있는 포인터 제공
-- <stdio.h> 헤더 파일 내에 정의되어 있음
-- 표준 입력 (standard input, stdin)
-- 표준 출력 (standard output, stdout)
-- 표준 오류 (standard error, stderr)
-- 
-- 일반적으로 파일 포인터 stdin은 키보드와 연결되며, 파일 포인터 stdout과 stderr는 모니터와 연결됨
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- 파일 포인터 stdin, stdout, stderr는 FILE 형 객체를 가리키는 상수 포인터
-- 해당 식별자들은 다른 값으로 바뀔 수 없으며, 다른 용도로 사용하고자 할 경우에는 freopen 함수를 사용해야 함
-- 
-- 두 파일 포인터 stdin, stdout은 입출력 재정의 또는 파이프 동작을 통해 표준 입력을 파일로부터 읽어오거나 표준 출력을 파일로 출력 가능
-- 파일 포인터 strerr는 출력이 재정의되어도 화면 상에 오류 출력됨을 보장함
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- getchar 함수와 putchar 함수는 <stdio.h> 헤더 파일 안에 매크로 형태로 정의되어 있음
-- getchar 함수는 getc 함수에 파일 포인터 stdin를 전달인자로 넘겨준 형태
-- putchar 함수는 putc 함수에 문자 하나와 파일 포인터 stdout을 전달인자로 넘겨준 형태
-- /* defined in header <stdio.h> */ 
-- #define getchar () getc (stdin)
-- #define putchar (c) putc ( (c), stdout)
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- fscanf 함수
-- 동작은 scanf 함수와 동일하나, 파일 포인터를 전달인자로 넘겨받아 어느 객체로부터 데이터를 읽어올 것인지 결정
-- 
-- 
-- fscanf 함수에 파일 포인터 stdin을 사용하면 scanf 함수와 동일한 동작 수행
-- /* defined in header <stdio.h> */ 
-- int fscanf (FILE *fp, char *format, ...);
-- char arr[100];
-- 
-- fscanf (stdin, "%s", arr);  /* scanf ("%s", arr); */
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- fprintf 함수
-- 동작은 printf 함수와 동일하나, 파일 포인터를 전달인자로 넘겨받아 어느 객체로 데이터를 내보낼 것인지 결정
-- 
-- 
-- fprintf 함수에 파일 포인터 stdout을 사용하면 printf 함수와 동일한 동작 수행
-- /* defined in header <stdio.h> */ 
-- int fprintf (FILE *fp, char *format, ...);
-- char arr[100];
-- 
-- fprintf (stdout, "%s", arr);  /* printf ("%s", arr); */
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- 파일의 내용을 연결해 출력하는 프로그램 cat (concatenate)
-- 입력된 커맨드 라인 매개변수가 없다면 키보드로 입력된 문자열을 화면에 그대로 출력
-- 입력된 커맨드 라인 매개변수가 있다면 각 매개변수를 이름으로 하는 파일을 열어 해당 파일 내용을 화면에 그대로 출력
-- #include <stdio.h>
-- /* cat: concatenate files, version 1 */
-- int main (int argc, char *argv[])
-- {
--   FILE *fp;
--   void filecopy (FILE *, FILE *);
--   /* no args; copy standard input */
--   if  (argc == 1) {
--     filecopy (stdin, stdout);
--   } else { 
--     while  (--argc > 0) { ⋯
--   }
--   return 0;
-- }
-- /* filecopy: copy file ifp to file ofp */
-- void filecopy (FILE *ifp, FILE *ofp)
-- {
--   int c;
--   while  ( (c = getc (ifp)) != EOF)
--     putc (c, ofp);
-- }
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- 파일의 내용을 연결해 출력하는 프로그램 cat (concatenate)  (Cont’d)
-- fclose 함수는 fopen 함수를 호출해 열어놓은 파일을 닫는 함수
-- 대부분의 운영체제는 한 프로그램 당 열 수 있는 파일의 수가 정해져 있음
-- 더 이상 사용하지 않는 파일은 반드시 fclose 함수를 호출해 열려있는 파일을 닫을 것
-- while  (--argc > 0) {
--       if  ( (fp = fopen (*++argv, "r")) == NULL) {
--         printf ("cat: can't open %s\n", *argv);
--         return 1;
--       } else {
--         filecopy (fp, stdout);
--         fclose (fp);
--       }
--     }
-
-
-# File Access
-- 컴퓨터프로그래밍기초
-- ‹#›
-- File Access
-- fclose 함수를 호출하면 출력 스트림을 비워줌
-- 출력 스트림에 있는 내용들은 아직 대상에 기록되지 않는 상태
-- fclose 함수를 호출하면 출력 스트림에 남아있는 모든 데이터를 사용중인 파일로 내보냄 (flush)
-- 
-- fclose 함수는 프로그램 종료 시 자동으로 호출됨
-- 각각 열려있는 파일마다 fclose 함수 호출
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- 오류 처리가 추가된 파일의 내용을 연결해 출력하는 프로그램 cat
-- 이전 cat 프로그램은 표준 출력을 재정의하면 오류 내용을 화면에 출력하지 못하는 문제점이 있음
-- >  (output redirection)
-- |  (pipe)
-- 파일 포인터 stderr는 오류 정보를 출력하는 스트림이며, 출력이 재정의되어도 화면에 출력됨을 보장
-- #include <stdio.h>
-- #include <stdlib.h>
-- /* cat: concatenate files, version 2 */
-- int main (int argc, char *argv[])
-- {
--   FILE *fp;
--   void filecopy (FILE *, FILE *);
--   char *prog = argv[0];  /* program name for errors */
--   /* no args; copy standard input */
--   if  (argc == 1) {
--     filecopy (stdin, stdout);
--   } else {
--     while  (--argc > 0) {
--       if  ( (fp = fopen (*++argv, "r")) == NULL) {
--         fprintf (stderr, "%s: can't open %s\n", prog, *argv);        exit (1);
--       } else {
--         filecopy (fp, stdout);
--         fclose (fp);
--       }
--     }
--   }
--   if  (ferror (stdout)) {
--     fprintf (stderr, "%s: error writing stdout\n", prog);
--     exit (2);
--   }  exit (0);
-- }
-- ⋯
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- 오류 처리가 추가된 파일의 내용을 연결해 출력하는 프로그램 cat  (Cont’d)
-- 오류 발생 시 실행파일 이름을 같이 출력하면 디버깅 시 용이
-- #include <stdio.h>
-- #include <stdlib.h>
-- /* cat: concatenate files, version 2 */
-- int main (int argc, char *argv[])
-- {
--   FILE *fp;
--   void filecopy (FILE *, FILE *);
--   char *prog = argv[0];  /* program name for errors */
--   /* no args; copy standard input */
--   if  (argc == 1) {
--     filecopy (stdin, stdout);
--   } else {
--     while  (--argc > 0) {
--       if  ( (fp = fopen (*++argv, "r")) == NULL) {
--         fprintf (stderr, "%s: can't open %s\n", prog, *argv);        exit (1);
--       } else {
--         filecopy (fp, stdout);
--         fclose (fp);
--       }
--     }
--   }
--   if  (ferror (stdout)) {
--     fprintf (stderr, "%s: error writing stdout\n", prog);
--     exit (2);
--   }  exit (0);
-- }
-- ⋯
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- 오류 처리가 추가된 파일의 내용을 연결해 출력하는 프로그램 cat  (Cont’d)
-- exit 함수는 프로그램을 즉시 종료시킴
-- exit 함수 호출 시 프로그램에서 열어놓은 각 파일들에 대해 fclose 함수 호출
-- 출력 스트림에 남아있는 내용을 모두 목적지로 출력
-- #include <stdio.h>
-- #include <stdlib.h>
-- /* cat: concatenate files, version 2 */
-- int main (int argc, char *argv[])
-- {
--   FILE *fp;
--   void filecopy (FILE *, FILE *);
--   char *prog = argv[0];  /* program name for errors */
--   /* no args; copy standard input */
--   if  (argc == 1) {
--     filecopy (stdin, stdout);
--   } else {
--     while  (--argc > 0) {
--       if  ( (fp = fopen (*++argv, "r")) == NULL) {
--         fprintf (stderr, "%s: can't open %s\n", prog, *argv);        exit (1);
--       } else {
--         filecopy (fp, stdout);
--         fclose (fp);
--       }
--     }
--   }
--   if  (ferror (stdout)) {
--     fprintf (stderr, "%s: error writing stdout\n", prog);
--     exit (2);
--   }  exit (0);
-- }
-- ⋯
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- 오류 처리가 추가된 파일의 내용을 연결해 출력하는 프로그램 cat  (Cont’d)
-- exit 함수는 main 함수에서의 반환문과 동일한 동작을 수행
-- 
-- exit 함수는 main 함수 뿐 아니라 호출된 다른 함수에서 사용해도 해당 프로그램을 즉각 종료시킬 수 있음
-- bar 함수 내의 exit 함수를 호출하자마자 해당 프로그램은 종료됨
-- /* defined in header <stdlib.h> */ 
-- exit (0);  /* return 0; */
-- #include <stdio.h>
-- void bar (void)
-- {
--   exit (127);
-- }
-- void foo (void)
-- {
--   printf ("Before bar ()\n");
--   bar ();
--   printf ("After bar ()\n");
-- }
-- int main (void)
-- {
--   printf ("Before foo ()\n");
--   foo ();
--   printf ("After foo ()\n");
--   return 0;
-- }
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- ferror 함수
-- 파일 포인터가 가리키는 객체의 스트림에 오류가 발생한 경우 0이 아닌 값 반환
-- 
-- 출력 스트림은 오류가 거의 발생하지 않지만, 종종 오류를 일으킴 (e.g. 저장 공간 부족, 권한 문제)
-- 프로그램은 ferror 함수를 통해 입력, 출력 스트림의 오류 발생 여부를 필히 확인해야 함
-- 
-- feof 함수
-- 파일 포인터가 가리키는 객체의 대상 EOF가 등장하면 0이 아닌 값 반환
-- int ferror (FILE *fp)  /* defined in header <stdio.h> */
-- int feof (FILE *fp)  /* defined in header <stdio.h> */
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- ferror 함수와 feof 함수를 사용한 파일 복사 시 오류 처리
-- fopen 함수를 읽기 목적으로 호출할 경우, 파일이 존재하지 않거나 권한이 없는 경우 NULL 반환
-- fopen 함수를 쓰기 또는 추가 목적으로 호출할 경우, 저장 공간이 부족하거나 권한이 없는 경우 NULL 반환
-- fopen 함수를 사용해 열어놓은 파일은 fclose 함수를 사용해 닫는 것을 권장
-- #include <stdio.h>
-- #include <stdlib.h> /* exit () function declared here */
-- void filecopy (FILE *, FILE *);
-- int main (void)
-- {
--   FILE *src, *dst;
--   src = fopen ("source.txt", "r");
--   dst = fopen ("destination.txt", "w");
--   /* check error */
--   if  (src == NULL || dst == NULL) {
--     printf ("Unable to open file\n");
--     exit (1);
--   }
--   filecopy (src, dst);
--   fclose (src);
--   fclose (dst);
--   exit (0);
-- }
-- /* filecopy: copy file ifp to file ofp */
-- void filecopy (FILE *ifp, FILE *ofp) ⋯
-
-
-# Error Handling - Stderr and Exit
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Error Handling - Stderr and Exit
-- ferror 함수와 feof 함수를 사용한 파일 복사 시 오류 처리  (Cont’d)
-- getc 함수는 입력 스트림이 가리키는 다음에 가져올 문자가 EOF이거나 스트림에 오류가 발생했을 때 EOF 반환
-- putc 함수는 출력 스트림에 오류가 발생했을 때 EOF 반환
-- 출력 스트림에서 발생 가능한 대표적인 오류는 저장 공간 부족
-- /* filecopy: copy file ifp to file ofp */
-- void filecopy (FILE *ifp, FILE *ofp)
-- {
--   int c;
--   while  ( (c = getc (ifp)) != EOF) {
--     /* The putc function normally return a copy of the byte that              
--        is has written - as confirmation of success.
--        If there is an error it returns EOF instead. */
--     if  (putc (c, ofp) == EOF) {
--       printf ("Error in writing to file\n");
--       exit (1);
--     }
--   }
--   /* normal */
--   if  (feof (ifp))
--     printf ("End of file\n");
--   /* abnormal */
--   if  (ferror (ifp)) {
--     printf ("Error in reading from file\n");
--     exit (1);
--   }
-- }
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- fgets 함수
-- 문자열을 줄 단위로 읽어오는 함수
-- 
-- 파일 포인터가 가리키는 대상으로부터 줄 단위로 문자열을 읽어와 line 포인터 변수가 가리키는 배열에 기록
-- 문자열에 개행문자 ('\n')가 포함되어 있다면 이를 포함해서 읽어옴
-- 최대 maxline - 1개의 문자를 읽어올 수 있음
-- 읽어온 문자열의 마지막에는 널문자 ('\0')가 위치해야 하므로 문자 배열 line에 최대 maxline - 1개의 문자를 기록할 수 있음
-- 파일 포인터가 가리키는 대상으로부터 줄 단위의 문자열을 성공적으로 읽었다면 문자 배열 line 포인터 변수의 값 (주소)를 반환하고, 문자열을 읽는 도중 EOF를 만나거나 오류 발생 시 NULL 반환
-- char *fgets (char *line, int maxline, FILE *fp)  /* defined in header <stdio.h> */
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- fgets 함수  (Cont’d)
-- #include <stdio.h>
-- /* fgets: get at most n chars from iop */
-- char *fgets (char *s, int n, FILE *iop)
-- {
--   register int c;
--   register char *cs;
--   cs = s;
--   /* 
--   1. n-1 characters will be read
--   2. returns EOF for end of file or error 
--   */
--   while  (--n > 0 &&  (c = getc (iop)) != EOF) {
--     /* reads the next input line
--         (including the newline) from file iop */
--     if  ( (*cs++ = c) == '\n')
--       break;
--   }
--   *cs = '\0';
--   /* normally fgets returns s (pointer);
--      on end of file or error it returns NULL */
--   return  (c == EOF && cs == s) ? NULL : s;
-- }
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- fgets 함수  (Cont’d)
-- fgets 함수를 사용하면 getline 함수를 간결하게 구현할 수 있음
-- fgets 함수는 데이터가 저장될 배열의 주소를 반환하거나 NULL을 반환
-- getline 함수는 입력 받은 문자열의 길이를 반환하거나 0을 반환하므로 fgets 함수만 사용했을 때보다 유용한 정보를 얻을 수 있음
-- #include <stdio.h>
-- /* getline: read a line, return length */
-- int getline (char *line, int max)
-- {
--   if  (fgets (line, max, stdin) == NULL)
--     return 0;
--   else
--     return strlen (line);
-- }
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- fputs 함수
-- 문자열을 줄 단위로 내보내는 함수
-- 
-- line 포인터 변수를 간접 참조해 줄 단위로 문자열을 읽어와 파일 포인터가 가리키는 대상에 기록
-- 문자열에 개행문자 ('\n')가 포함되어 있다면 이를 포함해서 내보냄
-- 파일 포인터가 가리키는 대상에 성공적으로 문자열을 기록했다면 음수가 아닌 값 (e.g. 0) 반환
-- 문자열을 파일 포인터가 가리키는 스트림으로 내보내는 도중 오류 발생 시 EOF 반환
-- int fputs (char *line, FILE *fp)  /* defined in header <stdio.h> */
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- fputs 함수  (Cont’d)
-- #include <stdio.h>
-- /* fputs: put string s on file iop */
-- /* fputs is already included in stdio.h */
-- /* int fputs (char *s, FILE *iop) */
-- int knr_fputs (char *s, FILE *iop)
-- {
--   int c;
--   while  (c = *s++)
--     putc (c, iop);
--   /* returns EOF if an error occurs, and non-negative otherwise */
--   return ferror (iop) ? EOF : 0;
-- }
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- gets 함수
-- fgets 함수에 파일 포인터 stdin을 사용하는 것처럼 동작함
-- 
-- 표준 입력으로부터 문자열을 줄 단위로 읽어올 때, 문자열에 개행문자 ('\n')가 포함되어 있다면 이를 제거함
-- line 포인터 변수가 가리키는 배열의 크기를 함수 측으로 전달하지 않으므로 배열의 크기보다 긴 문자열이 입력될 경우 다른 메모리 영역을 침범할 수 있음
-- gets 함수보다는 fgets 함수 사용을 적극 권장
-- char *gets (char *line)  /* defined in header <stdio.h> */
-
-
-# Line Input and Output
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Line Input and Output
-- puts 함수
-- fputs 함수에 파일 포인터 stdout을 사용하는 것처럼 동작함
-- 
-- 표준 출력으로 문자열을 출력할 때, 문자열에 개행문자 ('\n')를 추가해서 내보냄
-- 출력할 문자열 내에 개행문자가 포함되어 있더라도 개행문자를 추가함
-- int puts (char *line)  /* defined in header <stdio.h> */
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 문자열 연산
-- <string.h> 헤더 파일 필요
-- 매개변수 s와 t는 char 형을 가리키는 포인터
-- 매개변수 c와 n은 int 형
-- strcat (s, t);      /* concatenate t to end of s */
-- strncat (s, t, n);  /* concatenate n characters of t to end of s */
-- strcmp (s, t);      /* return negative, zero, or positive for s < t, s == t, or
--                       s > t */
-- strncmp (s, t, n);  /* same as strcmp but only in first n characters */
-- strcpy (s, t);      /* copy t to s */
-- strncpy (s, t, n);  /* copy at most n characters of t to s */
-- strlen (s);         /* return length of s */
-- strchr (s, c);      /* return pointer to first c in s, or
--                       NULL if not present */
-- strrchr (s, c);     /* return pointer to last c in s, or
--                       NULL if not present */
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 형 검사 및 변환
-- <ctype.h> 헤더 파일 필요
-- 매개변수 c는 int 형
-- isalpha (c); /* non-zero if c is alphabetic, 0 if not */
-- isupper (c); /* non-zero if c is upper case, 0 if not */
-- islower (c); /* non-zero if c is lower case, 0 if not */
-- isdigit (c); /* non-zero if c is digit, 0 if not */
-- isalnum (c); /* non-zero if isalpha (c) or isdigit (c), 0 if not */
-- isspace (c); /* non-zero if c is blank, tab, newline, return, formfeed,
--                vertical tab */
-- toupper (c); /* return c converted to upper case */
-- tolower (c); /* return c converted to lower case */
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- getc 함수와 ungetc 함수
-- <stdio.h> 헤더 파일 필요
-- 파일 포인터가 가리키는 대상으로부터 문자 하나를 읽어오거나 내보내는 역할 수행
-- getc 함수는 스트림으로부터 문자 하나를 성공적으로 읽어왔다면 해당 문자를 반환하고, 더 이상 가져올 데이터가 없다면 EOF 반환
-- ungetc 함수는 스트림으로 문자 하나를 성공적으로 내보냈다면 해당 문자를 반환하고, 내보내는 과정 중에 오류가 발생했다면  EOF 반환
-- #include <stdio.h>
-- int skipwhite (FILE *f)
-- {
--   int c;
--   do {
--     c = getc (f);
--   } while  (isspace (c));
--   return ungetc (c, f);
-- }
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- system 함수
-- <stdlib.h> 헤더 파일 필요
-- 터미널에서 실행 가능한 유틸리티들을 프로그램에서 실행할 수 있음
-- 유틸리티의 종류는 운영체제의 종류에 따라 다름에 주의할 것
-- #include <stdlib.h>
-- int main (void)
-- {
--   system ("date");
--   system ("ls");
--   return 0;
-- }
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 저장공간 동적 할당
-- malloc 함수
-- 
-- size 바이트 공간의 메모리를 힙 (heap) 영역에 동적으로 할당
-- 반환형은 void 형 포인터이며, 반환 받은 주소는 사용하고자 하는 형으로 형 변환을 해주어야 함
-- 
-- 
-- 
-- 할당 받은 공간은 초기화되지 않음
-- malloc 함수 호출에 의해 동적으로 공간이 할당되었다면 해당 공간에 접근할 수 있는 주소를 반환하고, 할당 실패 시 NULL 반환
-- void *malloc (size_t size)  /* defined in header <stdlib.h> */
-- int n, *ip;
-- n = 5;
-- ip =  (int *) malloc (n * sizeof (int));
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 저장공간 동적 할당  (Cont’d)
-- calloc 함수
-- 
-- size 크기의 객체를 n개 힙 영역에 동적으로 할당 (size x n 바이트)
-- 반환형은 void 형 포인터이며, 반환 받은 주소는 사용하고자 하는 형으로 형 변환을 해주어야 함
-- 
-- 
-- 
-- 할당 받은 size 크기의 객체 n개는 모두 0으로 초기화됨
-- calloc 함수 호출에 의해 동적으로 공간이 할당되었다면 해당 공간에 접근할 수 있는 주소를 반환하고, 할당 실패 시 NULL 반환
-- void *calloc (size_t n, size_t size)  /* defined in header <stdlib.h> */
-- int n, *ip;
-- n = 5;
-- ip =  (int *) calloc (n, sizeof (int));
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 저장공간 동적 할당  (Cont’d)
-- free 함수
-- 
-- malloc 함수 또는 calloc 함수를 호출해 동적으로 할당 받은 메모리 반환
-- free 함수는 메모리 반환 시 메모리 할당 순서를 지킬 필요가 없음
-- malloc 함수 또는 calloc 함수를 호출해 전달받은 주소를 free 함수의 매개변수로 넘겨주어야 함
-- void free (void *ptr)  /* defined in header <stdlib.h> */
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 저장공간 동적 할당  (Cont’d)
-- free 함수에 전달된 주소가 동적 할당 함수를 호출해 넘겨받은 주소가 아닐 경우 오류가 발생할 수 있음 (undefined behavior)
-- 이미 반환된 주소를 사용할 경우 오류가 발생할 수 있음 (undefined behavior)
-- 이미 반환된 주소를 다시 반환할 경우 오류가 발생할 수 있음 (undefined behavior)
-- /* WRONG */
-- for  (p = head; p != NULL; p = p->next)
--   free (p);
-- /* OK! */
-- for  (p = head; p != NULL; p = q) {
--   q = p->next;
--   free (p);
-- }
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 수학 연산
-- <math.h> 헤더 파일 필요
-- 매개변수 x와 y 는 double 형
-- 아래 함수들의 반환형은 double 형
-- sin (x);      /* sine of x, x in radians */
-- cos (x);      /* cosine of x, x in radians */
-- atan2 (y, x); /* arctangent of y/x, in radians */
-- exp (x);      /* exponential function ex */
-- log (x);      /* natural  (base e) logarithm of x  (x > 0) */
-- log10 (x);    /* common  (base 10) logarithm of x  (x > 0) */
-- pow (x, y);   /* xy */
-- sqrt (x);     /* square root of x  (x ≥ O) */
-- fabs (x);     /* absolute value of x */
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 수학 연산  (Cont’d)
-- gcc 컴파일러는 컴파일 시 <math.h> 헤더 파일을 기본으로 연결 (linking)하지 않음
-- <math.h> 헤더 파일을 사용할 수 있도록 컴파일 시 별도로 지시를 해야 함
--llibrary 옵션은 링커가 라이브러리 (liblibrary)를 연결하도록 요청하는 옵션
-- <math.h> 헤더 파일을 사용하기 위해서는 링커가 libm 라이브러리를 연결해주어야 함
-- tasks.json 파일의 tasks 부분에서 args 부분에 -lm을 추가하면 링커는 연결 (linking) 과정에서 libm 라이브러리를 연결
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 수학 연산  (Cont’d)
-- 올바르게 tasks.json 파일을 수정했다면, 수학 관련 함수들을 사용할 수 있음
-- "args": [
--         "-fdiagnostics-color=always",
--         "-g",
--         "${file}",
--         "-o",
--         "${fileDirname}/${fileBasenameNoExtension}",
--         "-ansi",
--         "-Wall",
--         "-lm"
--       ],
-- #include <stdio.h>
-- #include <math.h>
-- int main (void)
-- {
--   double theta;
--   /* sin2 (t) + cos2 (t) = 1 */
--   for  (theta = 0.0; theta <= 180.0; theta += 30.0)
--     printf ("%f\n", pow (sin (theta), 2) + pow (cos (theta), 2));
--   return 0;
-- }
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 난수 생성
-- rand 함수
-- 
-- 규칙성 없는 난수 생성
-- srand 함수
-- 
-- 난수 생성에 필요한 변수를 새로운 값으로 대치
-- void srand (unsigned int __seed)  /* defined in header <stdlib.h> */
-- int rand (void)  /* defined in header <stdlib.h> */
-
-
-# Miscellaneous Functions
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Miscellaneous Functions
-- 난수 생성  (Cont’d)
-- 
-- 
-- 
-- 
-- 
-- 0보다 같거나 크고 1보다 작은 실수 난수 생성 방법:
-- 
-- RAND_MAX는 <stdlib.h>에 정의되어 있는 상수 (0x7fff)이며, int 형이 표현할 수 있는 양수의 최대값을 표현
-- #define frand ()  ( (double) rand () /  (RAND_MAX + 1.0))
-- /* The template of random number generation */
-- #include <stdio.h>
-- #include <stdlib.h>  /* srand (), rand () */
-- #include <time.h>    /* time () */
-- int main (void)
-- {
--   srand (time (NULL));
--   printf ("Random Number: %d\n", rand ());
--   return 0;
-- }
-
-
-# Wrap Up
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Wrap Up
-- Chapter 1 - A Tutorial Introduction
-- Chapter 2 - Types, Operators and Expressions
-- Chapter 3 - Control Flow
-- Chapter 4 - Functions and Program Structure
-- Chapter 5 - Pointers and Arrays
-- Chapter 6 - Structures
-- Chapter 7 - Input and Output
-- Chapter 8 - The UNIX System Interface
-
-
-# Wrap Up
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Wrap Up
-- 책 추천
-- C Programming: A Modern Approach, 2nd Edition
-- Code: The Hidden Language of Computer Hardware and Software
-- Programming: Principles and Practice Using C++  (2nd Edition)
-
-
-# Wrap Up
-- 컴퓨터프로그래밍기초
-- ‹#›
-- Wrap Up
-- 프로그래밍 및 코딩테스트 연습 사이트 추천
-- Codeforces
-- HackerRank
-- Baekjoon Online Judge
-- 프로그래머스
-- 유용한 도구 추천
-- GDB: The GNU Project Debugger
-- GNU make
-- CMake
-- GitHub
+# Input and Output
 
+## Goals of This Chapter
+
+### 표준 스트림 개념 이해
+
+* `stdin`, `stdout`, `stderr` 의 역할과 셸 리다이렉션, 파이프 개념 소개
+
+### 문자, 줄 단위 입출력 소개
+
+* `getchar` / `putchar`, `getc` / `putc`, `fgets` / `fputs` 함수 소개
+
+### 형식화된 입출력 소개
+
+* `printf` / `scanf` 계열 함수의 변환 지정자(`%` flags, width, precision, length) 구문 소개
+
+### 가변 인자 함수
+
+* `stdarg.h` 의 `va_list` / `va_start` / `va_arg` / `va_end` 소개
+
+### 파일 입출력 및 오류 처리
+
+* `FILE*`, `fopen` / `fclose`, `fprintf` / `fscanf`, 버퍼 플러시 소개
+* `ferror`, `feof`, `exit` 함수 소개
+
+### 자주 쓰는 라이브러리 함수
+
+---
+
+## Standard Input and Output
+
+* C 언어에서 입력과 출력을 간단히 처리할 수 있는 모델 (스트림, streams)을 라이브러리 형태로 제공
+* 입출력 라이브러리 함수를 사용하는 소스코드는 `stdio.h` 헤더를 전처리 지시문을 사용해 포함해야 함
+
+![center h:250](image.png)
+
+```c
+/* The simplest way to get input is by reading one character at a time
+ * from standard input using the getchar function.
+ * Returns the character read, or EOF on error or end of input. */
+int getchar(void);
+
+/* The simplest way to produce output is by writing one character at a time
+ * to standard output using the putchar function.
+ * Returns the character written, or EOF on error. */
+int putchar(int c);
+```
+
+---
+
+## Redirection Operators: `<`, `>`, `|`
+
+* 대부분의 환경에서는 `<` (input redirection), `>` (output redirection), `|` (pipe) 연산자를 지원함
+
+### The `<` Convention
+
+```text
+prog <infile
+```
+
+* **키보드를 파일로 대체**하여 프로그램의 표준 입력 함수가 파일의 내용을 읽어옴
+* **문자열 `"<infile"`은 커맨드 라인 전달인자에 영향을 주지 않음**
+
+### The `|` Convention
+
+```text
+otherprog | prog
+```
+
+* 두 프로그램을 실행하여 `otherprog`의 표준 출력을 `prog`의 표준 입력으로 연결 (pipe)
+
+### The `>` Convention
+
+```text
+prog >outfile
+```
+
+* **화면을 파일로 대체**하여 프로그램의 표준 출력 함수가 출력한 내용을 파일로 내보냄
+* **문자열 `">outfile"`은 커맨드 라인 전달인자에 영향을 주지 않음**
+
+---
+
+## Redirection Operators: `<`, `>`, `|` (Cont'd - 1)
+
+* `otherprog.c`
+
+[//]: # (INCLUDE: ./c/07/otherprog.c)
+
+* `prog.c`
+
+[//]: # (INCLUDE: ./c/07/prog.c)
+
+---
+
+## Redirection Operators: `<`, `>`, `|` (Cont'd - 2)
+
+![center](image-2.png)
+
+```bash
+# Create `in` with sample text and verify its contents
+echo "Hello, World" > in
+cat in
+```
+
+```bash
+# Create an empty file named `out` and confirm it's empty
+touch out
+cat out
+```
+
+```bash
+# Compile both programs, run them with input/output redirection and a pipe
+gcc otherprog.c -o otherprog
+gcc prog.c -o prog
+./otherprog <in | ./prog >out
+```
+
+```bash
+# Display the contents of `out` after processing
+cat out
+```
+
+---
+
+## Formatted Output — Printf
+
+### `int printf(char *format, arg1, arg2, ...)`
+
+* `printf` 함수는 주어진 인자들을 변환한 후 표준 출력으로 출력하는 함수
+* 출력된 문자 수를 정수 값으로 반환
+
+```c
+/*  'H'  'e'  'l'  'l'  'o'  ' '  'w'  'o'  'r'  'l'  'd'  '!'  '\n'  */
+printf("%d\n", printf("Hello world!\n")); /* > Hello world!
+                                           *   13           */
+```
+
+### 형식 문자열 (Format String)
+
+* `printf` 함수의 `format` 인자 (형식 문자열)는 다음 두 요소를 포함:
+  1. 일반 문자 (ordinary characters): 출력 스트림으로 그대로 복사됨
+  2. 변환 지정자 (conversion specifications): 출력 스트림으로 구문에 맞게 변환 후 복사됨
+
+### 변환 지정자 (Conversion Specifications) 구문
+
+* 각 변환 지정자는 `%`로 시작하고 변환 문자 (conversion character, specifier)로 끝나는 구조
+* `%`와 변환 문자 사이에는 다음 요소들이 **순서대로** 등장할 수 있음:
+
+```text
+%[flags][width][.precision][length]specifier
+```
+
+---
+
+## Formatted Output — Printf (Cont'd - 1)
+
+### 변환 지정자의 구성 요소
+
+#### `[flags]`
+
+* `-` (하이픈, hyphen) 입력 시 출력 칸을 왼쪽 정렬 (기본 값은 오른쪽 정렬)
+
+#### `[width]`
+
+* 숫자 입력 시 출력 칸의 최소 너비 설정 (기본 값은 출력될 문자 수에 맞게 너비 설정)
+* `*` 기호 입력 시 출력 칸의 최소 너비를 정수형 전달인자의 값으로 설정
+
+#### `[.precision]`
+
+* 숫자 (`precision`) 입력 시 지정자에 따라 정밀도 설정:
+  1. 문자열 (e.g., `%.5s`): 출력할 최대 문자 수 지정
+  2. 부동소수점 (e.g., `%.5f`): 소수점 이하 자릿수 지정 (기본 값은 6자리)
+  3. 정수 (e.g., `%.5d`): 출력 칸에 출력될 숫자의 최소 개수 (부족한 자리는 0으로 채움)
+
+#### `[length]`
+
+* 정수형 크기 지정자로, `h` (e.g., `%hd`)는 `short` 형 정수를 출력하며 `l` (e.g., `%ld`)은 `long` 형 정수를 출력
+
+---
+
+## Formatted Output — Printf (Cont'd - 2)
+
+![center](image-6.png)
+
+---
+
+## Formatted Output — Printf (Cont'd - 3)
+
+### 정수형 변환 지정자 예시 1
+
+[//]: # (INCLUDE: ./c/07/printf_int1.c)
+
+---
+
+## Formatted Output — Printf (Cont'd - 4)
+
+### 정수형 변환 지정자 예시 2
+
+[//]: # (INCLUDE: ./c/07/printf_int2.c)
+
+---
+
+## Formatted Output — Printf (Cont'd - 5)
+
+### 부동소수점 변환 지정자 예시 1
+
+* **실수 표현 시 사용되는 모든 문자들 (e.g., `.`, `e+`, `E+`)은 출력 너비에 포함됨**
+* 변환 문자 `f`, `e`, `E`의 정밀도는 소수점 아래 자리를 의미하며, 기본 정밀도는 6
+* 변환 문자 `g`, `G`의 정밀도는 **전체 유효 숫자** (significant digits)를 의미하며, 기본 정밀도는 6
+  * e.g., `1.234E+00`의 유효 숫자는 4개 (`1`, `2`, `3`, `4`)
+* 변환 문자 `g`, `G`는 뒤따르는 0과 불필요한 소수점은 무시됨
+
+[//]: # (INCLUDE: ./c/07/printf_floating1.c)
+
+---
+
+## Formatted Output — Printf (Cont'd - 6)
+
+### 부동소수점 변환 지정자 예시 2
+
+```text
+if (exponent < -4 || exponent >= precision)
+    %g (%G) → use exponential format %e (%E)
+else
+    %g (%G) → use fixed-point format %f
+```
+
+[//]: # (INCLUDE: ./c/07/printf_floating2.c)
+
+---
+
+## Formatted Output — Printf (Cont'd - 7)
+
+### 문자열 및 기타 변환 지정자 예시
+
+[//]: # (INCLUDE: ./c/07/printf.c)
+
+---
+
+## Formatted Output — Printf (Cont'd - 8)
+
+### `printf` 함수 사용 시 주의점
+
+* `printf` 함수의 첫 인자 (형식 문자열)는 뒤따르는 전달인자의 수, 그리고 각 전달인자의 자료형을 결정함
+* 형식 문자열에서 요구하는 전달인자의 수 또는 자료형이 일치하지 않을 경우 **잘못된 결과**가 출력될 수 있음
+* 다음 두 호출의 차이를 구분할 수 있어야 함:
+
+[//]: # (INCLUDE: ./c/07/printf_warning.c)
+
+---
+
+## Formatted Output — Printf (Cont'd - 9)
+
+### `int sprintf(char *string, char *format, arg1, arg2, ...)`
+
+* `printf`의 출력은 표준 출력 (모니터)로 전달됨
+* `sprintf`의 출력은 `char` 형 배열 (`string`)으로 전달됨
+* `string`은 출력 결과를 저장하기 위해 **충분한 공간**이 있어야 함
+
+[//]: # (INCLUDE: ./c/07/06.c)
+
+---
+
+## Variable-Length Argument Lists
+
+* `printf` 함수의 축약 형태인 `minprintf` 함수를 구현하면서 가변 전달인자 함수 구현 방법을 학습
+* `minprintf` 함수를 구현하면서 `printf` 함수의 형식 문자열 처리 과정 확인
+
+### 가변 전달인자 함수의 선언
+
+* `printf` 함수의 실제 선언은 `int printf(char *fmt, ...)`
+* 함수의 매개변수 중 `...` 표현은 전달인자의 수 또는 자료형이 **변한다**는 의미
+* 가변 전달인자는 함수 호출 시 **형이 승격된 값**으로 평가되어 **이름 없는 객체**로 생성됨
+  * `char` 또는 `short` 형 객체는 `int` 형으로 승격 (§3.2.1.1 — "Integral Promotions")
+  * `float` 형 객체는 `double` 형으로 승격 (§3.2.1.2 — "Floating Promotions")
+* 가변 전달인자 함수 측에는 가변 전달인자가 **값 형태**로 복사됨
+
+### 표준 헤더 `stdarg.h`
+
+* 가변 전달인자 함수를 사용하기 위해 필요한 매크로의 정의들을 포함하는 헤더
+* `va_list` 형은 가변 전달인자를 차례로 가리킬 수 있는 포인터 자료형
+* `va_start` 매크로는 `va_list` 형 객체가 **전달된 이름 없는 객체 중 첫 객체를 가리키도록 초기화**
+  * `va_list` 형 객체를 사용하기 전에 반드시 호출되어야 함
+* `va_arg` 매크로는 `va_list` 형 객체가 가리키는 인자를 지정한 자료형으로 읽어옴
+  * `va_arg` 매크로가 호출될 때마다 `va_list`형 객체는 자동으로 다음 인자를 가리킴
+* `va_end` 매크로는 `va_list`형 객체를 정리 (cleanup)
+  * 가변 전달인자 함수 종료 전 반드시 호출해야 하며, 미호출 시 UB
+
+---
+
+## Variable-Length Argument Lists (Cont'd)
+
+[//]: # (INCLUDE: ./c/07/08.c)
+
+---
+
+## Formatted Input — Scanf
+
+### `int scanf(char *format, ...)`
+
+* `scanf` 함수는 `printf` 함수와 사용 형태가 유사한 입력 함수
+* 표준 입력으로부터 데이터를 형식에 따라 읽어온 뒤, 결과를 전달인자에 저장
+  * `scanf` 함수의 전달인자는 **반드시 포인터여야 함**
+  * 포인터 아닌 인자를 넘겨줄 경우 컴파일 오류가 발생하지 않으므로 주의할 것
+* 형식 문자열을 끝까지 처리했거나 (exhausts) 전달인자 수 또는 자료형이 형식 문자열과 일치하지 않으면 종료됨
+* 읽어온 데이터를 전달인자에 성공적으로 전달한 갯수를 정수 값으로 반환
+* 표준 입력에 더 이상 읽어올 데이터가 없다면 `EOF` 반환
+
+[//]: # (INCLUDE: ./c/07/scanf.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 1)
+
+### 형식 문자열
+
+* `scanf` 함수의 `format` 인자는 다음 요소들을 포함:
+  1. 공백 문자 (blanks or tabs): 입력 스트림에서 다음 공백이 아닌 문자 또는 입력의 끝까지 건너뜀
+  2. 일반 문자: 입력 스트림의 다음 공백이 아닌 문자와 **정확히 일치**해야 함
+  3. 변환 지정자: 입력 스트림으로부터 구문에 맞게 읽어옴
+
+### 변환 지정자 구문
+
+```text
+%[*][width][length]specifier
+```
+
+* `[*]`
+  * 입력 스트림으로부터 값을 읽되 무시함
+* `[width]`
+  * 입력 스트림으로부터 읽어올 문자 수 설정
+* `[length]`
+  * 입력 스트림으로부터 읽어온 결과를 변환할 때의 자료형 크기 지정
+
+---
+
+## Formatted Input — Scanf (Cont'd - 2)
+
+![center](image-11.png)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 3)
+
+### 정수형 변환 지정자 예시
+
+[//]: # (INCLUDE: ./c/07/scanf_int.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 4)
+
+### 부동소수점 변환 지정자 예시
+
+[//]: # (INCLUDE: ./c/07/scanf_float.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 5)
+
+### ANSI C (C89) §4.9.6.2 — "The fscanf function"
+
+> A directive composed of white-space character(s) is executed by reading input up to the first non-white-space character (which remains unread), or until no more characters can be read.
+
+[//]: # (INCLUDE: ./c/07/scanf_white.c)
+
+* 표준 입력에 포함된 공백 문자를 적절히 처리하지 못하면 전달인자에 잘못된 값이 전달될 수 있음
+
+---
+
+## Formatted Input — Scanf (Cont'd - 6)
+
+### 표준 입력에 포함된 공백 처리 방법 1
+
+[//]: # (INCLUDE: ./c/07/scanf_white1.c)
+
+* **형식 문자열 내 공백을 활용해 불필요한 공백을 소비하는 방법**
+* 표준 입력에 포함된 공백의 수 갯수와 관계 없이 사용 가능
+
+---
+
+## Formatted Input — Scanf (Cont'd - 7)
+
+### 표준 입력에 포함된 공백 처리 방법 2
+
+[//]: # (INCLUDE: ./c/07/scanf_white2.c)
+
+* 표준 입력에 포함된 공백의 수가 일관될 경우 사용 가능
+
+---
+
+## Formatted Input — Scanf (Cont'd - 8)
+
+### 형식 문자열 내 일반 문자 사용 예
+
+[//]: # (INCLUDE: ./c/07/scanf_ord.c)
+
+* 아래와 같이 입력 스트림에서의 문자가 형식 문자열 내 일반 문자와 불일치할 경우 `scanf` 함수는 **즉시 중단**
+
+```c
+/* Suppose the user inputs: 05 15 21 */
+scanf("%d/%d/%d", &m, &d, &y);
+printf("m: %d, d: %d, y: %d\n", m, d, y); /* >m: 5, d: ???, y: ??? */
+```
+
+---
+
+## Formatted Input — Scanf (Cont'd - 9)
+
+### 변환 지정자의 활용 1 - 억제 문자와 폭
+
+[//]: # (INCLUDE: ./c/07/scanf_sup_width.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 10)
+
+### 변환 지정자의 활용 2 - 길이
+
+* 정수형 변환 문자와 길이가 같이 사용된 경우:
+  1. `h`: 입력 스트림으로부터 읽어온 결과를 `short` 형으로 변환
+  2. `l`: 입력 스트림으로부터 읽어온 결과를 `long` 형으로 변환
+* 부동소수점 변환 문자와 길이가 같이 사용된 경우:
+  1. `l`: 입력 스트림으로부터 읽어온 결과를 `double` 형으로 변환
+  2. `L`: 입력 스트림으로부터 읽어온 결과를 `long double` 형으로 변환
+
+[//]: # (INCLUDE: ./c/07/18.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 11)
+
+### `scanf` 함수가 중단되는 경우
+
+* 읽어온 데이터 중 전달인자에 성공적으로 전달하지 못한 데이터는 표준 입력에 그대로 보존됨
+
+[//]: # (INCLUDE: ./c/07/10.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 12)
+
+### `scanf` 반환 값에 따른 처리
+
+[//]: # (INCLUDE: ./c/07/scanf_return1.c)
+
+[//]: # (INCLUDE: ./c/07/scanf_return2.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 13)
+
+### `int sscanf(char *string, char *format, arg1, arg2, ...)`
+
+* `scanf`의 입력은 표준 입력 (키보드)로부터 전달됨
+* `sscanf`의 입력은 `char` 형 배열 (`string`)으로부터 전달됨
+
+[//]: # (INCLUDE: ./c/07/sscanf.c)
+
+---
+
+## Formatted Input — Scanf (Cont'd - 14)
+
+### `sscanf` 함수 활용 - 형식 검사
+
+[//]: # (INCLUDE: ./c/07/sscanf_format.c)
+
+---
+
+## File Access
+
+* 운영체제는 프로그램이 실행될 때 자동으로 표준 입력 (키보드)과 표준 출력 (모니터)을 사용할 수 있도록 설정
+* 프로그램이 외부 파일을 사용해야 할 경우 표준 라이브러리를 사용해 직접 설정해야 함
+* 파일 관련 함수 및 매크로는 `stdio.h` 헤더 내에 포함되어 있음
+
+### `FILE` 구조체
+
+```c
+FILE *fp;
+```
+
+* `FILE` 구조체는 스트림 (stream)을 표현하는 내부 자료구조이며, 다음 파일 관련 정보들을 표현:
+  * 버퍼 객체의 포인터
+  * 버퍼 내 현재 가리키고 있는 문자 위치
+  * 파일이 읽기 모드인지 쓰기 모드인지, 오류 발생 여부 또는 파일의 끝 (`EOF`)에 도달했는지 등의 정보
+
+---
+
+## File Access (Cont'd - 1)
+
+### `fopen` 함수
+
+```c
+FILE *fopen(char *name, char *mode);
+```
+
+* `fopen` 함수는 프로그램에서 파일을 사용하기 위해 호출하는 함수
+  * `name`은 프로그램 내에서 사용하고자 하는 파일 경로
+  * `mode`는 프로그램에서 파일을 어떤 모드로 접근할지 지정
+
+```c
+fp = fopen(name, mode);
+```
+
+* `fopen` 함수를 호출하면 스트림 (`FILE` 객체 포인터)을 반환
+  * 파일을 성공적으로 열었다면 (open, 사용 가능한 상태) 유효한 주소 반환
+  * 파일을 여는 데 실패했다면 `NULL` 반환
+    * 파일 경로에 파일이 존재하지 않음
+    * 파일에 대한 권한이 없음
+    * 시스템 문제 (메모리 부족 등)
+
+---
+
+## File Access (Cont'd - 2)
+
+### 파일 모드 문자열
+
+* `mode` 인자의 종류에 따라 파일을 접근하는 방식이 결정됨
+
+| Mode                | Meaning         | When the file is not exist                       | When the file exist         |
+| ----------------- | ---------- | ------------------------------ | ---------------- |
+| `"r"`             | 읽기 전용      | 오류                             | 기존 내용 유지         |
+| `"w"`             | 쓰기 (create)  | 새 파일 생성                        | **내용 삭제 후 덮어쓰기** |
+| `"a"`             | 추가 (append) | 새 파일 생성                        | 파일 끝에 이어쓰기       |
+
+#### 바이너리 파일 모드 문자열
+
+* Windows 등 일부 운영체제는 텍스트 파일과 바이너리 파일을 구분
+  * 모드 문자열 뒤에 `b`를 추가로 표현 (e.g., `"rb"`, `"wb"`, `"ab"`)
+* 유닉스 및 리눅스 계열 운영체제는 구분하지 않음
+  * 모드 문자열 뒤에 `b` 표현 불필요
+
+---
+
+## File Access (Cont'd - 3)
+
+### 기본 제공 스트림
+
+> When a program begins execution, the three streams `stdin`, `stdout`, and `stderr` are already open.
+
+* 운영체제는 프로그램 실행 시 세 개의 스트림을 자동으로 열고 이를 가리키는 포인터를 제공함
+  * 표준 입력 (키보드, `stdin`)
+  * 표준 출력 (모니터, `stdout`)
+  * 표준 오류 (모니터, `stderr`)
+* 세 파일 포인터는 `stdio.h` 헤더 내에 **상수** 형태로 선언되어 있음
+* 표준 입력과 표준 출력은 파일 또는 파이프로 대체 가능하나, **표준 오류는 불가함**
+
+![center](image-24.png)
+
+---
+
+## File Access (Cont'd - 4)
+
+### 파일 조작 함수
+
+* `fopen` 함수 호출 후 반환된 스트림 (`FILE` 객체 포인터, `fp`)을 인자로 필요로 하는 함수
+* 파일 조작 함수들은 다음과 같은 상황에서 오류 발생:
+  1. 파일 시스템 또는 장치 상태에 의해 읽기 또는 쓰기 실패
+  2. `fopen()` 함수 호출 이후 파일의 권한, 상태, 접근성이 변경된 경우
+  3. 쓰기 모드로 접근하였으나 시스템 자원이 부족한 경우
+  4. 네트워크 기반 파일에 대해 연결이 끊어지거나 세션이 만료됨
+
+### `int getc(FILE *fp)`
+
+* `getc` 함수는 스트림이 참조하는 파일로부터 문자 하나를 읽되, 파일 끝 (EOF)에서 읽거나 오류 발생 시 `EOF` 반환
+* `getchar()`는 `getc(stdin)`의 간단한 형태
+
+### `int putc(int c, FILE *fp)`
+
+* `putc` 함수는 스트림이 참조하는 파일로 문자 하나를 내보내되, 오류 발생 시 `EOF` 반환
+* `putchar(c)`는 `putc(c, stdout)`의 간단한 형태
+
+---
+
+## File Access (Cont'd - 5)
+
+### `int fprintf(FILE *fp, const char *format, ...)`
+
+* `fprintf` 함수는 스트림이 참조하는 파일로 데이터를 형식화해 내보냄
+* `printf(...)`는 `fprintf(stdout, ...)`의 간단한 형태
+
+### `int fscanf(FILE *fp, const char *format, ...)`
+
+* `fscanf` 함수는 스트림이 참조하는 파일로부터 데이터를 형식에 맞게 변환해 읽어옴
+* `scanf(...)`는 `fscanf(stdin, ...)`의 간단한 형태
+
+### `int fclose(FILE *fp)`
+
+* `fopen` 함수의 반대 역할을 수행하며, 스트림이 참조하는 파일을 닫음 (close, 사용 불가능한 상태)
+* 프로그램 종료 시 프로그램에서 열린 모든 출력 파일에 대해 `fclose` 함수가 자동 호출됨
+  * 운영체제마다 한 파일 당 여러 프로그램이 동시에 열 수 있는 수가 제한되어 있음
+  * 불필요한 파일은 다른 프로그램을 위해 명시적으로 닫아주어야 함
+* `fclose` 함수는 출력 버퍼에 대기 중인 데이터가 있다면 이를 즉시 파일로 내보냄 (flush)
+  * 데이터를 내보낼 때 파일로 즉시 전달되지 않고 버퍼에 누적되며, `'\n'` 문자가 버퍼에 전달되면 flush 발생
+* 필요에 따라 `stdin`, `stdout` 스트림을 닫을 수도 있음 (`freopen` 함수를 통해 표준 스트림 재할당 가능)
+
+---
+
+## File Access (Cont'd - 6)
+
+* 파일 입출력을 사용한 `cat`
+
+[//]: # (INCLUDE: ./c/07/22.c)
+
+---
+
+## Error Handling — Stderr and Exit
+
+### `int ferror(FILE *fp)`
+
+* 스트림 내 오류가 발견되면 0이 아닌 정수를 반환
+* **스트림의 오류는 자주 발생하진 않지만, 프로그램 안정성을 위해 사용 권장**
+
+### `int feof(FILE *fp)`
+
+* 스트림 내 `EOF`가 발견되면 0이 아닌 정수를 반환
+
+### `void exit(int status)`
+
+* `stdlib.h` 헤더 내에 해당 함수의 선언이 포함되어 있음
+* 프로그램을 즉시 종료할 때 사용
+  * 프로그램에서 열린 모든 출력 파일에 대해 `fclose` 함수가 자동 호출됨
+* 인자는 프로그램 종료시 반환되는 반환 값으로 사용
+  * 프로그램 반환 값의 관례적 표현으로 0 (zero, 프로그램 정상 종료)과 non-zero (프로그램 비정상 종료) 사용
+* `main` 함수가 아닌 다른 함수 내에서 프로그램을 즉시 종료할 수 있다는 장점이 있음
+  * `main` 함수 내에서의 반환문 표현은 `exit` 함수 호출 표현과 동일함
+
+---
+
+## Error Handling — Stderr and Exit (Cont`d)
+
+* 오류 처리 개선 및 `stderr` 스트림을 적용한 `cat`
+  * `cat` 첫 버전은 일반 출력과 오류 출력 둘 다 표준 출력 스트림으로 전달
+  * `stderr` 스트림은 파일 또는 파이프로 대체할 수 없으므로 일반 출력과 오류 출력을 구분할 수 있음
+
+[//]: # (INCLUDE: ./c/07/23.c)
+
+---
+
+## Line Input and Output
+
+### `char *fgets(char *line, int maxline, FILE *fp)`
+
+* 스트림이 참조하는 파일로부터 최대 `maxline - 1`개의 문자를 `'\n'` 문자도 포함하여 읽어옴
+* 읽은 결과는 `line`에 저장되며, 끝에 `'\0'`이 붙음
+* 정상적으로 읽었을 경우 `line`을 반환하며, 파일 끝 (EOF)에서 읽거나 오류 발생 시 `NULL`을 반환
+
+```c
+char *fgets(char *s, int n, FILE *iop)
+{
+    register int c;
+    register char *cs = s;
+
+    while (--n > 0 && (c = getc(iop)) != EOF) {
+        if ((*cs++ = c) == '\n')
+            break;
+    }
+    *cs = '\0';
+
+    return (c == EOF && cs == s) ? NULL : s;
+}
+```
+
+#### `char *gets(char *line)`
+
+* `gets` 함수는 `'\n'`을 제거한 문자열을 반환하나, **버퍼 오버플로우의 위험**이 있으므로 `fgets` 함수 사용 권장
+
+---
+
+## Line Input and Output (Cont'd - 1)
+
+### `int fputs(char *line, FILE *fp)`
+
+* 스트림이 참조하는 파일로 문자열 `line`을 내보내며, `'\n'` 문자는 자동으로 추가되지 않음
+  * `line` 내 `'\n'` 문자가 포함되어 있지 않다면 `fputs` 함수가 자동으로 개행하지 않음
+* 내보내는 데 성공하면 0을 반환하며, 오류 발생 시 `EOF` 반환
+
+```c
+int fputs(char *s, FILE *iop)
+{
+    int c;
+    while ((c = *s++))
+        putc(c, iop);
+
+    return ferror(iop) ? EOF : 0;
+}
+```
+
+#### `int puts(const char *line)`
+
+* `puts` 함수는 내보내는 문자열 끝에 자동으로 `'\n'` 문자를 **자동** 추가하므로 `fputs` 함수 사용 권장
+
+---
+
+## Line Input and Output (Cont'd - 2)
+
+### `getline` 함수 재구현
+
+* `fgets` 함수를 활용한 안전한 `getline` 함수
+
+[//]: # (INCLUDE: ./c/07/27.c)
+
+* `fgets` 함수를 사용해 표준 입력으로부터 문자열을 읽고, `strlen` 함수를 사용해 길이를 반환하는 함수
+* 파일 끝 (EOF)에서 읽거나 오류 발생 시 0 반환
+
+---
+
+## Miscellaneous Functions
+
+* 표준 라이브러리는 매우 다양한 함수를 제공
+* 자주 등장하는 유용한 함수들을 간단히 소개하며, 더 자세한 내용은 교재 [Appendix B](https://drive.google.com/file/d/1z-neh7BOGPaHIQ8q8bbe3Mnfr_E7K6r2/view?usp=drive_link) 참고
+
+### 문자열 처리 함수 (`string.h`)
+
+* 아래 함수들의 `s`, `t`는 `char *` 형, `s`, `t`는 `int` 형
+
+```text
+strcat(s,t)           concatenate t to end of s  
+strncat(s,t,n)        concatenate n characters of t to end of s  
+strcmp(s,t)           return negative, zero, or positive for  
+                        s < t, s == t, or s > t  
+strncmp(s,t,n)        same as strcmp but only in first n characters  
+strcpy(s,t)           copy t to s  
+strncpy(s,t,n)        copy at most n characters of t to s  
+strlen(s)             return length of s  
+strchr(s,c)           return pointer to first c in s, or NULL if not present  
+strrchr(s,c)          return pointer to last c in s, or NULL if not present  
+```
+
+---
+
+## Miscellaneous Functions (Cont'd - 1)
+
+### 문자 분류 및 변환 함수 (`ctype.h`)
+
+* 아래 함수들의 `c`는 `int` 형이고, `int` 형 값 반환
+  * `c`는 문자 입력 함수의 반환값이며, 상황에 따라 `EOF` 값이 반환될 수 있음
+  * `int` 형은 `unsigned char` 형 값과 `EOF`를 표현할 수 있는 자료형
+
+```text
+isalpha(c)    non-zero if c is alphabetic, 0 if not  
+isupper(c)    non-zero if c is upper case, 0 if not  
+islower(c)    non-zero if c is lower case, 0 if not  
+isdigit(c)    non-zero if c is digit, 0 if not  
+isalnum(c)    non-zero if isalpha(c) or isdigit(c), 0 if not  
+isspace(c)    non-zero if c is blank, tab, newline, return, formfeed, vertical tab  
+toupper(c)    return c converted to upper case  
+tolower(c)    return c converted to lower case  
+```
+
+---
+
+## Miscellaneous Functions (Cont'd - 2)
+
+### 문자 되돌리기: `int ungetc(int c, FILE *fp)`
+
+* 문자 `c`를 스트림으로 다시 내보내며, 성공하면 `c`, 실패하면 `EOF` 반환
+
+### 시스템 명령 실행: `int system(const char *s)`
+
+* 문자열 `s`에 담긴 명령을 운영체제 쉘에서 실행한 후, 현재 프로그램 실행 재개
+* 명령 내용은 운영체제에 따라 다름
+
+```c
+/* On the Unix: */
+system("date"); /* >Tue Jun  3 04:50:43 PM UTC 2025 */
+```
+
+---
+
+## Miscellaneous Functions (Cont'd - 3)
+
+### 메모리 관리 (`stdlib.h`)
+
+```text
+void *malloc(size_t size)
+void *calloc(size_t nobj, size_t size)
+```
+
+* `malloc`: 초기화되지 않은 `size` 바이트의 메모리 공간을 할당하여 반환하며, 실패 시 `NULL` 반환
+* `calloc`: `size` 크기의 객체 `nobj`개를 위한 메모리를 확보하고 0으로 초기화하며, 실패 시 `NULL` 반환
+
+```c
+int *ip = (int *) calloc(n, sizeof(int));
+```
+
+* 메모리 관리 함수로부터 반환된 포인터는 올바른 메모리 정렬 (alignment)을 보장하며, 적절한 형으로의 캐스팅 필요
+
+---
+
+## Miscellaneous Functions (Cont'd - 4)
+
+### 메모리 관리 (`stdlib.h`) (Cont'd)
+
+```text
+void free(void *p)
+```
+
+* `free`: 메모리 관리 함수 (`malloc`, `calloc`, `realloc` 등)으로 확보한 메모리 해제
+* 해제한 메모리를 재사용하지 말 것 (UB):
+
+```c
+for (p = head; p != NULL; p = p->next)
+    free(p);  /* WRONG */
+```
+
+```c
+for (p = head; p != NULL; p = q) {
+    q = p->next; /* The right way is to save whatever is needed before free */
+    free(p);
+}
+```
+
+---
+
+## Miscellaneous Functions (Cont'd - 5)
+
+### 수학 함수 (`math.h`)
+
+* 아래 함수들의 인자와 반환형 모두 `double`
+* **컴파일 시 컴파일러에 `-lm` 플래그를 같이 전달해야 함**
+
+```text
+sin(x)       sine of x, x in radians  
+cos(x)       cosine of x, x in radians  
+atan2(y,x)   arctangent of y/x, in radians  
+exp(x)       exponential function eˣ  
+log(x)       natural (base e) logarithm of x (x > 0)  
+log10(x)     common (base 10) logarithm of x (x > 0)  
+pow(x,y)     xʸ  
+sqrt(x)      square root of x (x ≥ 0)  
+fabs(x)      absolute value of x  
+```
+
+---
+
+## Miscellaneous Functions (Cont'd - 6)
+
+### 난수 생성 (`stdlib.h`)
+
+```text
+int rand(void)
+```
+
+* 정수형 난수를 생성하며, 범위는 0 ~ `RAND_MAX`
+  * `RAND_MAX`는 사용 환경에 따라 다르며, 최소 32767 값으로 설정됨
+
+```text
+void srand(unsigned int seed)
+```
+
+* 새로운 난수를 생성하는 데 사용하는 기반값을 설정하며, 초기 `seed`는 1로 설정됨
+
+#### 실수형 난수 (0 이상 1 미만)를 생성하는 코드
+
+```c
+#define frand() ((double) rand() / (RAND_MAX + 1.0))
+```
