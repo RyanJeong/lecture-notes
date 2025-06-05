@@ -4,7 +4,7 @@
 
 ### 표준 스트림 개념 이해
 
-* `stdin`, `stdout`, `stderr` 의 역할과 셸 리다이렉션, 파이프 개념 소개
+* `stdin`, `stdout`, `stderr` 의 역할과 터미널에서의 입출력 재정의 및 파이프 개념 소개
 
 ### 문자, 줄 단위 입출력 소개
 
@@ -12,7 +12,7 @@
 
 ### 형식화된 입출력 소개
 
-* `printf` / `scanf` 계열 함수의 변환 지정자(`%` flags, width, precision, length) 구문 소개
+* `printf` / `scanf` 계열 함수의 변환 지정자 구문 소개
 
 ### 가변 인자 함수
 
