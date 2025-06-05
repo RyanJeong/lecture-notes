@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h> /* to use exit() */
 
+/* NB: Reuse previously implemented function */
+void filecopy(FILE *ifp, FILE *ofp);
+
 /* cat: concatenate files, version 2 */
 int main(int argc, char *argv[])
 {
@@ -29,13 +32,4 @@ int main(int argc, char *argv[])
     }
 
     exit(0);
-}
-
-/* filecopy: copy file ifp to file ofp */
-void filecopy(FILE *ifp, FILE *ofp)
-{
-    int c;
-
-    while ((c = getc(ifp)) != EOF)
-        putc(c, ofp);
 }
