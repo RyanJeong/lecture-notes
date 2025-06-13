@@ -10,19 +10,25 @@ find . -name "*.zip" | while IFS= read -r zip_file; do
 
   echo "-> Extracted to: $target_dir"
 
-  pushd "$target_dir"
+  pushd "$target_dir" >/dev/null
 
   # 1. *online*
   rm -rf *online*
 
   # 2. hidden files (prefix with `.`)
   find . -name ".*" | while IFS= read -r file; do
+    if [[ "$file" == "." ]]; then
+      continue
+    fi
+
     rm -rf "$file"
   done
 
   # 3. print not c extension files
-  find . -type f ! -name "*.c"
-  popd
+  find . -type f ! -name "*.c" | while IFS= read -r file; do
+    echo ">>>> ${file}"
+  done
+  popd >/dev/null
 
   echo "-> Successfully filtered unnecessary files"
 done
