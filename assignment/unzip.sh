@@ -1,5 +1,8 @@
 #!/bin/bash
 
+backup_dir=$(dirname $0)/backup
+mkdir -p "$backup_dir"
+exit
 find . -name "*.zip" | while IFS= read -r zip_file; do
   echo "Processing: $zip_file"
 
@@ -24,12 +27,31 @@ find . -name "*.zip" | while IFS= read -r zip_file; do
     rm -rf "$file"
   done
 
-  # 3. print not c extension files
-  find . -type f ! -name "*.c" | while IFS= read -r file; do
-    echo ">>>> ${file}"
+  # 3. print not c or cpp extension files
+  result="results.txt"
+  > "$PWD"/"$result"
+  find . -type f ! \( -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.cxx" -name "*.h" -name "*.hpp" \) \
+      | while IFS= read -r file; do
+    if [[ "$file" == "./${result}" ]]; then
+      continue
+    fi
+
+    # .zip file
+    if [[ "$file" == *.zip ]]; then
+      if ! unzip "$file" -d "${file%/*}" >/dev/null; then
+        echo ">>>> ${file}" >> "$PWD"/"$result"
+      fi
+    else
+      echo ">>>> ${file}" >> "$PWD"/"$result"
+    fi
   done
+  sudo chown -R "$USER":"$USER" ./
+  sudo chmod -R u+rwX ./
   popd >/dev/null
 
   echo "-> Successfully filtered unnecessary files"
-done
 
+  cp -r "$target_dir" "$backup_dir"
+
+  echo "-> Successfully backup to $backup_dir"
+done
