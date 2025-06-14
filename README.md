@@ -137,6 +137,7 @@ sudo apt install -y nodejs
 ### 2. Clone the Repository
 
 ```bash
+cd $HOME
 git clone https://github.com/jplag/jplag.git
 cd jplag
 ```
