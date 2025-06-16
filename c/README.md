@@ -8,11 +8,12 @@
 - Continuous code (refer to ch01 - External Variables and Scope)
 - Add tree information for examples at ch4, ch5, ch6, and ch7 and remove redundant files and headers
 - Replace all Koreans in codes with English because of character encoding issues
-- `qsort`, `bsearch` -> Appendix of chapter 5
 - `volatile` -> Appendix of chapter 5
 - Check cp02(Data Types and Sizes (Cont'd - 9), Data Types and Sizes (Cont'd - 18)) - Confirm to modify formula size
 - Add an OT note
+- Create a tokenizer to check each words is redundant (or typo)
 - Add a dockerfile (add pedantic-errors)
+  - Add a dockerfile and use it when evaluates assignments (refer to `./assignment`)
 - Add a description how to setup a build environment using the dockerfile
 - check GENERAL RULES of this file to keep consistency
 - Consider how to manage snippet code
