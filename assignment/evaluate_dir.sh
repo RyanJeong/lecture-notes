@@ -19,12 +19,13 @@
 # └── src
 #     └── ref.c   # Reference source
 
-if [ $# -ne 2 ]; then
-  echo "Usage: $0 <ASMT_SRC_DIR_PATH> <ASMT_DEST_DIR_PATH>"
+if [ $# -ne 3 ]; then
+  echo "Usage: $0 <ASMT_SRC_DIR_PATH> <ASMT_DEST_DIR_PATH> <RAND_SIZE>"
   exit 1
 fi
 
 TMPDIR=$(mktemp -d)
+RAND_SIZE="$3"
 trap 'rm -rf "$TMPDIR"' EXIT  # automatically remove the tmp directory on exit
 
 obfuscate_lines() {
@@ -34,7 +35,7 @@ obfuscate_lines() {
     for ((i = 0; i < ${#tokens[@]}; ++i)); do
       output+="${tokens[i]}"
       if (( i < ${#tokens[@]} - 1 )); then
-        spaces=$((RANDOM % 4 + 2))  # generate 2 (0 + 2) ~ 5 (3 + 2) random spaces
+        spaces=$((RANDOM % RAND_SIZE + 2))  # generate 2 (0 + 2) ~ 5 (3 + 2) random spaces
         output+="$(printf '%*s' "$spaces")"
       fi
     done
@@ -48,14 +49,20 @@ SRC_DIR_PATH="$TMPDIR"/"$SRC_DIR_NAME"
 echo "src: $SRC_DIR_PATH"
 
 # obfuscate to 'in' files
-for file in $(find ${SRC_DIR_PATH} -name 'in*'); do
-  output_file_name="$file"_tmp
-  cat $file | obfuscate_lines >> $output_file_name
-  mv "$output_file_name" "$file"
-done
+if [ "$RAND_SIZE" -gt 0 ]; then
+  for file in $(find ${SRC_DIR_PATH} -name 'in*'); do
+    output_file_name="$file"_tmp
+    cat $file | obfuscate_lines >> $output_file_name
+    mv "$output_file_name" "$file"
+  done
+fi
 
 # verify
 target_path=$(find "$SRC_DIR_PATH"/src -type f \( -name "*.c" -o -name "*.cpp" -o -name "*.cc" -o -name "*.cxx" \))
+
+# DEBUG
+# bash "$SRC_DIR_PATH"/check.sh "$target_path" "$SRC_DIR_PATH"
+
 bash "$SRC_DIR_PATH"/check.sh "$target_path" "$SRC_DIR_PATH" >/dev/null
 verify_ret=$?
 if [ $verify_ret -ne 0 ]; then
@@ -72,7 +79,9 @@ target_path=$(find "$DEST_DIR_PATH" -type f \( -name "*.c" -o -name "*.cpp" -o -
 result_path="$TMPDIR"/results.txt
 >"$result_path"
 bash "$SRC_DIR_PATH"/check.sh "$target_path" "$SRC_DIR_PATH" >> $result_path
-mv "$result_path" "$2"
+
+mkdir -p $(dirname "$2")/results_summary
+mv "$result_path" $(dirname "$2")/results_summary/$(basename "$2").txt
 
 # debug
 # cat "$2"/results.txt
