@@ -27,7 +27,15 @@ find . -name "*.zip" | while IFS= read -r zip_file; do
     rm -rf "$file"
   done
 
-  # 3. print not c or cpp extension files
+  # 3. Ignore whitespaces of directory name
+  for name in *; do
+    if [[ "$name" == *" "* ]]; then
+      new_name="${name// /_}"
+      mv "$name" "$new_name"
+    fi
+  done
+
+  # 4. print not c or cpp extension files
   result="results.txt"
   > "$PWD"/"$result"
   find . -type f ! \( -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.cxx" -name "*.h" -name "*.hpp" \) \
