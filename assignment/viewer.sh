@@ -6,5 +6,5 @@ if [ $# -eq 0 ]; then
 fi
 
 java -jar "$HOME"/jplag/cli/target/jplag-*-jar-with-dependencies.jar \
-    -M view \
-    --result-file="$1/results.jplag"
+  -M view \
+  --result-file="$1/results.jplag"

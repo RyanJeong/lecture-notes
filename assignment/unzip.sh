@@ -37,22 +37,22 @@ find . -name "*.zip" | while IFS= read -r zip_file; do
 
   # 4. print not c or cpp extension files
   result="results.txt"
-  > "$PWD"/"$result"
-  find . -type f ! \( -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.cxx" -name "*.h" -name "*.hpp" \) \
-      | while IFS= read -r file; do
-    if [[ "$file" == "./${result}" ]]; then
-      continue
-    fi
-
-    # .zip file
-    if [[ "$file" == *.zip ]]; then
-      if ! unzip "$file" -d "${file%/*}" >/dev/null; then
-        echo ">>>> ${file}" >> "$PWD"/"$result"
+  >"$PWD"/"$result"
+  find . -type f ! \( -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.cxx" -name "*.h" -name "*.hpp" \) |
+    while IFS= read -r file; do
+      if [[ "$file" == "./${result}" ]]; then
+        continue
       fi
-    else
-      echo ">>>> ${file}" >> "$PWD"/"$result"
-    fi
-  done
+
+      # .zip file
+      if [[ "$file" == *.zip ]]; then
+        if ! unzip "$file" -d "${file%/*}" >/dev/null; then
+          echo ">>>> ${file}" >>"$PWD"/"$result"
+        fi
+      else
+        echo ">>>> ${file}" >>"$PWD"/"$result"
+      fi
+    done
   sudo chown -R "$USER":"$USER" ./
   sudo chmod -R u+rwX ./
   popd >/dev/null

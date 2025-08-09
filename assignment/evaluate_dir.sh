@@ -26,16 +26,16 @@ fi
 
 TMPDIR=$(mktemp -d)
 RAND_SIZE="$3"
-trap 'rm -rf "$TMPDIR"' EXIT  # automatically remove the tmp directory on exit
+trap 'rm -rf "$TMPDIR"' EXIT # automatically remove the tmp directory on exit
 
 obfuscate_lines() {
   while IFS= read -r line || [[ -n "$line" ]]; do
-    read -ra tokens <<< "$line"
+    read -ra tokens <<<"$line"
     output=""
     for ((i = 0; i < ${#tokens[@]}; ++i)); do
       output+="${tokens[i]}"
-      if (( i < ${#tokens[@]} - 1 )); then
-        spaces=$((RANDOM % RAND_SIZE + 2))  # generate 2 (0 + 2) ~ 5 (3 + 2) random spaces
+      if ((i < ${#tokens[@]} - 1)); then
+        spaces=$((RANDOM % RAND_SIZE + 2)) # generate 2 (0 + 2) ~ 5 (3 + 2) random spaces
         output+="$(printf '%*s' "$spaces")"
       fi
     done
@@ -52,7 +52,7 @@ echo "src: $SRC_DIR_PATH"
 if [ "$RAND_SIZE" -gt 0 ]; then
   for file in $(find ${SRC_DIR_PATH} -name 'in*'); do
     output_file_name="$file"_tmp
-    cat $file | obfuscate_lines >> $output_file_name
+    cat $file | obfuscate_lines >>$output_file_name
     mv "$output_file_name" "$file"
   done
 fi
@@ -78,7 +78,7 @@ echo "dest: $DEST_DIR_PATH"
 target_path=$(find "$DEST_DIR_PATH" -type f \( -name "*.c" -o -name "*.cpp" -o -name "*.cc" -o -name "*.cxx" \))
 result_path="$TMPDIR"/results.txt
 >"$result_path"
-bash "$SRC_DIR_PATH"/check.sh "$target_path" "$SRC_DIR_PATH" >> $result_path
+bash "$SRC_DIR_PATH"/check.sh "$target_path" "$SRC_DIR_PATH" >>$result_path
 
 mkdir -p $(dirname "$2")/results_summary
 mv "$result_path" $(dirname "$2")/results_summary/$(basename "$2").txt

@@ -7,10 +7,9 @@ for dir_name in $(find . -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | grep -
   port=$((port + 1))
 
   java -jar "$HOME"/jplag/cli/target/jplag-*-jar-with-dependencies.jar \
-      -l cpp \
-      -M run \
-      --overwrite ./
+    -l cpp \
+    -M run \
+    --overwrite ./
 
   popd >/dev/null
 done
-

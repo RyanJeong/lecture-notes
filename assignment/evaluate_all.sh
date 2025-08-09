@@ -10,7 +10,7 @@ fi
 
 ASMT_SRC_DIR_PATH="$1"
 RAND_SIZE="$3"
-find "$2" -mindepth 1 -maxdepth 1 -type d \
-    | while IFS= read -r path; do
-  ./evaluate_dir.sh "$ASMT_SRC_DIR_PATH" "$path" "$RAND_SIZE"
-done
+find "$2" -mindepth 1 -maxdepth 1 -type d |
+  while IFS= read -r path; do
+    ./evaluate_dir.sh "$ASMT_SRC_DIR_PATH" "$path" "$RAND_SIZE"
+  done
