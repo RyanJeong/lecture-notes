@@ -18,6 +18,7 @@ error() { printf "%s %s\n" "$(color_red "[$(basename "$0")][ERROR]")" "$1"; }
 debug() { printf "%s %s\n" "$(color_cyan "[$(basename "$0")][DEBUG]")" "$1"; }
 
 DIR=$(dirname $0)
+debug $DIR
 
 info "Clean generated files ..."
 for file in $(find "$DIR" -type f \( -name "temp.pdf" -o -name "temp.md" -o -name "temp.pptx" -o -name "a.out" -o ! -name "*.*" \)); do
