@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Munseong: After generating files, run ../clean.sh and remove it if it works well
 set -euo pipefail
 
 # Color functions (using printf)
