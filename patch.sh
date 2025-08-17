@@ -95,6 +95,60 @@ else
     popd >/dev/null 2>&1
 fi
 
+info "5. Install Marp"
+
+if command -v marp $ >/dev/null; then
+  info "marp has already installed. Skipping ..."
+else
+  sudo npm install -g npm &&
+    sudo npm install -g @marp-team/marp-cli &&
+    npm i --save @marp-team/marp-core markdown-it-shiki
+fi
+
+info "5. Install Chrome"
+
+if command -v google-chrome-stable --version $ >/dev/null; then
+  info "Chrome has already installed. Skipping ..."
+else
+  curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg &&
+    echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" |
+    sudo tee /etc/apt/sources.list.d/google-chrome.list &&
+    sudo apt update && sudo apt install -y google-chrome-stable
+fi
+
+WANT_LOCALE="en_US.UTF-8"
+info "6. Set locale ${WANT_LOCALE}"
+
+if locale -a 2>/dev/null | grep -qiE '^en_US\.utf8$|^en_US\.UTF-8$'; then
+  info "Locale has already set. Skipping ..."
+else
+  sudo apt install -y locales &&
+    if ! grep -qE '^\s*en_US\.UTF-8\s+UTF-8\b' /etc/locale.gen; then
+      echo 'en_US.UTF-8 UTF-8' | sudo tee -a /etc/locale.gen >/dev/null
+    fi &&
+    sudo locale-gen &&
+    sudo update-locale LANG="${WANT_LOCALE}" LC_ALL="${WANT_LOCALE}"
+fi
+
+info "7. Install fonts"
+
+PKGS=(
+  fonts-noto
+  fonts-noto-cjk
+  fonts-noto-cjk-extra
+  fonts-nanum
+  fonts-unfonts-core
+  fonts-unfonts-extra
+)
+
+for pkg in "${PKGS[@]}"; do
+  if dpkg -s "$pkg" >/dev/null 2>&1; then
+    info "${pkg} has already installed. Skipping ..."
+  else
+    sudo apt install -y "$pkg"
+  fi
+done
+
 info "(Opt.) Install VSCode extensions"
 
 # Note: make IDs in lowercase
@@ -115,5 +169,5 @@ for EXT in "${EXTENSIONS[@]}"; do
 done
 
 # Clean
-sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/ &&
+sudo apt clean && sudo rm -rf /var/lib/apt/lists/ &&
   info "Done."
