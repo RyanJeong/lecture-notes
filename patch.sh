@@ -17,8 +17,8 @@ warn() { printf "%s %s\n" "$(color_yellow "[$(basename "$0")][WARN]")" "$1"; }
 error() { printf "%s %s\n" "$(color_red "[$(basename "$0")][ERROR]")" "$1"; }
 debug() { printf "%s %s\n" "$(color_cyan "[$(basename "$0")][DEBUG]")" "$1"; }
 
-# Active sudo
-sudo apt update && sudo apt upgrade -y
+# Active sudo and snap (chrome dependency)
+sudo apt update && sudo apt upgrade -y && sudo apt install -y snapd
 
 JAVA_VERSION_REQUIRED=21
 info "1. Install Java ${JAVA_VERSION_REQUIRED}"
@@ -105,19 +105,26 @@ else
     npm i --save @marp-team/marp-core markdown-it-shiki
 fi
 
-info "5. Install Chrome"
+info "6. Install Firefox"
 
-if command -v google-chrome-stable --version $ >/dev/null; then
-  info "Chrome has already installed. Skipping ..."
-else
-  curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg &&
-    echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" |
-    sudo tee /etc/apt/sources.list.d/google-chrome.list &&
-    sudo apt update && sudo apt install -y google-chrome-stable
-fi
+sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg |
+  sudo gpg --dearmor --yes -o /etc/apt/keyrings/packages.mozilla.org.gpg
+
+echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main" |
+  sudo tee /etc/apt/sources.list.d/mozilla.list >/dev/null
+
+sudo tee /etc/apt/preferences.d/mozilla >/dev/null <<'EOF'
+Package: firefox*
+Pin: origin packages.mozilla.org
+Pin-Priority: 1001
+EOF
+
+sudo apt update
+sudo apt install -y firefox
 
 WANT_LOCALE="en_US.UTF-8"
-info "6. Set locale ${WANT_LOCALE}"
+info "7. Set locale ${WANT_LOCALE}"
 
 if locale -a 2>/dev/null | grep -qiE '^en_US\.utf8$|^en_US\.UTF-8$'; then
   info "Locale has already set. Skipping ..."
@@ -130,7 +137,7 @@ else
     sudo update-locale LANG="${WANT_LOCALE}" LC_ALL="${WANT_LOCALE}"
 fi
 
-info "7. Install fonts"
+info "8. Install fonts"
 
 PKGS=(
   fonts-noto
@@ -156,6 +163,7 @@ EXTENSIONS=(
   "davidanson.vscode-markdownlint"
   "dzylikecode.md-paste-enhanced"
   "emeraldwalk.runonsave"
+  "mathematic.vscode-pdf"
 )
 
 for EXT in "${EXTENSIONS[@]}"; do
@@ -163,7 +171,6 @@ for EXT in "${EXTENSIONS[@]}"; do
     info "Installing VSCode extension: ${EXT}"
     code --install-extension "$EXT"
   else
-    echo "installed"
     info "Extension $EXT is already installed. Skipping ..."
   fi
 done
