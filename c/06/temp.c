@@ -136,10 +136,10 @@ pt3 = pt; /* Error: expression must have a constant valueC/C++(28)*/
 
 pt4 = { 7, 8 }; /* Error: conflicting types for ‘pt4’gcc */
 
-pt5 = (struct point) { 5, 6 };
+pt5 = (struct point){ 5, 6 };
 /* Error: incompatible types when initializing type ‘int’ using type
           `struct point` gcc */
-pt6 = (struct point) { 5, 6 };
+pt6 = (struct point){ 5, 6 };
 const struct point pt6 = { 9, 10 };
 pt = pt5;
 #endif
@@ -231,7 +231,7 @@ int main(void)
 
     pt3 = pt1;      /* OK */
     pt4 = { 5, 6 }; /* Error: expected expression before ‘{’ token */
-    pt5 = (struct point) { 7, 8 }; /* OK */
+    pt5 = (struct point){ 7, 8 }; /* OK */
 
     struct point pt6 = f(); /* OK */
     struct point pt7;
@@ -289,7 +289,7 @@ void s()
     struct a {
         int len;
         char *str;
-    } *p;
+    } * p;
 
     /* increments len, not p
         implied parenthesization is ++(p->len) */
