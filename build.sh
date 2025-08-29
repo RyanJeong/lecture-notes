@@ -53,9 +53,36 @@ process_file() {
   # Read the source markdown file line by line
   while IFS= read -r line; do
     # Check for Markdown placeholder: [//]: # (INCLUDE: filename)
-    if echo "$line" | grep -qE '^\[\/\/\]:\s*#\s*\(INCLUDE:\s*[^)]+\)'; then
-      # Extract filename using sed; assumes no closing parenthesis inside filename
-      filename=$(echo "$line" | sed -E 's/^\[\/\/\]:\s*#\s*\(INCLUDE:\s*([^)]*)\).*/\1/')
+    if echo "$line" | grep -qE '^\[\/\/\]:\s*#\s*\(INCLUDE:'; then
+      # Extract the full argument string inside the parentheses
+      args=$(echo "$line" | sed -E 's/^\[\/\/\]:\s*#\s*\((INCLUDE:.*)\).*/\1/')
+      # Split the argument string into an array
+      read -ra tokens <<<"$args"
+
+      # Initialize variables
+      filename=""
+      from_line=""
+      to_line=""
+      no_comment="false"
+
+      # Parse tokens
+      for ((i = 0; i < ${#tokens[@]}; i++)); do
+        token="${tokens[$i]}"
+        case "$token" in
+        INCLUDE:)
+          filename="${tokens[$((i + 1))]}"
+          ;;
+        --from)
+          from_line="${tokens[$((i + 1))]}"
+          ;;
+        --to)
+          to_line="${tokens[$((i + 1))]}"
+          ;;
+        --no-comment)
+          no_comment="true"
+          ;;
+        esac
+      done
 
       # Determine language based on file extension
       ext="${filename##*.}"
@@ -76,12 +103,34 @@ process_file() {
       echo '```'"${lang}" >>"$TMP_MD"
       # Append the content of the file (if exists); if not, create an empty file using touch.
       if [ -f "$filename" ]; then
-        cat "$filename" >>"$TMP_MD"
+        # Calculate sed line range
+        sed_range=""
+        if [ -n "$from_line" ] && [ -n "$to_line" ]; then
+          sed_range="${from_line},${to_line}p"
+        elif [ -n "$from_line" ]; then
+          sed_range="${from_line},\$p"
+        elif [ -n "$to_line" ]; then
+          sed_range="1,${to_line}p"
+        else
+          sed_range="1,\$p"
+        fi
 
-        # Check whether the last character is a newline
-        if [ -n "$(tail -c1 "$filename" | tr -d '\n')" ]; then
-          # Last character is NOT a newline → add one
+        # Add comment at the top if --from is used and --no-comment is not set
+        if [ -n "$from_line" ] && [ "$no_comment" = "false" ]; then
+          echo "/* continued from previous slide */" >>"$TMP_MD"
+        fi
+
+        # Extract lines using sed
+        sed -n "$sed_range" "$filename" >>"$TMP_MD"
+
+        # Ensure newline at end of code
+        if [ -n "$(sed -n "$sed_range" "$filename" | tail -c1 | tr -d '\n')" ]; then
           echo >>"$TMP_MD"
+        fi
+
+        # Add comment at the bottom if --to is used and --no-comment is not set
+        if [ -n "$to_line" ] && [ "$no_comment" = "false" ]; then
+          echo "/* continues on next slide */" >>"$TMP_MD"
         fi
       else
         echo "// Warning: File ${filename} not found; creating empty file." >>"$TMP_MD"
