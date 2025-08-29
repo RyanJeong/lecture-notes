@@ -129,11 +129,7 @@ cat out
 * `printf` 함수는 주어진 인자들을 변환한 후 표준 출력으로 출력하는 함수
 * 출력된 문자 수를 정수 값으로 반환
 
-```c
-/*  'H'  'e'  'l'  'l'  'o'  ' '  'w'  'o'  'r'  'l'  'd'  '!'  '\n'  */
-printf("%d\n", printf("Hello world!\n")); /* > Hello world!
-                                           *   13           */
-```
+[//]: # (INCLUDE: ./c/07/printf_intro.c --from 5 --to 7 --no-comment)
 
 ### 형식 문자열 (Format String)
 
