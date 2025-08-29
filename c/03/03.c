@@ -1,5 +1,5 @@
 /* Simplified example; not actual implementation(s). */
-#include <ctype.h> /* to use isspace(), isdigit() */
+#include <ctype.h> /* for isspace(), isdigit() */
 
 /* atoi: convert s to integer; version 2 */
 int atoi(char s[])

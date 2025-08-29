@@ -1,4 +1,4 @@
-#include <string.h> /* to use strlen() */
+#include <string.h> /* for strlen() */
 
 /*reverse: reverse string s in place*/
 void reverse(char s[])

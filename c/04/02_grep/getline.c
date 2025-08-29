@@ -1,4 +1,4 @@
-#include <stdio.h> /* to use EOF */
+#include <stdio.h> /* for EOF */
 
 /* getline: get line into s, return length */
 int getline(char s[], int lim)

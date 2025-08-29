@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* to use rand(), srand() */
+#include <stdlib.h> /* for rand(), srand() */
 
 int main(void)
 {

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* to use atof() */
+#include <stdlib.h> /* for atof() */
 
 #include "calc.h"
 

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* to use exit() */
+#include <stdlib.h> /* for exit() */
 
 /* NB: Reuse previously implemented function */
 void filecopy(FILE *ifp, FILE *ofp);

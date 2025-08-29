@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* to use exit() */
+#include <stdlib.h> /* for exit() */
 
 /* cat: concatenate files, version 2 */
 int main(int argc, char *argv[])

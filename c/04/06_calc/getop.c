@@ -1,4 +1,4 @@
-#include <ctype.h>  /* to use isdigit() */
+#include <ctype.h>  /* for isdigit() */
 #include <stdio.h>
 
 #include "calc.h"

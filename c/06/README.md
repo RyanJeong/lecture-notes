@@ -567,7 +567,7 @@ void afree(char *p); /* free storage pointed to by p */
 
 ```c
 /* `malloc` and related routines are declared in the header <stdlib.h> */
-#include <stdlib.h> /* to use malloc(), calloc(), free(), etc. */
+#include <stdlib.h> /* for malloc(), calloc(), free(), etc. */
 
 void *malloc(size_t n);
 void *calloc(size_t n, size_t size);

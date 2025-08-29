@@ -1,4 +1,4 @@
-#include <ctype.h> /* to use isspace(), isdigit() */
+#include <ctype.h> /* for isspace(), isdigit() */
 #include <stdio.h>
 
 /* NB: Reuse previously implemented functions: getch(), ungetch() */

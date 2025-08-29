@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <string.h> /* to use strlen() */
+#include <string.h> /* for strlen() */
 
 int main(void)
 {

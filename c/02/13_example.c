@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <string.h> /* to use strcat() */
+#include <string.h> /* for strcat() */
 
 int main(void)
 {

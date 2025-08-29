@@ -1,4 +1,4 @@
-#include <ctype.h> /* to use tolower() */
+#include <ctype.h> /* for tolower() */
 #include <stdio.h>
 
 int main(void)

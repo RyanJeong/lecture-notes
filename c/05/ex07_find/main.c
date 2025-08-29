@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <string.h> /* to use strstr() */
+#include <string.h> /* for strstr() */
 
 #define MAXLINE 1000
 

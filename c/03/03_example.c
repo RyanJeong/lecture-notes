@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h> /* to use atoi() */
+#include <stdlib.h> /* for atoi() */
 
 int main(void)
 {

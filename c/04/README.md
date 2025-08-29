@@ -332,7 +332,7 @@ while (next operator or operand is not end-of-file indicator)
 
 ```c
 #include <stdio.h>
-#include <stdlib.h> /* to use atof() */
+#include <stdlib.h> /* for atof() */
 
 #define MAXOP 100  /* max size of operand or operator */
 #define NUMBER '0' /* signal that a number was found */
@@ -433,7 +433,7 @@ double pop(void)
 ## External Variables (Cont'd - 7)
 
 ```c
-#include <ctype.h> /* to use isdigit() */
+#include <ctype.h> /* for isdigit() */
 
 int getch(void);
 void ungetch(int);
@@ -889,7 +889,7 @@ gcc src/foo.c -o foo.i -I./include -E -P
 
 ```c
 #include <stdio.h>
-#include <stdlib.h> /* to use atof() */
+#include <stdlib.h> /* for atof() */
 
 #include "calc.h"
 

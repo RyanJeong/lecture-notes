@@ -1,5 +1,5 @@
 /* Simplified example; not actual implementation(s). */
-#include <ctype.h> /* to use isspace(), isdigit() */
+#include <ctype.h> /* for isspace(), isdigit() */
 
 /* atof: convert string s to double */
 double atof(char s[])
