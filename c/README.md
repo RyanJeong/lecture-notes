@@ -20,7 +20,9 @@
 - 1) lint (ignore postfix files e.g., *_nolint*.c)
 - 2) check (ignore postfix files e.g., *_nocheck*.c, add pedantic-errors)
 - 3) split codes and snippets
+
 * ./c/06/bsearch_exam/bsearch.c_[0:4]
+
 ```c
 /* bsearch_exam/bsearch.c */  <<< 0
 
@@ -28,7 +30,9 @@
 #include <stdlib.h>
 /* continued on next slide */
 ```
+
 * ./c/06/bsearch_exam/bsearch.c_[4:7]
+
 ```c
 /* continued from previous slide */
 
@@ -40,7 +44,9 @@
 
 /* continued on next slide */
 ```
+
 * ./c/06/bsearch_exam/bsearch.c_[7:]
+
 ```
 /* continued from previous slide */
     int target = 16;
@@ -52,18 +58,24 @@
     return 0;
 }
 ```
+
 * test1.c_snippet
+
 ```c
 int main(void)
 {
     int a;
 }
 ```
+
 ->
+
 ```c
     int a;
 ```
+
 * test2.c_snippet
+
 ```c
 int a;
 
@@ -72,7 +84,9 @@ void skipped(void)
     int b;
 }
 ```
+
 ->
+
 ```c
 int a;
 
@@ -80,6 +94,7 @@ int a;
 
     int b;
 ```
+
 - Rename code and images, move not using contents to the directory `duplicated`
 - Watermark (email address)
 - add to build process to generate pptx's
@@ -130,7 +145,7 @@ Split codes for attaching in lecture notes. Skip checking syntax.
 CHAPTER=01
 
 cd $CHAPTER
-../lint.sh
+../formatter.sh
 ```
 
 ## Checking Syntax
