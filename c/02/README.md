@@ -1,7 +1,3 @@
----
-marp: true
----
-
 # Types, Operators and Expressions
 
 ## Goals of This Chapter

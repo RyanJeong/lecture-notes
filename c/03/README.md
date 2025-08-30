@@ -1,7 +1,3 @@
----
-marp: true
----
-
 # Control Flow
 
 ## Goals of This Chapter

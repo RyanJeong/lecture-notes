@@ -1,7 +1,3 @@
----
-marp: true
----
-
 # A Tutorial Introduction
 
 ## Goals of This Chapter
