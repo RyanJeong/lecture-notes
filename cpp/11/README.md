@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 이동 의미론 (Move Semantics)
 
 ## 이동 생성자

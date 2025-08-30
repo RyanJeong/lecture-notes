@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 클래스 간의 관계
 
 > A program normally uses several classes with different relationships between them.

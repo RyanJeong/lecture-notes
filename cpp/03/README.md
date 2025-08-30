@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 클래스와 생성자
 
 ## 형과 인스턴스

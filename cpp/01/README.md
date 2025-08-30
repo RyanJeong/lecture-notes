@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # C++ 기초
 
 ## Hello, World

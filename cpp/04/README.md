@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 참조와 포인터
 
 ## 레퍼런스
@@ -572,6 +561,7 @@ int main() {
 |Allocate Array |`new[]`   |`new T[SIZE]` |
 |Delete Object  |`delete`  |`delete ptr`  |
 |Delete Array   |`delete[]`|`delete[] ptr`|
+
 ---
 
 * `new` 연산자 (*allocate object*)

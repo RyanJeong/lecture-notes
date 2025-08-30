@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 예외 처리 (Exception Handling)
 
 ## 예외 (Exception)
@@ -633,10 +622,10 @@ int main() {
 * `exception` 클래스의 public 인터페이스
 
 ```cpp
-exception() noexcept // constructor	
+exception() noexcept // constructor 
 exception(const exception&) noexcept  // copy constructor
 exception& operator=(const exception&) noexcept // Assignment operator
-virtual ~exception() noexcept // destructor	
+virtual ~exception() noexcept // destructor 
 virtual const char* what() const noexcept // member function
 ```
 

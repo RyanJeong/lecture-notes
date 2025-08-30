@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 레퍼런스 (*Reference*)
 
 ## C 언어에서의 함수 호출 방식 (Function Call Mechanism)

@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 다형성 (Polymorphism)
 
 ## 실세계에서의 다형성 예시: Plug-compatible Objects
@@ -409,7 +398,7 @@ delete ptr;   // It does not deletes Student because ptr type is `Person*`
 
 * 기반 클래스 형 포인터는 스택 영역, 파생 클래스 형 객체는 힙 영역 할당
 * 기반 클래스 형 포인터가 파생 클래스 형 객체를 가리키는 상황에서, 포인터 삭제 시 문제 발생
-  * 컴파일 시점에 `ptr`의 형을 확인해 해당 형의 소멸자 (`~Person()`)가 호출되도록 결정 
+  * 컴파일 시점에 `ptr`의 형을 확인해 해당 형의 소멸자 (`~Person()`)가 호출되도록 결정
   * 힙 영역의 파생 클래스 객체는 **기반 클래스 멤버**만 소멸 (**메모리 누수**)
 
 ---

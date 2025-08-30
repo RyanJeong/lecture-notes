@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # 제네릭 프로그래밍 (Generic Programming: Templates)
 
 ## 함수 템플릿 (Function Template)

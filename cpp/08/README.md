@@ -1,14 +1,3 @@
----
-marp: true
-theme: notes
-style: |
-    img[alt~="center"] {
-      display: block;
-      margin: 0 auto;
-    }
-math: mathjax
----
-
 # [연산자 오버로딩 (Operator Overloading)](https://en.cppreference.com/w/cpp/language/operators)
 
 * **C++는 기본 자료형을 위한 연산자를 클래스 형 객체에 사용할 수 있도록 오버로딩할 수 있음**
