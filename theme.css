@@ -16,23 +16,58 @@ section * {
   font-size: inherit !important;
 }
 
+section.lead {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertical center */
+  align-items: center; /* Horizontal center */
+  text-align: center;
+}
+
+section.lead h1 {
+  font-size: 3em !important;
+  margin-bottom: 0.3em !important; /* 제목과 부제목 사이 간격 */
+}
+
+section.lead h2 {
+  font-size: 2em !important;
+  margin-bottom: 0em !important; /* 부제목과 작성자 사이 간격 */
+}
+
+section.lead h3 {
+  font-size: 1.5em !important;
+}
+
 /* #, ##, ###, ####, #####, ###### */
-h1 { font-size: 28px !important; }
-h2 { font-size: 24px !important; }
-h3 { font-size: 20px !important; }
-h4 { font-size: 18px !important; }
-h5 { font-size: 16px !important; }
-h6 { font-size: 14px !important; }
+h1 {
+  font-size: 28px !important;
+}
+h2 {
+  font-size: 24px !important;
+}
+h3 {
+  font-size: 20px !important;
+}
+h4 {
+  font-size: 18px !important;
+}
+h5 {
+  font-size: 16px !important;
+}
+h6 {
+  font-size: 14px !important;
+}
 
 /* `*`, `-`, `ol`, `ul` */
-ul, ol {
+ul,
+ol {
   font-size: 16px !important;
   margin-left: 8px !important; /* indentation */
 }
 
 /* `li` */
 li {
-  margin-bottom: 4px !important;  /* a gap between lists */
+  margin-bottom: 4px !important; /* a gap between lists */
 }
 
 /* `>` (Blockquote) */
@@ -48,7 +83,7 @@ blockquote {
 /* code format */
 pre code {
   font-size: 16px !important;
-  display:inline-block;
+  display: inline-block;
   line-height: 1.3;
 }
 
@@ -60,7 +95,7 @@ img[alt~="center"] {
 
 /* Center-align the table */
 table {
-  margin: auto;  /* Centers the table */
+  margin: auto; /* Centers the table */
   border-collapse: collapse;
   margin-top: 0;
   margin-bottom: 0;
@@ -69,16 +104,16 @@ table {
 
 /* Style table headers */
 th {
-  text-align: center;  /* Center-align header text */
-  font-size: 1.2em;  /* Increase header font size */
+  text-align: center; /* Center-align header text */
+  font-size: 1.2em; /* Increase header font size */
   padding: 10px;
   background-color: #f2f2f2;
 }
 
 /* Style table cells */
 td {
-  text-align: center;  /* Center-align content */
-  font-size: 1em;  /* Adjust text size */
+  text-align: center; /* Center-align content */
+  font-size: 1em; /* Adjust text size */
   padding: 8px;
   border: 1px solid #ddd;
 }
