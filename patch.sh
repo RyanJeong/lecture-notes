@@ -156,6 +156,10 @@ for pkg in "${PKGS[@]}"; do
   fi
 done
 
+info "9. install pdfinfo (poppler-utils) and imagemagick"
+
+sudo apt install -y poppler-utils imagemagick
+
 info "(Opt.) Install VSCode extensions"
 
 # Note: make IDs in lowercase
