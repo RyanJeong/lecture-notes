@@ -3,15 +3,12 @@
   "emeraldwalk.runonsave": {
     "commands": [
       {
-        "match": ".*/c/\\d{2}/README\\.md",
+        "match": ".*/(c|cpp)/\\d{2}/README\\.md",
         "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
       }
-      // {
-      //     "match": ".*/cpp/\\d{2}/README\\.md",
-      //     "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
-      // }
     ]
   },
   "editor.rulers": [80, 120]
+  // Munseong: disable autosave to avoid frequent rebuilds
   // "files.autoSave": "off"
 }
