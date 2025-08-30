@@ -20,6 +20,4 @@ package-lock.json
 package.json
 node_modules
 
-# output dirs
-pdf
-pptx
+release
