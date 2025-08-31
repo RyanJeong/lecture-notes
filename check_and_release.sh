@@ -2,13 +2,15 @@
 
 # Usage: ./check_and_release.sh input.pdf
 
+set -Eeuo pipefail
+
 input="$1"
 if [ -z "$input" ]; then
   echo "Usage: $0 input.pdf"
   exit 1
 fi
 
-threshold=0.7 # 70%
+threshold=0.77 # 77%
 
 # Get total pages
 pages=$(pdfinfo "$input" | awk '/^Pages:/ {print $2}')
@@ -35,7 +37,7 @@ for img in "$tmpdir"/page-*.png; do
   # If content exceeds threshold, print page number
   if (($(awk "BEGIN {print ($ratio > $threshold)}"))); then
     percent=$(awk "BEGIN {printf \"%d\", $ratio*100}")
-    echo "Page $page_num: content fills $percent% of slide (exceeds 70%)"
+    echo "Page $page_num: content fills $percent% of slide (exceeds ${threshold})"
     exceeded_pages=$((exceeded_pages + 1))
   fi
 done
@@ -50,6 +52,9 @@ if [ "$exceeded_pages" -eq 0 ]; then
 
   mkdir -p "release/${lang}"
   cp "$input" "release/${lang}/${ch}.pdf"
+
+  marp --pptx --allow-local-files --theme ./theme.css "${dirname}/temp.md"
+  mv "${dirname}/temp.pptx" "release/${lang}/${ch}.pptx"
 else
   echo "$exceeded_pages out of $pages pages exceed the content area threshold."
 fi

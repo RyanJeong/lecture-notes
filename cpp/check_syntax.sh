@@ -1,9 +1,9 @@
 #!/bin/bash
 DIR=$(dirname $0)
 FILE_NAME="error_file_lists.txt"
-MY_FLAGS="-c -fsyntax-only -ansi -Wall -Wextra -Werror -fno-builtin"
+MY_FLAGS="-c -fsyntax-only -std=c++14 -Wall -Wextra -Werror -fno-builtin"
 >"$FILE_NAME"
-for file in $(find "$DIR" -name "*.*" | grep -E "\.c$"); do
+for file in $(find "$DIR" -name "*.*" | grep -E "\.cc$"); do
   echo "$file"
   if [[ "$file" == *"_part"* || "$file" == *"_ignore"* ]]; then
     echo "  - Skip $file ... "
