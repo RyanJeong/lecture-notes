@@ -8,7 +8,38 @@
       }
     ]
   },
-  "editor.rulers": [80, 120]
   // Munseong: disable autosave to avoid frequent rebuilds
-  // "files.autoSave": "off"
+  "files.autoSave": "off",
+
+  "editor.rulers": [80, 120],
+  "files.associations": {
+    "*.ipp": "cpp",
+    "*.tcc": "cpp",
+    "CMakeLists.txt": "cmake",
+    "*.cmake": "cmake",
+    "*.mk": "makefile",
+    "Makefile": "makefile",
+    "*.jsonc": "jsonc",
+    "*.config": "json",
+    "Jenkinsfile": "groovy",
+    "*.xml": "xml",
+    "*.properties": "ini",
+    "*.gradle": "groovy",
+    "*.jsp": "html",
+    "*.tag": "html",
+    "*.htm": "html",
+    "*.html": "html",
+    "*.css": "css",
+    "*.js": "javascript",
+    "*.ts": "typescript",
+    "*.md": "markdown",
+    "*.mdx": "markdown",
+    "Dockerfile": "dockerfile",
+    "*.dockerfile": "dockerfile",
+    "*.myp": "python",
+    "SConstruct": "python",
+    "wscript": "python",
+    "*.tac": "python",
+    "iomanip": "cpp"
+  }
 }
