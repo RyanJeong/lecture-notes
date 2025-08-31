@@ -1,520 +1,435 @@
-# C++ 기초
+<!-- _class: lead -->
+# 객체지향프로그래밍
+
+## C++ 기초
+
+### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
+
+---
 
 ## Hello, World
 
-```cpp
-#include <iostream>
+### C
 
-int main() {
-  std::cout << "Hello, World" << std::endl;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./c/01/01_1.c)
 
-### `#include <iostream>`
+### C++
 
-* C++ 표준 입출력 관련 내용들을 포함하는 헤더파일
-* 확장자를 붙이지 않음
-
-### `int main()`
-
-* 프로그램 시작점
+[//]: # (INCLUDE: ./cpp/01/hello_world.cc)
 
 ---
 
-### `std::cout`
+## C vs C++
 
-* 표준 출력 객체 (*object*)
+### Coding Conventions
 
-### `std::endl`
-
-* 개행 함수 (*function*)
-* 출력 버퍼에 담긴 데이터를 즉시 내보냄
-  * 개행 문자를 출력 버퍼로 내보낸 뒤 출력 버퍼에 그동안 축적한 데이터를 표준 출력으로 내보냄
-
----
-
-## 이름 공간 (*Namespace*)
-
-* 사용하고자 하는 이름 (*name*)의 **소속**을 구분하기 위함
-* 프로그램 규모가 커짐에 따라 식별자 (*identifier*) 중복으로 인한 컴파일 오류 급증
-* 효율적으로 이름을 구분하여 사용하기 위해 이름 공간 개념 도입
-  * `std::cout`: `std`라는 이름 공간에 속해 있는 `cout` 객체 사용
-
-* 함수 `foo, bar`는 서로 이름이 같지만 이름 공간에 의해 서로 구분됨:
-
-```cpp
-// header1.hpp
-#pragma once
-
-namespace header1 {
-int foo();
-void bar();
-}  // header1
-```
-
-```cpp
-// header2.hpp
-#pragma once
-
-namespace header2 {
-double foo();
-int bar();
-}  // header2
-```
+| Item | C (KNR style) | C++ ([Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)) |
+| ---- | ------------- | ---------------------------- |
+| Indentation         | 4 spaces      | 2 spaces |
+| Function brace style| Opening brace on a new line | Opening brace on the same line as function signature |
+| Function names      | `snake_case`  | `PascalCase` for **all functions** (free functions + methods) |
+| Variable names      | `snake_case`  | `snake_case` (same as C) |
+| Pointer style       | `int *ptr;`   | `int* ptr;` |
+| Header files        | `<stdio.h>`   | `<iostream>`, `<string>` (no `.h` extension) |
+| Comment style       | `/* block */` | `// line` (preferred), `/* block */` |
+| `main()` args       | `int main(void)` | `int main()` recommended |
+| Null pointer        | `NULL`        | `nullptr` recommended |
 
 ---
 
-* 같은 이름 공간 내에서 범위지정연산자 (`::`, *scope-resolution operator*) 생략 가능
+## C vs C++ (Cont'd - 1)
 
-```cpp
-#include "header1.hpp"
+### Declaration Position
 
-namespace header1 {
-int func() { 
-  return foo();  // header1::foo()
-}
-}  // header1
-```
+* C는 블록 시작 시점에만 선언 허용
+* C++는 필요한 위치에서 선언 가능
+  * 변수 선언과 변수 사용 위치가 가까워 코드 가독성 증가
+  * 불필요한 객체 생애주기 감소
 
-* 범위지정연산자를 사용해 다른 이름 공간에 속한 이름 사용 가능
-  * e.g., 변수 사용, 함수 호출, etc.
-
-```cpp
-#include "header1.hpp"
-#include "header2.hpp"
-
-namespace header1 {
-int func() {
-  header2::bar();
-  return foo();  // header1::foo()
-}
-}  // header1
-```
+[//]: # (INCLUDE: ./cpp/01/dcl.cc)
 
 ---
 
-* 범위지정연산자를 사용하면 이름 공간에 속한 이름 직접 지정 가능
+## C vs C++ (Cont'd - 2)
 
-```cpp
-#include "header1.hpp"
-#include "header2.hpp"
+### Boolean Type
 
-int func() {
-  int res = header1::foo();
-  return 0;
-}
-```
+* C는 0, 1과 같은 정수 값을 사용해 참과 거짓 표현
+  * C99부터 `<stdbool.h>` 도입
+* C++는 기본 자료형 `bool` 형 키워드 `true`, `false`를 사용해 참과 거짓 표현
 
-* `using` 키워드를 사용해 범위지정연산자 생략 가능
-
-```cpp
-#include "header1.hpp"
-
-using header1::foo;  // Brings header1::foo into the current scope as foo
-
-int func() {
-  return foo();  // header1::foo()
-}
-```
-
-```cpp
-#include "header1.hpp"
-
-// Brings all names from header1 namespace into the current scope
-using namespace header1;
-
-int func() {
-  bar();  // header1::bar()
-  return foo();  // header1::foo()
-}
-```
+[//]: # (INCLUDE: ./cpp/01/bool.cc)
 
 ---
 
-### `using namespace std;`
+## C vs C++ (Cont'd - 3)
 
-> Do not use namespace using-directives. Use using-declarations instead.
+### `struct` Keyword
 
-* 표준 이름 공간 (`std`)은 명시적으로 사용 권장
-  * 표준 라이브러리 내 무수히 많은 이름이 정의되어 있음
-  * `using namespace std` 선언 시 이름 충돌 위험
+* C는 선언 시 `struct` 키워드 필수
+* C++는 선언 시 `struct` 키워드 생략 가능
 
-### 이름 없는 이름 공간 (Anonymous Namespaces)
-
-* 정적 함수 혹은 정적 변수 생성 시 사용
-  * C 언어에서의 `static` 키워드 역할
-
-```cpp
-namespace {
-int foo_func() { return 3; }
-int foo_var = 1;
-}  // namespace
-
-int main() {
-  foo_var = foo_func();
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/struct.cc)
 
 ---
 
-* **이름 없는 이름 공간을 사용하는 헤더 파일은 두 개 이상의 소스코드 파일에 포함될 수 없음**
+## 이름 공간 (Namespace)
 
-```cpp
-// foo.hpp
-#pragma once
+* 식별자 (identifier)의 소속 (scope)을 구분하기 위한 도구
+* 식별자 중복으로 인한 컴파일 오류 예방 가능
+* e.g., `std::cout`은 `cout` 객체가 `std`라는 이름 공간에 속해있음을 의미
 
-namespace {
-int foo_func() { return 3; }
-int foo_var = 1;
-}  // namespace
-```
+### 예시
 
-```cpp
-// main.cc
-#include <iostream>
+* 두 개의 다른 이름 공간 (`foo`, `bar`)을 사용해 `qux()` 정의
 
-#include "foo.hpp"
-
-int main() {
-  foo_var = foo_func();
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/namespace.cc)
 
 ---
 
-* 아래의 경우는 오류 발생
+## 이름 공간 (Namespace) (Cont'd - 1)
 
-```cpp
-// foo.hpp
-#pragma once
+### 범위 지정 연산자 (`::`, Scope Resolution Operator)
 
-namespace {
-int foo_func();
-int foo_var;
-}  // namespace
-```
+* 이름 공간에 감춰진 식별자를 지정해 사용할 수 있음
 
-```cpp
-// foo.cc
-#include "foo.hpp"
+[//]: # (INCLUDE: ./cpp/01/header1.hpp)
 
-namespace {
-int foo_func() { return 3; }
-}  // namespace
-```
-
-```cpp
-// main.cc
-#include <iostream>
-
-#include "foo.hpp"
-
-int main() {
-  foo_var = foo_func();
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/header2.hpp)
 
 ---
 
-```shell
-% g++ main.cc foo.cc 
-In file included from main.cc:3:
-./foo.hpp:4:7: warning: function '(anonymous namespace)::foo_func' has internal 
-linkage but is not defined [-Wundefined-internal]
-  int foo_func();
-      ^
-main.cc:6:13: note: used here
-  foo_var = foo_func();
-            ^
-1 warning generated.
-Undefined symbols for architecture x86_64:
-  "(anonymous namespace)::foo_func()", referenced from:
-      _main in main-f07283.o
-ld: symbol(s) not found for architecture x86_64
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
-```
+## 이름 공간 (Namespace) (Cont'd - 2)
+
+### 범위 지정 연산자를 생략할 수 있는 경우
+
+[//]: # (INCLUDE: ./cpp/01/sro1.cc)
+
+* `func()`의 `foo()`는 `header1` 이름 공간에 속함
+  * `foo()`는 곧 `header1::foo()`를 의미
 
 ---
 
-## C++와 C언어의 공통 문법 구조
+## 이름 공간 (Namespace) (Cont'd - 3)
 
-### 변수 선언
+### 범위 지정 연산자를 생략할 수 없는 경우
 
-```cpp
-int main() {
-  char c;
-  int i;
-  float f;
-  double d;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/sro2.cc)
 
-### [이름 규칙](https://google.github.io/styleguide/cppguide.html#Naming)
-
-```cpp
-// variable names: snake case
-int num_entries;
-
-// constant names: named with a leading "k" followed by camel case
-const int kDaysInAWeek = 7;
-
-// function names: pascal case
-int OpenFileOrDie();
-int StartRpc();  // When using abbreviations in function names, treat the
-                 // abbreviation as a single word and capitalize only the first
-                 // letter of the abbreviation
-```
+* `header1` 이름 공간 안에서는 `header2`의 식별자가 직접 보이지 않음
+  * `header2::foo()`, `header2::bar()`는 감춰진 상태
+* `::`를 사용하면 다른 이름 공간에 속한 식별자를 명시적으로 지정해 사용 가능
 
 ---
 
-### 포인터와 배열
+## 이름 공간 (Namespace) (Cont'd - 4)
 
-```cpp
-int arr[5] = {1, 2, 3, 4, 5};
-int* parr = arr;
+### `using` 선언과 `using` 지시어
 
-int i = 10;
-int* pi = &i;
-```
+* `using` 선언 (using-declaration)은 특정 식별자만 선택적으로 지정하여 사용할 수 있도록 함
 
-### 반복문
+[//]: # (INCLUDE: ./cpp/01/using1.cc)
 
-* **C 언어 변수는 블록의 상단에서만 선언 가능하나, C++ 변수는 아무 위치에서나 선언 가능**
+* `using` 지시어 (using-directive)는 해당 이름 공간의 모든 식별자를 지정하여 사용할 수 있도록 함
 
-```cpp
-#include <iomanip>
-#include <iostream>
+[//]: # (INCLUDE: ./cpp/01/using2.cc)
 
-int main() {
-  for (int i = 2; i <= 9; ++i) {
-    for (int j = 1; j <= 9; ++j) {
-      std::cout << i << " x " << j << ": " << std::setw(2) << i * j
-                << std::endl;
-    }
-    std::cout << std::endl;
-  }
-  return 0;
-}
+---
+
+## 이름 공간 (Namespace) (Cont'd - 5)
+
+### `using` 지시어 사용을 피해야 하는 이유
+
+* `using` 지시어를 사용하면 **이름 공간을 사용하는 장점이 사라짐**
+  * 식별자 충돌 가능성 증가
+
+### 이름 없는 이름 공간 (Anonymous Namespace, Unnamed Namespace)
+
+* C의 `static` 키워드와 같은 역할
+  * 내부 연결성 (internal linkage) 부여
+  * 동일 번역 단위 (translation unit)에서만 접근 가능
+
+[//]: # (INCLUDE: ./cpp/01/anony_ns.cc)
+
+---
+
+## 이름 공간 (Namespace) (Cont'd - 6)
+
+### 이름 없는 이름 문제를 사용한 헤더 파일
+
+> Do not use unnamed namespaces in header files.
+
+[//]: # (INCLUDE: ./cpp/01/anony_ns_error.hpp --from 3 --to 6 --no-comment)
+
+[//]: # (INCLUDE: ./cpp/01/anony_ns_foo.cc)
+
+[//]: # (INCLUDE: ./cpp/01/anony_ns_bar.cc)
+
+---
+
+## 이름 공간 (Namespace) (Cont'd - 7)
+
+### 문제가 발생하는 이유
+
+* 이름 없는 이름 공간은 C의 `static`과 동일하며, 내부 연결성을 가짐
+  * 헤더 파일이 각 소스코드 파일에 포함될 때마다 독립적인 이름 공간 생성
+* `foo.cc`에 헤더 파일이 포함될 경우:
+  * `foo_func()`는 `foo.cc`의 내부 연결성일 가짐
+  * `bar.cc`에서는 이 함수를 사용할 수 없음
+
+  ```text
+  error: undefined reference to '(anonymous namespace)::foo_func()'
+  ```
+
+* `bar.cc`에 헤더 파일이 포함될 경우:
+  * `bar.cc`는 함수 구현이 없는 `foo_func()`를 호출하려 함
+  * 구현은 `foo.cc` 안에 내부 연결성으로 존재하며, `bar.cc`는 구현을 찾을 수 없음
+
+  ```text
+  warning: function '(anonymous namespace)::foo_func' has internal linkage but
+  is not defined
+  error: undefined reference to '(anonymous namespace)::foo_func()'
+  ```
+
+---
+
+## C++ 헤더 파일 명명 규칙
+
+### C++ 표준 헤더
+
+* C++의 헤더파일은 `.h` 확장자를 사용하지 않음
+
+[//]: # (INCLUDE: ./cpp/01/hello_world.cc --to 2 --no-comment)
+
+### C++에서의 C 표준 헤더
+
+* C 헤더를 C++에서 사용할 때는 접두사 `c`를 붙이고 `.h` 제거
+* C 헤더의 모든 식별자는 `std` 이름 공간 사용
+  * e.g., `#include <stdio.h>` 선언 시 `printf()`
+  * e.g., `#include <cstdio>` 선언 시 `std::printf()`
+* **C++ 스타일 헤더 사용 권장**
+  * 이름 공간 관리가 용이하고 C++ 표준 라이브러리와의 일관성 유지
+
+---
+
+## C++ 헤더 파일 명명 규칙 (Cont'd)
+
+### C++에서의 C 표준 헤더 사용 예제 - Trigonometric Functions
+
+![h:200 center](image.png)
+
+[//]: # (INCLUDE: ./cpp/01/trigonometric.cc)
+
+---
+
+## Input / Output
+
+### 기본 데이터 입출력
+
+[//]: # (INCLUDE: ./cpp/01/io1.cc)
+
+---
+
+## Input / Output (Cont'd - 1)
+
+### C 문자열 입출력
+
+[//]: # (INCLUDE: ./cpp/01/io2.cc)
+
+---
+
+## Input / Output (Cont'd - 2)
+
+### 데이터 형식화 (Formatting Data)
+
+* 조정자 (Manipulators)를 사용해 입출력 형식 제어
+
+### 임시 조정자 (Temporary Manipulators)
+
+[//]: # (INCLUDE: ./cpp/01/temp_man.cc)
+
+---
+
+## Input / Output (Cont'd - 3)
+
+### 지속 입력 조정자 (Persistent Input Manipulators)
+
+[//]: # (INCLUDE: ./cpp/01/in_man.cc)
+
+---
+
+## Input / Output (Cont'd - 4)
+
+### 지속 출력 조정자 (Persistent Output Manipulators)
+
+[//]: # (INCLUDE: ./cpp/01/out_man.cc)
+
+---
+
+## Input / Output (Cont'd - 5)
+
+### 조정자 활용 구구단 출력 프로그램
+
+[//]: # (INCLUDE: ./cpp/01/mul.cc)
+
+---
+
+## 동적 할당 (Dynamic Memory Allocation)
+
+### 단일 객체 동적 할당과 해제 - `new`, `delete`
+
+[//]: # (INCLUDE: ./cpp/01/new1.cc)
+
+---
+
+## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 2)
+
+### 배열 객체 동적 할당과 해제 - `new[]`, `delete[]`
+
+* 단일 객체 동적 생성은 `new`, 배열 객체 동적 생성은 `new[]` 사용
+* 단일 객체 동적 해제는 `delete`, 배열 객체 동적 해제는 `delete[]` 사용
+
+[//]: # (INCLUDE: ./cpp/01/new2.cc)
+
+```text
+// new int
+[  int  ]
+
+// new int[5]
+[ size ][ int ][ int ][ int ][ int ][ int ]
+    ^              array elements
+  metadata (array size, allocation block size, etc.)
 ```
 
 ---
 
-```cpp
-#include <iostream>
+## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 3)
 
-int main() {
-  std::cout << "Enter numbers to add to sum (enter 0 to stop): " << std::endl;
+### 1차원 배열 동적 할당
 
-  int number;
-  std::cin >> number;
-
-  int sum = 0;
-  while (number) {
-    sum += number;
-    std::cin >> number;
-  }
-  std::cout << "Total sum: " << sum << std::endl;
-
-  return 0;
-}
-```
-
-```cpp
-#include <cstring>
-#include <iostream>
-
-int main() {
-  const char kPassword[] = "cpp";
-
-  char password[128];
-  do {
-    std::cout << "Enter your password: ";
-    std::cin >> password;
-  } while (std::strcmp(password, kPassword));
-  std::cout << "Access granted." << std::endl;
-
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/new3.cc)
 
 ---
 
-#### Including Standard C Library Headers in C++
+## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 4)
 
-In C++, standard C library headers are prefixed with 'c' and omit the '.h' extension.
+### 2차원 배열 동적 할당
 
-```cpp
-// <string.h>
-#include <cstring>
-
-// <math.h>
-#include <cmath>
-
-// <stdio.h>
-#include <cstdio>
-```
-
-* Key Differences:
-  * C Header:
-    * This brings in the C-style standard library.
-    * While it can be used in C++, it does not place functions in the `std` namespace.
-  * C++ Header:
-    * This provides the same functionality as the C header but places the functions in the `std` namespace (for example, the `strcmp` function is called as `std::strcmp`).
-
-**By using C++ style headers (e.g., `<cstring>`, `<cmath>`), C++ code benefits from better integration with the C++ standard library while maintaining compatibility with C functions.**
+[//]: # (INCLUDE: ./cpp/01/new4.cc)
 
 ---
 
-### 조건문
+## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 5)
 
-```cpp
-#include <iostream>
+### 개선된 2차원 배열 동적 할당
 
-int main() {
-  std::cout << "Enter your score (0-100): ";
-
-  int score;
-  std::cin >> score;
-
-  if (score >= 90)
-    std::cout << "Grade: A" << std::endl;
-  else if (score >= 80)
-    std::cout << "Grade: B" << std::endl;
-  else if (score >= 70)
-    std::cout << "Grade: C" << std::endl;
-  else if (score >= 60)
-    std::cout << "Grade: D" << std::endl;
-  else
-    std::cout << "Grade: F" << std::endl;
-
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/new5.cc)
 
 ---
 
-```cpp
-#include <iostream>
+## 레퍼런스 (Reference)
 
-int main() {
-  std::cout << "Enter first number: ";
-  double num1;
-  std::cin >> num1;
+* 기존 객체에 대한 별칭 (alias)을 만드는 메커니즘
+* **레퍼런스는 곧 선언에 사용된 객체**
+* `&` 기호를 사용해 선언
 
-  std::cout << "Enter an operator (+, -, *, /): ";
-  char operation;
-  std::cin >> operation;
+[//]: # (INCLUDE: ./cpp/01/ref.cc)
 
-  std::cout << "Enter second number: ";
-  double num2;
-  std::cin >> num2;
-
-  if (operation == '+') {
-    std::cout << "Result: " << num1 + num2 << std::endl;
-  } else if (operation == '-') {
-    std::cout << "Result: " << num1 - num2 << std::endl;
-  } else if (operation == '*') {
-    std::cout << "Result: " << num1 * num2 << std::endl;
-  } else if (operation == '/') {
-    if (num2 != 0)
-      std::cout << "Result: " << num1 / num2 << std::endl;
-    else
-      std::cout << "Error: Division by zero!" << std::endl;
-  } else {
-    std::cout << "Error: Invalid operator!" << std::endl;
-  }
-  return 0;
-}
-```
+* `ref`는 `a`와 동일한 역할 수행
 
 ---
 
-## 동적 할당 (`new`, `delete`)
+## 레퍼런스 (Reference) (Cont'd - 1)
 
-* C++에 추가된 기본 연산자
+### 컴파일러의 레퍼런스를 처리 절차
 
-### 스칼라 객체
+[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 1 --to 4 --no-comment)
 
-```cpp
-#include <iostream>
+[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 8 --to 11 --no-comment)
 
-int main() {
-  int* p_i = new int;
-
-  *p_i = 42;
-  std::cout << "Value of p_i: " << *p_i << std::endl;
-
-  delete p_i;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 15 --to 17 --no-comment)
 
 ---
 
-### 배열 객체
+## 레퍼런스 (Reference) (Cont'd - 2)
 
-```cpp
-#include <iostream>
+### 레퍼런스 특징 1 - 레퍼런스는 반드시 대상이 있어야 함
 
-int main() {
-  int* p_arr = new int[5];
-
-  for (int i = 0; i < 5; ++i) p_arr[i] = i * 10;
-  for (int i = 0; i < 5; ++i)
-    std::cout << "p_arr[" << i << "]: " << p_arr[i] << std::endl;
-
-  delete[] p_arr;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/ref1.cc)
 
 ---
 
-### 2차원 배열 객체 - 각 행의 길이가 같은 경우
+## 레퍼런스 (Reference) (Cont'd - 3)
 
-```cpp
-#include <iostream>
+### 레퍼런스 특징 2 - 레퍼런스는 변경할 수 없음
 
-int main() {
-  int rows = 3;
-  int cols = 4;
-  int* array = new int[rows * cols];
-
-  array[0 * cols + 0] = 1;   // First element
-  array[2 * cols + 3] = 10;  // Last element in a 3x4 array
-  std::cout << "array[0][0] = " << array[0 * cols + 0] << std::endl;
-  std::cout << "array[2][3] = " << array[2 * cols + 3] << std::endl;
-  delete[] array;
-
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/01/ref2.cc)
 
 ---
 
-### 2차원 배열 객체 - 각 행의 길이가 다른 경우
+## 레퍼런스 (Reference) (Cont'd - 4)
 
-```cpp
-#include <iostream>
+### 레퍼런스 특징 3 - 레퍼런스는 메모리 할당을 하지 않음
 
-int main() {
-  int rows = 3;
-  int cols = 4;
-  int** array = new int*[rows];
-  for (int i = 0; i < rows; ++i) array[i] = new int[cols];
+[//]: # (INCLUDE: ./cpp/01/ref3.cc)
 
-  array[0][0] = 1;   // First element
-  array[2][3] = 10;  // Last element in a 3x4 array
-  std::cout << "array[0][0] = " << array[0][0] << std::endl;
-  std::cout << "array[2][3] = " << array[2][3] << std::endl;
-  for (int i = 0; i < rows; ++i) delete[] array[i];  // Delete each row
-  delete[] array;  // Delete the array of pointers
+---
 
-  return 0;
-}
-```
+## 레퍼런스 (Reference) (Cont'd - 5)
+
+### C 함수 호출 방식 (Function Call Mechanism)
+
+[//]: # (INCLUDE: ./cpp/01/function1.cc)
+
+---
+
+## 레퍼런스 (Reference) (Cont'd - 6)
+
+### C++에 추가된 함수 호출 방식
+
+[//]: # (INCLUDE: ./cpp/01/function2.cc)
+
+---
+
+## 레퍼런스 (Reference) (Cont'd - 7)
+
+### 레퍼런스와 상수 레퍼런스
+
+* 레퍼런스는 *lvalue*만 참조 가능
+  * e.g., `int& ref = i;`
+* 레퍼런스는 *rvalue* 참조 시 오류 발생
+  * e.g., `int& ref = 100;`
+
+  ```text
+  error: cannot bind non-const lvalue reference of type ‘int&’ to an rvalue of
+  type ‘int’
+  ```
+
+* 상수 레퍼런스는 *rvalue*, *lvalue* 둘 다 참조 가능
+  * e.g., `const int& ref = 100;`
+  * `100`은 메모리에 실체화되지 않는 정수 리터럴
+  * 상수 레퍼런스의 대상은 상수 레퍼런스의 생애주기 동안 메모리에 **임시 객체**로 유지됨
+  * 상수 레퍼런스 소멸 시 상수 레퍼런스가 참조한 임시 객체도 동시에 소멸됨
+
+---
+
+## 레퍼런스 (Reference) (Cont'd - 8)
+
+### C++ Standard (ISO/IEC 14882)
+
+  > There shall be no references to references, no arrays of references, and no pointers to references.
+
+* 레퍼런스는 **메모리를 사용하지 않음**
+* 만약 레퍼런스 배열, 레퍼런스 포인터를 허용한다면, 메모리 관련 연산 수행 불가
+
+[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 23 --to 24 --no-comment)
+
+* 레퍼런스의 레퍼런스는 대안이 충분하여 불필요함
+
+[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 30 --to 32 --no-comment)
+
+---
+
+## 레퍼런스 (Reference) (Cont'd - 9)
+
+### 배열 레퍼런스 (References to Arrays)
