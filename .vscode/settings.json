@@ -40,6 +40,7 @@
     "SConstruct": "python",
     "wscript": "python",
     "*.tac": "python",
-    "iomanip": "cpp"
+    "iomanip": "cpp",
+    "random": "cpp"
   }
 }
