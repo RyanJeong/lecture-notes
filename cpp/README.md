@@ -82,3 +82,4 @@ int* p = &x;  // '&x' is an rvalue (evaluated to the address of 'x'), p is an
               // lvalue
 ```
 
+* `auto`, Type, Lambda -> Recursion에 소개
