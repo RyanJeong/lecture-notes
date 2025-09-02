@@ -155,7 +155,7 @@
 
 ## 이름 공간 (Namespace) (Cont'd - 6)
 
-### 이름 없는 이름 문제를 사용한 헤더 파일
+### 이름 없는 이름 공간을 사용한 헤더 파일
 
 > Do not use unnamed namespaces in header files.
 
@@ -174,21 +174,21 @@
 * 이름 없는 이름 공간은 C의 `static`과 동일하며, 내부 연결성을 가짐
   * 헤더 파일이 각 소스코드 파일에 포함될 때마다 독립적인 이름 공간 생성
 * `foo.cc`에 헤더 파일이 포함될 경우:
-  * `foo_func()`는 `foo.cc`의 내부 연결성일 가짐
+  * `Foo()`는 `foo.cc`의 내부 연결성일 가짐
   * `bar.cc`에서는 이 함수를 사용할 수 없음
 
   ```text
-  error: undefined reference to '(anonymous namespace)::foo_func()'
+  error: undefined reference to '(anonymous namespace)::Foo()'
   ```
 
 * `bar.cc`에 헤더 파일이 포함될 경우:
-  * `bar.cc`는 함수 구현이 없는 `foo_func()`를 호출하려 함
+  * `bar.cc`는 함수 구현이 없는 `Foo()`를 호출하려 함
   * 구현은 `foo.cc` 안에 내부 연결성으로 존재하며, `bar.cc`는 구현을 찾을 수 없음
 
   ```text
-  warning: function '(anonymous namespace)::foo_func' has internal linkage but
+  warning: function '(anonymous namespace)::Foo' has internal linkage but
   is not defined
-  error: undefined reference to '(anonymous namespace)::foo_func()'
+  error: undefined reference to '(anonymous namespace)::Foo()'
   ```
 
 ---
@@ -197,14 +197,14 @@
 
 ### C++ 표준 헤더
 
-* C++의 헤더파일은 `.h` 확장자를 사용하지 않음
+* C++의 표준 헤더는 `.h` 확장자를 사용하지 않음
 
 [//]: # (INCLUDE: ./cpp/01/hello_world.cc --to 2 --no-comment)
 
 ### C++에서의 C 표준 헤더
 
 * C 헤더를 C++에서 사용할 때는 접두사 `c`를 붙이고 `.h` 제거
-* C 헤더의 모든 식별자는 `std` 이름 공간 사용
+* C++ 스타일 C 헤더의 모든 식별자는 std 이름 공간 사용
   * e.g., `#include <stdio.h>` 선언 시 `printf()`
   * e.g., `#include <cstdio>` 선언 시 `std::printf()`
 * **C++ 스타일 헤더 사용 권장**
@@ -242,7 +242,7 @@
 
 ### 데이터 형식화 (Formatting Data)
 
-* 조정자 (Manipulators)를 사용해 입출력 형식 제어
+* [조정자 (Manipulators)](https://en.cppreference.com/w/cpp/io/manip.html)를 사용해 입출력 형식 제어
 
 ### 임시 조정자 (Temporary Manipulators)
 
@@ -267,6 +267,14 @@
 ---
 
 ## Input / Output (Cont'd - 5)
+
+### 출력 정렬 조정자
+
+[//]: # (INCLUDE: ./cpp/01/sort_man.cc)
+
+---
+
+## Input / Output (Cont'd - 6)
 
 ### 조정자 활용 구구단 출력 프로그램
 
@@ -330,7 +338,7 @@
 ## 레퍼런스 (Reference)
 
 * 기존 객체에 대한 별칭 (alias)을 만드는 메커니즘
-* **레퍼런스는 곧 선언에 사용된 객체**
+* 레퍼런스는 선언 시 **반드시 객체에 연결 (binding)**되어야 함
 * `&` 기호를 사용해 선언
 
 [//]: # (INCLUDE: ./cpp/01/ref.cc)
@@ -343,11 +351,11 @@
 
 ### 컴파일러의 레퍼런스를 처리 절차
 
-[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 1 --to 4 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 3 --to 5 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 8 --to 11 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 9 --to 12 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 15 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 16 --to 18 --no-comment)
 
 ---
 
@@ -369,7 +377,7 @@
 
 ## 레퍼런스 (Reference) (Cont'd - 4)
 
-### 레퍼런스 특징 3 - 레퍼런스는 메모리 할당을 하지 않음
+### 레퍼런스 특징 3 - 레퍼런스 자체는 별도의 메모리 공간을 가지지 않음
 
 [//]: # (INCLUDE: ./cpp/01/ref3.cc)
 
@@ -419,17 +427,45 @@
 
   > There shall be no references to references, no arrays of references, and no pointers to references.
 
-* 레퍼런스는 **메모리를 사용하지 않음**
-* 만약 레퍼런스 배열, 레퍼런스 포인터를 허용한다면, 메모리 관련 연산 수행 불가
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 25 --to 29 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 23 --to 24 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 31 --to 33 --no-comment)
 
-* 레퍼런스의 레퍼런스는 대안이 충분하여 불필요함
-
-[//]: # (INCLUDE: ./cpp/01/ref_snippet.cc --from 30 --to 32 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 35 --to 39 --no-comment)
 
 ---
 
 ## 레퍼런스 (Reference) (Cont'd - 9)
 
-### 배열 레퍼런스 (References to Arrays)
+### 배열 레퍼런스 (References To Arrays)
+
+* 이미 실체화된 배열을 가리키는 레퍼런스
+* **레퍼런스 지시자와 배열 이름을 괄호로 함께 묶어주어야 함**
+  * 레퍼런스 선언자 (`&`, reference declaration)은 배열 크기 지시자 (`[]`, array size specifier)보다 우선순위가 낮음
+
+[//]: # (INCLUDE: ./cpp/01/ref_arr.cc)
+
+---
+
+## 레퍼런스 (Reference) (Cont'd - 10)
+
+### Dangling Reference
+
+* 레퍼런스가 유효하지 않은 메모리 주소를 대상으로 하는 경우 발생
+* 대표적인 경우는 함수 지역 객체를 레퍼런스로 반환하는 경우
+
+[//]: # (INCLUDE: ./cpp/01/dangling.cc)
+
+---
+
+## 레퍼런스 (Reference) (Cont'd - 11)
+
+### Dangling Reference 예방법
+
+* 레퍼런스 반환 시 함수가 종료되어도 소멸되지 않는 객체를 반환하도록 수정
+
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 43 --to 43 --no-comment)
+
+* 레퍼런스 반환 시 정적 또는 전역 객체를 반환하도록 수정
+
+[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 46 --to 49 --no-comment)

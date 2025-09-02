@@ -38,4 +38,13 @@ void NoRefCases() {
   int& ref1 = x;
   int& ref2 = ref1;  // `ref2` refers to `x`, not to `ref1`
 }
+
+// ResolveDangling1()
+int& Max(int& a, int& b) { return (a > b) ? a : b; }
+
+// ResolveDangling2()
+int& Counter() {
+  static int counter = 0;  // Static object
+  return counter;
+}
 #endif  // CPP_01_NOBUILD

@@ -1,5 +1,5 @@
 #include "header1.hpp"
 
-using header1::foo;  // only foo is visible as foo()
+using header1::Foo;  // only `Foo` is visible as `Foo()`
 
-int func() { return foo(); /* header1::foo */ }
+int func() { return Foo(); /* header1::Foo */ }

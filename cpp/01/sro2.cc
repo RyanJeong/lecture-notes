@@ -2,8 +2,8 @@
 #include "header2.hpp"
 
 namespace header1 {
-int func() {
-  header2::bar();  // explicitly from header2
-  return foo();    // from header1
+int Func() {
+  header2::Bar();  // explicitly from header2
+  return Foo();    // from header1
 }
 }  // namespace header1

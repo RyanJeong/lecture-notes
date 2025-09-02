@@ -1,8 +1,7 @@
 #include <iostream>
 
 // Modifies the original argument (call by reference).
-// References allow direct access to the original variable without needing
-// additional operators like '*' (dereferencing).
+// References provide direct access to the original variable.
 void ModifyByReference(int& ref) {
   ref = 100;
   std::cout << "&ref: " << &ref << std::endl;

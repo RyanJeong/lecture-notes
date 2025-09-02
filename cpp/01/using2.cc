@@ -1,8 +1,8 @@
 #include "header1.hpp"
 
 using namespace header1;  // bring all names from header1
-                          // foo and bar are visible as foo() and bar()
+                          // `Foo` and `Bar` are visible as `Foo()` and `Bar()`
 int func() {
-  bar();         // header1::bar
-  return foo();  // header1::foo
+  Bar();         // `header1::Bar`
+  return Foo();  // `header1::Foo`
 }

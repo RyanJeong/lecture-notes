@@ -12,7 +12,7 @@ int main() {
   ref = b;  // This does not change `ref` to refer to `b`, it changes the value
             // of `a` to 20.
 
-  std::cout << "a = " << a << std::endl;  // Output: "a = 20"
-  std::cout << "b = " << b << std::endl;  // Output: "b = 20" (unchanged)
+  std::cout << "a = " << a << std::endl;      // Output: "a = 20"
+  std::cout << "ref = " << ref << std::endl;  // Output: "ref = 20"
   return 0;
 }
