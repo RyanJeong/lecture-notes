@@ -6,8 +6,8 @@ int main() {
   char character;
   bool boolean;
 
-  std::cout << "Enter an integer: ";  // <<: stream extraction operator
-  std::cin >> num;                    // >>: stream insertion operator
+  std::cout << "Enter an integer: ";  // <<: stream insertion operator
+  std::cin >> num;                    // >>: stream extraction operator
   std::cout << "Enter a float: ";
   std::cin >> decimal;
   std::cout << "Enter a character: ";
