@@ -41,6 +41,7 @@
     "wscript": "python",
     "*.tac": "python",
     "iomanip": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "iostream": "cpp"
   }
 }
