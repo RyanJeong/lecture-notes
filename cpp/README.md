@@ -82,4 +82,54 @@ int* p = &x;  // '&x' is an rvalue (evaluated to the address of 'x'), p is an
               // lvalue
 ```
 
-* `auto`, Type, Lambda -> Recursion에 소개
+---
+
+## `auto`, Type, Lambda -> Recursion에 소개
+
+---
+
+## Rule of Three/Five
+
+* **Rule of Three**: 클래스가 소멸자, 복사 생성자, 복사 할당 연산자 중 하나를 명시적으로 정의한다면, 나머지 두 개도 정의 필요
+* **Rule of Five**: C++11 이후, 이동 생성자와 이동 할당 연산자가 추가되어 다섯 개 모두 고려 필요
+* 리소스 관리의 일관성을 보장하기 위함
+
+### RAII (Resource Acquisition Is Initialization)
+
+* 리소스의 획득과 해제를 객체의 생명주기와 연결하는 C++의 핵심 원칙
+* **리소스 획득**: 생성자에서 수행
+* **리소스 해제**: 소멸자에서 수행
+* 예외 안전성과 메모리 안전성을 보장
+
+```cpp
+class FileManager {
+ private:
+  std::FILE* file_;
+  
+ public:
+  // Constructor: acquire resource
+  FileManager(const char* filename) : file_(std::fopen(filename, "r")) {
+    if (!file_) {
+      throw std::runtime_error("Failed to open file");
+    }
+  }
+  
+  // Destructor: release resource
+  ~FileManager() {
+    if (file_) {
+      std::fclose(file_);
+    }
+  }
+  
+  // Delete copy operations to simplify resource management
+  FileManager(const FileManager&) = delete;
+  FileManager& operator=(const FileManager&) = delete;
+};
+
+// Usage example
+void process_file() {
+  FileManager fm("data.txt");  // File opened automatically
+  // File operations...
+  // File closed automatically when function ends (even if exception occurs)
+}
+```

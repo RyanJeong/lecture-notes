@@ -9,10 +9,11 @@ for file in $(find "$DIR" -name "*.*" | grep -E "\.cc$"); do
     echo "  - Skip $file ... "
     continue
   fi
-  gcc $file $MY_FLAGS >/dev/null 2>&1
+  # g++ $file $MY_FLAGS >/dev/null 2>&1
+  g++ $file $MY_FLAGS 2>/dev/null
   if [ $? -ne 0 ]; then
     echo "$file" >>"$FILE_NAME"
-    gcc $file $MY_FLAGS >>"$FILE_NAME" 2>&1
+    g++ $file $MY_FLAGS >>"$FILE_NAME" 2>&1
     echo "========================================" >>"$FILE_NAME"
   fi
 done
