@@ -342,7 +342,7 @@ message : while trying to match the argument list '(long)'
 
 - 객체들 간 데이터 멤버: 독립적임
   - 서로 다른 메모리 영역에 할당
-- 데이터 멤버: **캡슐화 (encapsulation)**되어야 함
+- 데이터 멤버: **캡슐화 (encapsulation)되어야 함**
   - [OOP 원칙 (Principles of Object-Oriented Programming)](https://en.wikipedia.org/wiki/Object-oriented_programming)
   - **항상 `private`으로 지정해야 함**
 
