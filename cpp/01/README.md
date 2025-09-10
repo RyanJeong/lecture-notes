@@ -338,7 +338,7 @@
 
 ## 레퍼런스 (Reference) (Cont'd - 1)
 
-### 컴파일러의 레퍼런스를 처리 절차
+### 컴파일러의 레퍼런스 처리 절차
 
 [//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 3 --to 5 --no-comment)
 
