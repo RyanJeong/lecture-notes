@@ -230,8 +230,8 @@
 ![center](Figure_9_12.png)
 
 - `const int* p_name = &name;`: 데이터가 상수 (포인터 값 수정 가능)
-- `int* const p_name = &name;`: 포인터 자체가 상수 (데이터 가능)
-- `const int* const p_name = &name;`: 둘 다 상수 (데이터와 포인터 값 수정 불가)
+- `int* const p_name = &name;`: 포인터 자체가 상수 (데이터 수정 가능)
+- `const int* const p_name = &name;`: 둘 다 상수 (**데이터와 포인터 값 수정 불가**)
 
 ---
 
