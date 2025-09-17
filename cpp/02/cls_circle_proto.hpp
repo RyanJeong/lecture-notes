@@ -29,7 +29,7 @@ class Circle {
   Circle();                        // Default Constructor
   Circle(const Circle& circle);    // Copy Constructor
 
-  ~Circle();  // destructor
+  ~Circle();  // Destructor
 };
 #endif  // CPP_02_NOBUILD
 #endif  // CPP_02_CLS_CIRCLE_PROTO_HPP_

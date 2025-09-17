@@ -175,7 +175,7 @@
 
 ## 함수 오버로딩 (Function Overloading) (Cont'd - 1)
 
-- 함수 이름이 같고 **함수 매개변수의 형태도 같으므로** 이름 충돌 발생 (컴파일 오류)
+- **함수 매개변수 형태가 동일하면** 이름 충돌 발생 (컴파일 오류)
 
 ```cpp
 int GetRadius() { return 10; }
@@ -312,9 +312,6 @@ message : while trying to match the argument list '(long)'
 
 [//]: # (INCLUDE: ./cpp/02/cls_necessary_methods.cc --from 22)
 
-- `default`: 컴파일러가 생성하는 자동 멤버 함수 사용
-- `delete`: 특정 메서드를 클래스 내에서 제거해야 할 경우 사용
-
 ---
 
 ## 클래스 필수 멤버 함수 (Cont'd - 3)
@@ -416,22 +413,39 @@ message : while trying to match the argument list '(long)'
 ```
 
 ```shell
-g++ -c rectangle.cpp                  # get a rectangle.o
-g++ -c main.cpp                       # get an main.o
-g++ -o application rectangle.o main.o # get an mainlication
+g++ -c rectangle.cc                   # get a rectangle.o
+g++ -c main.cc                        # get a main.o
+g++ -o application rectangle.o main.o # get an application
 ```
 
 ```shell
 # The above processes can be simply used with one command as shown below.
-g++ -o application rectangle.cpp main.cpp
+g++ -o application rectangle.cc main.cc
 ```
 
 ```shell
 # If there are too many files to list in the compiler:
-g++ -o application *.cpp
+g++ -o application *.cc
 ```
 
-- 분할 컴파일 시 반드시 헤더 가드 (header guard) 필요
+---
+
+## 분할 컴파일 활용 예: SDK 배포
+
+- SDK 배포 시, **인터페이스는 헤더 파일**에, **구현은 라이브러리** 파일로 제공
+  - 라이브러리: 여러 개의 목적 파일(`.o`)을 묶은 파일 (`.a`, `.so` 등)
+
+### 예시 시나리오
+
+- 회사 A: 독자적 알고리즘을 가진 `Foo` 클래스를 개발
+- 회사 B: `Foo` 클래스를 사용해야 하지만, 구현 세부사항은 알 필요 없음
+
+### 보안 및 배포 방식
+
+- 클래스 선언은 **헤더 파일에**, 멤버 함수 구현은 **소스 파일에** 작성
+- 소스 파일을 컴파일하여 **라이브러리 파일**로 변환 후 제공
+- 라이브러리 파일은 **역컴파일이 불가능**하므로 알고리즘 보호 가능
+- 회사 B는 헤더와 라이브러리만으로 `Foo` 클래스를 사용할 수 있음
 
 ---
 
@@ -453,30 +467,14 @@ g++ -o application *.cpp
 
 ---
 
-## 분할 컴파일과 SDK 배포 예시
-
-- SDK 배포 시, **인터페이스는 헤더 파일**에, **구현은 라이브러리** 파일로 제공
-  - 라이브러리: 여러 개의 목적 파일(`.o`)을 묶은 파일 (`.a`, `.so` 등)
-
-### 예시 시나리오
-
-- 회사 A: 독자적 알고리즘을 가진 `Foo` 클래스를 개발
-- 회사 B: `Foo` 클래스를 사용해야 하지만, 구현 세부사항은 알 필요 없음
-
-### 보안 및 배포 방식
-
-- 클래스 선언은 **헤더 파일에**, 멤버 함수 구현은 **소스 파일에** 작성
-- 소스 파일을 컴파일하여 **라이브러리 파일**로 변환 후 제공
-- 라이브러리 파일은 **역컴파일이 불가능**하므로, 알고리즘 보호 가능
-- 회사 B는 헤더와 라이브러리만으로 `Foo` 클래스를 사용할 수 있음
-
----
-
 ## 분할 컴파일 실습
 
 - `rectangle.hpp`
 
 [//]: # (INCLUDE: ./cpp/02/rectangle/rectangle.hpp)
+
+- `default`: 컴파일러가 자동 생성하는 기본 구현을 **명시적으로** 사용 (생성자, 소멸자에만 적용 가능)
+- `delete`: 특정 함수의 사용 금지 (모든 함수 적용 가능)
 
 ---
 
@@ -541,7 +539,7 @@ g++ -o application *.cpp
   - 정적 멤버 함수: 인스턴스 데이터 멤버 접근 불가
   - 인스턴스 멤버 함수: 정적 데이터 멤버로 접근 가능
     - 정적 데이터 멤버: 프로그램 실행 시 메모리에 할당됨
-    - **인스턴스를 사용할 시점에는 정적 데이터 멤버: 항상 준비되어 있음**
+    - **인스턴스를 사용할 시점에서의 정적 데이터 멤버: 항상 준비되어 있음**
 - 인스턴스 데이터 멤버 접근 시 인스턴스 멤버 함수 사용 권장
 - 정적 데이터 멤버 접근 시 정적 멤버 함수 사용 권장
 
