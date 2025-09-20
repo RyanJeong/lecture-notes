@@ -133,3 +133,7 @@ void process_file() {
   // File closed automatically when function ends (even if exception occurs)
 }
 ```
+
+```cpp
+auto str = "hello"s;
+```
