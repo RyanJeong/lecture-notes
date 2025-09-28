@@ -29,7 +29,7 @@
   - 다이어그램을 통해 시스템의 의미를 정확하게 파악할 수 있음
 - 프로그래밍 언어가 코드로 시스템을 표현하듯, UML은 시각적 다이어그램으로 시스템을 표현
   - 시스템의 이해도를 높이고 개발 효율을 높일 수 있음
-- UML을 통해 개발자 간의 효과적인 의사소통 가능
+- UML은 개발자 간 효과적인 의사소통 수단으로 활용됨
 
 ---
 
@@ -81,7 +81,8 @@ Car -- Person : < owns
 - 파생 클래스(derived class)는 기반 클래스 (base class)로부터 구체화한 결과물
 - 클래스 다이어그램에서 상속 표현 시 두 클래스 사이에 실선으로 된 화살표를 사용
   - 파생 클래스 (`Horse`)가 기반 클래스 (`Animal`)를 가리킴
-- 클래스 다이어그램으로 상속 표현 시 파생 클래스가 기반 클래스를 가리키도록 화살표 표현
+  - 속이 빈 삼각형 화살촉 (`─▷`)이 기반 클래스를 향하도록 표현
+    - 관계에서의 주어 (파생 클래스)로부터 대상 (부모 클래스)을 가리키도록 표현
 - 기반 클래스를 슈퍼클래스 (superclass), 파생 클래스를 서브클래스 (subclass)라고 부르기도 함
 
 ---
@@ -148,7 +149,7 @@ Car -- Person : < owns
 
 ```text
 [visibility_notation] data_member_name: type
-[visibility_notation] method_name(parameter_name: parameter_type): return_type
+[visibility_notation] method_name(parameter_type parameter_name, ...): return_type
 ```
 
 ---
@@ -200,7 +201,7 @@ Car -- Person : < owns
 
 - **상속 관계에 있는** 기반 클래스와 파생 클래스의 함수 시그니처 (매개변수 형태)가 서로 같은 경우
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 5 --to 23 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 5 --to 21 --no-comment)
 
 ---
 
@@ -366,26 +367,24 @@ Car -- Person : < owns
   - A student *is a* person.
 - LSP를 잘 지킨 예: `Animal` 슈퍼클래스와 `Bird` 서브클래스
   - 두 클래스는 *is-a* 관계로 표현 가능
-    - 두 클래스 모두 `Move`라는 메서드가 있다고 가정
-    - `Animal` 객체로 `Move` 동작을 수행하던 것을 `Bird` 객체로 대치해도 **자연스러움**
+    - 두 클래스 모두 `Move()` 메서드가 있다고 가정
+    - `Move()`의 호스트 객체 `Animal`을 `Bird`로 대치해도 **자연스러움**
 - LSP를 지키지 못한 예: `Rectangle` 슈퍼클래스와 `Square` 서브클래스
   - **두 클래스는 *is-a* 관계로 표현할 수 없음**
-    - 두 클래스 모두 `set_width`, `set_height` 메서드가 있다고 가정
+    - 두 클래스 모두 `set_width()`, `set_height()` 메서드가 있다고 가정
     - `Rectangle` 클래스는 높이와 너비 값이 다를 수 있음
     - `Square` 클래스는 높이와 너비가 항상 같아야 함 (정사각형 속성)
     - 따라서 `Rectangle` 객체를 사용하는 코드에서 `Square` 객체로 대치할 경우 **동작이 달라짐**
-      - e.g., `set_width` 호출 시 `Square`는 높이도 변경해야 함
+      - e.g., `set_width()` 호출 시 `Square`는 높이도 변경해야 함
 
 ---
 
 ## 상속 (Inheritance) (Cont'd - 23)
 
-### 클래스 다이어그램에서의 상속 표현과 상속 트리
+### 상속 트리
 
 ![center](Figure_11_15.png)
 
-- 속이 빈 삼각형 화살촉 (`─▷`)이 기반 클래스를 향하도록 표현
-  - 관계에서의 주어 (파생 클래스)로부터 대상 (부모 클래스)을 가리키도록 표현
 - 하나의 기반 클래스로부터 여러 개의 파생 클래스가 생성될 수 있음
   - A student *is a* person.
   - An employee *is a* person.
@@ -410,9 +409,10 @@ Car -- Person : < owns
 
 ### Protected 상속
 
-- 기반 클래스의 `public` 멤버들은 파생 클래스 객체에서 **사용 불가능한 상태가 되므로** 거의 사용되지 않음
+- 기반 클래스의 `public` 멤버는 파생 클래스 외부에서 차단되며, 내부와 하위 클래스에서는 `protected`로 접근 가능
+  - 외부 인터페이스가 제한되므로 실제로는 거의 사용되지 않음
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 101 --to 113 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 101 --to 112 --no-comment)
 
 ---
 
@@ -421,7 +421,8 @@ Car -- Person : < owns
 ### Private 상속
 
 - 상속 시 상속할 클래스의 접근 지정자를 생략할 경우 적용되는 유형
-- 기반 클래스의 구현을 재사용하되, **기반 클래스 구현을 외부에 노출시키고 싶지 않을 때** 사용
+- 기반 클래스의 `public`과 `protected` 멤버는 모두 파생 클래스 내부에서만 `private`으로 접근 가능
+- 외부와 하위 클래스에서 접근할 수 없으며, 주로 구현 재사용 목적으로 제한적으로 사용됨
   - 이러한 상속 관계를 *is-implemented-using* 관계라고 함
 
 [//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 117 --to 129 --no-comment)
@@ -433,8 +434,8 @@ Car -- Person : < owns
 ![center](Figure_11_17.png)
 
 - 연관 관계는 두 클래스를 *is-related-to* 관계로 표현
-  - A person *lives at* an address and the address *is occupied by* a person
-  - 사람과 주소는 *is-a* 관계가 될 수 없음
+  - A person *lives at* an address and the address *is occupied by* a person.
+  - **사람과 주소는 *is-a* 관계가 될 수 없음**
   - 사람은 거주지 주소가 있고, 거주지는 거주자가 점유함
   - 서로 연관되는 관계이므로 *is-related-to* 관계임
 - 클래스 다이어그램에서 연관을 표현하는 방법
@@ -566,9 +567,9 @@ Car -- Person : < owns
 
 - 구성 관계는 *consists-of* 관계이자 *one-to-many* 관계
   - 구성체는 다른 클래스의 여러 객체와 *consists-of* 관계를 가질 수 있음
-    - An employee *consists of* a name.
-    - An employee *consists of* a SSN (Social Security Number).
-    - An employee *consists of* a personal record.
+    - An employee *consists of a* name.
+    - An employee *consists of a* SSN (Social Security Number).
+    - An employee *consists of a* personal record.
 - **구성 관계에서 구성요소의 생애 주기는 구성체의 생애 주기와 종속적**
   - 구성체 생성 시 구성체의 구성요소도 같이 생성
   - 구성체 소멸 시 구성체의 구성요소도 같이 소멸
@@ -640,15 +641,15 @@ Car -- Person : < owns
 
 ---
 
-## 클래스 다이어그램에서의 관계 표기법 비교
+## 클래스 다이어그램에서의 관계 표기법 정리
 
 | 관계 유형 | 표기법 | 의미 | 예시 |
 |---------|-------|------|------|
-| 상속 (Inheritance) | 속이 빈 삼각형 화살촉 (`─▷`) | *is-a* 관계 | Student *is a* Person |
-| 연관 (Association) | 실선 (`──`)| 일반적인 관계 | Student *studies* Course |
-| 소유 (Aggregation) | 빈 마름모가 있는 실선 (`─◇`)| *has-a* 관계 (부분이 전체에 속하지만 **독립적 생명주기**) | University *has* Departments |
-| 구성 (Composition) | 채워진 마름모가 있는 실선 (`─◆`)| *consists-of* 관계 (부분이 전체에 속하고 **의존적 생명주기**) | Employee *consists of* a Name |
-| 의존 (Dependency) | 점선 화살표 (`─→`) | *uses-a* 관계 (일시적 사용) | Function uses Parameters |
+| 상속 (Inheritance) | 속이 빈 삼각형 화살촉 (`─▷`) | *is-a* 관계 | Student *is a* Person. |
+| 연관 (Association) | 실선 (`──`)| 일반적인 관계 | Student *studies* Course. |
+| 소유 (Aggregation) | 빈 마름모가 있는 실선 (`─◇`)| *has-a* 관계 | University *has* Departments. |
+| 구성 (Composition) | 채워진 마름모가 있는 실선 (`─◆`)| *consists-of* 관계 | Employee *consists of* a Name. |
+| 의존 (Dependency) | 점선 화살표 (`-→`) | *uses-a* 관계 | Function uses Parameters. |
 
 ---
 
@@ -816,9 +817,9 @@ Car -- Person : < owns
 
 ## 복합 관계 (Cont'd - 18)
 
-- `student_schedule.hpp`
+- `student.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/student_schedule.hpp)
+[//]: # (INCLUDE: ./cpp/05/registrar/student.hpp)
 
 ---
 
@@ -826,7 +827,7 @@ Car -- Person : < owns
 
 - `student.cc`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/student_schedule.cc)
+[//]: # (INCLUDE: ./cpp/05/registrar/student.cc)
 
 ---
 

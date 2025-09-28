@@ -9,5 +9,6 @@ void Student::Print() const {
 }
 
 void Student::AddCourse(const std::string& course_name) {
+  // Add the course to the schedule
   schedule_->AddCourse(course_name);
 }

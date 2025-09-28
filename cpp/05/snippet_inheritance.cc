@@ -7,20 +7,20 @@ class Person {
 
  public:
   void set(int64_t id) { (assert(id >= 1e8 && id < 1e9)), identity_ = id; }
-  void Print() const { std::cout << "Person's ID: " << identity_ << std::endl; }
 };
 
 class Student : public Person {
   double gpa_;
 
  public:
-  void set(int64_t id) { Person::set(id); }  // Function overload
+  // Function override
+  void set(int64_t id) { Person::set(id); }
+
+  // Function overload
   void set(double gpa) { (assert(gpa >= 0 && gpa <= 4.0)), gpa_ = gpa; }
-  void Print() const {  // Function override
-    Person::Print();
-    std::cout << "Student's GPA: " << gpa_ << std::endl;
-  }
 };
+/* dummy */
+/* dummy */
 #endif  // CPP_05_NOBUILD
 
 class Person {
@@ -103,14 +103,14 @@ class Base {
   void Foo() { std::cout << "Base::Foo" << std::endl; }
 };
 
-class Derived : protected Base {
-  // Foo() is accessible in Derived, but not accessible outside Derived
-};
+// Foo() is accessible in Derived, but not accessible outside Derived
+class Derived : protected Base {};
 
 void FreeFunction() {
   Derived derived;
   // derived.Foo();  // Error: 'Foo' is a protected member of 'Base'
 }
+/* dummy */
 #endif  // CPP_05_NOBUILD
 
 #ifdef CPP_05_NOBUILD
