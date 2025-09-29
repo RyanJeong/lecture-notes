@@ -15,19 +15,19 @@
 
 ## 프로그래밍에서의 다형성
 
-* 객체의 **실제 형**에 따라 **같은 인터페이스**로 **다양한 동작**을 실행할 수 있는 기능
-  * 실제 형: 전자기기의 유형
-  * 같은 인터페이스: 전자기기의 표준 플러그
-  * 다양한 동작: 동일한 전원을 공급받는 전자기기는 서로 다른 일을 수행
+* 객체의 **실제 형 (type)**에 따라 **동일한 인터페이스**로 **서로 다른 동작**을 실행할 수 있는 기능
+  * 실제 형: 전자기기의 유형 (램프, 텔레비전 등)
+  * 동일한 인터페이스: 전자기기의 표준 플러그
+  * 서로 다른 동작: 동일한 전원을 공급받아 각 전자기기가 수행하는 고유한 기능 (빛 방출, 영상 표시 등)
 
 ### 다형성을 사용하기 위한 조건
 
-* 기반 클래스 형 포인터 혹은 레퍼런스
+* 기반 클래스 형 포인터 혹은 참조 (reference)
   * 예시에서의 **표준 소켓**
-  * 포인터는 여러 형 객체를 가리킬 수 있어야 함
-* 상속 계층 (inheritance hierarchy)에 속하는 호환 객체 (exchangeable ojbects)
+  * 포인터는 여러 형의 객체를 가리킬 수 있어야 함
+* 상속 계층구조 (inheritance hierarchy)에 속하는 호환 가능한 객체 (exchangeable objects)
   * 예시에서의 **표준 플러그**
-  * 기반 클래스 형 포인터는 호환 객체를 가리킬 수 있음
+  * 기반 클래스 형 포인터는 파생 클래스 객체를 가리킬 수 있음
 * 가상 함수 (virtual functions)
   * 예시에서의 **동일한 전원**
   * 가상 함수는 자기 자신을 호출한 객체의 **실제 형**에 맞는 함수를 찾아 호출할 수 있음
@@ -36,11 +36,13 @@
 
 ### 파생 클래스 형 객체의 실체화
 
-* 파생 클래스 형 객체를 생성하면 아래 주어진 절차에 따라 메모리를 할당:
-  1. 최상위 클래스 (기반 클래스이자 모든 클래스들이 이를 상속받음)의 데이터 멤버를 메모리에 점유한다.
-  2. 첫 번째 파생 클래스 (immediate derived class, first-level derived class)의 데이터 멤버를 메모리에 점유한다.
-  3. 두 번째 파생 클래스 (second-level derived class)의 데이터 멤버를 메모리에 점유한다.
-  4. ...
+* 파생 클래스 형 객체를 생성하면 아래와 같은 순서로 메모리가 할당됨:
+  1. 최상위 기반 클래스의 데이터 멤버 (가상 포인터 포함)를 메모리에 할당
+  2. 첫 번째 레벨 파생 클래스 (first-level derived class)의 데이터 멤버를 메모리에 할당
+  3. 두 번째 레벨 파생 클래스 (second-level derived class)의 데이터 멤버를 메모리에 할당
+  4. 이런 방식으로 가장 하위 레벨의 파생 클래스까지 계속 할당
+  
+  * 이때 가상 함수가 있는 클래스는 객체 생성 시 가상 포인터를 추가로 할당함
 
 ```text
 +------------+  <-- Base Address
@@ -57,12 +59,13 @@
 ```
 
 * **기반 클래스 형 포인터는 기반 클래스를 상속한 모든 클래스 형 객체를 가리킬 수 있음**
-  * 기반 클래스로부터 파생된 모든 객체는 **기반 클래스 영역**을 포함
-  * 기반 클래스 형 포인터가 파생 클래스 형 객체를 가리키면 **기반 클래스 영역**만 가리킴
+  * 기반 클래스로부터 파생된 모든 객체는 **기반 클래스 영역**을 포함함
+  * 기반 클래스 형 포인터가 파생 클래스 형 객체를 가리키면 **기반 클래스 영역**에만 접근할 수 있음
+  * 이는 C++의 '형 안전성 (type safety)'을 보장하는 중요한 특성임
 
 ---
 
-### 불완전한 다형성 - 일반 함수 오버라이드 (Non-virtual Function Override)
+### 정적 다형성 - 일반 함수 오버라이딩 (Non-virtual Function Override)
 
 ```cpp
 #include <iostream>
@@ -89,12 +92,13 @@ int main() {
 ```
 
 * `ptr`은 기반 클래스 형 포인터
-* 컴파일러는 `ptr->print()` 문장을 처리할 때 **포인터의 형**을 보고 `Base::print()` 호출
-  * 가리키는 대상과 관계 없이 컴파일 시점에 호출할 대상이 결정됨
+* 컴파일러는 `ptr->print()` 문장을 처리할 때 **포인터의 선언 형**을 보고 `Base::print()` 호출
+  * 가리키는 객체의 실제 형과 관계없이 컴파일 시점에 호출할 함수가 결정됨
+  * 이를 '정적 바인딩 (static binding)' 또는 '컴파일 시간 바인딩 (compile-time binding)'이라고 함
 
 ---
 
-### 완전한 다형성 - 가상 함수 오버라이드 (Virtual Function Override)
+### 동적 다형성 - 가상 함수 오버라이딩 (Virtual Function Override)
 
 ```cpp
 #include <iostream>
@@ -122,7 +126,9 @@ int main() {
 }
 ```
 
-* 가상 함수는 **런타임 시점에 함수를 호출한 객체의 실제 형에 따라 함수를 선택할 수 있도록 설계됨**
+* 가상 함수는 **런타임 시점에 함수를 호출한 객체의 실제 형에 따라 적절한 함수를 선택할 수 있도록 설계됨**
+  * 이것이 C++에서 '진정한 다형성 (true polymorphism)'을 구현하는 방법임
+  * 이를 '동적 바인딩 (dynamic binding)' 또는 '런타임 바인딩 (runtime binding)'이라고 함
 
 ---
 
@@ -136,9 +142,11 @@ int main() {
 * 상속 계층 구조에 속한 클래스가 가상 함수를 사용할 경우 생성되는 테이블
   * 컴파일 시점에 생성됨
   * 만약 가상 함수를 사용하지 않는다면 가상 테이블은 생성되지 않음
-* 객체가 호출한 함수가 가상 함수라면, 객체의 실제 형에 해당하는 가상 테이블을 참조
-  * 가상 테이블은 객체가 실제로 호출할 수 있는 가상 함수들을 기록한 **함수 포인터 테이블**
-  * **런타임 시점**에 호출될 함수를 결정할 수 있음
+* 객체가 호출한 함수가 가상 함수라면, 객체의 실제 형에 해당하는 가상 테이블을 참조함
+  * 가상 테이블은 객체가 실제로 호출할 수 있는 가상 함수들의 주소를 저장한 **함수 포인터 배열**
+  * 각 클래스는 자신만의 고유한 가상 테이블을 가지며, 같은 클래스의 모든 객체들이 이 하나의 테이블을 공유함
+  * **런타임 시점**에 객체의 실제 형에 따라 호출될 함수를 결정할 수 있음
+  * 이것이 C++에서 다형성의 핵심 메커니즘임
 
 ![center](Figure_12_2.png)
 
@@ -148,11 +156,12 @@ int main() {
 
 * 가상 테이블은 상속 계층 구조에 속한 모든 클래스마다 생성됨
 * 각 클래스마다 가상 테이블을 참조할 수 있도록 가상 포인터가 **객체 내에 생성됨**
-  * 컴파일러에 의해 런타임 시점에 추가되는 포인터
-    * 컴파일러가 컴파일 시점에 가상 포인터를 설정하는 코드를 생성
-    * 런타임 시스템은 컴파일러가 만들어 놓은 코드를 처리
+  * 컴파일러에 의해 객체 생성 시 자동으로 추가되는 포인터
+    * 컴파일러는 컴파일 시점에 가상 포인터를 설정하는 코드를 생성함
+    * 실행 시(런타임) 이 코드가 실행되어 객체 내 가상 포인터가 적절한 가상 테이블을 가리키도록 초기화됨
   * 클래스에 속하는 것이 아닌 **객체에만 존재하는 포인터**
 * 가상 포인터는 해당 객체의 형에 해당하는 가상 테이블을 가리키도록 설정됨
+  * 실제 프로그램에서 `vptr`은 보이지 않지만, 가상 함수를 가진 클래스의 객체 내부에 컴파일러가 자동으로 추가하는 숨겨진 멤버임
 * **실체화된 객체의 가장 낮은 메모리 번지에 가상 포인터가 위치함**
 
 ![center](Figure_12_Vptr.png)
@@ -169,7 +178,7 @@ int main() {
 #### 파생 클래스 가상 함수
 
 * 기반 클래스의 가상 함수를 **재정의**하여 사용
-  * 파생 클래스의 함수 시그니처는 기반 클래스의 가상 함수의 시그니처와 동일해야 함
+  * 파생 클래스의 함수 시그니처 (반환 형, 함수 이름, 매개변수 목록)는 기반 클래스의 가상 함수 시그니처와 정확히 일치해야 함
 * 함수 선언부에 `virtual` 또는 `override` 키워드 사용
   * 함수의 정의와 선언을 분리할 경우, 선언부에만 `virtual` 또는 `override` 키워드 사용
 
@@ -182,12 +191,12 @@ class Animal {
 
 class Cat : public Animal {
  public:
-  // `override` is used to ensure that the derived class function is overriding
-  // a virtual function from the base class. In this case, the function
-  // signature `move()` matches the base class function (`move()`).
+  // `override` 키워드는 파생 클래스 함수가 기반 클래스의 가상 함수를
+  // 오버라이딩하는지 컴파일 시점에 확인하도록 함
+  // 이 경우 함수 시그니처 `move()`가 기반 클래스의 `move()`와 일치함
 
-  // This function correctly overrides the base class's `move` function.
-  void move() const override { /* ... */ }  // Ok
+  // 기반 클래스의 `move` 함수를 올바르게 오버라이딩함
+  void move() const override { /* ... */ }  // 정상 동작
 };
 ```
 
@@ -206,17 +215,16 @@ class Animal {
 
 class Dog : public Animal {
  public:
-  // Error: `override` is used to ensure that the derived class function is
-  // overriding a virtual function from the base class. In this case, the
-  // function signature `move(int, int)` does not match the base class
-  // function (`move()`). When function signatures don't match, the
-  // `override` keyword triggers a compile-time error, preventing accidental new
-  // function declaration.
+  // 오류: `override` 키워드는 파생 클래스 함수가 기반 클래스의 가상 함수를
+  // 오버라이딩하는지 확인함. 이 경우 함수 시그니처 `move(int, int)`가
+  // 기반 클래스의 함수 `move()`와 일치하지 않음.
+  // 함수 시그니처가 일치하지 않을 경우, `override` 키워드는
+  // 컴파일 오류를 발생시켜 새로운 함수를 실수로 선언하는 것을 방지함.
   //
-  // If `virtual` is used instead of `override` without matching the base class
-  // function, this would declare a new virtual function in the derived class
-  // instead of overriding the base class function.
-  void move(int x, int y) const override { /* ... */ }  // Error
+  // 만약 `override` 대신 `virtual`을 사용하면서 기반 클래스의 함수와
+  // 시그니처가 일치하지 않는다면, 이는 기반 클래스의 함수를 오버라이딩하는 대신
+  // 파생 클래스에 새로운 가상 함수를 선언하게 됨.
+  void move(int x, int y) const override { /* ... */ }  // 컴파일 오류
 };
 ```
 
@@ -226,6 +234,7 @@ class Dog : public Animal {
 
 * 가상 테이블은 **기반 클래스에서의 가상 함수 선언 순서대로 함수 포인터를 엔트리에 삽입**
   * 가상 테이블은 컴파일 시점에 생성되고, 가상 포인터는 런타임 시점에 객체 내부에 설정됨
+  * 객체가 가상 함수를 호출할 때, 객체의 가상 포인터를 따라 가상 테이블에 접근한 후 해당 인덱스의 함수 포인터를 통해 실제 함수를 호출함
 
 ```cpp
 #include <iostream>
@@ -249,6 +258,19 @@ void C::bar() { std::cout << "This is C's implementation of bar"; }
 ```
 
 ![center h:200](Figure_12_Vtable_Vptr.png.png)
+
+> 참고: 가상 테이블 (vtable) 구조와 구현은 컴파일러와 플랫폼에 따라 세부적인 차이가 있지만, 기본 원리는 동일합니다.
+>
+> 1. 컴파일 시점에 가상 함수를 포함하는 **각 클래스마다 하나의 가상 테이블이 생성**됩니다.
+> 2. 같은 클래스의 모든 객체는 하나의 가상 테이블을 공유합니다 (각 객체마다 테이블이 생성되는 것이 아님).
+> 3. 런타임 시 각 객체는 내부적으로 가상 포인터 (vptr)를 가지며, 이 포인터는 해당 객체의 클래스에 해당하는 가상 테이블을 가리킵니다.
+> 4. 가상 함수 호출 과정: `obj->virtualFunction()` 호출 시
+>    * 객체의 vptr를 통해 해당 클래스의 가상 테이블을 찾음
+>    * 가상 테이블에서 해당 함수 인덱스의 함수 포인터를 통해 적절한 구현체 호출
+
+> **추가 자료**:
+>
+> * [가상 함수 호출 메커니즘 상세 설명](virtual_method_mechanism.md): vtable과 vptr의 동작 원리 상세 설명
 
 ---
 
@@ -357,16 +379,18 @@ int main() {
 ### 생성자와 소멸자
 
 * 생성자는 가상화 불가
-  * 생성자는 클래스마다 이름이 다름
+  * 생성자는 클래스마다 이름이 다름(클래스 이름과 동일)
     * 오버라이드 불가
   * 생성자를 가상화할 경우, 파생 클래스 형 객체 생성 시 생성자 호출 순서가 깨질 수 있음
-  * **가상 포인터는 객체가 실체화되는 시점에 객체 내에 할당**
-    * 가상 생성자는 가상 테이블을 참조할 수 없는 상태
+  * **가상 포인터는 객체가 생성되는 과정에서 초기화됨**
+    * 생성자가 호출되는 시점에는 가상 함수 호출 메커니즘이 완전히 준비되지 않은 상태일 수 있음
+    * 이런 상태에서 가상 함수 호출은 기반 클래스 버전만 호출되므로 가상 생성자는 의미가 없음
 
-* **소멸자는 가상화 가능**
-  * 소멸자도 클래스마다 이름이 다르지만, 객체의 소멸 시점에 런타임이 자동으로 호출
-  * 객체 소멸 시점에는 가상 포인터도 객체 내에 설정되어 있음
-  * **클래스 설계 시 가상 함수를 사용할 경우 반드시 가상 소멸자를 사용해야 함**
+* **소멸자는 가상화 가능하며, 다형성을 사용하는 클래스에서는 필수적**
+  * 소멸자도 클래스마다 이름이 다르지만, 객체의 소멸 시점에 자동으로 호출됨
+  * 객체 소멸 시점에는 가상 포인터가 여전히 유효하므로 가상 함수 메커니즘을 사용할 수 있음
+  * **클래스 설계 시 가상 함수를 하나라도 사용한다면 반드시 소멸자도 가상화해야 함**
+    * 그렇지 않으면 파생 클래스 객체가 기반 클래스 포인터를 통해 삭제될 때 메모리 누수 발생
 
 ---
 
@@ -577,27 +601,32 @@ int main() {
 
 #### 가상 함수의 비용
 
-* 일반 함수는 컴파일 시점에 호출할 대상이 결정되어 비용이 발생하지 않음
-* 가상 함수는 컴파일 시점에 호출할 대상을 결정하지 못하므로 비용 발생
-  * `vptr` → `vtable` → 가상 테이블의 함수 포인터를 호출하도록 명령어 생성
+* 일반 함수는 컴파일 시점에 호출할 대상이 결정되어 추가 비용이 발생하지 않음
+  * 직접 함수 주소로 점프하는 명령어가 생성됨
+* 가상 함수는 런타임 시점에 호출할 대상을 결정하므로 추가 비용 발생
+  * `vptr` → `vtable` → 가상 테이블의 함수 포인터를 찾고 → 해당 주소로 점프하는 과정 필요
+  * 메모리 접근이 추가되고 간접 호출(indirect call)로 인해 CPU 파이프라인 최적화가 어려워짐
+  * 하지만 현대 컴퓨터에서는 이 비용이 크지 않으므로, 다형성이 필요한 경우 적절히 사용하는 것이 좋음
 
 ---
 
 ## 정적 바인딩 (Static Binding)과 동적 바인딩 (Dynamic Binding)
 
-* 함수는 두 개의 개체 (entities)로 구분되어 있음
-  * 함수 호출과 함수 정의
-  * 함수 호출은 실제로 함수가 실행되는 구체적인 행위
+* 함수는 두 개의 요소로 구분할 수 있음
+  * 함수 호출(call): 함수를 실행하는 구체적인 행위
     * 각 호출은 전달인자 형태와 실행 시점에 따라 다른 결과를 초래할 수 있음
-  * 함수 호출과 함수 정의는 서로 분리하여 관리
-    * 함수 정의는 함수가 호출될 때 실행될 동작을 기술
-    * 함수 호출은 해당 동작을 언제, 어떻게 실행할지 결정하는 별개의 역할 담당
-* 바인딩은 함수 호출과 함수 정의를 어떻게 연관할 것인지를 의미
-* 일반 함수는 하나의 정의를 갖고 있음
-  * 함수 호출 시 대상이 되는 함수 정의가 하나이므로, 호출 대상이 명확함
-* 가상 함수는 여러 개의 정의를 가질 수 있음
-  * 함수 호출 시 대상이 되는 함수 정의가 여러개일 수 있으므로, **올바른 호출 대상을 찾아야 함**
-* 바인딩은 런타임 시점에 발생하는 함수 호출이 정확히 어떤 함수 정의와 연관되는지 결정하는 과정
+  * 함수 정의(definition): 함수의 구현 코드
+    * 함수가 호출될 때 실행될 동작을 기술함
+  * 함수 호출과 함수 정의는 서로 분리하여 관리됨
+    * 함수 호출은 해당 동작을 언제, 어떤 인자로 실행할지 결정하는 역할 담당
+* **바인딩(binding)**: 함수 호출이 어떤 함수 정의와 연결될지 결정하는 과정
+* 일반 함수의 경우
+  * 함수 호출 시 실행될 코드가 명확히 하나로 결정됨
+  * 컴파일러는 함수 호출 코드를 해당 함수의 메모리 주소로 직접 변환할 수 있음
+* 가상 함수의 경우
+  * 동일한 함수 호출이 여러 다른 함수 정의와 연결될 가능성 있음
+  * 함수 호출 시점에 **객체의 실제 형에 따라** 올바른 함수 정의를 찾아야 함
+* 바인딩은 프로그램이 함수 호출을 특정 함수 구현과 연결하는 메커니즘임
 
 ---
 
@@ -608,6 +637,7 @@ int main() {
   * 조기 바인딩 (early binding)
 * 함수 호출 대상이 일반 함수 (클래스의 멤버 함수나 전역 함수)인 경우
   * 컴파일 시점에 어떤 함수가 호출될지 명확하게 결정됨
+  * 최적화가 가능하고 실행 속도가 빠름
 
 ```cpp
 Person person;
@@ -647,11 +677,14 @@ ptr->func();  // In this case, we don't know which `func` will be invoked on
 
 ## 런타임 형 정보 (RTTI, Run-Time Type Information)
 
-* 런타임 시점에 사용 중인 객체의 형을 확인해야 할 경우가 있음
-* `<typeinfo>` 헤더를 사용하면 런타임 시점에 형과 관련한 유용한 정보를 얻을 수 있음
-  * `type_info` 클래스가 정의되어 있음
-  * `typeid` 연산자에 표현식을 전달해 `type_info` 형 객체를 만들 수 있음
-    * `typeid(5)`, `typeid(5 + 3)`, `typeid(object_name)`
+* 런타임 시점에 객체의 실제 형을 확인해야 하는 경우가 있음
+  * 다형성을 사용하는 복잡한 프로그램에서 특히 유용함
+  * 특정 형에 따라 다른 처리를 해야 할 때 필요함
+* C++은 `<typeinfo>` 헤더를 통해 런타임 형 정보 (RTTI) 기능을 제공함
+  * `type_info` 클래스: 형 정보를 나타내는 클래스
+  * `typeid` 연산자: 표현식의 형 정보를 반환하는 연산자
+    * 사용 예: `typeid(5)`, `typeid(5 + 3)`, `typeid(object_name)`
+  * 주의: 가상 함수가 없는 클래스에 대해서는 정적 형 정보만 제공함
 * `type_info` 형 객체에 지원되는 연산들
 
 ```text
@@ -695,13 +728,13 @@ int main() {
 
 ## 형 변환 (Type Casting)
 
-* C++에서의 형 변환 방법은 4가지 (강한 타입 변환 규칙, explicit casting rules):
+* C++에서의 형 변환 방법은 4가지 (강한 형 변환 규칙, explicit casting rules):
   1. `static_cast`
   2. `reinterpret_cast`
   3. `const_cast`
   4. `dynamic_cast`
 * C++ 형 변환이 C 언어 형 변환보다 **안정적**
-  * C++은 정적 타입 검사 (static type checking)를 수행 (type safety 언어)
+  * C++은 정적 형 검사 (static type checking)를 수행 (type safety 언어)
     * C 언어에서 가능한 변환이 C++에서는 안될 수 있음
   * C++ 형 변환 사용 권장
 
@@ -858,12 +891,19 @@ int main() {
 
 ### 순수 가상 함수 (Pure Virtual Functions)
 
-* 구현이 없는 가상 함수
-* 순수 가상 함수는 파생 클래스에서 구현을 완료해야 하는 함수
-  * 순수 가상 함수를 가진 클래스 형 객체는 **실체화할 수 없음**
-  * 파생 클래스 내 상속 받은 순수 가상 함수가 존재할 경우 이를 반드시 구현해야 함
-    * 구현하지 않는다면 컴파일 시 오류
-* 가상 함수 선언 뒤에 0을 할당 (`= 0`)하면 이는 순수 가상 함수가 됨
+* 구현이 없는(또는 구현을 제공하지 않는) 특별한 가상 함수
+* 순수 가상 함수의 특징:
+  * 파생 클래스에서 반드시 구현(오버라이딩)해야 하는 함수
+  * 순수 가상 함수가 하나라도 포함된 클래스는 **추상 클래스**가 됨
+  * 추상 클래스의 객체는 **직접 생성 (인스턴스화) 할 수 없음**
+  * 파생 클래스에서 모든 순수 가상 함수를 오버라이딩하지 않으면 해당 파생 클래스도 추상 클래스가 됨
+* 선언 방법: 함수 선언 뒤에 `= 0`을 붙임
+
+  ```cpp
+  virtual return_type function_name(parameters) = 0;
+  ```
+
+* 순수 가상 함수는 인터페이스를 정의하는 역할을 함
 
 ```cpp
 virtual double get_area(0) = 0;
@@ -874,9 +914,16 @@ virtual double get_perimeter(0) = 0;
 
 ## 인터페이스 (Interfaces)
 
-* 클래스의 모든 멤버 함수가 순수 가상 함수인 경우
-* 상속 받을 클래스에게 청사진 (blue print)를 제공하기 위한 용도
-  * 인터페이스의 역할은 이를 상속 받는 클래스가 반드시 구현해야 할 속성을 강제함
+* 클래스의 모든 멤버 함수가 순수 가상 함수인 특수한 추상 클래스
+* 특징:
+  * 구현이 전혀 없고 선언만 있는 함수들로 구성됨
+  * 데이터 멤버를 포함하지 않거나 최소한으로만 포함함
+  * 일반적으로 생성자와 소멸자만 구현부를 가짐
+* 목적:
+  * 상속받는 클래스에게 표준화된 공통 인터페이스(청사진)를 제공
+  * 이를 상속받는 클래스가 반드시 구현해야 할 기능들을 명확히 정의
+  * 다형성을 안전하게 활용할 수 있는 기반 제공
+* Java의 interface나 C#의 interface와 유사한 개념이지만, C++에서는 별도의 키워드 없이 순수 가상 함수로만 구성된 클래스로 구현함
 
 ![center](Figure_12_7.png)
 
@@ -1244,9 +1291,13 @@ int main() {
 
 ![center](Figure_12_8.png)
 
-* 상속 형태가 다이아몬드 상속 (diamond inheritance)일 경우 문제가 될 수 있음
-  * **기반 클래스 내용이 여러 번 상속될 수 있음**
-* 다이아몬드 상속 시 가상 기반 (virtual base) 또는 믹스인 클래스 (mixin class)를 사용할 것
+* 상속 형태가 다이아몬드 상속 (diamond inheritance)일 경우 발생하는 문제:
+  * **기반 클래스 내용이 여러 경로를 통해 중복 상속될 수 있음**
+  * 이로 인해 모호성 (ambiguity)과 중복 데이터 문제가 발생함
+  * 예: A를 상속받는 B와 C, 그리고 B와 C를 모두 상속받는 D에서는 A의 내용이 중복됨
+* 해결 방법:
+  * 가상 기반 (virtual base) 클래스 사용: `virtual` 키워드로 상속하여 중복 상속 방지
+  * 또는 믹스인 클래스 (mixin class) 패턴을 사용하여 구성 방식 변경
 
 ---
 
@@ -1254,17 +1305,43 @@ int main() {
 
 ![center](Figure_12_9.png)
 
-* `virtual` 키워드를 사용해 상속 받은 클래스의 실체화:
-  1. 일반 상속 객체를 먼저 실체화한다.
-  2. 가상 기반 객체 (subobject)를 실체화하되, **실체화될 객체에 하나만 포함되도록 실체화한다**.
-* 가상 기반 사용 시 가상 기반 포인터 (`vbptr`)와 가상 기반 테이블 (`vbtable`)이 추가됨
-* 가상 기반 포인터는 컴파일 시점에 고정된 인덱스를 사용할 수 있도록 처리됨
+* `virtual` 키워드를 사용해 상속하면 클래스 객체 실체화 과정이 변경됨:
+  1. 일반 상속 객체를 먼저 실체화함
+  2. 가상 기반 객체 (subobject)는 **실체화될 객체내에 단 한 번만 포함되도록 함**
+  3. 중간 클래스를 통한 다중 경로 상속이 있어도 공통 기반 클래스는 오직 한 번만 생성됨
+
+* 구현 방법:
+  * 가상 기반 포인터 (`vbptr`)와 가상 기반 테이블 (`vbtable`)을 사용하여 구현
+  * 가상 기반 포인터는 실제 기반 클래스 객체의 오프셋 정보를 가지고 있음
+  * 이를 통해 중복 객체 생성을 피하면서도 올바른 멤버 액세스가 가능함
 
 ```cpp
-class Person { /* ... skipped ... */ };
-class Student: virtual public Person { /* ... skipped ... */ };
-class Professor: virtual public Person { /* ... skipped ... */ };
-class TA: public Student, public Professor { /* ... skipped ... */ };
+class Person {
+ public:
+  std::string name_;
+  Person(const std::string& name) : name_(name) {}
+  virtual ~Person() {}
+};
+
+class Student: virtual public Person {
+ public:
+  double gpa_;
+  Student(const std::string& name, double gpa) : Person(name), gpa_(gpa) {}
+};
+
+class Professor: virtual public Person {
+ public:
+  std::string department_;
+  Professor(const std::string& name, const std::string& dept) : Person(name), department_(dept) {}
+};
+
+class TA: public Student, public Professor {
+ public:
+  int hours_;
+  // TA 생성자는 Person 생성자를 직접 호출해야 함 (가상 기반 클래스의 최상위 파생 클래스 책임)
+  TA(const std::string& name, double gpa, const std::string& dept, int hrs)
+      : Person(name), Student(name, gpa), Professor(name, dept), hours_(hrs) {}
+};
 ```
 
 ---
@@ -1273,10 +1350,12 @@ class TA: public Student, public Professor { /* ... skipped ... */ };
 
 ##### 설명을 위한 가정
 
-Architecture: 16-bit addresses (2 bytes per address).
-Pointer Size: 2 bytes.
-Integer Size: 2 bytes.
-Endianness: Little-endian (least significant byte first).
+아래의 예제는 다음과 같은 환경을 가정합니다:
+
+* 아키텍처: 16비트 주소 공간 (2바이트 주소)
+* 포인터 크기: 2바이트
+* 정수 크기: 2바이트
+* 엔디안: 리틀 엔디안(최하위 바이트 먼저 저장)
 
 ```cpp
 class Base {
@@ -1288,11 +1367,12 @@ class Base {
 ```
 
 ```text
-Address   Content(Hex)   Description
-0x1000    00 20          vptr_Base (points to 0x2000)
-0x1002    00 00          int value (initialized to 0)
+메모리 배치:
+주소     내용(16진수)  설명
+0x1000    00 20          vptr_Base (가상 함수 테이블 0x2000을 가리킴)
+0x1002    00 00          int value (값 0으로 초기화)
 ...
-0x2000    00 30          Pointer to Base::FuncBase() (0x3000)
+0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
 ```
 
 ---
@@ -1306,20 +1386,21 @@ class Derived1 : virtual public Base {
 ```
 
 ```text
-Address   Content(Hex)   Description
-0x1100    00 22          vptr_Derived1 (points to 0x2200)
-0x1102    00 21          vbptr_Derived1 (points to vbtable at 0x2100)
-                         -- Base Subobject within Derived1 --
-0x1104    00 20          vptr_Base (points to 0x2000)
-0x1106    00 00          int value (initialized to 0)
-                         -- Base Subobject within Derived1 --
+메모리 배치:
+주소     내용(16진수)  설명
+0x1100    00 22          vptr_Derived1 (Derived1의 가상 함수 테이블 0x2200을 가리킴)
+0x1102    00 21          vbptr_Derived1 (가상 기반 테이블 0x2100을 가리킴)
+                         -- Derived1 내부의 Base 서브객체 --
+0x1104    00 20          vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
+0x1106    00 00          int value (값 0으로 초기화)
+                         -- Derived1 내부의 Base 서브객체 끝 --
 ...
-0x2000    00 30          Pointer to Base::FuncBase() (0x3000)
+0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
 ...
-0x2100    02 00          Offset to Base subobject (+2 bytes)
+0x2100    02 00          Base 서브객체로의 오프셋 (+2 바이트)
 ...
-0x2200    00 31          Pointer to Derived1::FuncBase() (0x3100)
-0x2202    00 32          Pointer to Derived1::FuncDerived1() (0x3200)
+0x2200    00 31          Derived1::FuncBase() 함수 포인터 (0x3100)
+0x2202    00 32          Derived1::FuncDerived1() 함수 포인터 (0x3200)
 ```
 
 ---
@@ -1332,20 +1413,21 @@ class Derived2 : virtual public Base {
 ```
 
 ```text
-Address   Content(Hex)   Description
-0x1200    00 24          vptr_Derived2 (points to 0x2400)
-0x1202    00 23          vbptr_Derived2 (points to vbtable at 0x2300)
-                         -- Base Subobject within Derived2 --
-0x1204    00 20          vptr_Base (points to 0x2000)
-0x1206    00 00          int value (initialized to 0)
-                         -- Base Subobject within Derived2 --
+메모리 배치:
+주소     내용(16진수)  설명
+0x1200    00 24          vptr_Derived2 (Derived2의 가상 함수 테이블 0x2400을 가리킴)
+0x1202    00 23          vbptr_Derived2 (가상 기반 테이블 0x2300을 가리킴)
+                         -- Derived2 내부의 Base 서브객체 --
+0x1204    00 20          vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
+0x1206    00 00          int value (값 0으로 초기화)
+                         -- Derived2 내부의 Base 서브객체 끝 --
 ...
-0x2000    00 30          Pointer to Base::FuncBase() (0x3000)
+0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
 ...
-0x2300    02 00          Offset to Base subobject (+2 bytes)
+0x2300    02 00          Base 서브객체로의 오프셋 (+2 바이트)
 ...
-0x2400    00 30          Pointer to Base::FuncBase() (0x3000)
-0x2402    00 33          Pointer to Derived2::FuncDerived2() (0x3300)
+0x2400    00 30          Base::FuncBase() 함수 포인터 (0x3000) - Derived2가 오버라이딩하지 않음
+0x2402    00 33          Derived2::FuncDerived2() 함수 포인터 (0x3300)
 ```
 
 ---
@@ -1360,28 +1442,29 @@ class MostDerived : public Derived1, public Derived2 {
 ```
 
 ```text
-Address   Content(Hex)   Description
-0x1300    00 25          vptr_Derived1 (points to 0x2500)
-0x1302    00 27          vbptr_Derived1 (points to vbtable at 0x2700)
-0x1304    00 26          vptr_Derived2 (points to 0x2600)
-0x1306    00 28          vbptr_Derived2 (points to vbtable at 0x2800)
-                         -- Shared Base Subobject within MostDerived --
-0x1308    00 20          vptr_Base (points to 0x2000)
-0x130A    00 00          int value (initialized to 0)
-                         -- Shared Base Subobject within MostDerived --
+메모리 배치:
+주소     내용(16진수)  설명
+0x1300    00 25          vptr_Derived1 (MostDerived/Derived1 테이블 0x2500을 가리킴)
+0x1302    00 27          vbptr_Derived1 (Derived1의 가상 기반 테이블 0x2700을 가리킴)
+0x1304    00 26          vptr_Derived2 (MostDerived/Derived2 테이블 0x2600을 가리킴)
+0x1306    00 28          vbptr_Derived2 (Derived2의 가상 기반 테이블 0x2800을 가리킴)
+                         -- MostDerived 내부의 공유된 Base 서브객체 --
+0x1308    00 20          vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
+0x130A    00 00          int value (값 0으로 초기화)
+                         -- MostDerived 내부의 공유된 Base 서브객체 끝 --
 ...
-0x2000    00 30          Pointer to Base::FuncBase() (0x3000)
+0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
 ...
-0x2500    00 34          Pointer to MostDerived::FuncBase() (0x3400)
-0x2502    00 35          Pointer to MostDerived::FuncDerived1() (0x3500)
+0x2500    00 34          MostDerived::FuncBase() 함수 포인터 (0x3400)
+0x2502    00 35          MostDerived::FuncDerived1() 함수 포인터 (0x3500)
 ...
-0x2600    00 34          Pointer to MostDerived::FuncBase() (0x3400)
-0x2602    00 33          Pointer to Derived2::FuncDerived2() (0x3300)
-0x2604    00 36          Pointer to MostDerived::FuncMostDerived() (0x3600)
+0x2600    00 34          MostDerived::FuncBase() 함수 포인터 (0x3400) - 두 가상 테이블에 동일 함수 포인터
+0x2602    00 33          Derived2::FuncDerived2() 함수 포인터 (0x3300) - 오버라이딩 안 함
+0x2604    00 36          MostDerived::FuncMostDerived() 함수 포인터 (0x3600)
 ...
-0x2700    06 00          Offset to Base subobject (+6 bytes)
+0x2700    06 00          Base 서브객체로의 오프셋 (+6 바이트) - Derived1의 오프셋
 ...
-0x2800    02 00          Offset to Base subobject (+2 bytes)
+0x2800    02 00          Base 서브객체로의 오프셋 (+2 바이트) - Derived2의 오프셋
 ```
 
 ---
