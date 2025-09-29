@@ -51,7 +51,7 @@ int main() {
 
   Student student;
   student.set(3.9);  // try to invoke a `set` function of the Student class
-  student.get();     // try to invoke a `get` function of the Person class
+  student.get();     // try to invoke a `get` function of the Student class
 }
 
 #ifdef CPP_05_NOBUILD
