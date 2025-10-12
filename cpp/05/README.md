@@ -438,6 +438,7 @@ Car -- Person : < owns
   - **사람과 주소는 *is-a* 관계가 될 수 없음**
   - 사람은 거주지 주소가 있고, 거주지는 거주자가 점유함
   - 서로 연관되는 관계이므로 *is-related-to* 관계임
+- 연관 관계는 한 클래스가 다른 클래스의 객체를 데이터 멤버로 보유해 참조하는 관계
 - 클래스 다이어그램에서 연관을 표현하는 방법
   1. 양방향 연관은 실선 (`───`)으로 표현한다.
   2. 단방향 연관은 주체가 되는 클래스로부터 연관 되는 클래스를 향하여 화살표 (`→`)로 표현한다.
@@ -647,8 +648,8 @@ Car -- Person : < owns
 |---------|-------|------|------|
 | 상속 (Inheritance) | 속이 빈 삼각형 화살촉 (`─▷`) | *is-a* 관계 | Student *is a* Person. |
 | 연관 (Association) | 실선 (`──`)| 일반적인 관계 | Student *studies* Course. |
-| 소유 (Aggregation) | 빈 마름모가 있는 실선 (`─◇`)| *has-a* 관계 | University *has* Departments. |
-| 구성 (Composition) | 채워진 마름모가 있는 실선 (`─◆`)| *consists-of* 관계 | Employee *consists of* a Name. |
+| 소유 (Aggregation) | 빈 마름모가 있는 실선 (`◇─>`)| *has-a* 관계 | University *has* Departments. |
+| 구성 (Composition) | 채워진 마름모가 있는 실선 (`◆─>`)| *consists-of* 관계 | Employee *consists of* a Name. |
 | 의존 (Dependency) | 점선 화살표 (`-→`) | *uses-a* 관계 | Function uses Parameters. |
 
 ---
@@ -711,63 +712,19 @@ Car -- Person : < owns
 
 ## 복합 관계 (Cont'd - 5)
 
-### 토크나이저
-
-![center](Figure_11_25.png)
-
-- `Tokenizer`와 `std::string`은 두 가지 관계를 갖음:
-  - **의존 관계**: 토크나이저는 문자열을 사용함 (A tokenizer *uses* strings)
-    - `delimiter`와 반환된 `token`은 일시적으로 사용됨
-  - **구성 관계**: 토크나이저는 문자열로 구성됨 (A tokenizer *consists of* a string)
-    - `target_` 문자열은 토크나이저 객체의 생애주기와 함께함
-
----
-
-## 복합 관계 (Cont'd - 6)
-
-![center](Figure_11_26.png)
-
----
-
-## 복합 관계 (Cont'd - 7)
-
-- `tokenizer.hpp`
-
-[//]: # (INCLUDE: ./cpp/05/tokenizer/tokenizer.hpp)
-
----
-
-## 복합 관계 (Cont'd - 8)
-
-- `tokenizer.cc`
-
-[//]: # (INCLUDE: ./cpp/05/tokenizer/tokenizer.cc)
-
----
-
-## 복합 관계 (Cont'd - 9)
-
-- `main.cc`
-
-[//]: # (INCLUDE: ./cpp/05/tokenizer/main.cc)
-
----
-
-## 복합 관계 (Cont'd - 10)
-
 ### 수강 신청 관리 프로그램
 
 ![center](Figure_11_27.png)
 
 ---
 
-## 복합 관계 (Cont'd - 11)
+## 복합 관계 (Cont'd - 6)
 
 ![h:540 center](Figure_11_28.png)
 
 ---
 
-## 복합 관계 (Cont'd - 12)
+## 복합 관계 (Cont'd - 7)
 
 - `course_roster.hpp`
 
@@ -775,7 +732,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 13)
+## 복합 관계 (Cont'd - 8)
 
 - `course_roster.cc`
 
@@ -783,7 +740,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 14)
+## 복합 관계 (Cont'd - 9)
 
 - `course.hpp`
 
@@ -791,7 +748,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 15)
+## 복합 관계 (Cont'd - 10)
 
 - `course.cc`
 
@@ -799,7 +756,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 16)
+## 복합 관계 (Cont'd - 11)
 
 - `student_schedule.hpp`
 
@@ -807,7 +764,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 17)
+## 복합 관계 (Cont'd - 12)
 
 - `student_schedule.cc`
 
@@ -815,7 +772,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 18)
+## 복합 관계 (Cont'd - 13)
 
 - `student.hpp`
 
@@ -823,7 +780,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 19)
+## 복합 관계 (Cont'd - 14)
 
 - `student.cc`
 
@@ -831,7 +788,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 20)
+## 복합 관계 (Cont'd - 15)
 
 - `registrar.hpp`
 
@@ -839,7 +796,7 @@ Car -- Person : < owns
 
 ---
 
-## 복합 관계 (Cont'd - 21)
+## 복합 관계 (Cont'd - 16)
 
 - `main.cc`
 
