@@ -1,0 +1,24 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+class Shape <<interface>> {
+    + draw()
+    + area()
+}
+
+class Square
+class Rectangle
+class Triangle
+class Circle
+class Ellipse
+
+Shape <|.. Square
+Shape <|.. Rectangle
+Shape <|.. Triangle
+Shape <|.. Circle
+Shape <|.. Ellipse
+@enduml
