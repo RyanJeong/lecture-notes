@@ -137,3 +137,118 @@ void process_file() {
 ```cpp
 auto str = "hello"s;
 ```
+
+---
+
+## 가상
+
+### Appendix A. `vptr`의 유무에 따른 객체 크기 비교
+
+```cpp
+#include <iostream>
+
+class NoVirtual {
+ public:
+  int a;
+  double b;
+};
+
+class WithVirtual {
+ public:
+  int a;
+  double b;
+  virtual void func() {}  // declare a virtual function using a virtual keyword
+};
+
+int main() {
+  NoVirtual no_virtual_obj;
+  WithVirtual with_virtual_obj;
+
+  std::cout << "Size of NoVirtual object: " << sizeof(no_virtual_obj)
+            << " bytes" << std::endl;
+  std::cout << "Size of WithVirtual object: " << sizeof(with_virtual_obj)
+            << " bytes" << std::endl;
+
+  return 0;
+}
+```
+
+---
+
+### Appendix B. 가상 테이블의 포인터와 실제 멤버 함수 포인터 간 비교
+
+* test.hpp
+
+```cpp
+#pragma once
+
+#include <iostream>
+
+class Base {
+ public:
+  virtual void Show() { std::cout << "Base::Show called" << std::endl; }
+  virtual void Display() { std::cout << "Base::Display called" << std::endl; }
+};
+
+class Derived : public Base {
+ public:
+  void Show() override { std::cout << "Derived::Show called" << std::endl; }
+  virtual void Print() { std::cout << "Derived::Print called" << std::endl; }
+};
+
+// Helper function to get the virtual function pointer from vtable
+typedef void (*FuncPtr)();  // Function pointer type definition
+
+FuncPtr GetVirtualFunctionPointer(Base* obj, int index) {
+  // Retrieves vptr from the object and returns the function pointer
+  // from the vtable at the specified index
+  return reinterpret_cast<FuncPtr*>(*reinterpret_cast<void**>(obj))[index];
+}
+```
+
+* In this code, a `Base*` pointer **can only call `Show()` and `Display()`** because that's the only virtual method declared in `Base`.
+
+---
+
+* main.cc
+
+```cpp
+#include <iostream>
+
+#include "test.hpp"
+
+int main() {
+  // Get the function pointers from the vtable for the Base class using index
+  Base base_obj;
+  FuncPtr base_vtable_show = GetVirtualFunctionPointer(&base_obj, 0);
+  FuncPtr base_vtable_display = GetVirtualFunctionPointer(&base_obj, 1);
+
+  // Get the function pointers from the vtable for the Derived class using index
+  Derived derived_obj;
+  FuncPtr derived_vtable_show = GetVirtualFunctionPointer(&derived_obj, 0);
+  FuncPtr derived_vtable_display = GetVirtualFunctionPointer(&derived_obj, 1);
+  FuncPtr derived_vtable_print = GetVirtualFunctionPointer(&derived_obj, 2);
+
+  // Compare the pointers for the Base class
+  std::cout << "Base class vtable function pointers:" << std::endl;
+  std::cout << "Show function pointer from vtable(" << (void*) base_vtable_show
+            << "):";
+  base_vtable_show();
+  std::cout << "Display function pointer from vtable("
+            << (void*) base_vtable_display << "):";
+  base_vtable_display();
+
+  // Compare the pointers for the Derived class
+  std::cout << "\nDerived class vtable function pointers:" << std::endl;
+  std::cout << "Show function pointer from vtable("
+            << (void*) derived_vtable_show << "):";
+  derived_vtable_show();
+  std::cout << "Display function pointer from vtable("
+            << (void*) derived_vtable_display << "):";
+  derived_vtable_display();
+  std::cout << "Print function pointer from vtable("
+            << (void*) derived_vtable_print << "):";
+  derived_vtable_print();
+  return 0;
+}
+```
