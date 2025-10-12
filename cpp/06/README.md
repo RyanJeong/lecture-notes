@@ -7,37 +7,41 @@
 
 ---
 
-## 현실 세계에서의 다형성 예: Plug-compatible Objects
+## 현실 세계에서의 다형성 예: Plug-Compatible Objects
 
 ![center](Figure_12_1.png)
 
-- 두 개의 전자기기 (램프, 텔레비전)는 **표준 플러그**를 **표준 소켓**에 꽂을 수 있음
-  - At time t1: 램프를 소켓에 연결
-  - At time t2: 텔레비전을 소켓에 연결
-- 각 전자기기는 소켓으로부터 **동일한 전원**을 공급받아 서로 다른 일을 수행
+- 전자기기 (e.g., 램프, 텔레비전)는 **전력**을 공급받기 위해 **표준 플러그**를 **표준 소켓**에 꽂아야 함
+  - *At time t1*: 램프를 소켓에 연결
+  - *At time t2*: 텔레비전을 소켓에 연결
+- 각 전자기기는 소켓으로부터 전력을 공급받아 **해당 전자기기의 고유한 일을 수행**
   - 램프는 전기를 공급 받아 빛을 냄
-  - 텔레비전은 전기를 공급 받아 화면에 영상을 표시하고 스피커를 통해 소리를 재생함
+  - 텔레비전은 전기를 공급 받아 화면에 영상을 출력하고 스피커를 통해 소리를 재생함
 
 ---
 
 ## 다형성
 
-- 객체의 **실제 자료형**에 따라 **동일한 인터페이스**로 **서로 다른 동작**을 실행할 수 있는 기능
-  - 실제 형: 전자기기의 유형 (램프, 텔레비전 등)
-  - 동일한 인터페이스: 전자기기의 표준 플러그
-  - 서로 다른 동작: 동일한 전원을 공급받아 각 전자기기가 수행하는 고유한 기능 (빛 방출, 영상 표시 등)
+- **객체의 자료형**에 따라 **동일한 인터페이스**로 **서로 다른 동작**을 실행할 수 있는 기능
+  - 객체의 자료형: 전자기기의 유형 (램프, 텔레비전 등)
+  - 동일한 인터페이스: 전자기기의 표준 플러그를 표준 소켓에 연결
+  - 서로 다른 동작: 전력을 공급받아 각 전자기기가 수행하는 고유한 기능 (빛 방출, 영상 표시 등)
 
 ### 다형성을 사용하기 위한 조건
 
-- 기반 클래스 형 포인터 혹은 참조 (reference)
-  - 예시에서의 **표준 소켓**
+- 기반 클래스 형 포인터 혹은 참조
+  - 예시에서의 **전자기기의 유형**
   - 포인터는 여러 형의 객체를 가리킬 수 있어야 함
 - 상속 계층구조 (inheritance hierarchy)에 속하는 호환 가능한 객체 (exchangeable objects)
   - 예시에서의 **표준 플러그**
-  - 기반 클래스 형 포인터는 파생 클래스 객체를 가리킬 수 있음
+  - 기반 클래스 형 포인터는 상승 계층구조에 속하는 호환 객체를 가리킬 수 있음
+- 기반 클래스 형 포인터 또는 참조가 호환 객체를 가리킴
+  - 예시에서의 **표준 플러그**를 **표준 소켓**에 꽂은 상태
 - 가상 함수 (virtual functions)
-  - 예시에서의 **동일한 전원**
-  - 가상 함수는 자기 자신을 호출한 객체의 **실제 형**에 맞는 함수를 찾아 호출할 수 있음
+  - 예시에서의 **동일한 인터페이스**
+  - 가상 함수는 자기 자신을 호출한 **객체의 자료형**에 맞는 함수를 찾아 호출할 수 있음
+  - **가상 함수를 정의한 클래스는 객체 생성 시 객체 내에 가상 포인터 멤버가 추가됨**
+    - 가상 함수가 포함된 기반 클래스로부터 파생된 클래스 형 객체는 모두 가상 포인터를 가짐
 
 ---
 
@@ -45,11 +49,10 @@
 
 ### 파생 클래스 형 객체의 실체화 과정
 
-- 가상 함수가 있는 클래스는 객체 생성 시 가상 포인터를 추가로 할당함
-  1. 최상위 기반 클래스의 데이터 멤버 (가상 포인터 포함)를 메모리에 할당
-  2. 첫 번째 레벨 파생 클래스 (first-level derived class)의 데이터 멤버를 메모리에 할당
-  3. 두 번째 레벨 파생 클래스 (second-level derived class)의 데이터 멤버를 메모리에 할당
-  4. 가장 하위 레벨의 파생 클래스까지 순차적으로 할당
+1. 최상위 기반 클래스 (`T0`)의 데이터 멤버 (가상 포인터 포함)를 메모리에 할당
+2. 첫 번째 레벨 파생 클래스 (`T1`, first-level derived class)의 데이터 멤버를 메모리에 할당
+3. 두 번째 레벨 파생 클래스 (`T2`, second-level derived class)의 데이터 멤버를 메모리에 할당
+4. 가장 하위 레벨의 파생 클래스까지 순차적으로 할당
 
 ```text
 +------------+  <-- Base Address
@@ -69,9 +72,11 @@
 
 ## 다형성 (Cont'd - 2)
 
-- **기반 클래스 형 포인터는 기반 클래스를 상속한 모든 클래스 형 객체를 가리킬 수 있음**
-  - 기반 클래스로부터 파생된 모든 객체는 **기반 클래스 영역**을 포함함
-  - 기반 클래스 형 포인터가 파생 클래스 형 객체를 가리키면 **기반 클래스 영역**에만 접근할 수 있음
+![center h:400](image.png)
+
+- **기반 클래스 형 포인터는 기반 클래스를 상속한 모든 클래스 형 객체 (호환 객체)를 가리킬 수 있음**
+  - 상속 계층에 속한 객체는 **기반 클래스 영역**을 포함함
+  - 기반 클래스 형 포인터가 파생 클래스 형 객체를 가리키면 **기반 클래스 영역**을 선택할 수 있음
   - 이는 C++의 **형 안전성 (type safety)을 보장하는 중요한 특성**임
 
 ---
@@ -95,10 +100,14 @@ Base::Print
 Base::Print
 ```
 
-- `ptr`은 **기반 클래스 형 포인터**
-- 컴파일러는 `ptr->Print()` 문장을 처리할 때 포인터의 선언 형을 보고 `Base::print()` 호출
-  - 가리키는 객체의 실제 형과 관계없이 **컴파일 시점에 호출할 함수가 결정됨**
-    - **정적 바인딩 (static binding)** 또는 **컴파일 시간 바인딩 (compile-time binding)**
+- 컴파일러는 `ptr->Print()` 문장을 보고 두 가지 경우를 조사:
+  1. 포인터가 기반 클래스 형 자료형인가?
+  2. 호출할 함수가 가상 함수인가?
+  - 현재 `ptr`은 기반 클래스 형 포인터이며, `Print()`는 가상 함수가 아님
+- 포인터의 자료형 (기반 클래스)을 기준으로 `Base::Print()`를 호출
+- 함수 호출 시 호출 대상이 **컴파일 시점에 결정**됨
+  - **정적 바인딩 (static binding)**
+  - **컴파일 시간 바인딩 (compile-time binding)**
 
 ---
 
@@ -121,9 +130,13 @@ Base::Print
 Derived::Print
 ```
 
+- 컴파일러는 `ptr->Print()` 문장을 보고 포인터가 기반 클래스 형 자료형인지, 호출할 함수가 가상 함수인지 확인
+  - 현재 `ptr`은 기반 클래스 형 포인터이며, `Print()`는 가상 함수임
+- 런타임에 포인터가 가리키는 객체의 가상 포인터가 가리키는 가상 테이블을 통해 `Derived::Print()` 호출
 - 가상 함수는 **런타임 시점에 함수를 호출한 객체의 실제 형에 따라 적절한 함수를 선택할 수 있도록 설계됨**
-  - 이것이 C++에서 다형성 (true polymorphism)을 올바르게 구현하는 방법임
-    - **동적 바인딩 (dynamic binding)** 또는 **런타임 바인딩 (runtime binding)**
+- 함수 호출 시 호출 대상이 **런타임 시점에 결정**됨
+  - **동적 바인딩 (dynamic binding)**
+  - **런타임 바인딩 (run-time binding)**
 
 ### 가상 함수 (Virtual Functions)
 
@@ -134,15 +147,14 @@ Derived::Print
 
 ## 다형성 (Cont'd - 7)
 
-### 가상 테이블 (Virtual Tables, Vtables)
+### 가상 테이블 (Virtual Tables)
 
-- 상속 계층 구조에 속한 클래스가 **가상 함수를 사용할 경우** 컴파일 시점에 생성되는 테이블
-  - 만약 가상 함수를 사용하지 않는다면 가상 테이블은 생성되지 않음
+- 상속 계층 구조에 속한 클래스가 **가상 함수를 사용할 경우 컴파일 시점에 생성되는 테이블**
+  - 만약 가상 함수를 사용하지 않는다면 가상 테이블 (`vtable`)은 생성되지 않음
 - **객체가 호출한 함수가 가상 함수라면, 객체의 실제 형에 해당하는 가상 테이블을 참조함**
-  - 가상 테이블은 객체가 실제로 호출할 수 있는 가상 함수들의 주소를 저장한 **함수 포인터 배열**
-  - 각 클래스는 자신만의 고유한 가상 테이블을 가지며, 같은 클래스의 모든 객체들이 이 하나의 테이블을 공유함
+  - 가상 테이블은 객체가 실제로 호출할 수 있는 가상 함수들의 주소를 저장한 함수 포인터 배열
+  - **각 클래스는 자신만의 고유한 가상 테이블을 가지며**, 같은 클래스의 모든 객체들이 이 하나의 테이블을 공유함
   - **런타임 시점**에 객체의 실제 형에 따라 호출될 함수를 결정할 수 있음
-- **C++에서 다형성의 핵심 메커니즘**
 
 ![center](Figure_12_2.png)
 
@@ -150,12 +162,13 @@ Derived::Print
 
 ## 다형성 (Cont'd - 8)
 
-### 가상 포인터 (Virtual Pointers, Vptr)
+### 가상 포인터 (Virtual Pointers)
 
-- 가상 테이블은 **상속 계층에 가상 함수가 하나 이상 존재할 때 생성**됨
-- 가상 함수를 가진 클래스의 각 객체는 **자신의 클래스 가상 테이블을 가리키는 가상 포인터를 내부에 가짐**
-  - 클래스에 속하는 것이 아닌 **객체에만 존재하는 포인터**로, 컴파일러에 의해 자동 추가되는 숨겨진 멤버
-  - 가상 포인터는 런타임 시 객체 내 가상 포인터가 객체 클래스의 가상 테이블을 가리키도록 초기화됨
+- 가상 테이블은 상속 계층에 가상 함수가 하나 이상 존재할 때 생성됨
+- 가상 함수를 가진 클래스의 객체는 해당 클래스의 가상 테이블을 가리키는 가상 포인터 (`vptr`)를 내부에 포함함
+  - 클래스에 속하는 것이 아닌 **객체에만 존재하는 포인터**로, **컴파일러에 의해 자동 추가되는 숨겨진 멤버**
+  - **가상 포인터는 객체가 생성될 때, 객체의 가상 포인터가 객체 클래스의 가상 테이블을 가리키도록 초기화됨**
+    - C++ 다형성의 핵심 메커니즘
 - 객체에 가상 포인터가 추가된다면 **실체화된 객체의 가장 낮은 메모리 번지에 위치**하게 됨
 
 ![center](Figure_12_Vptr.png)
@@ -169,9 +182,10 @@ Derived::Print
 [//]: # (INCLUDE: ./cpp/06/dynamic_polymorphism.cc --from 3 --to 11 --no-comment)
 
 - `virtual` 키워드를 사용한 멤버 함수는 가상 함수가 됨
-  - 상속 계층에서 재정의 (override)될 수 있고, 호출 시 동적 바인딩을 적용함을 의미
+  - 상속 계층에서 재정의 (override)될 수 있음
+  - 기반 포인터 또는 참조를 통해 호출 시 동적 바인딩 기회를 얻음
   - `virtual` 키워드는 멤버 함수 선언부에만 사용하면 됨
-- 기반 클래스의 가상 함수 재정의는 `override` 키워드를 사용해 멤버 함수를 선언하면 됨
+- 기반 클래스의 가상 함수를 파생 클래스에서 재정의하려면 `override` 키워드를 사용하면 됨
   - `override` 키워드를 사용한 멤버 함수는 컴파일러에게 해당 멤버 함수를 재정의함을 명시적으로 알림
   - 재정의할 멤버 함수의 시그니처는 기반 클래스의 가상 함수 시그니처와 정확히 일치해야 함
 
@@ -181,505 +195,166 @@ Derived::Print
 
 ### `virtual` 키워드를 사용한 멤버 함수 재정의
 
-[//]: # (INCLUDE: ./cpp/06/snippet_virtual_function.cc --from 4 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/snippet_virtual_function.cc --from 2 --to 19 --no-comment)
 
 - **`virtual` 키워드를 사용하는 것 보다는 `override` 키워드를 사용할 것을 적극 권장**
 
 ---
 
-### 가상 함수 동작 예시
+## 다형성 (Cont'd - 11)
 
-- 가상 테이블은 **기반 클래스에서의 가상 함수 선언 순서대로 함수 포인터를 엔트리에 삽입**
-  - 가상 테이블은 컴파일 시점에 생성되고, 가상 포인터는 런타임 시점에 객체 내부에 설정됨
-  - 객체가 가상 함수를 호출할 때, 객체의 가상 포인터를 따라 가상 테이블에 접근한 후 해당 인덱스의 함수 포인터를 통해 실제 함수를 호출함
+### 가상 테이블과 가상 포인터의 메커니즘
 
-```cpp
-#include <iostream>
+- 가상 테이블에는 **가상 함수가 선언된 순서대로 함수 포인터가 등록됨**
+- 가상 테이블은 컴파일 시 생성되고, 가상 포인터는 런타임 시 (객체 생성 시) 설정됨
+- 다형성 조건을 만족한 상태에서 가상 함수 호출 시, 가상 포인터가 가리키는 가상 테이블에서 실제 함수 주소를 찾아 실행함
 
-class B {
- public:
-  virtual void bar();  // vtable[0]
-  virtual void qux();  // vtable[1]
-};
-
-void B::bar() { std::cout << "This is B's implementation of bar"; }
-void B::qux() { std::cout << "This is B's implementation of qux"; }
-
-class C : public B {
- public:
-  // Class C's vtable entry at index 1 is assigned to C::bar during compile time
-  void bar() override;
-};
-
-void C::bar() { std::cout << "This is C's implementation of bar"; }
-```
-
-![center h:200](Figure_12_Vtable_Vptr.png)
-
-> 참고: 가상 테이블 (vtable) 구조와 구현은 컴파일러와 플랫폼에 따라 세부적인 차이가 있지만, 기본 원리는 동일합니다.
->
-> 1. 컴파일 시점에 가상 함수를 포함하는 **각 클래스마다 하나의 가상 테이블이 생성**됩니다.
-> 2. 같은 클래스의 모든 객체는 하나의 가상 테이블을 공유합니다 (각 객체마다 테이블이 생성되는 것이 아님).
-> 3. 런타임 시 각 객체는 내부적으로 가상 포인터 (vptr)를 가지며, 이 포인터는 해당 객체의 클래스에 해당하는 가상 테이블을 가리킵니다.
-> 4. 가상 함수 호출 과정: `obj->virtualFunction()` 호출 시
->    - 객체의 vptr를 통해 해당 클래스의 가상 테이블을 찾음
->    - 가상 테이블에서 해당 함수 인덱스의 함수 포인터를 통해 적절한 구현체 호출
-
-> **추가 자료**:
->
-> - [가상 함수 호출 메커니즘 상세 설명](virtual_method_mechanism.md): vtable과 vptr의 동작 원리 상세 설명
+[//]: # (INCLUDE: ./cpp/06/snippet_poly_11.cc)
 
 ---
 
-### 다형성에서의 기반 클래스
+## 다형성 (Cont'd - 12)
 
-```cpp
-#include <iostream>
+![center](Figure_12_Vtable_Vptr.png)
 
-class A {
-  // A does not have a virtual function.
-};
-
-class B : public A {
- public:
-  virtual void print() {  // Declares a virtual function.
-    std::cout << "B's print" << std::endl;
-  }
-};
-
-class C : public B {
- public:
-  void print() override {  // Overrides the virtual function.
-    std::cout << "C's print" << std::endl;
-  }
-};
-
-int main() {
-  B* obj = new C();
-  obj->print();  // Calls C's print() (dynamic binding).
-}
-```
-
-- 일반 상속 관계라면 기반 클래스는 `A`
-- **다형성에서의 기반 클래스는 `B`**
-  - 가상 함수를 선언한 클래스
-  - 다형성을 사용하기 위해서는 `B` 형 포인터를 사용해야 함
+- 가상 테이블 구조와 구현은 컴파일러와 플랫폼에 따라 세부적인 차이가 있지만, 기본 원리는 동일함:
+  1. 컴파일 시점에 가상 함수를 포함하는 **각 클래스마다 하나의 가상 테이블 (`vtable`)이 생성**된다.
+  2. 같은 클래스의 모든 객체는 하나의 가상 테이블을 공유한다 (**각 객체마다 테이블이 생성되는 것이 아님**).
+  3. 런타임 시 각 객체는 내부에 가상 포인터 (`vptr`)를 포함한 채 실체화된다.
+  4. 객체의 가상 포인터는 해당 객체의 클래스에 해당하는 가상 테이블을 가리킨다.
 
 ---
 
-### 일반 오버라이드 함수와 가상 오버라이드 함수 간 동작 비교
+## 다형성 (Cont'd - 13)
 
-#### 일반 함수
+### 가상 생성자와 가상 소멸자
 
-```cpp
-#include <iostream>
-
-class Base {
- public:
-  void NormalFunction() { std::cout << "Base normal function" << std::endl; }
-};
-
-class Derived : public Base {
- public:
-  void NormalFunction() { std::cout << "Derived normal function" << std::endl; }
-};
-
-int main() {
-  Base* ptr = new Derived();
-  ptr->NormalFunction();
-  delete ptr;
-}
-```
-
-- 컴파일 시점에서의 `ptr->NormalFunction()` 문장 처리:
-  - 일반 함수이므로 `Base::NormalFunction()`을 호출하도록 결정
-    - 함수의 주소를 바로 참조하여 호출
-  - 정적 바인딩 (static binding)
+- **생성자는 가상화할 수 없음**
+  1. **생성자는 클래스마다 이름이 다르다.**
+      - 함수 시그니처 불일치로 오버라이드 자체가 불가능
+      - 생성자 간 가상 함수 테이블을 통한 동적 연결 구조가 존재하지 않음
+  2. **가상 함수 메커니즘은 완전히 생성된 객체를 전제로 한다.**
+      - 생성자는 객체를 생성하는 함수이며, 객체가 아직 존재하지 않은 상태
+      - 동적 바인딩을 하기 위해서는 객체의 가상 포인터를 사용해야 하지만, 객체는 아직 준비되지 않은 상태
+- **소멸자는 가상화 가능하며, 다형성 클래스에서는 필수**
+  1. **소멸자는 이름이 달라도 가상화가 가능하다.**
+      - 각 클래스의 소멸자는 객체 소멸 시점에 자동으로 호출되는 유일한 함수
+      - 이름이 다르지만 "소멸 작업"이라는 동일한 목적을 가지는 특별한 함수이므로, 가상 함수 메커니즘으로 연결 가능
+      - 소멸 시점에는 객체와 가상 포인터가 여전히 유효하므로 동적 바인딩 가능
+  2. **다형성 사용 시 가상 소멸자는 필수다.**
+      - 가상 함수를 하나라도 가진 클래스는 반드시 가상 소멸자를 선언해야 함
+      - 가상 소멸자를 사용하지 않으면, 기반 클래스 포인터로 파생 클래스 객체 삭제 시 **항상 기본 소멸자만 호출됨**
+        - 이로 인해 파생 클래스에서 할당한 자원이 해제되지 않아 **메모리 누수 발생**
 
 ---
 
-#### 가상 함수
+## 다형성 (Cont'd - 14)
 
-```cpp
-#include <iostream>
-
-class Base {
- public:
-  virtual void VirtualFunction() {
-    std::cout << "Base virtual function" << std::endl;
-  }
-};
-
-class Derived : public Base {
- public:
-  void VirtualFunction() override {
-    std::cout << "Derived virtual function" << std::endl;
-  }
-};
-
-int main() {
-  Base* ptr = new Derived();
-  ptr->VirtualFunction();
-  delete ptr;
-}
-```
-
-- 컴파일 시점에서의 `ptr->VirtualFunction()` 문장 처리:
-  - 가상 함수이므로 호출할 함수를 결정할 수 없음
-    - `vptr` → `vtable` → 가상 테이블의 함수 포인터를 호출
-    - `VirtualFunction`은 기반 클래스에서 0번째 인덱스에 존재
-    - 가상 테이블의 0번째 인덱스의 함수 포인터를 호출하도록 처리
-  - 동적 바인딩 (dynamic binding)
-
----
-
-### 생성자와 소멸자
-
-- 생성자는 가상화 불가
-  - 생성자는 클래스마다 이름이 다름(클래스 이름과 동일)
-    - 오버라이드 불가
-  - 생성자를 가상화할 경우, 파생 클래스 형 객체 생성 시 생성자 호출 순서가 깨질 수 있음
-  - **가상 포인터는 객체가 생성되는 과정에서 초기화됨**
-    - 생성자가 호출되는 시점에는 가상 함수 호출 메커니즘이 완전히 준비되지 않은 상태일 수 있음
-    - 이런 상태에서 가상 함수 호출은 기반 클래스 버전만 호출되므로 가상 생성자는 의미가 없음
-
-- **소멸자는 가상화 가능하며, 다형성을 사용하는 클래스에서는 필수적**
-  - 소멸자도 클래스마다 이름이 다르지만, 객체의 소멸 시점에 자동으로 호출됨
-  - 객체 소멸 시점에는 가상 포인터가 여전히 유효하므로 가상 함수 메커니즘을 사용할 수 있음
-  - **클래스 설계 시 가상 함수를 하나라도 사용한다면 반드시 소멸자도 가상화해야 함**
-    - 그렇지 않으면 파생 클래스 객체가 기반 클래스 포인터를 통해 삭제될 때 메모리 누수 발생
-
----
-
-#### 다형성을 사용하지 않는 상황에서의 소멸
-
-- 기반 클래스 `Person`
-  - `std::string` 형 데이터 멤버 `name`
-- 파생 클래스 `Student`
-  - 상속 받은 `std::string` 형 데이터 멤버 `name`과 `double` 형 데이터 멤버 `gpa`
+### 다형성을 사용하지 않는 상황에서의 소멸
 
 ![center](Figure_12_3.png)
 
 - 각 클래스 형 객체가 스택 영역에 할당되었다가 소멸될 경우 소멸자에 의해 올바르게 자원 반환
-  - 만약 파생 클래스 형 객체가 소멸되어야 한다면, 런타임 시스템에 의해 소멸자가 자동 호출됨
-    - 파생 클래스 형 소멸자 호출 → 기반 클래스 형 소멸자 호출
-  - 메모리 누수 (memory leak) 없음
+  - 런타임 시스템은 객체가 소멸되어야 할 경우 자동으로 해당 객체 자료형의 소멸자를 자동 호출함
+    - 기반 클래스 형 객체: 기반 클래스 소멸자 호출
+    - 파생 클래스 형 객체: 파생 클래스 소멸자 → 기반 클래스 소멸자 호출
+  - **메모리 누수 (memory leak) 없음**
 
 ---
 
-#### 다형성을 사용하는 상황에서의 소멸
+## 다형성 (Cont'd - 15)
+
+### 다형성을 사용하는 상황에서 일반 소멸자를 사용하는 경우
 
 ![center](Figure_12_4.png)
 
-```cpp
-Person* ptr = new Student();
-// do something...
-delete ptr;   // It does not deletes Student because ptr type is `Person*`
-```
+---
 
-- 기반 클래스 형 포인터는 스택 영역, 파생 클래스 형 객체는 힙 영역 할당
-- 기반 클래스 형 포인터가 파생 클래스 형 객체를 가리키는 상황에서, 포인터 삭제 시 문제 발생
-  - 컴파일 시점에 `ptr`의 형을 확인해 해당 형의 소멸자 (`~Person()`)가 호출되도록 결정
-  - 힙 영역의 파생 클래스 객체는 **기반 클래스 멤버**만 소멸 (**메모리 누수**)
+## 다형성 (Cont'd - 16)
+
+[//]: # (INCLUDE: ./cpp/06/snippet_poly_16.cc --from 3 --to 17 --no-comment)
+
+[//]: # (INCLUDE: ./cpp/06/snippet_poly_16.cc --from 20 --to 23 --no-comment)
 
 ---
 
-- 다형성을 사용하는 상황에서의 안전한 자원 해제 방법
-  - 기반 클래스 형 포인터로 호환 객체를 동적 할당하여 가리키고 삭제하는 경우
-  - 소멸자를 가상화하여 런타임 시스템이 소멸자를 호출할 때 **가상 테이블**을 참조하도록 해야 함
+## 다형성 (Cont'd - 17)
+
+### 다형성을 사용하는 상황에서 가상 소멸자를 사용하는 경우
 
 ![center](Figure_12_5.png)
 
-- 가상 소멸자 또한 가상 테이블에 인덱싱됨
-  - 객체 소멸 시점에는 객체 내부에 가상 포인터가 존재하며, 가상 소멸자를 사용할 수 있음
-  - 클래스마다 소멸자의 이름은 다르지만, 소멸 시점에 런타임 시스템에 의해 자동 호출됨
-    - 소멸 시점에 호출되는 특별한 멤버 함수는 소멸자 뿐이므로, 이름은 중요하지 않음
+- **가상 소멸자는 가상 테이블에 등록되어 동적 바인딩됨**
+  - `delete` 시 가상 포인터를 통해 파생 클래스 소멸자 호출
+  - 이후 각 소멸자가 순차적으로 가상 포인터를 상위 클래스의 가상 테이블로 갱신하며 기반 클래스까지 **연쇄 호출**
 
 ---
 
-### 가상 소멸자를 사용한 다형성 예시
+## 다형성 (Cont'd - 18)
 
-- person.hpp
+[//]: # (INCLUDE: ./cpp/06/snippet_poly_18.cc --from 3 --to 17 --no-comment)
 
-```cpp
-#pragma once
-
-#include <string>
-
-class Person {
-  std::string name_;
-
- public:
-  explicit Person(const std::string& name);
-  virtual ~Person();           // vtable[0]
-
-  virtual void print() const;  // vtable[1]
-};
-```
+[//]: # (INCLUDE: ./cpp/06/snippet_poly_18.cc --from 20 --to 22 --no-comment)
 
 ---
 
-- person.cc
+## 다형성 (Cont'd - 19)
 
-```cpp
-#include "person.hpp"
+### 다형성을 사용하는 상황에서 가상 소멸자를 사용한 예시
 
-#include <iostream>
-#include <string>
+- `person.hpp`
 
-Person::Person(const std::string& nm) : name_(nm) {
-  std::cout << "Person's ctor" << std::endl;
-}
-
-Person::~Person() { std::cout << "Person's dtor" << std::endl; }
-
-void Person::print() const { std::cout << "Name: " << name_ << std::endl; }
-```
+[//]: # (INCLUDE: ./cpp/06/poly/person.hpp)
 
 ---
 
-- student.hpp
+## 다형성 (Cont'd - 20)
 
-```cpp
-#pragma once
+- `person.cc`
 
-#include <string>
-
-#include "person.hpp"  
-
-class Student : public Person {
-  double gpa_;
-
- public:
-  Student(const std::string& name, double gpa);
-
-  // Note that a virtual destructor, despite having a different name, is a
-  // special member function that is automatically called by the system at the
-  // time of destruction. It is also managed in the virtual table (vtable) by an
-  // index, just like other virtual functions.
-  //
-  // Class Student's vtable entry at index 0 is assigned to Student::~Student
-  // during compile time
-  ~Student() override;
-
-  // Class Student's vtable entry at index 1 is assigned to Student::print
-  // during compile time
-  void print() const override;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/poly/person.cc)
 
 ---
 
-- student.cc
+## 다형성 (Cont'd - 21)
 
-```cpp
-#include "student.hpp"  
+- `student.hpp`
 
-#include <iostream>
-#include <string>
-
-Student::Student(const std::string& nm, double gp) : Person(nm), gpa_(gp) {
-  std::cout << "Student's ctor" << std::endl;
-}
-
-Student::~Student() { std::cout << "Student's dtor" << std::endl; }
-
-void Student::print() const {
-  Person::print();
-  std::cout << "GPA: " << gpa_ << std::endl;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/poly/student.hpp)
 
 ---
 
-- main.cc
+## 다형성 (Cont'd - 22)
 
-```cpp
-#include "student.hpp"  
+- `student.cc`
 
-int main() {
-  Person* ptr = new Person("Lucie");
-  std::cout << "Person Information";
-  ptr->print();
-  std::cout << std::endl;
-  delete ptr;
-
-  ptr = new Student("John", 3.9);
-  std::cout << "Student Information";
-  ptr->print();
-  std::cout << std::endl;
-  delete ptr;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/poly/student.cc)
 
 ---
 
-### 배열에서의 다형성
+## 다형성 (Cont'd - 23)
 
-![center](Figure_12_6.png)
+- `main.cc`
 
-- 여러 개의 호환 객체를 동시에 사용하여 다형성 사용
-  - 이전 실습 코드에서 main.cc 부분만 배열을 사용하도록 수정
-
----
-
-- main.cc
-
-```cpp
-#include <iostream>
-
-#include "student.hpp"  
-
-int main() {
-  Person* ptr[4];
-  ptr[0] = new Student("Joe", 3.7);
-  ptr[1] = new Student("John", 3.9);
-  ptr[2] = new Person("Bruce");
-  ptr[3] = new Person("Sue");
-  for (int i = 0; i < 4; ++i) {
-    ptr[i]->print();
-    std::cout << std::endl;
-  }
-  for (int i = 0; i < 4; ++i) delete ptr[i];
-  return 0;
-}
-```
-
----
-
-### 다른 객체지향 프로그래밍 언어에서의 다형성
-
-- C++에서 다형성을 사용하기 위한 조건 3가지
-  - 기반 클래스 형 포인터 혹은 기반 클래스 형 레퍼런스
-  - 호환 객체
-  - 가상 함수
-- Java에서의 모든 메서드는 기본적으로 가상 메서드
-
-#### 가상 함수의 비용
-
-- 일반 함수는 컴파일 시점에 호출할 대상이 결정되어 추가 비용이 발생하지 않음
-  - 직접 함수 주소로 점프하는 명령어가 생성됨
-- 가상 함수는 런타임 시점에 호출할 대상을 결정하므로 추가 비용 발생
-  - `vptr` → `vtable` → 가상 테이블의 함수 포인터를 찾고 → 해당 주소로 점프하는 과정 필요
-  - 메모리 접근이 추가되고 간접 호출(indirect call)로 인해 CPU 파이프라인 최적화가 어려워짐
-  - 하지만 현대 컴퓨터에서는 이 비용이 크지 않으므로, 다형성이 필요한 경우 적절히 사용하는 것이 좋음
-
----
-
-## 정적 바인딩 (Static Binding)과 동적 바인딩 (Dynamic Binding)
-
-- 함수는 두 개의 요소로 구분할 수 있음
-  - 함수 호출(call): 함수를 실행하는 구체적인 행위
-    - 각 호출은 전달인자 형태와 실행 시점에 따라 다른 결과를 초래할 수 있음
-  - 함수 정의(definition): 함수의 구현 코드
-    - 함수가 호출될 때 실행될 동작을 기술함
-  - 함수 호출과 함수 정의는 서로 분리하여 관리됨
-    - 함수 호출은 해당 동작을 언제, 어떤 인자로 실행할지 결정하는 역할 담당
-- **바인딩(binding)**: 함수 호출이 어떤 함수 정의와 연결될지 결정하는 과정
-- 일반 함수의 경우
-  - 함수 호출 시 실행될 코드가 명확히 하나로 결정됨
-  - 컴파일러는 함수 호출 코드를 해당 함수의 메모리 주소로 직접 변환할 수 있음
-- 가상 함수의 경우
-  - 동일한 함수 호출이 여러 다른 함수 정의와 연결될 가능성 있음
-  - 함수 호출 시점에 **객체의 실제 형에 따라** 올바른 함수 정의를 찾아야 함
-- 바인딩은 프로그램이 함수 호출을 특정 함수 구현과 연결하는 메커니즘임
-
----
-
-### 정적 바인딩
-
-- 컴파일 시점에 함수 호출과 함수 정의 간 연관을 확정
-  - 컴파일 시점 바인딩 (compile-time binding)
-  - 조기 바인딩 (early binding)
-- 함수 호출 대상이 일반 함수 (클래스의 멤버 함수나 전역 함수)인 경우
-  - 컴파일 시점에 어떤 함수가 호출될지 명확하게 결정됨
-  - 최적화가 가능하고 실행 속도가 빠름
-
-```cpp
-Person person;
-person.print();   // Person::print()
-
-Student student;
-student.print();  // Student::print()
-```
-
----
-
-### 동적 바인딩
-
-- 런타임 시점에 함수 호출과 함수 정의 간 연관을 확정
-  - 런타임 시점 바인딩 (run-time binding)
-  - 지연 바인딩 (late binding)
-- 아래와 같은 경우는 컴파일 시점에 호출될 함수를 결정할 수 없음
-
-```cpp
-int user_input;
-std::cin >> user_input;
-Base* ptr;
-if (user_input == 1)
-  ptr = new Base();
-else
-  ptr = new Derived();
-ptr->func();  // In this case, we don't know which `func` will be invoked on 
-              // compile-time
-```
-
-- 컴파일 시점에 호출될 함수를 연관하지 못하는 경우는 동적 바인딩
-- C++의 가상함수는 동적 바인딩 상황에서 올바른 함수를 호출할 수 있도록 **지원**
-  - 가상 함수를 사용한 동적 바인딩은 런타임 시점의 객체 형에 따라 호출할 함수 결정
-  - 가상 함수를 사용한 동적 바인딩은 다형성 (run-time polymorphism)
+[//]: # (INCLUDE: ./cpp/06/poly/main.cc)
 
 ---
 
 ## 런타임 형 정보 (RTTI, Run-Time Type Information)
 
-- 런타임 시점에 객체의 실제 형을 확인해야 하는 경우가 있음
-  - 다형성을 사용하는 복잡한 프로그램에서 특히 유용함
-  - 특정 형에 따라 다른 처리를 해야 할 때 필요함
-- C++은 `<typeinfo>` 헤더를 통해 런타임 형 정보 (RTTI) 기능을 제공함
-  - `type_info` 클래스: 형 정보를 나타내는 클래스
-  - `typeid` 연산자: 표현식의 형 정보를 반환하는 연산자
-    - 사용 예: `typeid(5)`, `typeid(5 + 3)`, `typeid(object_name)`
-  - 주의: 가상 함수가 없는 클래스에 대해서는 정적 형 정보만 제공함
-- `type_info` 형 객체에 지원되는 연산들
+- 런타임 시점에 객체의 실제 형을 확인해야 하는 경우가 있음:
+  - 다형성을 사용하는 복잡한 프로그램
+  - 특정 형에 따라 다른 처리를 해야 할 때
+- C++은 `<typeinfo>` 헤더를 통해 **런타임 형 정보 (RTTI)를 얻을 수 있는 기능을 제공**함
+  - `typeid` 연산자: 표현식의 형 정보를 반환하는 연산자, 평가 결과는 `type_info` 형
 
-```text
-t1 == t2      // Returns true if t1 and t2 are of the same type
-t1 != t2      // Returns true if t1 and t2 are of different types
-t1.name()     // Returns a C-type string (name of the t1)
-t1.before(t2) // Returns true if t1 comes before t2
-```
+[//]: # (INCLUDE: ./cpp/06/rtti.cc --to 13)
 
 ---
 
-### 런타임 형 정보 예시
+## 런타임 형 정보 (RTTI, Run-Time Type Information) (Cont'd)
 
-```cpp
-#include <iostream>
-#include <typeinfo>
-
-class Animal {};
-class Horse : public Animal {};
-
-int main() {
-  Animal animal;
-  Horse horse;
-
-  // Check if 'animal' and 'horse' are of the same type or not
-  std::cout << "'animal' and 'horse' are of the same type: ";
-  std::cout << std::boolalpha << (typeid(animal) == typeid(horse)) << std::endl;
-  std::cout << "'animal' and 'horse' are of different types: ";
-  std::cout << std::boolalpha << (typeid(animal) != typeid(horse)) << std::endl;
-
-  // Get the type's name of instances
-  std::cout << "Type name of animal: ";
-  std::cout << typeid(animal).name() << std::endl;
-  std::cout << "Type name of horse: ";
-  std::cout << typeid(horse).name() << std::endl;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/rtti.cc --from 15)
 
 ---
 
@@ -690,154 +365,85 @@ int main() {
   2. `reinterpret_cast`
   3. `const_cast`
   4. `dynamic_cast`
-- C++ 형 변환이 C 언어 형 변환보다 **안정적**
-  - C++은 정적 형 검사 (static type checking)를 수행 (type safety 언어)
-    - C 언어에서 가능한 변환이 C++에서는 안될 수 있음
-  - C++ 형 변환 사용 권장
-
----
 
 ### `static_cast`
 
 - 컴파일 시점에 수행되는 형 변환
-- **암묵적 변환**이 가능한 범위 내에서 형 변환이 가능한 경우 사용
-  - **암묵적 변환**이 안 되는 상황에서 `static_cast` 사용 시 컴파일 오류
+- 암묵적 변환이 가능한 경우만 형 변환을 수행하며, 암묵적 변환이 불가능하면 `static_cast` 사용 시 컴파일 오류
 - **객체의 값이 변경됨** (메모리에 있는 객체의 비트 패턴이 수정됨)
 
-```cpp
-float f = 3.14;
-int implicit_i = f;                    // OK, but it might be WARNING
-int explicit_i = static_cast<int>(f);  // OK, and there's no warning!
-
-int arr[] = {1, 2, 3};
-float* c_cast_ptr = (float*) arr;                // OK, It's C-style casting
-float* cpp_cast_ptr = static_cast<float*>(arr);  // Error, from 'int *' to
-                                                 // 'float *' is not allowed
-```
+[//]: # (INCLUDE: ./cpp/06/casting.cc --from 3 --to 10 --no-comment)
 
 ---
+
+## 형 변환 (Type Casting) (Cont'd - 1)
 
 ### `reinterpret_cast`
 
 - 컴파일 시점에 수행되는 형 변환
-- **객체의 값을 변경하지 않고** 해당 객체의 평가 방법만 변경
-  - 주로 제네릭 포인터 (`void*`)의 평가 방법을 지정할 때 활용
-  - 인접한 메모리 영역을 침범할 수 있음에 유의
+- **객체의 값을 변경하지 않고** 해당 객체의 평가 방법만 변경하며, 주로 제네릭 포인터 (`void*`)의 평가 방법을 지정할 때 활용
+  - 인접한 메모리 영역을 침범할 수 있음
 
-```cpp
-#include <iostream>
-
-int main() {
-  int i = 42, j = 100;
-  std::cout
-      << "Before, i(" << &i << "): " << i << ", j(" << &j << "): " << j
-      << std::endl;  // Before, i(0x7ffda6a702f8): 42, j(0x7ffda6a702f4): 100
-
-  // 0x7ffda6a702f4        0x7ffda6a702f8
-  // [<--- j(4 bytes) --->][<--- i (4 bytes) --->]
-  // ^
-  // d_ptr (will use 8 bytes - j's area + i's area)
-  double* d_ptr = reinterpret_cast<double*>(&j);
-  *d_ptr = 123.456;
-  std::cout << "After, i: " << i << ", j: " << j
-            << std::endl;  // After, i: 1079958831, j: 446676599
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/casting.cc --from 14 --to 28 --no-comment)
 
 ---
+
+## 형 변환 (Type Casting) (Cont'd - 2)
 
 ### `const_cast`
 
 - 컴파일 시점에 수행되는 형 변환
-- 객체의 상수성 (`const`, constness) 또는 휘발성 (`volatile`, volatility) 제거 가능
-- 주로 함수에서 일반 객체를 상수성 혹은 휘발성 매개변수로 받아 처리할 때 사용됨
-- **아래의 경우들은 정의되지 않은 동작 (UB)**
-  - 원본 객체가 상수성을 갖고 있을 때, `const_cast`를 사용해 상수성을 제거할 경우
-  - 원본 객체가 휘발성을 갖고 있을 때, `const_cast`를 사용해 휘발성을 제거할 경우
+- 객체의 상수성 (`const`)이나 휘발성 (`volatile`)을 제거한 형으로 변환
+- 원본 객체가 상수성이나 휘발성을 갖고 있을 때, `const_cast`로 해당 특성을 제거하는 것은 **정의되지 않은 동작**임
 
-```cpp
-void foo(const int& i) {
-  // We can't modify the `i` directly like this: i = 100;
-  int& ref_i = const_cast<int&>(i);  // Safely remove constness using const_cast
-                                     // to modify the parameter `i`
-  ref_x = 100;  // Modify the value of `i` through `ref_i`, `i` is now 100
-}
-
-int main() {
-  int i = 0;  // `i` is a normal object
-  const int& ref_i = i;
-  const_cast<int&>(ref_i) += 4;  // now the value of `i` is 4
-  const int* ptr_i = &i;
-  *const_cast<int*>(ptr_i) += 5;  // now the value of `i` is 9
-
-  const int j = 0;  // `j` is a read-only object (constness)
-  const int& ref_j = j;
-  const_cast<int&>(ref_j) += 6;  // UB, we can't sure the value of `j`
-  const int* ptr_j = &j;
-  *const_cast<int*>(ptr_j) = 7;  // UB, we can't sure the value of `j`
-
-  foo(i);  // now the value of `i` is 100
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/casting.cc --from 32 --to 43 --no-comment)
 
 ---
+
+## 형 변환 (Type Casting) (Cont'd - 3)
 
 ### `dynamic_cast`
 
-- 런타임 시점에 **다운 캐스팅**을 명시적으로 수행할 때 사용
+- 런타임 시점에 수행되는 형 변환
+- **다운 캐스팅**을 명시적으로 수행할 때 사용
 
 #### 다운 캐스팅 (Downcasting)
 
-- 기반 클래스 형 포인터 또는 참조를 파생 클래스 형 포인터 또는 참조로 변환하는 작업
-  - 기반 클래스 범위를 파생 클래스 범위로 확장해 파생 클래스 고유의 멤버에 접근 가능해짐
-- 런타임 시점에 이루어지는 작업
-- 주로 다형성을 사용하는 상황에서 특정 파생 클래스에 속하는 객체인지 확인할 때 사용
-- 실패할 가능성이 있으므로 **명시적 형 변환**만을 허용
+- 런타임 시점에 `dynamic_cast`를 통해 기반 클래스 포인터 또는 참조를 파생 클래스 포인터 또는 참조로 변환
+  - 범위를 기반 클래스에서 파생 클래스로 확장하여, 파생 클래스 고유 멤버 접근 가능
+- **다형성 환경에서 객체가 특정 파생 클래스 형인지 확인하고 접근할 때 사용**
+- 잘못된 변환 시 실패 가능하므로, **명시적 형 변환 필요**
 
 #### 업 캐스팅 (Upcasting)
 
-- 파생 클래스 형 포인터 또는 참조를 기반 클래스 형 포인터 또는 참조로 변환하는 작업
-- 컴파일 시점에 이루어지는 작업
-- 주로 기반 클래스의 공통된 인터페이스 (e.g., 가상 함수)를 활용하는 다형성 구현에 사용
-- 실패할 가능성이 없으므로 **암묵적 형 변환** 사용
-  - 모든 파생 클래스는 기반 클래스의 내용을 담고 있음
+- 컴파일 타임에 형 파생 클래스 포인터 (또는 참조)를 기반 클래스 포인터 (또는 참조)로 변환
+  - 범위를 파생 클래스에서 기반 클래스로 축소하여, 기반 클래스 멤버만 접근 가능
+- **기반 클래스의 공통 인터페이스를 통한 다형성 구현**
+- 모든 파생 클래스는 기반 클래스를 포함해 항상 안전하므로, **암묵적 형 변환 허용**
 
 ---
 
-```cpp
-#include <iostream>
+## 형 변환 (Type Casting) (Cont'd - 4)
 
-class Base {
- public:
-  virtual ~Base() = default;  // Virtual destructor for RTTI support (vtable)
-};
+### 암묵적 업 캐스팅 - 다형성
 
-class Derived : public Base {};
-class AnotherDerived : public Base {};
+[//]: # (INCLUDE: ./cpp/06/upcasting.cc)
 
-int main() {
-  // Upcasting (Derived -> Base): Implicit upcasting, safe without explicit cast
-  Derived derived_obj;
-  Base* base_ptr = &derived_obj;
-  std::cout << "Upcasting successful." << std::endl;
+---
 
-  // Successful downcasting (Base -> Derived)
-  Derived* derived_ptr = dynamic_cast<Derived*>(base_ptr);
-  std::cout << "Downcasting to Derived "
-            << (derived_ptr ? "successful." : "failed.") << std::endl;
+## 형 변환 (Type Casting) (Cont'd - 5)
 
-  // Failed downcasting (Base -> Derived)
-  AnotherDerived another_obj;
-  base_ptr = &another_obj;  // Base pointer now points to AnotherDerived object
-  derived_ptr = dynamic_cast<Derived*>(base_ptr);  // Incorrect downcasting
-  std::cout << "Downcasting to Derived "
-            << (derived_ptr ? "successful." : "failed.") << std::endl;
+### `dynamic_cast`를 사용한 명시적 다운 캐스팅 - 올바른 변환
 
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/downcasting.cc)
+
+---
+
+## 형 변환 (Type Casting) (Cont'd - 6)
+
+### `dynamic_cast`를 사용한 명시적 다운 캐스팅 - 잘못된 변환
+
+[//]: # (INCLUDE: ./cpp/06/downcasting_failure.cc)
 
 ---
 
@@ -848,1131 +454,522 @@ int main() {
 
 ### 순수 가상 함수 (Pure Virtual Functions)
 
-- 구현이 없는(또는 구현을 제공하지 않는) 특별한 가상 함수
-- 순수 가상 함수의 특징:
-  - 파생 클래스에서 반드시 구현(오버라이딩)해야 하는 함수
-  - 순수 가상 함수가 하나라도 포함된 클래스는 **추상 클래스**가 됨
-  - 추상 클래스의 객체는 **직접 생성 (인스턴스화) 할 수 없음**
-  - 파생 클래스에서 모든 순수 가상 함수를 오버라이딩하지 않으면 해당 파생 클래스도 추상 클래스가 됨
-- 선언 방법: 함수 선언 뒤에 `= 0`을 붙임
+- 구현이 없는 특별한 가상 함수로, 파생 클래스가 반드시 구현 (오버라이딩)해야 하는 함수
+- 순수 가상 함수가 하나라도 포함된 클래스는 **추상 클래스**가 됨
+- 추상 클래스 객체는 **직접 생성 (인스턴스화) 할 수 없음**
+  - 추상 클래스를 상속한 파생 클래스는 **상속된 순수 가상 함수를 모두 구현**해야 파생 클래스 객체 실체화가 가능함
+  - 구현하지 않은 순수 가상 함수가 하나라도 존재할 경우, 해당 파생 클래스도 추상 클래스가 됨
+- 메서드에 순수 가상 지정자 (pure virtual specifier) 구문을 사용하면 해당 메서드는 순수 가상 함수가 됨
 
-  ```cpp
-  virtual return_type function_name(parameters) = 0;
-  ```
-
-- 순수 가상 함수는 인터페이스를 정의하는 역할을 함
-
-```cpp
-virtual double get_area(0) = 0;
-virtual double get_perimeter(0) = 0;
-```
+[//]: # (INCLUDE: ./cpp/06/pure_virtual.cc)
 
 ---
 
 ## 인터페이스 (Interfaces)
 
-- 클래스의 모든 멤버 함수가 순수 가상 함수인 특수한 추상 클래스
-- 특징:
-  - 구현이 전혀 없고 선언만 있는 함수들로 구성됨
-  - 데이터 멤버를 포함하지 않거나 최소한으로만 포함함
-  - 일반적으로 생성자와 소멸자만 구현부를 가짐
-- 목적:
-  - 상속받는 클래스에게 표준화된 공통 인터페이스(청사진)를 제공
-  - 이를 상속받는 클래스가 반드시 구현해야 할 기능들을 명확히 정의
-  - 다형성을 안전하게 활용할 수 있는 기반 제공
-- Java의 interface나 C#의 interface와 유사한 개념이지만, C++에서는 별도의 키워드 없이 순수 가상 함수로만 구성된 클래스로 구현함
+- **클래스의 모든 멤버 함수가 순수 가상 함수인 특수한 추상 클래스**
+  - 일반적으로 가상 소멸자만 구현부를 가지며, 데이터 멤버는 포함하지 않거나 최소한만 포함
+  - **가상 소멸자는 기반 포인터를 통한 다형적 삭제 시 안전성을 보장하기 위해 필수**
+- 상속받는 클래스에게 표준화된 공통 인터페이스 (청사진)를 제공하기 위해 사용
+  - 상속받는 클래스에게 반드시 구현해야 할 기능들을 강제하기 위함
+- 다형성을 안전하게 활용할 수 있는 기반 제공:
+  - 모든 메서드가 순수 가상 함수로 선언되어 **구현 클래스가 반드시 동일한 인터페이스를 따름**
+  - 컴파일 시점에 타입 호환성이 검증되어 런타임 오류 가능성을 최소화함
+  - 기반 클래스 포인터를 통해 다양한 파생 클래스 객체들을 **일관된 방식**으로 안전하게 조작할 수 있음
 
 ![center](Figure_12_7.png)
 
 ---
 
-### 클래스 다이어그램에서의 인터페이스
+## 인터페이스 (Interfaces) (Cont'd - 1)
 
-![center](Figure_12_Interface.png)
+### 클래스 다이어그램에서의 인터페이스 표현 방법
 
-- 점선을 사용하여 화살표 표시
-- 클래스 기호 내 `<<interface>>` 표시
+![center](image-1.png)
+
+- 점선 + 속이 빈 화살촉 (realization 관계)
+  - The `Square` class **implements** the `Shape` interface.
+  - The `Square` class **realizes** the `Shape` interface.
+- 클래스 기호 내 `<<interface>>` 표시해 인터페이스임을 표현
 
 ---
+
+## 인터페이스 (Interfaces) (Cont'd - 2)
 
 ### 인터페이스 예시
 
-- shape.hpp
+- `shape.hpp`
 
-```cpp
-#pragma once
-
-class Shape {
-  virtual bool is_valid() const = 0;
-
- public:
-  virtual void print() const = 0;
-  virtual double get_area() const = 0;
-  virtual double get_perimeter() const = 0;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/interface/shape.hpp)
 
 ---
 
-- circle.hpp
+## 인터페이스 (Interfaces) (Cont'd - 3)
 
-```cpp
-#pragma once
+- `square.hpp`
 
-#include "shape.hpp"
-
-class Circle : public Shape {
-  bool is_valid() const override;
-
-  double radius_;
-
- public:
-  explicit Circle(double radius);
-  ~Circle() = default;
-
-  void print() const override;
-  double get_area() const override;
-  double get_perimeter() const override;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/interface/square.hpp)
 
 ---
 
-- circle.cc
+## 인터페이스 (Interfaces) (Cont'd - 4)
 
-```cpp
-#include "circle.hpp"
+- `square.cc`
 
-#include <cassert>
-#include <iostream>
-
-Circle::Circle(double r) : radius_(r) {
-  if (!is_valid()) {
-    std::cout << "Invalid circle!";
-    assert(false);
-  }
-}
-
-void Circle::print() const {
-  std::cout << "Circle of radius : " << radius_ << std::endl;
-}
-
-double Circle::get_area() const { return 3.14 * radius_ * radius_; }
-
-double Circle::get_perimeter() const { return 2 * 3.14 * radius_; }
-
-bool Circle::is_valid() const { return radius_ > 0.0; }
-```
+[//]: # (INCLUDE: ./cpp/06/interface/square.cc)
 
 ---
 
-- ellipse.hpp
+## 인터페이스 (Interfaces) (Cont'd - 5)
 
-```cpp
-#pragma once
+- `rectangle.hpp`
 
-#include "shape.hpp"
-
-class Ellipse : public Shape {
-  bool is_valid() const override;
-
-  double radius1_;
-  double radius2_;
-
- public:
-  Ellipse(double r1, double r2);
-  ~Ellipse() = default;
-
-  void print() const override;
-  double get_area() const override;
-  double get_perimeter() const override;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/interface/rectangle.hpp)
 
 ---
 
-- ellipse.cc
+## 인터페이스 (Interfaces) (Cont'd - 6)
 
-```cpp
-#include "ellipse.hpp"
+- `rectangle.cc`
 
-#include <cassert>
-#include <cmath>
-#include <iostream>
-
-Ellipse::Ellipse(double r1, double r2) : radius1_(r1), radius2_(r2) {
-  if (!is_valid()) {
-    std::cout << "Invalid ellipse!";
-    assert(false);
-  }
-}
-
-void Ellipse::print() const {
-  std::cout << "Ellipse of radii : " << radius1_ << " X " << radius2_
-            << std::endl;
-}
-
-double Ellipse::get_area() const { return 3.14 * radius1_ * radius2_; }
-
-double Ellipse::get_perimeter() const {
-  double temp = (radius1_ * radius1_ + radius2_ * radius2_) / 2.0;
-  return 2 * 3.14 * std::sqrt(temp);
-}
-
-bool Ellipse::is_valid() const { return radius1_ > 0.0 && radius2_ > 0.0; }
-```
+[//]: # (INCLUDE: ./cpp/06/interface/rectangle.cc)
 
 ---
 
-- rectangle.hpp
+## 인터페이스 (Interfaces) (Cont'd - 7)
 
-```cpp
-#pragma once
+- `triangle.hpp`
 
-#include "shape.hpp"
-
-class Rectangle : public Shape {
-  bool is_valid() const override;
-
-  double length_;
-  double width_;
-
- public:
-  Rectangle(double length, double width);
-  ~Rectangle() = default;
-
-  void print() const override;
-  double get_area() const override;
-  double get_perimeter() const override;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/interface/triangle.hpp)
 
 ---
 
-- rectangle.cc
+## 인터페이스 (Interfaces) (Cont'd - 8)
 
-```cpp
-#include "rectangle.hpp"
+- `triangle.cc`
 
-#include <cassert>
-#include <iostream>
-
-Rectangle::Rectangle(double length, double width)
-    : length_(length), width_(width) {
-  if (!is_valid()) {
-    std::cout << "Invalid rectangle!";
-    assert(false);
-  }
-}
-
-void Rectangle::print() const {
-  std::cout << "Rectangle of " << length_ << " X " << width_ << std::endl;
-}
-
-double Rectangle::get_area() const { return length_ * width_; }
-
-double Rectangle::get_perimeter() const { return 2 * (length_ + width_); }
-
-bool Rectangle::is_valid() const { return length_ > 0.0 && width_ > 0.0; }
-```
+[//]: # (INCLUDE: ./cpp/06/interface/triangle.cc --to 20)
 
 ---
 
-- square.hpp
+## 인터페이스 (Interfaces) (Cont'd - 9)
 
-```cpp
-#pragma once
-
-#include "shape.hpp"
-
-class Square : public Shape {
-  bool is_valid() const override;
-
-  double side_;
-
- public:
-  explicit Square(double side);
-  ~Square() = default;
-
-  void print() const override;
-  double get_area() const override;
-  double get_perimeter() const override;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/interface/triangle.cc --from 22)
 
 ---
 
-- square.cc
+## 인터페이스 (Interfaces) (Cont'd - 10)
 
-```cpp
-#include "square.hpp"
+- `circle.hpp`
 
-#include <cassert>
-#include <iostream>
-
-Square::Square(double s) : side_(s) {
-  if (!is_valid()) {
-    std::cout << "Invalid square!";
-    assert(false);
-  }
-}
-
-void Square::print() const {
-  std::cout << "Square of size " << side_ << std::endl;
-}
-
-double Square::get_area() const { return side_ * side_; }
-
-double Square::get_perimeter() const { return 4 * side_; }
-
-bool Square::is_valid() const { return side_ > 0.0; }
-```
+[//]: # (INCLUDE: ./cpp/06/interface/circle.hpp)
 
 ---
 
-- triangle.hpp
+## 인터페이스 (Interfaces) (Cont'd - 11)
 
-```cpp
-#pragma once
+- `circle.cc`
 
-#include "shape.hpp"
-
-class Triangle : public Shape {
-  bool is_valid() const override;
-
-  double side1_;
-  double side2_;
-  double side3_;
-
- public:
-  Triangle(double side1, double side2, double side3);
-  ~Triangle() = default;
-
-  void print() const override;
-  double get_area() const override;
-  double get_perimeter() const override;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/interface/circle.cc)
 
 ---
 
-- triangle.cc
+## 인터페이스 (Interfaces) (Cont'd - 12)
 
-```cpp
-#include "triangle.hpp"
+- `ellipse.hpp`
 
-#include <cassert>
-#include <cmath>
-#include <iostream>
-
-Triangle::Triangle(double s1, double s2, double s3)
-    : side1_(s1), side2_(s2), side3_(s3) {
-  if (!is_valid()) {
-    std::cout << "Invalid triangle!";
-    assert(false);
-  }
-}
-
-void Triangle::print() const {
-  std::cout << "Triangle of : " << side1_ << " X " << side2_ << " X " << side3_
-            << std::endl;
-}
-
-double Triangle::get_area() const {
-  double s = (side1_ + side2_ + side3_) / 2;
-  return (std::sqrt(s * (s - side1_) * (s - side2_) * (s - side3_)));
-}
-
-double Triangle::get_perimeter() const { return side1_ + side2_ + side3_; }
-
-bool Triangle::is_valid() const {
-  bool fact1 = side1_ + side2_ > side3_;
-  bool fact2 = side1_ + side3_ > side2_;
-  bool fact3 = side2_ + side3_ > side1_;
-  return fact1 && fact2 && fact3;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/interface/ellipse.hpp)
 
 ---
 
-- main.cc
+## 인터페이스 (Interfaces) (Cont'd - 13)
 
-```cpp
-#include <iostream>
+- `ellipse.cc`
 
-#include "circle.hpp"
-#include "ellipse.hpp"
-#include "rectangle.hpp"
-#include "square.hpp"
-#include "triangle.hpp"
-
-int main() {
-  Square square(5);
-  square.print();
-  std::cout << "area: " << square.get_area() << std::endl;
-  std::cout << "Perimeter: " << square.get_perimeter() << std::endl;
-  std::cout << std::endl;
-
-  Rectangle rectangle(5, 4);
-  rectangle.print();
-  std::cout << "area: " << rectangle.get_area() << std::endl;
-  std::cout << "Perimeter: " << rectangle.get_perimeter() << std::endl;
-  std::cout << std::endl;
-  std::cout << "Information about a triangle" << std::endl;
-
-  Triangle triangle(3, 4, 5);
-  triangle.print();
-  std::cout << "area: " << triangle.get_area() << std::endl;
-  std::cout << "Perimeter: " << triangle.get_perimeter() << std::endl;
-  std::cout << std::endl;
-  std::cout << "Information about a circle" << std::endl;
-
-  Circle circle(5);
-  circle.print();
-  std::cout << "area: " << circle.get_area() << std::endl;
-  std::cout << "Perimeter: " << circle.get_perimeter() << std::endl;
-  std::cout << std::endl;
-  std::cout << "Information about an ellipse" << std::endl;
-
-  Ellipse ellipse(5, 4);
-  ellipse.print();
-  std::cout << "area: " << ellipse.get_area() << std::endl;
-  std::cout << "Perimeter: " << ellipse.get_perimeter() << std::endl;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/interface/ellipse.cc)
 
 ---
 
-## 다중 상속 (Multiple Inheritance) 시 문제점
+## 인터페이스 (Interfaces) (Cont'd - 14)
+
+- `main.cc`
+
+[//]: # (INCLUDE: ./cpp/06/interface/main.cc --to 18)
+
+---
+
+## 인터페이스 (Interfaces) (Cont'd - 15)
+
+[//]: # (INCLUDE: ./cpp/06/interface/main.cc --from 20)
+
+---
+
+## 다중 상속 (Multiple Inheritance)
 
 ![center](Figure_12_8.png)
 
-- 상속 형태가 다이아몬드 상속 (diamond inheritance)일 경우 발생하는 문제:
-  - **기반 클래스 내용이 여러 경로를 통해 중복 상속될 수 있음**
-  - 이로 인해 모호성 (ambiguity)과 중복 데이터 문제가 발생함
-  - 예: A를 상속받는 B와 C, 그리고 B와 C를 모두 상속받는 D에서는 A의 내용이 중복됨
+- 상속 형태가 다이아몬드 상속 (diamond inheritance)일 경우 **기반 클래스 내용이 중복 상속될 수 있음**
+  - 모호성 (ambiguity)과 중복 데이터 문제가 발생함
+  - e.g., `Person` 기반의 `Student`, `Professor`를 상속받는 `TA`는 두 개의 `name`을 멤버로 가지게 됨
 - 해결 방법:
   - 가상 기반 (virtual base) 클래스 사용: `virtual` 키워드로 상속하여 중복 상속 방지
   - 또는 믹스인 클래스 (mixin class) 패턴을 사용하여 구성 방식 변경
 
 ---
 
+## 다중 상속 (Multiple Inheritance) (Cont'd - 1)
+
 ### 가상 기반 (Virtual Base)
 
 ![center](Figure_12_9.png)
 
-- `virtual` 키워드를 사용해 상속하면 클래스 객체 실체화 과정이 변경됨:
-  1. 일반 상속 객체를 먼저 실체화함
-  2. 가상 기반 객체 (subobject)는 **실체화될 객체내에 단 한 번만 포함되도록 함**
-  3. 중간 클래스를 통한 다중 경로 상속이 있어도 공통 기반 클래스는 오직 한 번만 생성됨
-
-- 구현 방법:
-  - 가상 기반 포인터 (`vbptr`)와 가상 기반 테이블 (`vbtable`)을 사용하여 구현
-  - 가상 기반 포인터는 실제 기반 클래스 객체의 오프셋 정보를 가지고 있음
-  - 이를 통해 중복 객체 생성을 피하면서도 올바른 멤버 액세스가 가능함
-
-```cpp
-class Person {
- public:
-  std::string name_;
-  Person(const std::string& name) : name_(name) {}
-  virtual ~Person() {}
-};
-
-class Student: virtual public Person {
- public:
-  double gpa_;
-  Student(const std::string& name, double gpa) : Person(name), gpa_(gpa) {}
-};
-
-class Professor: virtual public Person {
- public:
-  std::string department_;
-  Professor(const std::string& name, const std::string& dept) : Person(name), department_(dept) {}
-};
-
-class TA: public Student, public Professor {
- public:
-  int hours_;
-  // TA 생성자는 Person 생성자를 직접 호출해야 함 (가상 기반 클래스의 최상위 파생 클래스 책임)
-  TA(const std::string& name, double gpa, const std::string& dept, int hrs)
-      : Person(name), Student(name, gpa), Professor(name, dept), hours_(hrs) {}
-};
-```
+- `virtual` 키워드를 사용해 상속하면 클래스 객체 생성 과정이 변경됨:
+  1. 가상 기반 클래스의 멤버를 먼저 생성한다 (단 한 번만).
+  2. 나머지 클래스들의 멤버를 생성한다.
+  - 최종 파생 클래스 내에서 가상 기반 클래스의 멤버는 **중복되지 않음**
+- 가상 기반 클래스는 가상 기반 포인터 (`vbptr`)와 가상 기반 테이블 (`vbtable`)을 사용하여 구현
 
 ---
 
-#### 가상 기반 동작 방식
+## 다중 상속 (Multiple Inheritance) (Cont'd - 2)
 
-##### 설명을 위한 가정
+### 메모리 레이아웃을 통한 가상 상속 메커니즘 설명
 
-아래의 예제는 다음과 같은 환경을 가정합니다:
+- **전제 조건**
 
-- 아키텍처: 16비트 주소 공간 (2바이트 주소)
-- 포인터 크기: 2바이트
-- 정수 크기: 2바이트
-- 엔디안: 리틀 엔디안(최하위 바이트 먼저 저장)
+> Integer size : 2 bytes
+> Pointer size : 2 bytes
+> Endian       : Little endian (최하위 바이트 먼저 저장)
 
-```cpp
-class Base {
-  int value = 0;
+### 1-1. `Base` 클래스
 
- public:
-  virtual void FuncBase() { /* ... */ }
-};
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --to 7 --no-comment)
+
+- `Base` 클래스는 가상 함수를 가지므로 `vptr`이 객체의 시작 부분에 위치
+  - `vptr`은 `vtable` (0x2000)을 가리키며, `vtable`에는 `Base::FuncBase()`의 구현이 저장됨
+- 멤버 변수 `value`는 `vptr` 다음에 위치
+
+---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 3)
+
+### 1-2. `Base` 객체 메모리 레이아웃
 
 ```text
-메모리 배치:
-주소     내용(16진수)  설명
-0x1000    00 20          vptr_Base (가상 함수 테이블 0x2000을 가리킴)
-0x1002    00 00          int value (값 0으로 초기화)
-...
-0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
+주소      내용(16진수)    설명
+0x1000   00 20         vptr_Base (가상 함수 테이블 0x2000을 가리킴)
+0x1002   00 00         int value (값 0으로 초기화)
+== [가상 함수 테이블] ==
+0x2000   00 30         Base::FuncBase() 함수 포인터 (0x3000)
 ```
 
 ---
 
-```cpp
-class Derived1 : virtual public Base {
- public:
-  void FuncBase() override { /* ... */ }
-  virtual void FuncDerived1() { /* ... */ }
-};
-```
+## 다중 상속 (Multiple Inheritance) (Cont'd - 4)
+
+### 2-1. `Derived1` 클래스
+
+[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 9 --to 13 --no-comment)
+
+- `virtual` 키워드로 `Base`를 상속하면 **두 개의 포인터**가 생성됨:
+  - `vptr_Derived1`: `Derived1` 자신의 가상 함수 테이블을 가리킴
+  - `vbptr_Derived1`: 가상 기반 테이블 (`vbtable`)을 가리킴
+- 가상 기반 클래스의 서브객체 (subobject, `Base` 객체)는 **파생 클래스 객체의 끝 부분에 배치됨**
+- `vbtable`에는 현재 위치에서 `Base` 서브객체까지의 오프셋 (+4 바이트)이 저장됨
+  - `vptr_Derived1 (2) + vbptr_Derived1 (2) = 4`
+- `Derived1`이 `FuncBase()`를 **오버라이딩**했으므로 `vtable`에는 **새로운 구현의 주소**가 저장됨
+
+---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 5)
+
+### 2-2. `Derived1` 객체 메모리 레이아웃
 
 ```text
-메모리 배치:
-주소     내용(16진수)  설명
-0x1100    00 22          vptr_Derived1 (Derived1의 가상 함수 테이블 0x2200을 가리킴)
-0x1102    00 21          vbptr_Derived1 (가상 기반 테이블 0x2100을 가리킴)
-                         -- Derived1 내부의 Base 서브객체 --
-0x1104    00 20          vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
-0x1106    00 00          int value (값 0으로 초기화)
-                         -- Derived1 내부의 Base 서브객체 끝 --
-...
-0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
-...
-0x2100    02 00          Base 서브객체로의 오프셋 (+2 바이트)
-...
-0x2200    00 31          Derived1::FuncBase() 함수 포인터 (0x3100)
-0x2202    00 32          Derived1::FuncDerived1() 함수 포인터 (0x3200)
+주소      내용(16진수)    설명
+0x1100   00 22         vptr_Derived1 (Derived1의 가상 함수 테이블 0x2200을 가리킴)
+0x1102   00 21         vbptr_Derived1 (가상 기반 테이블 0x2100을 가리킴)
+                       // Derived1 고유 멤버 영역 (없음)
+                       // 가상 기반 Base 서브객체 (객체 끝 부분에 위치)
+0x1104   00 20         vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
+0x1106   00 00         int value (값 0으로 초기화)
+== [가상 기반 테이블] ==
+0x2100   04 00         Base 서브객체로의 오프셋 (+4 바이트, 0x1100에서 0x1104까지)
+== [가상 함수 테이블] ==
+0x2200   00 31         Derived1::FuncBase() 함수 포인터 (0x3100)
+0x2202   00 32         Derived1::FuncDerived1() 함수 포인터 (0x3200)
 ```
+
+- `Derived1` 객체에서 `value` 접근 과정:
+  1. `Derived1`은 가상 기반과 가상 함수를 사용하므로, `this` 포인터 (`vptr`)의 다음 요소 (`vbptr`)을 역참조해 가상 기반 테이블 (`vbtable`)에 접근한다.
+  2. `this` 포인터에 가상 기반 테이블의 오프셋 (+4)를 더한다.
+  3. `Base`는 가상 함수를 사용하므로, `this + 4` (`Base`의 `vptr`)의 다음 요소에 접근한다.
 
 ---
 
-```cpp
-class Derived2 : virtual public Base {
- public:
-  virtual void FuncDerived2() { /* ... */ }
-};
-```
+## 다중 상속 (Multiple Inheritance) (Cont'd - 6)
+
+### 3-1. `Derived2` 클래스
+
+[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 15 --to 18 --no-comment)
+
+- `Derived1`과 동일한 구조를 가짐
+- `Derived2`는 `FuncBase()`를 **오버라이딩하지 않았으므로** `vtable`에는 `Base`의 **원래 구현 주소**가 저장됨
+- `Base` 서브객체 역시 끝 부분에 배치되며, `vbtable`을 통해 접근함
+
+---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 7)
+
+### 3-2. `Derived2` 객체 메모리 레이아웃
 
 ```text
-메모리 배치:
-주소     내용(16진수)  설명
-0x1200    00 24          vptr_Derived2 (Derived2의 가상 함수 테이블 0x2400을 가리킴)
-0x1202    00 23          vbptr_Derived2 (가상 기반 테이블 0x2300을 가리킴)
-                         -- Derived2 내부의 Base 서브객체 --
-0x1204    00 20          vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
-0x1206    00 00          int value (값 0으로 초기화)
-                         -- Derived2 내부의 Base 서브객체 끝 --
-...
-0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
-...
-0x2300    02 00          Base 서브객체로의 오프셋 (+2 바이트)
-...
-0x2400    00 30          Base::FuncBase() 함수 포인터 (0x3000) - Derived2가 오버라이딩하지 않음
-0x2402    00 33          Derived2::FuncDerived2() 함수 포인터 (0x3300)
+주소      내용(16진수)    설명
+0x1200   00 24         vptr_Derived2 (Derived2의 가상 함수 테이블 0x2400을 가리킴)
+0x1202   00 23         vbptr_Derived2 (가상 기반 테이블 0x2300을 가리킴)
+                       // Derived2 고유 멤버 영역 (없음)
+                       // 가상 기반 Base 서브객체 (끝 부분)
+0x1204   00 20         vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
+0x1206   00 00         int value (값 0으로 초기화)
+== [가상 기반 테이블] ==
+0x2300   04 00         Base 서브객체로의 오프셋 (+4 바이트)
+== [가상 함수 테이블] ==
+0x2400   00 30         Base::FuncBase() 함수 포인터 (0x3000) - 오버라이딩 안 함
+0x2402   00 33         Derived2::FuncDerived2() 함수 포인터 (0x3300)
 ```
+
+- `Derived2` 객체에서 `value` 접근 과정:
+  1. `Derived2`은 가상 기반과 가상 함수를 사용하므로, `this` 포인터 (`vptr`)의 다음 요소 (`vbptr`)을 역참조해 가상 기반 테이블 (`vbtable`)에 접근한다.
+  2. `this` 포인터에 가상 기반 테이블의 오프셋 (+4)를 더한다.
+  3. `Base`는 가상 함수를 사용하므로, `this + 4` (`Base`의 `vptr`)의 다음 요소에 접근한다.
 
 ---
 
-```cpp
-class MostDerived : public Derived1, public Derived2 {
- public:
-  void FuncBase() override { /* ... */ }
-  void FuncDerived1() override { /* ... */ }
-  virtual void FuncMostDerived() { /* ... */ }
-};
-```
+## 다중 상속 (Multiple Inheritance) (Cont'd - 8)
+
+### 4-1. `MostDerived` 클래스
+
+[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 20 --to 25 --no-comment)
+
+- `Derived1`과 `Derived2`가 모두 `Base`를 가상 상속했으므로, `Base` 서브객체는 `MostDerived` 내에 **단 한 번** 존재
+  - `Base` 서브객체는 객체의 가장 끝 부분 (0x1308)에 배치됨
+- `MostDerived`는 두 쌍의 `vptr` / `vbptr`을 가짐 (각 기반 클래스용)
+  - 상속 순서가 `Derived1`, `Derived2` 순서이므로, `Derived1` 멤버를 객체에 우선 실체화함
+  - `vptr_Derived1`: `Derived1` 서브객체용, `vbptr_Derived1`: `Base` 서브 객체까지의 오프셋 (+8 바이트)
+    - `vptr_Derived1 + vbptr_Derived1 + vptr_Derived2 + vbptr_Derived2 = 8`
+  - `vptr_Derived2`: `Derived2` 서브객체용, `vbptr_Derived2`: `Base` 서브 객체까지의 오프셋 (+4 바이트)
+    - `vptr_Derived2 + vbptr_Derived2 = 4`
+  - `vptr_Derived1`은 `MostDerived` 객체의 **주 가상 테이블 (primary `vtable`)을 가리키는 포인터**가 됨
+    - `MostDerived::FuncMostDerived()`는 주 가상 테이블인 0x2500에만 존재함
+- `thunk`: 컴파일러가 자동으로 생성하는 `this` 포인터 조정 및 실제 함수 호출을 중계하는 역할의 코드 조각
+
+---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 9)
+
+### 4-2. `MostDerived` 객체 메모리 레이아웃
 
 ```text
-메모리 배치:
-주소     내용(16진수)  설명
-0x1300    00 25          vptr_Derived1 (MostDerived/Derived1 테이블 0x2500을 가리킴)
-0x1302    00 27          vbptr_Derived1 (Derived1의 가상 기반 테이블 0x2700을 가리킴)
-0x1304    00 26          vptr_Derived2 (MostDerived/Derived2 테이블 0x2600을 가리킴)
-0x1306    00 28          vbptr_Derived2 (Derived2의 가상 기반 테이블 0x2800을 가리킴)
-                         -- MostDerived 내부의 공유된 Base 서브객체 --
-0x1308    00 20          vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
-0x130A    00 00          int value (값 0으로 초기화)
-                         -- MostDerived 내부의 공유된 Base 서브객체 끝 --
-...
-0x2000    00 30          Base::FuncBase() 함수 포인터 (0x3000)
-...
-0x2500    00 34          MostDerived::FuncBase() 함수 포인터 (0x3400)
-0x2502    00 35          MostDerived::FuncDerived1() 함수 포인터 (0x3500)
-...
-0x2600    00 34          MostDerived::FuncBase() 함수 포인터 (0x3400) - 두 가상 테이블에 동일 함수 포인터
-0x2602    00 33          Derived2::FuncDerived2() 함수 포인터 (0x3300) - 오버라이딩 안 함
-0x2604    00 36          MostDerived::FuncMostDerived() 함수 포인터 (0x3600)
-...
-0x2700    06 00          Base 서브객체로의 오프셋 (+6 바이트) - Derived1의 오프셋
-...
-0x2800    02 00          Base 서브객체로의 오프셋 (+2 바이트) - Derived2의 오프셋
+주소      내용(16진수)    설명
+                       // Derived1 서브객체 부분
+0x1300   00 25         vptr_Derived1 (MostDerived/Derived1 테이블 0x2500을 가리킴)
+0x1302   00 27         vbptr_Derived1 (가상 기반 테이블 0x2700을 가리킴)
+                       // Derived2 서브객체 부분
+0x1304   00 26         vptr_Derived2 (MostDerived/Derived2 테이블 0x2600을 가리킴)
+0x1306   00 28         vbptr_Derived2 (가상 기반 테이블 0x2800을 가리킴)
+                       // MostDerived 내부의 공유된 Base 서브객체 (끝 부분)
+0x1308   00 20         vptr_Base (Base의 가상 함수 테이블 0x2000을 가리킴)
+0x130A   00 00         int value (값 0으로 초기화)
+== [Derived1용 가상 기반 테이블] ==
+0x2700   08 00         Base 서브객체로의 오프셋 (+8 바이트, 0x1300에서 0x1308까지)
+== [Derived2용 가상 기반 테이블] ==
+0x2800   04 00         Base 서브객체로의 오프셋 (+4 바이트, 0x1304에서 0x1308까지)
+== [Derived1 경로의 가상 함수 테이블] ==
+0x2500   00 34         MostDerived::FuncBase() 함수 포인터 (0x3400)
+0x2502   00 35         MostDerived::FuncDerived1() 함수 포인터 (0x3500)
+0x2504   00 36         MostDerived::FuncMostDerived() 함수 포인터 (0x3600)
+== [Derived2 경로의 가상 함수 테이블] ==
+0x2600   00 37         MostDerived::FuncBase() thunk (this 포인터 조정 후 0x3400 호출)
+0x2602   00 33         Derived2::FuncDerived2() 함수 포인터 (0x3300)
 ```
 
 ---
 
-#### 가상 기반 예시
+## 다중 상속 (Multiple Inheritance) (Cont'd - 10)
 
-- person.hpp
+### `MostDerived` 객체 바인딩 과정
 
-```cpp
-#pragma once
-
-#include <string>
-
-class Person {
- protected:
-  std::string name_;
-
- public:
-  explicit Person(const std::string& name);
-  ~Person() = default;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 94 --to 114 --no-comment)
 
 ---
 
-- person.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 11)
 
-```cpp
-#include "person.hpp"
+### 가상 기반 예시
 
-#include <iostream>
+- `person.hpp`
 
-Person::Person(const std::string& nm) : name_(nm) {}
-
-void Person::print() const {
-  std::cout << "Person" << std::endl;
-  std::cout << "Name: " << name_ << std::endl << std::endl;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/person.hpp)
 
 ---
 
-- student.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 12)
 
-```cpp
-#pragma once
+- `person.cc`
 
-#include <string>
-
-#include "person.hpp"
-
-class Student : virtual public Person {
- protected:
-  double gpa_;
-
- public:
-  Student(const std::string& name, double gpa);
-  ~Student() = default;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/person.cc)
 
 ---
 
-- student.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 13)
 
-```cpp
-#include "student.hpp"
+- `student.hpp`
 
-#include <cassert>
-#include <iostream>
-
-Student::Student(const std::string& name, double gp) : Person(name), gpa_(gp) {
-  assert(gpa_ <= 4.0);
-}
-
-void Student::print() const {
-  std::cout << "Student " << std::endl;
-  std::cout << "Name: " << name_ << " ";
-  std::cout << "GPA: " << gpa_ << std::endl << std::endl;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/student.hpp)
 
 ---
 
-- professor.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 14)
 
-```cpp
-#pragma once
+- `student.cc`
 
-#include <string>
-
-#include "person.hpp"
-
-class Professor : virtual public Person {
- protected:
-  double salary_;
-
- public:
-  Professor(const std::string& name, double salary);
-  ~Professor() = default;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/student.cc)
 
 ---
 
-- professor.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 15)
 
-```cpp
-#include "professor.hpp"
+- `professor.hpp`
 
-#include <iostream>
-
-Professor::Professor(const std::string& nm, double sal)
-    : Person(nm), salary_(sal) {}
-
-void Professor::print() const {
-  std::cout << "Professor " << std::endl;
-  std::cout << "Name: " << name_ << " ";
-  std::cout << "Salary: " << salary_ << std::endl << std::endl;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/professor.hpp)
 
 ---
 
-- ta.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 16)
 
-```cpp
-#pragma once
+- `professor.cc`
 
-#include <string>
-
-#include "professor.hpp"
-#include "student.hpp"
-
-class TA : public Professor, public Student {
- public:
-  TA(const std::string& name, double gpa, double sal);
-  ~TA() = default;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/professor.cc)
 
 ---
 
-- ta.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 17)
 
-```cpp
-#include "ta.hpp"
+- `ta.hpp`
 
-#include <iostream>
-
-TA::TA(const std::string& nm, double gp, double sal)
-    : Person(nm), Professor(nm, sal), Student(nm, gp) {}
-
-void TA::print() const {
-  std::cout << "Teaching Assistance: " << std::endl;
-  std::cout << "Name: " << name_ << " ";
-  std::cout << "GPA: " << gpa_ << " ";
-  std::cout << "Salary: " << salary_ << std::endl << std::endl;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/ta.hpp)
 
 ---
 
-- main.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 18)
 
-```cpp
-#include "ta.hpp"
+- `ta.cc`
 
-int main() {
-  Person person("John");
-  person.print();
-  Student student("Anne", 3.9);
-  student.print();
-  Professor professor("Lucie", 78000);
-  professor.print();
-  TA ta("George", 3.2, 20000);
-  ta.print();
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/virtual_base/ta.cc)
 
 ---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 19)
+
+- `main.cc`
+
+[//]: # (INCLUDE: ./cpp/06/virtual_base/main.cc)
+
+---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 20)
 
 ### 믹스인 클래스
 
-- 인터페이스를 사용해 **주입할 속성**을 정의
-- 속성 주입 목적의 인터페이스를 상속 받은 클래스는 주입 받은 속성을 구현해야만 실체화할 수 있음
+- **추상 클래스 또는 인터페이스를 사용해 이를 상속받는 클래스에 속성을 주입하는 패턴**
+- 속성 주입 목적의 인터페이스를 상속받은 클래스는 **주입받은 속성을 구현해야만 실체화**할 수 있음
 
 ![center](Figure_12_10.png)
 
 ---
 
-#### 믹스인 클래스 예시
+## 다중 상속 (Multiple Inheritance) (Cont'd - 21)
 
-- stdtype.hpp
+- `stdtype.hpp`
 
-```cpp
-#pragma once
-
-class StdType {
- protected:
-  double gpa_;
-
- public:
-  virtual void print_gpa() const = 0;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/stdtype.hpp)
 
 ---
 
-- prftype.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 22)
 
-```cpp
-#pragma once
+- `prftype.hpp`
 
-class PrfType {
- protected:
-  double salary_;
-
- public:
-  virtual void print_salary() const = 0;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/prftype.hpp)
 
 ---
 
-- person.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 23)
 
-```cpp
-#pragma once
+- `person.hpp`
 
-#include <string>
-
-class Person {
- protected:
-  std::string name_;
-
- public:
-  explicit Person(const std::string& name);
-  ~Person() = default;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/person.hpp)
 
 ---
 
-- person.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 24)
 
-```cpp
-#include "person.hpp"
+- `person.cc`
 
-#include <iostream>
-
-Person::Person(const std::string& nm) : name_(nm) {}
-
-void Person::print() const { std::cout << "Name: " << name_ << std::endl; }
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/person.cc)
 
 ---
 
-- student.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 25)
 
-```cpp
-#pragma once
+- `student.hpp`
 
-#include <string>
-
-#include "person.hpp"
-#include "stdtype.hpp"
-
-class Student : public Person, public StdType {
- public:
-  Student(const std::string& name, double gpa);
-  ~Student() = default;
-  void print_gpa() const override;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/student.hpp)
 
 ---
 
-- student.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 26)
 
-```cpp
-#include "student.hpp"
+- `student.cc`
 
-#include <iomanip>
-#include <iostream>
-
-Student::Student(const std::string& name, double gp) : Person(name) {
-  gpa_ = gp;
-}
-
-void Student::print_gpa() const {
-  std::cout << "GPA: " << std::fixed << std::setprecision(2) << gpa_
-            << std::endl;
-}
-
-void Student::print() const {
-  Person::print();
-  print_gpa();
-}
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/student.cc)
 
 ---
 
-- professor.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 27)
 
-```cpp
-#pragma once
+- `professor.hpp`
 
-#include <string>
-
-#include "person.hpp"
-#include "prftype.hpp"
-
-class Professor : public Person, public PrfType {
- public:
-  Professor(const std::string& name, double salary);
-  ~Professor() = default;
-  void print_salary() const override;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/professor.hpp)
 
 ---
 
-- professor.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 28)
 
-```cpp
-#include "professor.hpp"
+- `professor.cc`
 
-#include <iomanip>
-#include <iostream>
-
-Professor::Professor(const std::string& nm, double sal) : Person(nm) {
-  salary_ = sal;
-}
-
-void Professor::print_salary() const {
-  std::cout << "Salary: ";
-  std::cout << std::fixed << std::setprecision(2) << salary_ << std::endl;
-}
-
-void Professor::print() const {
-  Person::print();
-  print_salary();
-}
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/professor.cc)
 
 ---
 
-- ta.hpp
+## 다중 상속 (Multiple Inheritance) (Cont'd - 29)
 
-```cpp
-#pragma once
+- `ta.hpp`
 
-#include <string>
-
-#include "person.hpp"
-#include "prftype.hpp"
-#include "stdtype.hpp"
-
-class TA : public Person, public StdType, public PrfType {
- public:
-  TA(const std::string& name, double gpa, double sal);
-  ~TA() = default;
-  void print_gpa() const override;
-  void print_salary() const override;
-  void print() const;
-};
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/ta.hpp)
 
 ---
 
-- ta.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 30)
 
-```cpp
-#include "ta.hpp"
+- `ta.cc`
 
-#include <iomanip>
-#include <iostream>
-
-TA::TA(const std::string& nm, double gp, double sal) : Person(nm) {
-  gpa_ = gp;
-  salary_ = sal;
-}
-
-void TA::print_gpa() const { std::cout << "GPA: " << gpa_ << std::endl; }
-
-void TA::print_salary() const {
-  std::cout << "Salary: ";
-  std::cout << std::fixed << std::setprecision(2) << salary_ << std::endl;
-}
-
-void TA::print() const {
-  Person::print();
-  print_gpa();
-  print_salary();
-}
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/ta.cc)
 
 ---
 
-- main.cc
+## 다중 상속 (Multiple Inheritance) (Cont'd - 31)
 
-```cpp
-#include <iostream>
+- `main.cc`
 
-#include "professor.hpp"
-#include "student.hpp"
-#include "ta.hpp"
-
-int main() {
-  std::cout << "Information about person" << std::endl;
-  Person per("John");
-  per.print();
-  std::cout << std::endl;
-
-  std::cout << "Information about student" << std::endl;
-  Student std("Linda", 3.9);
-  std.print();
-  std::cout << std::endl;
-
-  std::cout << "Information about professor" << std::endl;
-  Professor prf("George", 89000);
-  prf.print();
-  std::cout << std::endl;
-
-  std::cout << "Information about teaching assistance " << std::endl;
-  TA ta("Lucien", 3.8, 23000);
-  ta.print();
-  std::cout << std::endl;
-
-  return 0;
-}
-```
-
----
-
-## Appendix A. `vptr`의 유무에 따른 객체 크기 비교
-
-```cpp
-#include <iostream>
-
-class NoVirtual {
- public:
-  int a;
-  double b;
-};
-
-class WithVirtual {
- public:
-  int a;
-  double b;
-  virtual void func() {}  // declare a virtual function using a virtual keyword
-};
-
-int main() {
-  NoVirtual no_virtual_obj;
-  WithVirtual with_virtual_obj;
-
-  std::cout << "Size of NoVirtual object: " << sizeof(no_virtual_obj)
-            << " bytes" << std::endl;
-  std::cout << "Size of WithVirtual object: " << sizeof(with_virtual_obj)
-            << " bytes" << std::endl;
-
-  return 0;
-}
-```
-
----
-
-## Appendix B. 가상 테이블의 포인터와 실제 멤버 함수 포인터 간 비교
-
-- test.hpp
-
-```cpp
-#pragma once
-
-#include <iostream>
-
-class Base {
- public:
-  virtual void Show() { std::cout << "Base::Show called" << std::endl; }
-  virtual void Display() { std::cout << "Base::Display called" << std::endl; }
-};
-
-class Derived : public Base {
- public:
-  void Show() override { std::cout << "Derived::Show called" << std::endl; }
-  virtual void Print() { std::cout << "Derived::Print called" << std::endl; }
-};
-
-// Helper function to get the virtual function pointer from vtable
-typedef void (*FuncPtr)();  // Function pointer type definition
-
-FuncPtr GetVirtualFunctionPointer(Base* obj, int index) {
-  // Retrieves vptr from the object and returns the function pointer
-  // from the vtable at the specified index
-  return reinterpret_cast<FuncPtr*>(*reinterpret_cast<void**>(obj))[index];
-}
-```
-
-- In this code, a `Base*` pointer **can only call `Show()` and `Display()`** because that's the only virtual method declared in `Base`.
-
----
-
-- main.cc
-
-```cpp
-#include <iostream>
-
-#include "test.hpp"
-
-int main() {
-  // Get the function pointers from the vtable for the Base class using index
-  Base base_obj;
-  FuncPtr base_vtable_show = GetVirtualFunctionPointer(&base_obj, 0);
-  FuncPtr base_vtable_display = GetVirtualFunctionPointer(&base_obj, 1);
-
-  // Get the function pointers from the vtable for the Derived class using index
-  Derived derived_obj;
-  FuncPtr derived_vtable_show = GetVirtualFunctionPointer(&derived_obj, 0);
-  FuncPtr derived_vtable_display = GetVirtualFunctionPointer(&derived_obj, 1);
-  FuncPtr derived_vtable_print = GetVirtualFunctionPointer(&derived_obj, 2);
-
-  // Compare the pointers for the Base class
-  std::cout << "Base class vtable function pointers:" << std::endl;
-  std::cout << "Show function pointer from vtable(" << (void*) base_vtable_show
-            << "):";
-  base_vtable_show();
-  std::cout << "Display function pointer from vtable("
-            << (void*) base_vtable_display << "):";
-  base_vtable_display();
-
-  // Compare the pointers for the Derived class
-  std::cout << "\nDerived class vtable function pointers:" << std::endl;
-  std::cout << "Show function pointer from vtable("
-            << (void*) derived_vtable_show << "):";
-  derived_vtable_show();
-  std::cout << "Display function pointer from vtable("
-            << (void*) derived_vtable_display << "):";
-  derived_vtable_display();
-  std::cout << "Print function pointer from vtable("
-            << (void*) derived_vtable_print << "):";
-  derived_vtable_print();
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/06/mixin/main.cc)
