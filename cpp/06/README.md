@@ -612,8 +612,8 @@ Derived::Print
   - 모호성 (ambiguity)과 중복 데이터 문제가 발생함
   - e.g., `Person` 기반의 `Student`, `Professor`를 상속받는 `TA`는 두 개의 `name`을 멤버로 가지게 됨
 - 해결 방법:
-  - 가상 기반 (virtual base) 클래스 사용: `virtual` 키워드로 상속하여 중복 상속 방지
-  - 또는 믹스인 클래스 (mixin class) 패턴을 사용하여 구성 방식 변경
+  - 가상 기반 (virtual base) 클래스 사용: 다중 상속 시 공통 기본 클래스의 중복을 방지하기 위해 `virtual` 키워드로 지정한 상속 형태
+  - 믹스인 클래스 (mixin class) 패턴 사용
 
 ---
 

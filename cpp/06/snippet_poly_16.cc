@@ -1,18 +1,18 @@
 #include <string>
 
 class Person {
-  std::string name;
+  std::string name_;
 
  public:
-  explicit Person(const std::string& name) : name(name) {}
+  explicit Person(const std::string& name) : name_(name) {}
   ~Person() = default;  // Not virtual destructor
 };
 
 class Student : public Person {
-  double gpa;
+  double gpa_;
 
  public:
-  Student(const std::string& name, double gpa) : Person(name), gpa(gpa) {}
+  Student(const std::string& name, double gpa) : Person(name), gpa_(gpa) {}
   ~Student() = default;
 };
 

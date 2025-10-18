@@ -15,5 +15,5 @@ class Student : public Person {
   // overriding despite name differences due to their special role.
   ~Student() override;  // vtable[0]
 
-  void print() const override;  // vtable[1]
+  void Print() const override;  // vtable[1]
 };

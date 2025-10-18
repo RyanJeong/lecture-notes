@@ -10,12 +10,12 @@ class AnotherDerived : public Base {};
 int main() {
   AnotherDerived another_derived;
   Base* p_base = &another_derived;
-  Derived* derived_ptr = dynamic_cast<Derived*>(p_base);
+  // The type of the object pointed to by `p_base` is actually `AnotherDerived`
+  Derived* derived_ptr = dynamic_cast<Derived*>(p_base);  // Failed to downcast
   if (!derived_ptr) std::cout << "Failed to downcast to Derived*." << std::endl;
 
   Base& ref_base = another_derived;
   Derived& ref_derived = dynamic_cast<Derived&>(ref_base);
   // -> Failed to downcast to Derived&; throws std::bad_cast exception.
-
   return 0;
 }

@@ -9,5 +9,5 @@ class Person {
   explicit Person(const std::string& name);
   virtual ~Person();  // vtable[0]
 
-  virtual void print() const;  // vtable[1]
+  virtual void Print() const;  // vtable[1]
 };

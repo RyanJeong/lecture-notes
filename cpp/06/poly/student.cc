@@ -9,7 +9,7 @@ Student::Student(const std::string& nm, double gp) : Person(nm), gpa_(gp) {
 
 Student::~Student() { std::cout << "Student's dtor" << std::endl; }
 
-void Student::print() const {
-  Person::print();
+void Student::Print() const {
+  Person::Print();
   std::cout << "GPA: " << gpa_ << std::endl;
 }

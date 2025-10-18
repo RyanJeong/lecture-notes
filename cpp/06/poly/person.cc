@@ -9,4 +9,4 @@ Person::Person(const std::string& nm) : name_(nm) {
 
 Person::~Person() { std::cout << "Person's dtor" << std::endl; }
 
-void Person::print() const { std::cout << "Name: " << name_ << std::endl; }
+void Person::Print() const { std::cout << "Name: " << name_ << std::endl; }
