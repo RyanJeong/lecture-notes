@@ -485,7 +485,7 @@ Derived::Print
 
 ### 클래스 다이어그램에서의 인터페이스 표현 방법
 
-![center](image-1.png)
+![center](image-2.png)
 
 - 점선 + 속이 빈 화살촉 (realization 관계)
   - The `Square` class **implements** the `Shape` interface.
