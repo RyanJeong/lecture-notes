@@ -5,5 +5,7 @@ class PrfType {
   double salary_;
 
  public:
+  virtual ~PrfType() = default;
+
   virtual void PrintSalary() const = 0;
 };

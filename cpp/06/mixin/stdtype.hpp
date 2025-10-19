@@ -5,5 +5,7 @@ class StdType {
   double gpa_;
 
  public:
+  virtual ~StdType() = default;
+
   virtual void PrintGpa() const = 0;
 };
