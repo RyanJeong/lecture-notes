@@ -28,6 +28,7 @@ class Fraction {
 
   // Conversion operator
   explicit operator double() const;
+  operator int() const;
 
   // Friend binary operators
   friend const Fraction operator+(const Fraction& left, const Fraction& right);

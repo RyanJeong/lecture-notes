@@ -75,7 +75,6 @@ int main() {
   Fraction f12(3, 4);
   std::cout << "f10(2, 4) = " << f10 << ", f11(1, 2) = " << f11
             << ", f12(3, 4) = " << f12 << std::endl;
-
   std::cout << "f10 == f11: " << (f10 == f11 ? "true" : "false") << std::endl;
   std::cout << "f10 != f12: " << (f10 != f12 ? "true" : "false") << std::endl;
   std::cout << "f10 < f12: " << (f10 < f12 ? "true" : "false") << std::endl;
@@ -88,6 +87,10 @@ int main() {
   Fraction f13(3, 4);
   double d = static_cast<double>(f13);
   std::cout << "f13(3, 4) = " << f13 << ", as double = " << d << std::endl;
+  // The following expression implicitly calls the conversion operator int()
+  std::cout << "1 + f13 = " << (1 + f13) << std::endl;
+  // The following expression explicitly calls the conversion operator double()
+  std::cout << "1 + f13 = " << (1 + static_cast<double>(f13)) << std::endl;
 
   // Assignment operator
   std::cout << "\n--- Assignment Operator ---" << std::endl;

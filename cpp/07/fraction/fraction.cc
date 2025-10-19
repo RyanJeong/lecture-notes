@@ -52,7 +52,7 @@ Fraction::Fraction(double value) : denom_(1) {
 }
 
 // Unary operators
-const Fraction Fraction::operator+() const { return Fraction(numer_, denom_); }
+const Fraction Fraction::operator+() const { return Fraction(+numer_, denom_); }
 
 const Fraction Fraction::operator-() const { return Fraction(-numer_, denom_); }
 
@@ -73,14 +73,14 @@ Fraction& Fraction::operator--() {
 // Post-increment operator
 const Fraction Fraction::operator++(int) {
   Fraction temp(numer_, denom_);
-  ++(*this);
+  ++(*this);  // reuse pre-increment
   return temp;
 }
 
 // Post-decrement operator
 const Fraction Fraction::operator--(int) {
   Fraction temp(numer_, denom_);
-  --(*this);
+  --(*this);  // reuse pre-decrement
   return temp;
 }
 
@@ -128,6 +128,8 @@ Fraction& Fraction::operator/=(const Fraction& right) {
 Fraction::operator double() const {
   return static_cast<double>(numer_) / denom_;
 }
+
+Fraction::operator int() const { return static_cast<int>(numer_) / denom_; }
 
 // Binary arithmetic operators (friend functions)
 const Fraction operator+(const Fraction& left, const Fraction& right) {
@@ -183,9 +185,9 @@ bool operator>=(const Fraction& left, const Fraction& right) {
 
 // Stream operators (friend functions)
 std::istream& operator>>(std::istream& left, Fraction& right) {
-  std::cout << "Enter the value of numerator: ";
+  std::cout << "Enter the numerator: ";
   left >> right.numer_;
-  std::cout << "Enter the value of denominator: ";
+  std::cout << "Enter the denominator: ";
   left >> right.denom_;
   right.Normalize();
   return left;
