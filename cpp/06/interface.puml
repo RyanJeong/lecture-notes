@@ -6,8 +6,8 @@ skinparam class {
 }
 
 class Shape <<interface>> {
-    + draw()
-    + area()
+    + Draw()
+    + Area()
 }
 
 class Square
