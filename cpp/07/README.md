@@ -74,7 +74,7 @@
 - **Arity**
   - 연산자 고유의 피연산자 수 변경 불가
 
-- **No New operators**
+- **No New Operators**
   - 새로운 연산자를 추가 정의할 수 없고, C++ 연산자 중 오버로딩 가능성이 있는 연산자들만 오버로딩 가능
 
 - **No Combination**
