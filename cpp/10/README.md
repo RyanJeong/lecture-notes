@@ -3,16 +3,18 @@
 ## 함수 템플릿 (Function Template)
 
 * 함수 내 일부 형을 컴파일 시점에 확정하는 기법
+* 동일한 로직을 서로 다른 여러 형에 대해 중복 없이 구현할 수 있게 해주는 메커니즘
 
 ```cpp
 template <typename T, typename U, ..., typename Z>
-T function_template_syntax(U first, ... Z last) {
+T function_template_syntax(U first, ..., Z last) {
   // do something ...
 }
 ```
 
 * 함수 템플릿을 위한 템플릿 헤더 (template header)는 `template` 키워드를 사용
 * 템플릿 헤더의 내용은 `<>` 괄호를 사용하며, **제네릭 형 (generic type)** 표현에 사용됨
+  * 템플릿 매개변수 (template parameter): `T`, `U`, `Z`
 * `T`, `U`, `Z`는 컴파일 시점에 확정되는 형의 자리 표시자 (placeholder)
 * 하나의 함수 템플릿은 여러 번 호출되어 여러 개의 함수 정의가 생성될 수 있음
   * 함수 템플릿은 호출 시점의 전달 인자와 반환 형을 바탕으로 적합한 형이 컴파일 시점에 결정됨
@@ -41,7 +43,7 @@ int main() {
 
 ---
 
-### 함수 템플릿과 함수 오버로딩 간 비교
+### 함수 템플릿과 함수 오버로딩 간 비교 (Comparison: Function Template vs Overloading)
 
 ```cpp
 // Function to find the smaller between two characters
@@ -95,9 +97,14 @@ int main() {
 * 함수 템플릿으로부터 컴파일 시점에 형이 확정되어 실제로 실행 가능한 함수가 생성되는 것
 * 함수 템플릿은 **실제로 사용할 수 없는 코드**
   * 컴파일 시점에 필요한 형태의 함수를 만들기 위해 존재하는 일종의 틀
+  * 자신이 대표하는 구체적인 형(concrete type)이 없으면 컴파일되지 않음
 * 컴파일 시점에 함수 템플릿을 사용하는 형태에 맞게 동작할 수 있는 함수를 생성
+  * 예: `Smaller(12, 15)` 호출 → 컴파일러가 `int` 형 인스턴스 생성
+  * 예: `Smaller(3.14, 2.71)` 호출 → 컴파일러가 `double` 형 인스턴스 생성
 * 함수 템플릿으로부터 함수 코드를 생성하는 행위를 **인스턴스화**라고 함
   * 클래스로부터 객체를 생성하는 인스턴스화와 용어는 같지만 다른 의미임에 유의
+  * 클래스 인스턴스화: 클래스로부터 객체 생성
+  * 템플릿 인스턴스화: 템플릿으로부터 구체적인 함수/클래스 코드 생성
 
 ---
 
@@ -105,7 +112,7 @@ int main() {
 
 * 기본 함수 템플릿 문법으로부터 변형된 몇 가지 형태들
 
-### 자료형이 아닌 템플릿 매개변수 (Non-type Template Parameter)
+### 자료형이 아닌 템플릿 매개변수 (Non-Type Template Parameter)
 
 * 함수 템플릿에 제네릭 형 뿐만 아니라 값을 정의할 수도 있음
 * 값을 정의하고자 할 경우 해당 값의 형을 **명시적으로 표현해야 함**
@@ -117,8 +124,9 @@ int main() {
 * 값으로 사용 가능한 형이 제한적인 이유는 컴파일 시점에 값이 확정되는 형태만을 사용할 수 있음
 * **부동소수점 자료형이 허용되지 않음에 유의**
   * 부동소수점 표현은 컴파일러에 따라 값이 다르게 표현될 수 있음
-  * 부동소수점 표현은 정밀도 제약이 존재해 값이 매번 다르게 표현될 수 있음
-    * `0.1f == 0.1f` 표현은 항상 같다고 평가되지 않음
+  * 부동소수점 수는 정밀도 제약이 존재해 값이 매번 다르게 표현될 수 있음
+    * 예시: `double x = 0.1; double y = 0.1;` 일 때, `x == y`가 항상 참이 아닐 수 있음
+    * 템플릿 인스턴스화는 컴파일 시점에 이루어지므로 이런 부정확성을 허용할 수 없음
   * 함수 템플릿에 사용되는 값은 어떠한 상황에서도 항상 같은 값을 표현해야 함
 
 ---
@@ -163,7 +171,7 @@ template <typename T, int n, int step = 1>
 
 * 기본 매개변수 자리에 명시적으로 값을 전달해 기본 매개변수 대신 명시적인 값을 사용할 수 있음
 * 기본 매개변수는 오른쪽부터 채워져야 함
-* 기본 매개변수를 형이 아닌 값으로 사용할 경우 아래와 같은 형이여야 함:
+* 기본 매개변수를 형이 아닌 값으로 사용할 경우 아래와 같은 형이어야 함:
   * 정수 형 (`int`, `long`, `size_t`, etc.)
   * 포인터 또는 참조
   * 열거형
@@ -190,7 +198,7 @@ int main() {
 
   // Calling the template function with and without the default parameter
   print(arr1);                 // Uses the default step = 1
-  print<arr2[0], 3, 2>(arr2);  // Specifies step = 2 explicitly
+  print<double, 3, 2>(arr2);   // Specifies step = 2 explicitly
 
   return 0;
 }
@@ -253,7 +261,7 @@ T Smaller(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
 ```cpp
 // Definition of a template function
 template <typename T>
-T Smaller(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
+T Smallest(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
 
 #include <cstring>
 
@@ -266,17 +274,27 @@ const char* Smallest(const char* op1, const char* op2) {
 
 * 존재하는 함수 템플릿에 대해 예외 상황을 추가하여 특수화할 수 있음
 * 특수화를 의미하는 템플릿 헤더는 `template <>`
+  * 모든 템플릿 매개변수가 구체적인 형으로 결정됨을 의미
 * 함수 템플릿으로부터 특정 타입을 위한 **독립된 함수를 정의**
   * 함수 템플릿은 완성된 함수가 아닌 일종의 틀인 반면, 특수화된 함수는 완성된 함수임
-* 위 예시는 작음 비교 연산자가 없는 경우를 특수화하여 컴파일 오류를 해결한 형태
+  * **컴파일러는 특수화된 함수를 일반 템플릿보다 우선 선택** (더 구체적이므로)
+* 위 예시는 포인터 형식이 작음 비교 연산자를 적절히 처리하지 못하는 경우를 특수화하여 해결한 형태
+  * `const char*` 형식의 문자열 포인터를 비교할 때 `std::strcmp()`를 사용하도록 특수화
+  * 포인터 간 직접 비교는 메모리 주소를 비교하므로 의도와 다름
 
 ---
 
 ### 오버로딩 (Overloading)
 
 * 함수 템플릿에 오버로딩을 적용하면 가변 길이의 전달인자를 효율적으로 다룰 수 있음
+* **오버로딩과 특수화의 차이**:
+  * **오버로딩**: 같은 이름의 템플릿을 **여러 개** 정의 (다른 템플릿 매개변수 개수 등)
+    * `Smallest(T, T)` (2개 인자)와 `Smallest(T, T, T)` (3개 인자) 모두 정의
+    * 컴파일러가 호출 인자에 맞는 템플릿을 자동으로 선택
+  * **특수화**: 같은 이름의 기존 템플릿에 대해 **특정 형만** 별도 구현
+    * 기존 일반 템플릿 + `const char*`에 대한 특수화
 
-#### The Program for Overloaded `Smaller` Function
+#### 오버로드된 `Smallest` 함수 (The Program for Overloaded `Smallest` Function)
 
 ```cpp
 #include <iostream>
@@ -303,22 +321,26 @@ int main() {
 
 ---
 
-## 함수 템플릿을 사용하는 경우에서의 파일 분할
+## 함수 템플릿을 사용하는 경우에서의 파일 분할 (File Separation When Using Function Templates)
 
 * **함수 템플릿은 하나의 헤더 파일로 작성하는 것이 원칙**
   * 헤더 파일 내에 함수 템플릿 구현을 작성
   * **함수 템플릿은 선언과 구현을 분리하지 않음**
-* 함수 템플릿의 선언과 구현을 분리할 경우:
-  * foo.hpp, foo.cc, app.cc 세 개의 파일을 분할 컴파일한다고 가정
+* 함수 템플릿의 선언과 구현을 분리할 경우의 문제점:
+  * foo.hpp, foo.cc, main.cc 세 개의 파일을 분할 컴파일한다고 가정
     * foo.hpp에는 함수 템플릿의 선언, foo.cc에는 함수 템플릿의 구현이 각각 담겨 있음
-    * app.cc는 foo.hpp를 사용해 함수 템플릿을 사용하는 형태
-  * 컴파일러가 app.cc를 먼저 컴파일할 경우, 함수 템플릿 선언만 존재하므로 인스턴스화 불가
-    * 빌드 시 컴파일 의존관계를 고려해야 함
-    * foo.cc를 먼저 컴파일해 목적파일을 생성한 뒤, 이를 app.cc 컴파일에 같이 사용해야 함
+    * main.cc는 foo.hpp를 포함(`#include`)하여 함수 템플릿을 사용하는 형태
+  * **컴파일 순서 문제**: 컴파일러가 main.cc를 먼저 컴파일할 경우
+    * foo.hpp에는 함수 템플릿 **선언**만 존재하며, 실제 구현은 foo.cc에 있음
+    * main.cc에서 함수 템플릿을 호출해도 인스턴스화할 정의(구현)가 없으므로 **인스턴스화 불가**
+    * 빌드 시 링커 오류 발생
+  * **해결 방법**: 컴파일 의존관계를 고려해야 함
+    * foo.cc를 먼저 컴파일해 목적파일(object file)을 생성
+    * 그 뒤 main.cc를 컴파일하면서 foo.o를 링크: `g++ main.cc foo.o -o run`
 
 ---
 
-### Definition of a Function Template
+### 함수 템플릿의 정의 (Definition of a Function Template)
 
 * smaller.hpp
 
@@ -370,9 +392,15 @@ template <typename T>
 void Name<T>::set(const T& d) { data = d; }
 ```
 
-* 기존 클래스 설계에 함수 템플릿 기능을 추가한 클래스
+* 기존 클래스 설계에 템플릿 매개변수를 추가한 클래스
+  * 클래스 내부에 템플릿 형 `T`를 사용하여 데이터, 함수 정의 가능
 * 제네릭 형을 사용해 여러 형태의 클래스 인스턴스화 가능
-  * 대표적인 클래스 템플릿으로는 표준 C++ 문자열 클래스가 있음
+  * `Name<int>`, `Name<double>`, `Name<std::string>` 등 각각 다른 형의 클래스 생성
+  * 대표적인 클래스 템플릿: 표준 C++ 라이브러리의 `vector<T>`, `list<T>` 등
+* 클래스 템플릿 메서드 정의 시 주의:
+  * 일반 클래스: `void Class::method() { ... }`
+  * 템플릿 클래스: `template <typename T> void Class<T>::method() { ... }`
+    * 메서드도 템플릿이므로 `template` 선언 필요
 * 클래스 템플릿은 함수 템플릿과 마찬가지로 **하나의 헤더 파일**로 사용할 것을 권장
   * 헤더파일 안에 클래스 템플릿의 선언과 구현이 같이 존재해야 함
 
@@ -383,10 +411,13 @@ void Name<T>::set(const T& d) { data = d; }
 * 클래스 템플릿을 하나의 헤더 파일로 사용하지 않고, 선언과 구현을 분리하는 방법
 * 미리 클래스 템플릿에 적용될 수 있는 형을 코드에 명시적으로 표현
   * 미리 인스턴스화할 형을 지정함에 따라 컴파일 속도 개선 효과가 있음
-* 선언과 분리가 반드시 분리되어야 할 경우 사용할 수 있는 방법
+  * 필요한 형만 인스턴스화하므로 바이너리 크기를 줄일 수 있음
+* 선언과 구현을 분리해야 할 경우 사용할 수 있는 방법
   * 클래스 템플릿의 세부 구현은 감추고 싶은 경우
+  * 대규모 프로젝트에서 컴파일 시간을 단축하고 싶은 경우
 * 다양한 형을 지원해야 하는 상황이라면 명시적으로 지원해야 하는 모든 형을 표현해야 함
   * 관리 측면에서 번거로울 수 있음
+  * 지원하지 않는 형을 사용할 경우 링킹 오류 발생
 * 컴파일 시 **의존성 관리**를 해주어야 함
   * 반드시 클래스 템플릿을 먼저 컴파일된 후에 이를 컴파일 과정에 포함하도록 구성해야 함
   * Makefile 또는 CMake 등을 활용할 수 있음
@@ -481,7 +512,7 @@ int main() {
 
 ---
 
-### 클래스 템플릿 분할 컴파일 2 - 하나의 헤더 파일
+### 클래스 템플릿 분할 컴파일 2 - 하나의 헤더 파일 (Class Template Split Compilation 2 - Single Header File)
 
 * 헤더 파일에 클래스 템플릿의 선언과 구현을 같이 작성하는 방법
 * **컴파일 의존관계를 고려하지 않아도 됨**
@@ -561,18 +592,34 @@ int main() {
 
 ---
 
-### 어떤 방법을 사용해야 하는가?
+### 어떤 방법을 사용해야 하는가? (Which Approach Should Be Used?)
+
+| Item | Explicit Instantiation | Single Header File |
+|------|----------------------|-------------------|
+| **File Separation** | Possible (Header + Implementation) | Not Possible (Header Only) |
+| **Compilation Speed** | Fast (Only Required Types) | Can Be Slow (All Types Compiled) |
+| **Binary Size** | Small | Can Be Large |
+| **Implementation Privacy** | Hidden | Exposed |
+| **Maintenance** | Tedious (Explicit All Types) | Easy |
+| **Adding New Types** | Recompilation Required | Automatic Support |
+| **Linking Error Risk** | High (Unsupported Types) | Low |
 
 * 외부 공개용 헤더 파일 내에 클래스 템플릿을 사용하는 경우는 **거의 없음**
+  * 구현 세부사항이 노출되므로 문제 가능성
 * 대부분의 클래스 템플릿은 내부적으로 사용하는 경우가 대부분
-* **클래스 템플릿은 하나의 헤더 파일로 작성하는 것이 일반적**
-* 외부에 공개할 헤더 파일에 클래스 템플릿이 존재한다면 이를 사용하지 않는 형태로 재작성 후 배포
+* **권장 사항: 클래스 템플릿은 하나의 헤더 파일로 작성하는 것이 일반적**
+  * 표준 라이브러리의 `vector`, `list` 등도 모두 헤더 파일에 구현
+* 외부에 공개할 헤더 파일에 클래스 템플릿이 존재한다면
+  * 명시적 인스턴스화를 사용하거나
+  * 템플릿을 사용하지 않는 형태로 재작성 후 배포
 
 ---
 
-### 클래스 템플릿을 사용한 스택 클래스 구현
+### 클래스 템플릿을 사용한 스택 클래스 구현 (Stack Implementation Using Class Template)
 
 * 제네릭 형을 사용해 범용적인 스택 클래스 구현
+* 동적 메모리할당으로 임의의 용량을 가진 스택 생성 가능
+* 예외 기반의 오류 처리로 안전한 스택 연산 제공
 
 ![center](Figure_15_4.png)
 
@@ -618,6 +665,8 @@ class Stack {
     ptr_ = new T[capacity_];
   }
 
+  // Default destructor causes memory leak for dynamically allocated memory
+  // (Explicit destructor implementation for example simplification)
   ~Stack() { delete[] ptr_; }
 
   void push(const T& elem) {
@@ -715,10 +764,10 @@ class MyClass {
 
 * 템플릿은 코드가 길어짐에 따라 가독성이 낮아질 수 있음
 * 별칭 (`using`)을 사용해 코드의 길이를 줄이거나 더욱 명료한 표현을 통해 가독성을 높일 수 있음
+* 별칭은 단순한 이름 변경일 뿐 새로운 형을 만드는 것이 아님
 
 ```cpp
-// This allows us to use the alias as the full definition of the class in the
-// code (program):
+// This allows us to use the alias as the full definition of the class
 using IntStack = Stack<int>;
 using DoubleStack = Stack<double>;
 using StringStack = Stack<std::string>;
@@ -743,10 +792,12 @@ Ptr<int> intPointer = &x;  // Using the Ptr alias to declare an int pointer
 
 * 클래스 템플릿 또는 일반 클래스를 기반으로 사용해 새로운 클래스 템플릿을 파생할 수 있음
 
+#### 템플릿 클래스에서 상속
+
 ```cpp
 template <typename T>
 class BaseTemplate {
-  T value_
+  T value_;
 
  public:
   BaseTemplate(T val) : value_(val) {}
@@ -759,9 +810,11 @@ class DerivedTemplate : public BaseTemplate<T> {
 };
 ```
 
+#### 일반 클래스에서 템플릿 클래스 파생
+
 ```cpp
 class NonTemplateClass {
-  int value_
+  int value_;
 
  public:
   NonTemplateClass(int val) : value_(val) {}
@@ -776,7 +829,7 @@ class DerivedFromNonTemplate : public NonTemplateClass {
 
 ---
 
-### 이전에 학습했던 클래스 (in Retrospect)
+### 이전에 학습했던 클래스 (Previously Learned Classes)
 
 * 이전에 학습한 클래스 중 일부는 **클래스 템플릿**
 
@@ -812,12 +865,12 @@ class basic_string;
 #include <iostream>
 #include <string>
 
-// Custom char_traits implementation to get case-insentive comparison
+// Custom char_traits implementation to get case-insensitive comparison
 class MyCharTraits : public std::char_traits<char> {
-  // std::char_traits requires specific method names like `lt` and `compare` for
-  // STL compatibility. These methods are static to allow direct access without
-  // instantiating the class. Changing method names breaks the contract and
-  // causes the standard library to fail.
+  // std::char_traits requires specific method names like `lt` and `compare`
+  // for STL compatibility. These methods are static to allow direct access
+  // without instantiating the class. Changing method names breaks the contract
+  // and causes the standard library to fail.
 
  public:
   static int MyRank(char c) noexcept { return std::tolower(c); }
@@ -881,420 +934,4 @@ class basic_ostream;
 ```cpp
 using std::istream = std::basic_istream<char>;
 using std::ostream = std::basic_ostream<char>;
-```
-
----
-
-## 스마트 포인터 (Smart Pointers)
-
-```cpp
-class Fraction;  // Forward declaration for the type you want to use
-
-class SmartPtr {
-  Fraction* ptr_;
-
- public:
-  explicit SmartPtr(Fraction* p) : ptr_(p) {}
-  ~SmartPtr() { delete ptr_; }
-  Fraction& operator*() const { return *ptr_; }
-  Fraction* operator->() const { return ptr_; }
-};
-
-int main() {
-  SmartPtr sp(new Fraction(2, 5));
-  (*sp).print();
-  sp->print();  // `sp` is a stack instance; it's dtor will auto-invoke!
-}
-```
-
-* 동적 메모리 관리의 자동화를 위한 포인터 래퍼 (wrapper) 클래스
-* 메모리 누수와 자원 관리 문제 해결
-* **제네릭 프로그래밍과 결합하여 메모리 안전성 향상**
-
----
-
-### RAII (Resource Acquisition Is Initialization)
-
-* 자원의 획득과 해제를 객체의 수명에 묶어 관리
-* 객체 생성 시 자원 획득, 소멸 시 자원 해제
-* **스마트 포인터의 동작 원리**
-  * 스마트 포인터는 RAII 원칙을 적용하여 메모리 관리 자동화
-  * 예외 발생 시에도 자원이 자동으로 해제되어 안전성 향상
-  * 명시적인 메모리 해제 코드 불필요
-  * 예외 안전성 제공 및 코드의 유지보수성 향상
-
-```cpp
-#include <iostream>
-
-class Resource {
- public:
-  Resource() { std::cout << "Acquired resource\n"; }
-  ~Resource() { std::cout << "Released resource\n"; }
-};
-
-int main() {
-  {
-    Resource res;  // Acquire resource upon construction
-    // Use the resource
-  }  // Automatically release resource upon scope exit
-  return 0;
-}
-```
-
----
-
-### `std::unique_ptr`
-
-* **단독 소유권**을 가지는 스마트 포인터
-* 복사와 대입 불가
-  * 복사 연산자와 대입 연산자가 삭제 (`delete`)되어 있음
-  * 소유권 이동은 가능
-* 자동 메모리 해제 제공
-
-```cpp
-#include <iostream>
-#include <memory>  // for smart pointers
-
-class MyObject {
- public:
-  MyObject() { std::cout << "MyObject created\n"; }
-  ~MyObject() { std::cout << "MyObject destroyed\n"; }
-  void DoSomething() { std::cout << "Doing something\n"; }
-};
-
-int main() {
-  std::unique_ptr<MyObject> ptr(new MyObject());
-  ptr->DoSomething();  // Use the object
-  // No need to delete; memory is managed automatically
-
-  // Attempt to copy the unique_ptr (this will cause a compile-time error)
-  // Error: Copy constructor is deleted
-  // std::unique_ptr<MyObject> ptr_copy = ptr;
-  return 0;
-}
-```
-
----
-
-#### `get()` 메서드
-
-* 스마트 포인터 객체가 가리키는 객체의 **주소**을 얻어올 때 사용
-* 기존의 C API나 라이브러리와의 호환성을 위해 필요
-* `get()`으로 받은 포인터를 통해 메모리를 관리하지 말 것
-
-```cpp
-#include <iostream>
-#include <memory>  // for smart pointers
-
-class MyObject {
- public:
-  MyObject() { std::cout << "MyObject created\n"; }
-  ~MyObject() { std::cout << "MyObject destroyed\n"; }
-
-  void DoSomething() { std::cout << "Doing something\n"; }
-};
-
-void UseRawPointer(MyObject* obj) { if (obj) obj->DoSomething(); }
-
-int main() {
-  // Create a unique_ptr managing a new MyObject
-  std::unique_ptr<MyObject> ptr(new MyObject());
-  UseRawPointer(ptr.get());
-
-  // MyObject* raw_ptr = ptr.get(); // Improperly manage memory using the raw
-  // ptr delete raw_ptr; // Logical Error: Deletes the object managed by
-  // unique_ptr
-
-  // At the end of scope, unique_ptr will try to delete the object again
-  // This leads to undefined behavior (double deletion)
-  return 0;
-}
-```
-
----
-
-### `std::make_unique`
-
-* C++14에서 도입된 유틸리티 함수
-* 스마트 포인터 객체 생성과 포인터 래핑을 한 줄로 처리
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class MyObject {
- public:
-  MyObject() { std::cout << "MyObject created\n"; }
-  ~MyObject() { std::cout << "MyObject destroyed\n"; }
-  void DoSomething() { std::cout << "Doing something\n"; }
-};
-
-int main() {
-  // You can replace std::unique_ptr<MyObject> ptr(new MyObject()) with:
-  std::unique_ptr<MyObject> ptr = std::make_unique<MyObject>();
-  ptr->DoSomething();
-  return 0;
-}
-```
-
----
-
-### `std::shared_ptr`, `std::make_shared`
-
-* 복수의 소유자를 가질 수 있는 스마트 포인터
-* 참조 개수 계산 (reference counting)을 통해 객체 생명 주기 관리
-  * `std::unique_ptr`은 단일 소유이므로 해당 객체가 소멸될 때 반드시 소멸됨을 보장
-  * `std::shared_ptr`은 해당 객체가 소멸되더라도 참조 개수가 0이 아니면 소멸되지 않음
-* 복사 및 대입 가능
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class MyObject {
- public:
-  MyObject() { std::cout << "MyObject created\n"; }
-  ~MyObject() { std::cout << "MyObject destroyed\n"; }
-};
-
-int main() {
-  // Create a shared_ptr using make_shared
-  std::shared_ptr<MyObject> ptr1 = std::make_shared<MyObject>();
-  std::cout << "Reference count after creation: " << ptr1.use_count() << "\n";
-  {
-    // Copy ptr1 to ptr2, increasing the reference count
-    std::shared_ptr<MyObject> ptr2 = ptr1;
-    std::cout << "Reference count after copying to ptr2: " << ptr1.use_count()
-              << "\n";
-  }  // ptr2 goes out of scope here, decreasing the reference count
-  std::cout << "Reference count after ptr2 is out of scope: "
-            << ptr1.use_count() << "\n";
-  return 0;
-}
-```
-
----
-
-* 원시 포인터로 `std::shard_ptr`을 생성하지 말 것
-  * 원시 포인터를 사용해 `std::shared_ptr`을 생성할 경우 **이중 삭제**를 유발하게 됨
-    * 서로 다른 제어 블록 (control block)을 생성하게 됨 (참조 개수 계산이 분산됨)
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class Foo {
-  int* data_;
-
- public:
-  Foo() {
-    data_ = new int[100];
-    std::cout << "Acquired resources!\n";
-  }
-
-  ~Foo() {
-    std::cout << "Destructor called!\n";
-    delete[] data_;
-  }
-};
-
-int main() {
-  Foo* a = new Foo();
-
-  std::shared_ptr<Foo> pa1(a);
-  std::shared_ptr<Foo> pa2(a);
-
-  std::cout << "Use count: " << pa1.use_count() << std::endl;
-  std::cout << "Use count: " << pa2.use_count() << std::endl;
-  return 0;
-}
-```
-
----
-
-* 원시 포인터로 `std::shard_ptr`을 생성하지 말 것
-  * `std::make_shared`를 사용한 객체를 활용할 것
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class Foo {
-  int* data_;
-
- public:
-  Foo() {
-    data_ = new int[100];
-    std::cout << "Acquired resources!\n";
-  }
-
-  ~Foo() {
-    std::cout << "Destructor called!\n";
-    delete[] data_;
-  }
-};
-
-int main() {
-  std::shared_ptr<Foo> pa1 = std::make_shared<Foo>();
-  std::shared_ptr<Foo> pa2 = pa1;
-
-  std::cout << "Use count: " << pa1.use_count() << std::endl;
-  std::cout << "Use count: " << pa2.use_count() << std::endl;
-  return 0;
-}
-```
-
----
-
-* 클래스 내부에서 자신의 `std::shared_ptr`을 생성해야 하는 상황
-  * 직접 `this` 포인터 (원시 포인터)를 사용해 생성할 경우 **독립적인 제어 블록**이 생성됨
-* `std::enable_shared_from_this`를 상속받아 `shared_from_this()` 함수를 사용할 것
-  * 이미 생성된 `std::shared_ptr` 객체 (호스트 객체)의 제어 블록을 사용하는 객체를 반환
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class Foo : public std::enable_shared_from_this<Foo> {
-  int* data_;
-
- public:
-  Foo() {
-    data_ = new int[100];
-    std::cout << "Acquired resources!\n";
-  }
-
-  ~Foo() {
-    std::cout << "Destructor called!\n";
-    delete[] data_;
-  }
-
-  std::shared_ptr<Foo> GetSharedPtr() { return shared_from_this(); }
-};
-
-int main() {
-  std::shared_ptr<Foo> pa1 = std::make_shared<Foo>();
-  std::shared_ptr<Foo> pa2 = pa1->GetSharedPtr();
-
-  std::cout << "Use count: " << pa1.use_count() << std::endl;
-  std::cout << "Use count: " << pa2.use_count() << std::endl;
-  return 0;
-}
-```
-
----
-
-### 순환 참조와 `std::weak_ptr`
-
-* `std::shared_ptr` 간의 순환 참조로 인해 참조 개수가 0이 되지 않아 메모리 누수 발생
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class B;  // Forward declaration
-
-class A {
-  std::shared_ptr<B> partner_;  // Causes circular reference
-
- public:
-  ~A() { std::cout << "A destroyed\n"; }
-
-  void SetPartner(const std::shared_ptr<B>& partner) { partner_ = partner; }
-};
-
-class B {
-  std::shared_ptr<A> partner_;  // Causes circular reference
-
- public:
-  ~B() { std::cout << "B destroyed\n"; }
-
-  void SetPartner(const std::shared_ptr<A>& partner) { partner_ = partner; }
-};
-
-int main() {
-  std::shared_ptr<A> a = std::make_shared<A>();
-  std::shared_ptr<B> b = std::make_shared<B>();
-  a->SetPartner(b);
-  b->SetPartner(a);
-  // Objects 'a' and 'b' will not be destroyed due to circular reference
-  return 0;
-}
-```
-
----
-
-* `std::weak_ptr`을 사용해 순환 참조 문제 해결 가능
-* `std::weak_ptr`은 일반 포인터와 `std::shared_ptr` 사이에 위치한 스마트 포인터
-* 객체를 직접 소유하지 않으며, 객체의 소멸 여부 확인 가능
-  * **참조 개수를 증가시키지 않고** 객체를 안전하게 관찰 가능
-
-```cpp
-#include <iostream>
-#include <memory>
-
-class B;  // Forward declaration
-
-class A {
-  std::weak_ptr<B> partner_;  // Use weak_ptr to prevent circular reference
-
- public:
-  ~A() { std::cout << "A destroyed\n"; }
-
-  void SetPartner(const std::shared_ptr<B>& partner) { partner_ = partner; }
-};
-
-class B {
-  std::weak_ptr<A> partner_;  // Use weak_ptr to prevent circular reference
-
- public:
-  ~B() { std::cout << "B destroyed\n"; }
-
-  void SetPartner(const std::shared_ptr<A>& partner) { partner_ = partner; }
-};
-
-int main() {
-  std::shared_ptr<A> a = std::make_shared<A>();
-  std::shared_ptr<B> b = std::make_shared<B>();
-  a->SetPartner(b);
-  b->SetPartner(a);
-  // Both objects can be destroyed properly as there is no circular strong
-  // reference
-  return 0;
-}
-```
-
----
-
-* `std::weak_ptr`은 객체로의 직접 참조가 불가하며, `lock()` 메서드를 사용해야 함
-  * 현재 객체를 가리키는 `std::shared_ptr` 값 반환
-  * 만약 객체가 이미 소멸되었다면 `nullptr` 반환
-
-```cpp
-#include <iostream>
-#include <memory>
-
-int main() {
-  std::weak_ptr<int> weak;
-
-  {
-    std::shared_ptr<int> sp = std::make_shared<int>(42);
-    weak = sp;  // weak_ptr observes the shared_ptr
-
-    // Before shared_ptr goes out of scope
-    if (std::shared_ptr<int> locked = weak.lock())
-      std::cout << "Shared_ptr value: " << *locked << "\n";
-    else
-      std::cout << "Shared_ptr is empty\n";
-  }  // sp goes out of scope, the managed object is destroyed
-
-  // After shared_ptr is destroyed
-  if (std::shared_ptr<int> locked = weak.lock()) {
-    std::cout << "Shared_ptr value: " << *locked << "\n";
-  } else {
-    std::cout << "Shared_ptr is empty (nullptr)\n";
-  }
-
-  return 0;
-}
 ```
