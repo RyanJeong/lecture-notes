@@ -215,3 +215,199 @@
   * 예외 발생 시 즉시 `std::terminate()` 호출로 빠르게 종료하므로 실행 속도 측면에서 이점이 있음
 
 [//]: # (INCLUDE: ./cpp/08/noexcept.cc)
+
+---
+
+## 스택 풀기 (Stack Unwinding)
+
+* 예외가 발생했을 때, 그 예외를 처리할 수 있는 `catch` 절을 찾기 위해 함수 호출 스택을 역순으로 거슬러 올라감
+  * 현재 실행중인 함수는 중단되고, **스택 프레임을 역순으로 제거**
+  * 각 스택 프레임 제거 시 그 함수 내 지역 객체의 소멸자 호출
+  * 예외를 처리할 수 있는 `catch` 절 발견 시 스택 풀기 중단
+
+### Memory Layout
+
+* 런타임 시스템은 프로그램 실행 시 네 개의 프로그램 메모리 영역을 사용함
+
+| Memory Area                      | Purpose                              | Features                                                                 |
+| -------------------------------- | ------------------------------------ | ------------------------------------------------------------------------ |
+| **Code Memory (Program Memory)** | Stores executable instructions       | Contains compiled machine code executed by the CPU                       |
+| **Static Memory**                | Stores global and static variables   | Lifetime spans the entire program execution                              |
+| **Stack Memory**                 | Stores function call data            | Managed as LIFO; **holds parameters, local variables, and return addresses** |
+| **Heap Memory**                  | Stores dynamically allocated objects | Lifetime controlled manually by allocation and deallocation              |
+
+---
+
+## 스택 풀기 (Stack Unwinding) (Cont'd - 1)
+
+### 함수 호출 스택이 쌓이는 과정
+
+* 각 함수 호출마다 하나의 스택 프레임이 함수 호출 스택에 추가됨
+* 스택 프레임은 매개변수 값, 지역변수 값, 상위 호출 함수의 복귀 주소를 저장하는 단위
+
+![center](Figure_14_9.png)
+
+---
+
+## 스택 풀기 (Stack Unwinding) (Cont'd - 2)
+
+### 스택 풀기 과정
+
+![center](Figure_14_10.png)
+
+---
+
+## 클래스 예외 처리
+
+* 예외는 클래스의 멤버 함수 내에서도 발생시킬 수 있음
+
+### 소멸자에서의 예외 처리
+
+* C++11 이후 모든 소멸자는 `noexcept`
+* 소멸자 내에서 try-catch 블록을 사용한 예외 처리는 가능하나 **예외 전파**는 불가능
+  * 소멸자에서 예외 전파를 하면 C++ 표준 함수인 `std::terminate()`가 호출되어 프로그램은 즉시 종료
+
+### 생성자에서의 예외 처리
+
+* 생성자는 예외가 발생할 수 있음
+* 생성자 내부에서 예외가 발생하면 **해당 객체는 소멸 시점에 소멸자가 호출되지 않는 불완전 객체**가 됨
+  * 생성자는 정상 종료 시 런타임 시스템의 `cleanup_stack` 자료구조에 해당 객체의 소멸자를 등록함
+  * 생성자에 문제가 발생할 경우 `cleanup_stack`에 해당 객체의 소멸자 등록에 실패함
+    * 이는 **메모리 누수**가 발생할 수 있음
+
+---
+
+## 클래스 예외 처리 (Cont'd - 1)
+
+### 런타임 시스템의 `cleanup_stack` 메커니즘
+
+* 런타임 시스템은 내부적으로 `cleanup_stack`이라는 자료구조를 유지함
+  * 각 함수 호출 시 해당 지역 객체의 소멸자 호출 정보는 `__runtime_register_destructor` 함수를 통해 기록됨
+
+[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 4 --to 10 --no-comment)
+
+[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 12 --to 19 --no-comment)
+
+---
+
+## 클래스 예외 처리 (Cont'd - 2)
+
+### 컴파일러에 의해 `__runtime_register_destructor` 함수 호출이 추가된 생성자
+
+[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 21 --to 26 --no-comment)
+
+* 생성자가 정상 종료되면 컴파일러에 의해 추가된 `__runtime_register_destructor` 함수가 호출됨
+  * 현재 생성자가 생성하는 객체의 소멸자를 `cleanup_stack`에 등록
+  * 해당 객체의 소멸 시점에 `cleanup_stack`을 통해 소멸자가 호출됨
+* 만약 생성자 내부에 예외가 발생하면 `__runtime_register_destructor` 함수 호출이 생략되어 불완전 객체가 생성됨
+
+[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 29 --to 34 --no-comment)
+
+---
+
+## 클래스 예외 처리 (Cont'd - 3)
+
+### 스택 메모리 멤버를 사용하는 객체의 생성자 완료
+
+![center](Figure_14_11.png)
+
+---
+
+## 클래스 예외 처리 (Cont'd - 4)
+
+### 스택 메모리 멤버를 사용하는 객체의 생성자 미완료
+
+![center](Figure_14_12.png)
+
+* **스택 풀기**를 통해 멤버 자동 정리
+
+---
+
+## 클래스 예외 처리 (Cont'd - 5)
+
+### 힙 메모리 멤버를 사용하는 객체의 생성자 완료
+
+![center](Figure_14_13.png)
+
+---
+
+## 클래스 예외 처리 (Cont'd - 6)
+
+### 힙 메모리 멤버를 사용하는 객체의 생성자 미완료
+
+![center](Figure_14_14.png)
+
+* **스택 풀기**에서는 스택 메모리만 정리되며, **힙 메모리** 누수가 발생
+
+---
+
+## 클래스 예외 처리 (Cont'd - 7)
+
+### 힙 메모리 멤버를 사용하는 객체의 생성자 미완료 보완: 스마트 포인터
+
+![center](Figure_14_15.png)
+
+---
+
+## 클래스 예외 처리 (Cont'd - 8)
+
+### Function-try 블록
+
+![center](Figure_14_16.png)
+
+* Try-catch 블록의 `try` 절을 함수의 블록으로 사용하는 형태
+* 생성자에 function-try 블록 사용 시 **초기화 목록** 단계에서 발생한 예외를 처리할 수 있음
+  * 일반 try-catch 블록은 **생성자 본문**만 처리 가능
+
+---
+
+## 클래스 예외 처리 (Cont'd - 9)
+
+### Function-try 블록: 예외 완전 처리
+
+[//]: # (INCLUDE: ./cpp/08/snippet_function_try.cc --from 12 --to 32 --no-comment)
+
+---
+
+## 클래스 예외 처리 (Cont'd - 10)
+
+### Function-try 블록: 예외 재전달
+
+[//]: # (INCLUDE: ./cpp/08/snippet_function_try.cc --from 34 --to 54 --no-comment)
+
+---
+
+## 표준 예외 클래스
+
+![center](Figure_14_17.png)
+
+* 모든 표준 예외 클래스는 `std::exception`을 직접 또는 간접적으로 상속받음
+* 예외 타입에 따라 서로 다른 표준 예외 클래스 제공
+
+---
+
+## 표준 예외 클래스 (Cont'd - 1)
+
+### `std::exception` 클래스의 `public` 인터페이스
+
+[//]: # (INCLUDE: ./cpp/08/std_exception.hpp)
+
+* 주요 멤버 함수로는 `what()`이 있음
+  * 예외 정보를 반환하는 가상 함수
+  * 파생 클래스들은 이를 오버라이드하여 구체적인 예외 정보 제공에 활용
+
+---
+
+## 표준 예외 클래스 (Cont'd - 2)
+
+### 사용자 정의 예외 클래스
+
+[//]: # (INCLUDE: ./cpp/08/my_exception.hpp)
+
+---
+
+## 표준 예외 클래스 (Cont'd - 3)
+
+### 사용자 정의 예외 클래스 사용 예
+
+[//]: # (INCLUDE: ./cpp/08/my_exception.cc)
