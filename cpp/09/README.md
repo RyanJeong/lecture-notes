@@ -36,7 +36,7 @@
 
 ## 함수 템플릿 (Function Template) (Cont'd - 2)
 
-### 함수 템플릿과 함수 오버로딩 간 비교 (Comparison: Function Template vs Overloading)
+### 함수 템플릿과 함수 오버로딩 간 비교
 
 [//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 9 --to 13 --no-comment)
 
@@ -110,3 +110,47 @@
 ### Default Arguments for Template Parameters: Printing an Array
 
 [//]: # (INCLUDE: ./cpp/09/printarray2.cc)
+
+---
+
+## 함수 템플릿의 변형 (Variations) (Cont'd - 4)
+
+### 명시적 자료형 결정
+
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 10 --to 13 --no-comment)
+
+#### 템플릿 인자 추론 (Template Argument Deduction)의 모호성
+
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 45 --to 45 --no-comment)
+
+#### 명시적 템플릿 인자 지정 (Explicit Template Argument Specification)
+
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 46 --to 46 --no-comment)
+
+* `T`는 **`double`형으로 결정**되어 함수 인스턴스가 생성되며, 인자 `15`는 암묵적으로 `double` 형으로 간주
+
+---
+
+## 함수 템플릿의 변형 (Variations) (Cont'd - 5)
+
+### 특수화 (Specialization)
+
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 10 --to 13 --no-comment)
+
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 54 --to 54 --no-comment)
+
+* `Smaller` 템플릿 함수는 **비교 연산자 `<` (less than)가 정의된 객체**만 처리할 수 있음
+  * `const char*` 형은 비교 연산자가 없으므로 컴파일 시 오류 발생
+
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 57 --to 60 --no-comment)
+
+* 명시적 템플릿 특수화 함수 (explicit template specialization)는 `template <>`를 사용
+* 특정 자료형에 대해 함수 템플릿의 기본 동작을 재정의함
+
+---
+
+## 함수 템플릿의 변형 (Variations) (Cont'd - 6)
+
+### 함수 템플릿 오버로딩
+
+[//]: # (INCLUDE: ./cpp/09/smaller.cc --to 21 --no-comment)

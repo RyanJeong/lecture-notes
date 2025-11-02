@@ -40,4 +40,22 @@ T1 DefaultArgumentTemplate(T1 obj, T2 size);
 // Default argument for non-type template parameters
 template <typename T, int n, int step = 1>
 T DefaultNonTypeTemplate(T (&array)[n]);
+
+void Bar() {
+  Smaller(12.34, 15);          // Smaller(double, int) -> T can't be deduced
+  Smaller<double>(12.34, 15);  // Explicitly specify T as double
+}
+
+#include <string>
+
+void Qux() {
+  Smaller(std::string("apple"),
+          std::string("banana"));  // std::string has operator<
+  Smaller("apple", "banana");      // const char* can't be compared directly
+}
+
+template <>  // Specialization for const char*
+const char* Smallest(const char* const& op1, const char* const& op2) {
+  return std::strcmp(op1, op2) < 0 ? op1 : op2;
+}
 #endif
