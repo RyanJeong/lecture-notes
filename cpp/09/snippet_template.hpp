@@ -55,7 +55,7 @@ void Qux() {
 }
 
 template <>  // Specialization for const char*
-const char* Smallest(const char* const& op1, const char* const& op2) {
+const char* Smaller(const char* const& op1, const char* const& op2) {
   return std::strcmp(op1, op2) < 0 ? op1 : op2;
 }
 #endif
