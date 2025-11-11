@@ -1,6 +1,6 @@
 #pragma once
-
 #ifdef CPP_09_NOBUILD
+// Template-declaration: template <template-parameters> declaration
 template <typename T, typename X, typename Y, typename Z>
 T FunctionTemplateSyntax(X first, Y second, Z last) {
   // do something ...

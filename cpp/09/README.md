@@ -12,16 +12,17 @@
 * 함수 내 일부 형을 컴파일 시점에 확정하는 기법
   * 동일한 로직을 **중복 없이** 다양한 형으로 구현할 수 있게 해주는 메커니즘
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 4 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 3 --to 7 --no-comment)
 
-* `template` 키워드는 함수 템플릿을 위한 템플릿 헤더 (template header)
-* 템플릿 헤더는 `<>` 괄호를 사용하며, **템플릿 매개변수 (template parameter)를 표현함**
-  * 템플릿 헤더의 `T`, `X`, `Y`, `Z`는 템플릿 매개변수 (template parameter)
+* 템플릿 선언 (template-declaration)은 두 부분으로 구성됨:
+  * Template-head: `template <...>`
+  * Declaration: 클래스 또는 함수의 선언 (정의)
+* `template` 키워드는 함수 또는 클래스 템플릿 정의의 시작을 알림
+* `template` 키워드 바로 뒤에는 `<>` 괄호를 사용해 템플릿 매개변수 (template parameter) 목록을 정의함
   * 템플릿 매개변수는 필요한 만큼 열거해 사용 가능
 * 하나의 함수 템플릿은 여러 번 호출되어 여러 개의 함수 정의가 생성될 수 있음
   * `typename` 키워드로 시작하는 템플릿 매개변수는 타입 매개변수 (type parameter)
-  * **타입 매개변수는 컴파일 시점에 함수 호출 시점의 전달 인자와 반환 형을 바탕으로 적합한 형이 결정됨**
-* 함수 템플릿을 사용한 프로그래밍을 다음과 같이 표현함:
+* 템플릿을 사용한 프로그래밍을 다음과 같이 표현함:
   * 제네릭 프로그래밍 (generic programming)
   * 템플릿 프로그래밍 (template programming)
 
