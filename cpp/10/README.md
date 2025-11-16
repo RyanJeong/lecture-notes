@@ -1,937 +1,630 @@
-# 제네릭 프로그래밍 (Generic Programming: Templates)
+<!-- _class: lead -->
+# 객체지향프로그래밍
 
-## 함수 템플릿 (Function Template)
+## 입출력 스트림 (Input / Output Streams)
 
-* 함수 내 일부 형을 컴파일 시점에 확정하는 기법
-* 동일한 로직을 서로 다른 여러 형에 대해 중복 없이 구현할 수 있게 해주는 메커니즘
-
-```cpp
-template <typename T, typename U, ..., typename Z>
-T function_template_syntax(U first, ..., Z last) {
-  // do something ...
-}
-```
-
-* 함수 템플릿을 위한 템플릿 헤더 (template header)는 `template` 키워드를 사용
-* 템플릿 헤더의 내용은 `<>` 괄호를 사용하며, **제네릭 형 (generic type)** 표현에 사용됨
-  * 템플릿 매개변수 (template parameter): `T`, `U`, `Z`
-* `T`, `U`, `Z`는 컴파일 시점에 확정되는 형의 자리 표시자 (placeholder)
-* 하나의 함수 템플릿은 여러 번 호출되어 여러 개의 함수 정의가 생성될 수 있음
-  * 함수 템플릿은 호출 시점의 전달 인자와 반환 형을 바탕으로 적합한 형이 컴파일 시점에 결정됨
-* 함수 템플릿을 사용한 프로그래밍을 다음과 같이 표현함
-  * 제네릭 프로그래밍 (generic programming)
-  * 템플릿 프로그래밍 (template programming)
+### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
 
 ---
 
-### Using One Function Template
+## 소스 (Source)와 싱크 (Sink)
 
-```cpp
-#include <iostream>
+![center](Figure_16_1.png)
 
-// Definition of a template function
-template <typename T>
-T Smaller(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
-
-int main() {
-  std::cout << "Smaller of 'a' and 'b': " << Smaller('a', 'b') << std::endl;
-  std::cout << "Smaller of 12 and 15: " << Smaller(12, 15) << std::endl;
-  std::cout << "Smaller of 44.2 and 33.1: " << Smaller(44.2, 33.1) << std::endl;
-  return 0;
-}
-```
+- 소스는 데이터를 생성하고 싱크는 데이터를 처리함
+- 소스와 싱크는 세 종류로 구분:
+  - 임시 소스 또는 싱크 (temporary source or sink) - 키보드와 모니터 (콘솔 입출력)
+  - 영구 소스 또는 싱크 (permanent source or sink) - 파일
+  - 내부 소스 또는 싱크 (internal source or sink) - C++ 문자열
 
 ---
 
-### 함수 템플릿과 함수 오버로딩 간 비교 (Comparison: Function Template vs Overloading)
+## 스트림 (Streams)
 
-```cpp
-// Function to find the smaller between two characters
-char Smaller(char op1, char op2)  { return op1 < op2 ? op1 : op2; }
+![center](Figure_16_2.png)
 
-// Function to find the smaller between two integers
-int Smaller(int op1, int op2)  { return op1 < op2 ? op1 : op2; }
-
-// Function to find the smaller between two doubles
-double Smaller(double op1, double op2)  { return op1 < op2 ? op1 : op2; }
-```
-
-* 함수 템플릿 `Smaller`는 간단한 형태이므로 함수 오버로딩을 통해 동일한 동작 수행 가능
-* 함수 템플릿은 호출 형태에 따라 컴파일 시점에 제네릭 형을 확정한 함수 코드가 생성됨
-* 함수 오버로딩은 컴파일 전에 호출될 형태를 파악하여 필요한 만큼 코드로 직접 구현해야 함
+- 프로그램은 소스 또는 싱크에 직접 연결하지 않고, **중재자 (mediator)를 통해 데이터를 주고받음**
+- **입출력 스트림은 소스, 싱크와 프로그램 간 데이터 흐름을 관리하는 중재자 역할 수행**
+  - 입력 스트림 (input stream)은 소스와 프로그램 간 중재 역할
+  - 출력 스트림 (output stream)은 싱크와 프로그램 간 중재 역할
+- 소스, 싱크와 프로그램 간 데이터 전달은 **컴퓨터 메모리**를 통해 이루어짐
+- **메모리에 저장되는 데이터는 이진 (binary) 형태**이므로, 스트림을 통한 데이터 전달은 바이트 열 형태로 이루어짐
 
 ---
 
-### Swapping Two Values
+## 스트림의 역할
 
-```cpp
-#include <iostream>
+![center](Figure_16_3.png)
 
-// Definition of template function
-template <typename T>
-void Exchange(T* op1, T* op2) {
-  T temp = *op1;
-  *op1 = *op2;
-  *op2 = temp;
-}
-
-int main() {
-  int i1 = 5;
-  int i2 = 70;
-  Exchange(&i1, &i2);  // Swapping two int types
-  std::cout << "After swapping 5 and 70: " << i1 << " " << i2 << std::endl;
-  double d1 = 1.2;
-  double d2 = 3.4;
-  Exchange(&d1, &d2);  // Swapping two double types
-  std::cout << "After swapping 1.2 and 3.4: " << d1 << " " << d2 << std::endl;
-  return 0;
-}
-```
+- 소스로부터 생성된 데이터 (e.g., 키보드 입력)는 프로그램에 바로 전달되지 않고, 입력 스트림 버퍼에 우선 보관됨
+- 프로그램이 내보내는 데이터는 싱크 (e.g., 모니터 출력)로 바로 전달되지 않고, 출력 스트림 버퍼에 우선 보관됨
 
 ---
 
-## 템플릿 인스턴스화 (Template Instantiation)
+## 스트림의 역할 (Cont'd)
 
-![center](Figure_15_1.png)
+![center](Figure_16_4.png)
 
-* 함수 템플릿으로부터 컴파일 시점에 형이 확정되어 실제로 실행 가능한 함수가 생성되는 것
-* 함수 템플릿은 **실제로 사용할 수 없는 코드**
-  * 컴파일 시점에 필요한 형태의 함수를 만들기 위해 존재하는 일종의 틀
-  * 자신이 대표하는 구체적인 형(concrete type)이 없으면 컴파일되지 않음
-* 컴파일 시점에 함수 템플릿을 사용하는 형태에 맞게 동작할 수 있는 함수를 생성
-  * 예: `Smaller(12, 15)` 호출 → 컴파일러가 `int` 형 인스턴스 생성
-  * 예: `Smaller(3.14, 2.71)` 호출 → 컴파일러가 `double` 형 인스턴스 생성
-* 함수 템플릿으로부터 함수 코드를 생성하는 행위를 **인스턴스화**라고 함
-  * 클래스로부터 객체를 생성하는 인스턴스화와 용어는 같지만 다른 의미임에 유의
-  * 클래스 인스턴스화: 클래스로부터 객체 생성
-  * 템플릿 인스턴스화: 템플릿으로부터 구체적인 함수/클래스 코드 생성
+- 프로그램의 추출 연산자 (`>>`)는 입력 스트림 버퍼의 내용을 파싱하여, **요구하는 자료형으로 변환**한 뒤 변수에 저장
+  - 소스가 키보드이고, `double` 형 변수 `d`에 실수형 값을 입력해야 하는 상황
+  - `3.14`를 입력했다면 입력 스트림 버퍼에는 `0x33 0x2E 0x31 0x34`가 저장됨
+  - `std::cin >> d`는 버퍼에 저장된 바이트 열을 읽어와 `double` 값 `3.14`로 변환 후 변수에 저장
+- 프로그램의 삽입 연산자 (`<<`)는 내보낼 데이터를 **싱크가 처리할 수 있는 바이트 열로 변환**하여 출력 버퍼에 저장
+  - 싱크가 모니터라면 출력 스트림 버퍼에는 문자 바이트 열이 저장되어야 함
+  - `std::cout << 3.14;`는 `double` 값 `3.14`를 `0x33 0x2E 0x31 0x34`로 변환하여 버퍼에 저장
 
 ---
 
-## 함수 템플릿의 변형 (Variations)
+## 스트림 클래스 (Stream Classes)
 
-* 기본 함수 템플릿 문법으로부터 변형된 몇 가지 형태들
-
-### 자료형이 아닌 템플릿 매개변수 (Non-Type Template Parameter)
-
-* 함수 템플릿에 제네릭 형 뿐만 아니라 값을 정의할 수도 있음
-* 값을 정의하고자 할 경우 해당 값의 형을 **명시적으로 표현해야 함**
-* 값으로 사용 가능한 형 ([Template parameters and template arguments](https://en.cppreference.com/w/cpp/language/template_parameters)):
-  * 정수 형 (`int`, `long`, `size_t`, etc.)
-  * 포인터 또는 참조
-  * 열거형
-  * `nullptr`
-* 값으로 사용 가능한 형이 제한적인 이유는 컴파일 시점에 값이 확정되는 형태만을 사용할 수 있음
-* **부동소수점 자료형이 허용되지 않음에 유의**
-  * 부동소수점 표현은 컴파일러에 따라 값이 다르게 표현될 수 있음
-  * 부동소수점 수는 정밀도 제약이 존재해 값이 매번 다르게 표현될 수 있음
-    * 예시: `double x = 0.1; double y = 0.1;` 일 때, `x == y`가 항상 참이 아닐 수 있음
-    * 템플릿 인스턴스화는 컴파일 시점에 이루어지므로 이런 부정확성을 허용할 수 없음
-  * 함수 템플릿에 사용되는 값은 어떠한 상황에서도 항상 같은 값을 표현해야 함
+![center](Figure_16_5.png)
 
 ---
 
-#### Printing an Array - 1st Version
+## 스트림 클래스 (Stream Classes) (Cont'd - 1)
 
-```cpp
-#include <iostream>
+### `std::ios`
 
-// Definition of the print template function
-template <typename T, int n>
-void print(T (&array)[n]) {
-  for (int i = 0; i < n; ++i) std::cout << array[i] << " ";
-  std::cout << std::endl;
-}
+- 가상 기반이자 추상 클래스이며, 모든 입출력 클래스가 상속받는 데이터 멤버와 멤버 함수가 구현되어 있음
+  - 인스턴스화가 불가능한 클래스
 
-int main() {
-  // Creation of two arrays
-  int arr1[4] = {7, 3, 5, 1};
-  double arr2[3] = {7.5, 6.1, 4.6};
-  // Calling template function
-  print(arr1);
-  print(arr2);
-  return 0;
-}
-```
+### `std::istream`, `std::ostream`, `std::iostream`
+
+- 콘솔 스트림 (console streams) 객체를 위한 클래스로, 키보드와 모니터를 소스와 싱크로 사용
+
+### `std::ifstream`, `std::ofstream`, `std::fstream`
+
+- 파일 스트림 (file streams) 객체를 위한 클래스로, 파일을 소스와 싱크로 사용
+
+### `std::istringstream`, `std::ostringstream`, `std::stringstream`
+
+- 문자열 스트림 (string streams) 객체를 위한 클래스로, `std::string`형 객체를 소스와 싱크로 사용
 
 ---
 
-### 템플릿에서의 기본 매개변수 (Default Arguments for Template Parameters)
+## 스트림 클래스 (Stream Classes) (Cont'd - 2)
 
-* 함수의 매개변수에 기본 값을 설정하듯 템플릿에도 사용 가능
-  * 형 또는 형이 아닌 값을 설정할 수 있음
+### 스트림 사용을 위한 다섯 단계 절차
 
-```cpp
-// Default argument for type template parameters
-template <typename T1, typename T2 = int>
-
-// Default argument for non-type template parameters
-template <typename T, int n, int step = 1>
-```
-
-* 기본 매개변수 자리에 명시적으로 값을 전달해 기본 매개변수 대신 명시적인 값을 사용할 수 있음
-* 기본 매개변수는 오른쪽부터 채워져야 함
-* 기본 매개변수를 형이 아닌 값으로 사용할 경우 아래와 같은 형이어야 함:
-  * 정수 형 (`int`, `long`, `size_t`, etc.)
-  * 포인터 또는 참조
-  * 열거형
-  * `nullptr`
+1. 스트림 객체를 생성한다.
+2. 객체 생성 시 연결하고자 하는 대상 (소스, 싱크)와 연결한다.
+3. 스트림을 통해 데이터를 읽어오거나 (입력 스트림) 데이터를 내보낸다 (출력 스트림).
+4. 더 이상 스트림을 사용하지 않는다면 연결했던 대상 (소스, 싱크)와 연결을 해제한다.
+5. 스트림 객체를 소멸한다.
 
 ---
 
-#### Printing an Array - 2nd Version
+## 스트림 클래스 (Stream Classes) (Cont'd - 3)
 
-```cpp
-#include <iostream>
+### 스트림 객체의 특성 (Characteristics of Stream Objects)
 
-// Definition of the print template function with a default parameter
-template <typename T, int n, int step = 1>
-void print(T (&array)[n]) {  // int (&array)[3] = arr, T is int, n is 3
-  for (int i = 0; i < n; i += step) std::cout << array[i] << " ";
-  std::cout << std::endl;
-}
-
-int main() {
-  // Creation of two arrays
-  int arr1[4] = {7, 3, 5, 1};
-  double arr2[3] = {7.5, 6.1, 4.6};
-
-  // Calling the template function with and without the default parameter
-  print(arr1);                 // Uses the default step = 1
-  print<double, 3, 2>(arr2);   // Specifies step = 2 explicitly
-
-  return 0;
-}
-```
+- **복사 생성자와 대입 연산자가 없음**
+  - 스트림 객체는 내부 상태를 갖고 있음 (e.g., 스트림 버퍼, 버퍼를 가리키는 포인터, etc.)
+  - 스트림 객체를 복사 또는 대입할 경우 **데이터 불일치** 또는 **리소스 충돌**이 발생할 수 있음
+  - 스트림 객체는 함수로의 값 전달 또는 함수의 반환 값으로 사용할 수 없음
+- 스트림 객체는 **매 사용마다 부수효과가 발생**하므로 `const` 한정자를 같이 사용할 수 없음
+  - 데이터를 입력받거나 출력할 때 스트림 버퍼와 이를 가리키는 포인터가 갱신됨
+  - 입출력 과정 중에 오류가 발생할 경우 이를 스트림 내부 상태에 기록함
 
 ---
 
-### 명시적 자료형 결정 (Explicit Type Determination)
+## 스트림 클래스 (Stream Classes) (Cont'd - 4)
 
-```cpp
-// Definition of a template function
-template <typename T>
-T Smaller(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
-```
+### 스트림 상태 (Stream State)
 
-```cpp
-Smaller(12.34, 15);
-```
+![center](Figure_16_8.png)
 
-* 이 경우는 함수 템플릿에서 하나의 제네릭 형을 사용했지만, 전달인자의 두 형이 서로 다름
-* 제네릭 형을 다음과 같이 명시적으로 사용하면 위 문제를 해결할 수 있음
-
-```cpp
-Smaller<double>(12.34, 15);
-```
-
-* 함수 템플릿 호출 시 이름과 전달인자 사이에 제네릭 형을 결정할 수 있음
-  * `double`로 제네릭 형을 이미 결정했으므로, 함수 템플릿 `T`는 `double`
-  * `15`는 실제로 매개변수로의 복사 시 `15.0`으로 암묵적 형 변환 발생
+- `std::ios` 클래스는 상태 관련 데이터 멤버 및 멤버 함수를 가지며, 모든 스트림 클래스 객체는 상태 멤버를 갖고 있음
+  - 모든 스트림 클래스는 `std::ios` 클래스 멤버를 상속받음
+- 스트림 객체는 데이터를 읽어오거나 내보내는 과정 중에 문제가 발생하면 스트림 객체 내 상태에 실패 내용을 기록함
 
 ---
 
-### 미리 정의된 연산 (Predefined Operation)
+## 스트림 클래스 (Stream Classes) (Cont'd - 5)
 
-```cpp
-// Definition of a template function
-template <typename T>
-T Smaller(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
-```
+### 스트림 상태 데이터 멤버
 
-* `Smaller(100, 200)` 또는 `Smaller(12.3, 45.6)` 등의 호출은 사용 시 문제가 없음
-  * 기본 자료형에 대해 비교 연산이 이미 **컴파일러 내부에 정의**되어 있음
-* 만약 사용자 정의 형 객체를 함수 템플릿 `Smaller`에 전달할 경우 문제가 생길 수 있음:
-  * 사용자 정의 형 클래스가 작음 비교 연산자 (`<`, less than operator)를 재정의한 경우:
+| Constants          | Input Stream                  | Output Stream              |
+|--------------------|-------------------------------|----------------------------|
+| `std::ios::eofbit` | No more characters to extract.| Not applicable.            |
+| `std::ios::failbit`| An invalid read operation.    | An invalid write operation.|
+| `std::ios::badbit` | Stream integrity is lost.     | Stream integrity is lost.  |
+| `std::ios::goodbit`| Everything is fine.           | Everything is fine.        |
 
-  ```cpp
-  Smaller(std::string("hello"), std::string("bye"));  // bye
-  ```
-
-  * 만약 작음 비교 연산자가 구현되어 있지 않다면, **컴파일 시 오류 발생**
-
-  ```cpp
-  Smaller("hello", "bye");  // const char* has no '<' implementation
-  ```
+- `eofbit`와 `failbit`의 관계
+  - 스트림의 끝 (`EOF`)에서 읽기를 시도하면 작업은 **실패**하여 `eofbit`와 `failbit` 둘 다 설정됨
+  - `failbit`가 설정되면, `eofbit` 때문인지, 다른 논리적 오류 때문인지 확인해야 함
+- `failbit` (복구 가능)
+  - 논리적 오류가 발생한 경우 (e.g., 숫자 대신 문자가 입력된 경우)
+  - 오류 상태를 지우고 (clear) 버퍼를 비우면 스트림을 복구하여 재사용 가능
+- `badbit` (복구 불가능)
+  - **스트림의 무결성이 깨진 심각한 상태** (e.g., 디스크 오류)
+  - 스트림은 더 이상 사용할 수 없으며 새로 생성해야 함
 
 ---
 
-### 특수화 (Specialization)
+## 스트림 클래스 (Stream Classes) (Cont'd - 6)
 
-```cpp
-// Definition of a template function
-template <typename T>
-T Smallest(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
+### 스트림 상태 멤버 함수
 
-#include <cstring>
-
-// specialization
-template <>
-const char* Smallest(const char* op1, const char* op2) {
-  return std::strcmp(op1, op2) < 0 ? op1 : op2;
-}
-```
-
-* 존재하는 함수 템플릿에 대해 예외 상황을 추가하여 특수화할 수 있음
-* 특수화를 의미하는 템플릿 헤더는 `template <>`
-  * 모든 템플릿 매개변수가 구체적인 형으로 결정됨을 의미
-* 함수 템플릿으로부터 특정 타입을 위한 **독립된 함수를 정의**
-  * 함수 템플릿은 완성된 함수가 아닌 일종의 틀인 반면, 특수화된 함수는 완성된 함수임
-  * **컴파일러는 특수화된 함수를 일반 템플릿보다 우선 선택** (더 구체적이므로)
-* 위 예시는 포인터 형식이 작음 비교 연산자를 적절히 처리하지 못하는 경우를 특수화하여 해결한 형태
-  * `const char*` 형식의 문자열 포인터를 비교할 때 `std::strcmp()`를 사용하도록 특수화
-  * 포인터 간 직접 비교는 메모리 주소를 비교하므로 의도와 다름
+| Functions        | Return values                                                |
+|------------------|--------------------------------------------------------------|
+| `bool eof()`     | `true` if `eofbit` is set; `false` otherwise                 |
+| `bool fail()`    | `true` if `failbit` or `badbit` is set; `false` otherwise    |
+| `bool bad()`     | `true` if `badbit` is set; `false` otherwise                 |
+| `bool good()`    | `true` if the stream is in good condition; `false` otherwise |
+| `void clear()`   | It cleans all three bits (sets to zero)                      |
+| `explicit operator bool()` | `true` if the stream is usable (i.e., `!fail()`); `false` otherwise |
 
 ---
 
-### 오버로딩 (Overloading)
+## 스트림 클래스 (Stream Classes) (Cont'd - 7)
 
-* 함수 템플릿에 오버로딩을 적용하면 가변 길이의 전달인자를 효율적으로 다룰 수 있음
-* **오버로딩과 특수화의 차이**:
-  * **오버로딩**: 같은 이름의 템플릿을 **여러 개** 정의 (다른 템플릿 매개변수 개수 등)
-    * `Smallest(T, T)` (2개 인자)와 `Smallest(T, T, T)` (3개 인자) 모두 정의
-    * 컴파일러가 호출 인자에 맞는 템플릿을 자동으로 선택
-  * **특수화**: 같은 이름의 기존 템플릿에 대해 **특정 형만** 별도 구현
-    * 기존 일반 템플릿 + `const char*`에 대한 특수화
+- 스트림 상태 멤버 함수를 활용한 예제 코드
 
-#### 오버로드된 `Smallest` 함수 (The Program for Overloaded `Smallest` Function)
-
-```cpp
-#include <iostream>
-
-// Definition of a template function
-template <typename T>
-T Smallest(const T& op1, const T& op2) { return op1 < op2 ? op1 : op2; }
-
-// Template function with three parameters
-// Note that we have defined the second function in terms of the first one.
-// That is the reason the second function is shorter.
-template <typename T>
-T Smallest(const T& op1, const T& op2, const T& op3) {
-  return Smallest(Smallest(op1, op2), op3);
-}
-
-int main() {
-  // Calling the overloaded version with three integers
-  std::cout << "Smallest of 17, 12, and 27 is ";
-  std::cout << Smallest(17, 12, 27) << std::endl;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/10/stream1.cc)
 
 ---
 
-## 함수 템플릿을 사용하는 경우에서의 파일 분할 (File Separation When Using Function Templates)
+## 스트림 클래스 (Stream Classes) (Cont'd - 8)
 
-* **함수 템플릿은 하나의 헤더 파일로 작성하는 것이 원칙**
-  * 헤더 파일 내에 함수 템플릿 구현을 작성
-  * **함수 템플릿은 선언과 구현을 분리하지 않음**
-* 함수 템플릿의 선언과 구현을 분리할 경우의 문제점:
-  * foo.hpp, foo.cc, main.cc 세 개의 파일을 분할 컴파일한다고 가정
-    * foo.hpp에는 함수 템플릿의 선언, foo.cc에는 함수 템플릿의 구현이 각각 담겨 있음
-    * main.cc는 foo.hpp를 포함(`#include`)하여 함수 템플릿을 사용하는 형태
-  * **컴파일 순서 문제**: 컴파일러가 main.cc를 먼저 컴파일할 경우
-    * foo.hpp에는 함수 템플릿 **선언**만 존재하며, 실제 구현은 foo.cc에 있음
-    * main.cc에서 함수 템플릿을 호출해도 인스턴스화할 정의(구현)가 없으므로 **인스턴스화 불가**
-    * 빌드 시 링커 오류 발생
-  * **해결 방법**: 컴파일 의존관계를 고려해야 함
-    * foo.cc를 먼저 컴파일해 목적파일(object file)을 생성
-    * 그 뒤 main.cc를 컴파일하면서 foo.o를 링크: `g++ main.cc foo.o -o run`
+- 스트림 복구 예제 코드
+
+[//]: # (INCLUDE: ./cpp/10/stream2.cc)
 
 ---
 
-### 함수 템플릿의 정의 (Definition of a Function Template)
+## 콘솔 스트림 (Console Streams)
 
-* smaller.hpp
+### `std::cin`
 
-```cpp
-#pragma once
+![center](Figure_16_6.png)
 
-// Definition of a template function
-template <typename T>
-T Smaller(const T& op1, const T& op2) {
-  return op1 < op2 ? op1 : op2;
-}
-```
-
-* main.cc
-
-```cpp
-#include <iostream>
-
-#include "smaller.hpp"
-
-int main() {
-  std::cout << "Smaller of 'a' and 'b': " << Smaller('a', 'b') << std::endl;
-  std::cout << "Smaller of 12 and 15: " << Smaller(12, 15) << std::endl;
-  std::cout << "Smaller of 44.2 and 33.1: " << Smaller(44.2, 33.1) << std::endl;
-  return 0;
-}
-```
+- `std::istream`형 전역 객체이며, 프로그램 실행 시 콘솔 입력 (키보드)과 연결됨
+- 프로그램 종료 시 런타임 시스템에 의해 키보드와의 연결이 자동으로 끊어진 뒤 소멸됨
+  - 시스템이 객체 생성, 소스와의 연결, 소스와의 연결 해제, 객체 소멸을 담당하며, 사용자는 데이터 처리만 하면 됨
 
 ---
 
-## 클래스 템플릿 (Class Template)
+## 콘솔 스트림 (Console Streams) (Cont'd - 1)
 
-```cpp
-template <typename T>
-class Name {
-  T data;
+### `std::cout`, `std::cerr`, `std::clog`
 
- public:
-  T get() const;            // accessor 
-  void set(const T& data);  // mutator function
-};
+![center](Figure_16_7.png)
 
-// Implementation of the get function
-template <typename T>
-T Name<T>::get() const { return data; }
-
-// Implementation of the set function
-template <typename T>
-void Name<T>::set(const T& d) { data = d; }
-```
-
-* 기존 클래스 설계에 템플릿 매개변수를 추가한 클래스
-  * 클래스 내부에 템플릿 형 `T`를 사용하여 데이터, 함수 정의 가능
-* 제네릭 형을 사용해 여러 형태의 클래스 인스턴스화 가능
-  * `Name<int>`, `Name<double>`, `Name<std::string>` 등 각각 다른 형의 클래스 생성
-  * 대표적인 클래스 템플릿: 표준 C++ 라이브러리의 `vector<T>`, `list<T>` 등
-* 클래스 템플릿 메서드 정의 시 주의:
-  * 일반 클래스: `void Class::method() { ... }`
-  * 템플릿 클래스: `template <typename T> void Class<T>::method() { ... }`
-    * 메서드도 템플릿이므로 `template` 선언 필요
-* 클래스 템플릿은 함수 템플릿과 마찬가지로 **하나의 헤더 파일**로 사용할 것을 권장
-  * 헤더파일 안에 클래스 템플릿의 선언과 구현이 같이 존재해야 함
+- `std::ostream`형 전역 객체이며, 프로그램 실행 시 콘솔 출력 (모니터)과 연결됨
+- 프로그램 종료 시 런타임 시스템에 의해 모니터와의 연결이 자동으로 끊어진 뒤 소멸됨
+  - 시스템이 객체 생성, 싱크와의 연결, 싱크와의 연결 해제, 객체 소멸을 담당하며, 사용자는 데이터 처리만 하면 됨
 
 ---
 
-### 클래스 템플릿 분할 컴파일 1 - 명시적 인스턴스화 (Explicit Instantiation)
+## 콘솔 스트림 (Console Streams) (Cont'd - 2)
 
-* 클래스 템플릿을 하나의 헤더 파일로 사용하지 않고, 선언과 구현을 분리하는 방법
-* 미리 클래스 템플릿에 적용될 수 있는 형을 코드에 명시적으로 표현
-  * 미리 인스턴스화할 형을 지정함에 따라 컴파일 속도 개선 효과가 있음
-  * 필요한 형만 인스턴스화하므로 바이너리 크기를 줄일 수 있음
-* 선언과 구현을 분리해야 할 경우 사용할 수 있는 방법
-  * 클래스 템플릿의 세부 구현은 감추고 싶은 경우
-  * 대규모 프로젝트에서 컴파일 시간을 단축하고 싶은 경우
-* 다양한 형을 지원해야 하는 상황이라면 명시적으로 지원해야 하는 모든 형을 표현해야 함
-  * 관리 측면에서 번거로울 수 있음
-  * 지원하지 않는 형을 사용할 경우 링킹 오류 발생
-* 컴파일 시 **의존성 관리**를 해주어야 함
-  * 반드시 클래스 템플릿을 먼저 컴파일된 후에 이를 컴파일 과정에 포함하도록 구성해야 함
-  * Makefile 또는 CMake 등을 활용할 수 있음
+### 콘솔 스트림 객체의 특징 1
 
-  ```shell
-  g++ -c fun.cc -o fun.o && g++ main.cc fun.o -o run
-  ```
+- `std::cout` 객체와 `std::cin` 객체는 **동기화되어 있음**
+  - `std::cout` 출력 결과는 스트림 버퍼에 **플러시 조건이 만족될 때까지 임시 보관**
+  - `std::cin` 입력 시 `std::cout` 버퍼의 모든 데이터를 플러시 (flush)하도록 동작이 연결되어 있음
+  - 입출력이 빈번히 사용되는 상황에서 동기화된 콘솔 객체는 **잦은 플러시로 인한 성능 저하**가 발생할 수 있음
+
+[//]: # (INCLUDE: ./cpp/10/console1.cc --from 28 --to 30 --no-comment)
+
+- `std::cout` 객체와 `std::cin` 객체 동기화는 다음과 같이 끊을 수 있음:
+
+[//]: # (INCLUDE: ./cpp/10/console1.cc --from 25 --to 26 --no-comment)
 
 ---
 
-* fun.hpp
+## 콘솔 스트림 (Console Streams) (Cont'd - 3)
 
-```cpp
-#pragma once
+- 콘솔 스트림 객체의 동기화를 해제하는 예제 코드
 
-template <typename T>
-class Fun {
-  T data_;
-
- public:
-  explicit Fun(const T& data);
-  ~Fun() = default;
-
-  T get() const;
-  void set(const T& data);
-};
-```
+[//]: # (INCLUDE: ./cpp/10/console1.cc --to 22 --no-comment)
 
 ---
 
-* fun.cc
+## 콘솔 스트림 (Console Streams) (Cont'd - 4)
 
-```cpp
-#include "fun.hpp"
+### 콘솔 스트림 객체의 특징 2
 
-#include <string>
+- `std::cout` 객체는 운영체제의 표준 출력 스트림 (`stdout`)에 연결됨
+  - 출력 재정의 가능
+- `std::cerr`, `std::clog` 객체는 운영체제의 표준 오류 스트림 (`stderr`)에 연결됨
+  - **출력 재정의 불가**
+  - 오류 또는 로깅 메시지가 표준 출력과 혼재될 가능성을 배제하기 위함
 
-// Constructor
-template <typename T>
-Fun<T>::Fun(const T& d) : data_(d) {}
+### 콘솔 스트림 객체의 특징 3
 
-// Accessor Function
-template <typename T>
-T Fun<T>::get() const {
-  return data_;
-}
-
-// Mutator Function
-template <typename T>
-void Fun<T>::set(const T& d) {
-  data_ = d;
-}
-
-// Explicit instantiation
-template class Fun<int>;
-template class Fun<double>;
-template class Fun<char>;
-template class Fun<std::string>;
-```
+- `std::cerr`는 프로그램에서 발생한 오류 메시지를 **즉시 출력**하는 용도로 사용
+  - 스트림 버퍼에 데이터를 보관하지 않고 즉시 싱크로 내보냄
+- `std::clog`는 프로그램의 디버깅 또는 로깅 메시지를 출력하는 용도로 사용하며, 표준 출력처럼 버퍼가 플러시 조건을 만족하면 싱크로 내보냄
 
 ---
 
-* main.cc
+## 콘솔 스트림 (Console Streams) (Cont'd - 5)
 
-```cpp
-#include <iostream>
-#include <string>
+### 출력 버퍼 플러시 조건
 
-#include "fun.hpp"
+- 명시적으로 플러시를 사용한 경우
+- 스트림이 닫힐 때
+  - 콘솔 스트림은 프로그램 종료 시 시스템에 의해 자동 닫힘
+- 출력 스트림 버퍼가 가득 찬 경우
 
-int main() {
-  Fun<int> fun1(23);
-  Fun<double> fun2(12.7);
-  Fun<char> fun3('A');
-  Fun<std::string> fun4("Hello");
+[//]: # (INCLUDE: ./cpp/10/console2.cc --from 4 --to 7 --no-comment)
 
-  // undefined reference to `Fun<float>::Fun(float const&)'
-  // Fun<float> fun5(123.4f);  // there's no explicit instantiation for float
+---
 
-  std::cout << "fun1: " << fun1.get() << std::endl;
-  std::cout << "fun2: " << fun2.get() << std::endl;
-  std::cout << "fun3: " << fun3.get() << std::endl;
-  std::cout << "fun4: " << fun4.get() << std::endl;
+## 콘솔 스트림 (Console Streams) (Cont'd - 6)
 
-  fun1.set(47);
-  std::cout << "fun1 after set: " << fun1.get() << std::endl;
-  fun3.set('B');
-  std::cout << "fun3 after set: " << fun3.get() << std::endl;
-  return 0;
-}
+### 콘솔 스트림 멤버 함수: `get`, `put`
+
+[//]: # (INCLUDE: ./cpp/10/console3.cc)
+
+---
+
+## 콘솔 스트림 (Console Streams) (Cont'd - 7)
+
+### 콘솔 스트림 멤버 함수: `ignore`
+
+[//]: # (INCLUDE: ./cpp/10/console4.cc)
+
+---
+
+## 콘솔 스트림 (Console Streams) (Cont'd - 8)
+
+### 콘솔 스트림 멤버 함수: `getline`
+
+[//]: # (INCLUDE: ./cpp/10/console5.cc)
+
+---
+
+## 파일 스트림 (File Streams)
+
+![h:350 center](Figure_16_9.png)
+
+- 콘솔 스트림에서의 데이터 멤버와 멤버 함수를 모두 사용할 수 있음
+  - `std::ifstream` 클래스는 `std::istream` 클래스로부터 상속
+  - `std::ofstream` 클래스는 `std::ostream` 클래스로부터 상속
+  - `std::fstream` 클래스는 `std::iostream` 클래스로부터 상속
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 1)
+
+### 파일 스트림 사용 방법
+
+- `<fstream>` 헤더 파일을 포함하면 파일 스트림 객체를 사용할 수 있음
+- 생성된 객체는 **소스, 싱크와 연결된 상태가 아니므로** 연결 작업을 수행해야 사용할 수 있음
+
+[//]: # (INCLUDE: ./cpp/10/file1.cc --from 1 --to 1 --no-comment)
+
+### 파일 스트림 객체 생성 후 소스, 싱크 연결
+
+- `open` 멤버 함수의 인자로 파일의 경로를 전달하면 파일을 객체의 소스 또는 싱크로 사용할 수 있음
+
+[//]: # (INCLUDE: ./cpp/10/file1.cc --from 4 --to 10 --no-comment)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 2)
+
+### 파일 스트림 객체 연결 상태 확인
+
+- `is_open` 멤버 함수를 사용해 객체가 소스, 싱크와 연결되었는지 확인 가능
+  - 반환 값은 `bool` 형으로, 연결에 성공한 경우 `true`, 실패한 경우 `false` 반환
+  - `open` 멤버 함수의 매개변수로 넘겨준 경로에 파일이 존재하지 않거나, 권한이 없을 경우 실패할 수 있음
+
+[//]: # (INCLUDE: ./cpp/10/file1.cc --from 12 --to 14 --no-comment)
+
+### 파일 스트림 객체 연결 해제 후 소멸
+
+- 더 이상 스트림 객체를 사용하지 않는다면 `close` 멤버 함수를 통해 객체와 연결된 파일을 해제할 수 있음
+
+[//]: # (INCLUDE: ./cpp/10/file1.cc --from 16 --to 18 --no-comment)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 3)
+
+- 파일 스트림 객체를 통해 파일을 싱크로 사용한 예제 코드
+
+[//]: # (INCLUDE: ./cpp/10/outfile.cc)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 4)
+
+- 파일 스트림 객체를 통해 파일을 소스로 사용한 예제 코드
+
+[//]: # (INCLUDE: ./cpp/10/infile.cc)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 5)
+
+### 파일 열기 모드 (Opening Modes)
+
+- `std::ios` 클래스에 정의되어 있음
+- **파일 시스템의 실제 파일을 열 때 사용**하며, 콘솔 스트림 또는 문자열 스트림에서는 사용하지 않음
+
+| Constant          | Explanation                                                    |
+|-------------------|----------------------------------------------------------------|
+| `std::ios::app`   | Seek to the end of stream **before each write** (append).      |
+| `std::ios::binary`| Open in binary mode (**default is text**).                     |
+| `std::ios::in`    | Open for reading (**default mode of `std::ifstream` object**). |
+| `std::ios::out`   | Open for writing (**default mode of `std::ofstream` object**). |
+| `std::ios::trunc` | **Discard the contents** of the stream when opening (truncate).|
+| `std::ios::ate`   | Seek to the end of stream **immediately after open** (at end). |
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 6)
+
+### 파일 스트림 객체의 열기 모드
+
+![center](Figure_Openmode.png)
+
+- `std::ifstream` 객체는 `std::ios::in` 모드가 기본 설정됨
+  - 읽기 모드이며, **파일이 존재하지 않으면 파일 열기에 실패함**
+- `std::ofstream` 객체는 `std::ios::out | std::ios::trunc` 모드가 기본 설정됨
+  - 쓰기 모드이며, **파일이 존재하지 않으면 파일을 새로 생성**하거나, **파일이 존재한다면 파일의 내용은 초기화됨**
+- `std::fstream` 객체는 `std::ios::in | std::ios::out` 모드가 기본 설정됨
+  - 읽기/쓰기 모드이며, **파일이 존재하지 않으면 파일 열기에 실패**하거나, **파일이 존재한다면 파일의 내용을 유지함**
+- `std::ios::ate`는 파일을 열 때 읽기/쓰기 위치의 초기값을 파일의 끝 (at end)으로 설정함
+- `std::ios::app`은 쓰기 모드에서 파일이 존재할 경우 파일 내용을 초기화하지 않고 내용의 끝에 데이터를 추가함
+  - e.g., `std::ofstream out("test.txt")`는 기본 모드 사용
+    - `std::ios::out | std::ios::trunc` 모드 사용
+  - e.g., `std::ofstream out("test.txt", std::ios::app)`는 `std::ios::trunc`를 억제
+    - `std::ios::out | std::ios::app` 모드 사용
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 7)
+
+- 파일 스트림 객체 예제 코드
+
+[//]: # (INCLUDE: ./cpp/10/file2.cc)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 8)
+
+### 파일 스트림 객체의 기타 멤버 함수
+
+- 다음 함수들은 콘솔 클래스에 선언되어 있으며, 파일 스트림 객체에서 유용하게 사용할 수 있음
+
+| Function                 | Explanation                                                  |
+|------------------------------|------------------------------------------------------------------|
+| `int gcount() const`         | Counts characters extracted in the last input                  |
+| `std::istream& unget()`           | Puts back the last character extracted from the stream         |
+| `std::istream& putback(char c)`   | Same as `unget` but requires a specific character to be put back |
+| `int peek()`                 | Looks at the next character without extracting it              |
+| `std::istream& ignore(int n = 1, int d = eof)` | Ignores `n` characters or up to a specified delimiter `d`      |
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 9)
+
+- 파일 스트림 멤버 함수 사용 예제: `unget`을 사용해 자료형에 따른 값 읽어오기
+
+[//]: # (INCLUDE: ./cpp/10/file3.cc --to 17)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 10)
+
+[//]: # (INCLUDE: ./cpp/10/file3.cc --from 18)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 11)
+
+### 순차 접근과 임의 접근 (Sequential vs Random Access)
+
+- 파일은 연속적인 바이트의 집합
+- 파일 스트림 객체를 사용해 파일 읽기 작업을 수행하면 파일의 내용이 입력 스트림 버퍼로 복사됨
+- 파일 스트림 객체를 사용해 파일 쓰기 작업을 수행하면 출력 스트림 버퍼에 임시 보관됨
+  - 출력 스트림 버퍼에 있는 내용은 플러시 조건을 만족하면 파일로 내보냄
+- **스트림 버퍼에 있는 내용을 대상으로 순차적으로 처리하거나 임의 접근하여 처리할 수 있음**
+  - 각 파일 스트림 객체는 하나의 조정자가 존재함
+  - `std::ifstream` 객체의 조정자는 파일 스트림 버퍼에서 다음에 읽을 내용의 위치를 관리
+  - `std::ofstream` 객체의 조정자는 파일 스트림 버퍼에서 다음에 쓸 내용의 위치를 관리
+  - `std::fstream` 객체의 조정자는 파일 스트림 버퍼에서 다음에 읽을 내용의 위치와 다음에 쓸 내용의 위치를 관리
+    - **하나의 조정자가 논리적인 읽기 위치와 쓰기 위치를 구별하여 같이 관리함**
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 12)
+
+### 임의 접근을 위한 멤버 함수와 위치 조정 변수
+
+![h:50 center](Figure_Direction_Values.png)
+
+| Input functions                   | Output functions                 |
+|---------------------------------------|---------------------------------------|
+| `int tellg()`                         | `int tellp()`                         |
+| `std::istream& seekg(int pos)`             | `std::ostream& seekp(int pos)`             |
+| `std::istream& seekg(int off, std::ios::seekdir dir)` | `std::ostream& seekp(int off, std::ios::seekdir dir)` |
+
+- 접두사 `g`는 입력 (입력 스트림 버퍼)의 `get`, 접두사 `p`는 출력 (출력 스트림 버퍼)의 `put`을 의미
+- `seekg` 함수는 위치 조정 변수 (`std::ios_base::seekdir`)를 사용해 스트림 버퍼 내 조정자 위치를 변경할 수 있음
+  - `std::ios::beg`: 스트림 버퍼의 시작을 가리킴
+  - `std::ios::end`: 스트림 버퍼의 마지막을 가리킴 (실제 데이터 바로 뒤를 가리킴)
+  - `std::ios::cur`: 스트림 버퍼 내 조정자의 현재 위치
+  - e.g., `file.seekg(2, std::ios::beg)`: 조정자를 버퍼의 시작 위치로부터 2만큼 떨어진 곳으로 설정
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 13)
+
+- 파일 입력 스트림 조정자 변수 설정 예제 코드
+
+[//]: # (INCLUDE: ./cpp/10/file4.cc)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 14)
+
+- 파일 입력 스트림 조정자 변수 확인 예제 코드
+
+[//]: # (INCLUDE: ./cpp/10/file5.cc)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 15)
+
+- 파일 출력 스트림 조정자 변수 설정 예제 코드: 파일 내 빈칸을 개행문자로 치환
+
+[//]: # (INCLUDE: ./cpp/10/file6.cc)
+
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 16)
+
+- 파일 출력 스트림 조정자 변수 확인 예제 코드: 파일 크기 계산
+
+[//]: # (INCLUDE: ./cpp/10/file7.cc)
+
+```text
+There       // 5 + 1('\n')
+are         // 3 + 1('\n')
+wonderful   // 9 + 1('\n')
+things      // 6 + 1('\n')
+to          // 2 + 1('\n')
+do          // 2 + 1('\n')
+in          // 2 + 1('\n')
+life.       // 5           => File size: 41
 ```
 
 ---
 
-### 클래스 템플릿 분할 컴파일 2 - 하나의 헤더 파일 (Class Template Split Compilation 2 - Single Header File)
+## 이진 입출력 (Binary Input/Output)
 
-* 헤더 파일에 클래스 템플릿의 선언과 구현을 같이 작성하는 방법
-* **컴파일 의존관계를 고려하지 않아도 됨**
-* 어떠한 형을 사용하더라도 인스턴스화가 가능함
-* 컴파일 시간은 명시적 인스턴스화를 사용하는 방법보다 길어질 수 있음
-* 하나의 헤더 파일이 외부에 공개되어야 한다면 클래스 템플릿의 세부 구현이 노출될 수 있음
+![center](Figure_16_11.png)
 
----
-
-* fun.hpp
-
-```cpp
-#pragma once
-
-#include <string>
-
-template <typename T>
-class Fun {
-  T data_;
-
- public:
-  explicit Fun(const T& data);
-  ~Fun() = default;
-
-  T get() const;
-  void set(const T& data);
-};
-
-// Constructor
-template <typename T>
-Fun<T>::Fun(const T& d) : data_(d) {}
-
-// Accessor Function
-template <typename T>
-T Fun<T>::get() const {
-  return data_;
-}
-
-// Mutator Function
-template <typename T>
-void Fun<T>::set(const T& d) {
-  data_ = d;
-}
-```
+- 파일 입출력 시 텍스트와 이진 데이터를 입출력할 수 있음
+- 이진 입출력은 텍스트 형태가 아닌 **바이너리로 표현되는 데이터**를 대상으로 입출력
+  - e.g., 오디오, 비디오, 사진 등 텍스트가 아닌 모든 데이터
+- `double`형 상수 `45.78`을 텍스트 형태로 내보내면 5 바이트 (`34 35 2e 37 38`)를 사용
+- `double`형 상수 `45.78`을 바이너리 형태로 내보내면 8 바이트 (`a4 70 3d 0a d7 e3 46 40`)를 사용
 
 ---
 
-* main.cc
+## 이진 입출력 (Binary Input/Output) (Cont'd - 1)
 
-```cpp
-#include <iostream>
-#include <string>
+- 간단한 이진 입출력 예제 코드
 
-#include "fun.hpp"
-
-int main() {
-  Fun<int> fun1(23);
-  Fun<double> fun2(12.7);
-  Fun<char> fun3('A');
-  Fun<std::string> fun4("Hello");
-
-  // It can create an instance corresponding to any type it is given.
-  Fun<float> fun5(123.4f);
-
-  std::cout << "fun1: " << fun1.get() << std::endl;
-  std::cout << "fun2: " << fun2.get() << std::endl;
-  std::cout << "fun3: " << fun3.get() << std::endl;
-  std::cout << "fun4: " << fun4.get() << std::endl;
-
-  fun1.set(47);
-  std::cout << "fun1 after set: " << fun1.get() << std::endl;
-  fun3.set('B');
-  std::cout << "fun3 after set: " << fun3.get() << std::endl;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/10/binary1.cc)
 
 ---
 
-### 어떤 방법을 사용해야 하는가? (Which Approach Should Be Used?)
+## 이진 입출력 (Binary Input/Output) (Cont'd - 2)
 
-| Item | Explicit Instantiation | Single Header File |
-|------|----------------------|-------------------|
-| **File Separation** | Possible (Header + Implementation) | Not Possible (Header Only) |
-| **Compilation Speed** | Fast (Only Required Types) | Can Be Slow (All Types Compiled) |
-| **Binary Size** | Small | Can Be Large |
-| **Implementation Privacy** | Hidden | Exposed |
-| **Maintenance** | Tedious (Explicit All Types) | Easy |
-| **Adding New Types** | Recompilation Required | Automatic Support |
-| **Linking Error Risk** | High (Unsupported Types) | Low |
+- 이진 입출력을 사용한 클래스 객체 입출력
 
-* 외부 공개용 헤더 파일 내에 클래스 템플릿을 사용하는 경우는 **거의 없음**
-  * 구현 세부사항이 노출되므로 문제 가능성
-* 대부분의 클래스 템플릿은 내부적으로 사용하는 경우가 대부분
-* **권장 사항: 클래스 템플릿은 하나의 헤더 파일로 작성하는 것이 일반적**
-  * 표준 라이브러리의 `vector`, `list` 등도 모두 헤더 파일에 구현
-* 외부에 공개할 헤더 파일에 클래스 템플릿이 존재한다면
-  * 명시적 인스턴스화를 사용하거나
-  * 템플릿을 사용하지 않는 형태로 재작성 후 배포
+[//]: # (INCLUDE: ./cpp/10/binary2.cc --to 15)
 
 ---
 
-### 클래스 템플릿을 사용한 스택 클래스 구현 (Stack Implementation Using Class Template)
+## 이진 입출력 (Binary Input/Output) (Cont'd - 3)
 
-* 제네릭 형을 사용해 범용적인 스택 클래스 구현
-* 동적 메모리할당으로 임의의 용량을 가진 스택 생성 가능
-* 예외 기반의 오류 처리로 안전한 스택 연산 제공
-
-![center](Figure_15_4.png)
+[//]: # (INCLUDE: ./cpp/10/binary2.cc --from 16)
 
 ---
 
-* stack_exception.hpp
+## 이진 입출력 (Binary Input/Output) (Cont'd - 4)
 
-```cpp
-#pragma once
+- 이진 입출력을 사용한 임의 접근 예제 코드
 
-#include <exception>
-#include <string>
-
-class StackException : public std::exception {
- public:
-  StackException(const std::string& what, const std::string& where) noexcept
-      : what_(what), where_(where) {}
-  ~StackException() noexcept override = default;
-
-  const char* what() const noexcept override { return what_.c_str(); }
-  const char* where() const noexcept { return where_.c_str(); }
-
- private:
-  const std::string what_;
-  const std::string where_;
-};
-```
+[//]: # (INCLUDE: ./cpp/10/binary3.cc --to 15)
 
 ---
 
-* stack.hpp
+## 이진 입출력 (Binary Input/Output) (Cont'd - 5)
 
-```cpp
-#pragma once
-
-#include <iostream>
-#include "stack_exception.hpp"
-
-template <typename T>
-class Stack {
- public:
-  explicit Stack(int capacity) : capacity_(capacity), size_(0) {
-    ptr_ = new T[capacity_];
-  }
-
-  // Default destructor causes memory leak for dynamically allocated memory
-  // (Explicit destructor implementation for example simplification)
-  ~Stack() { delete[] ptr_; }
-
-  void push(const T& elem) {
-    if (size_ >= capacity_)
-      throw StackException("Stack is full", "Stack::push");
-    ptr_[size_++] = elem;
-  }
-
-  T pop() {
-    if (size_ <= 0) throw StackException("Stack is empty", "Stack::pop");
-    return ptr_[--size_];
-  }
-
- private:
-  T* ptr_;
-  int capacity_;
-  int size_;
-};
-```
+[//]: # (INCLUDE: ./cpp/10/binary3.cc --from 16)
 
 ---
 
-* main.cc
+## 이진 입출력 (Binary Input/Output) (Cont'd - 6)
 
-```cpp
-#include <iostream>
+### 힙 객체 직렬화 (Serialization)의 필요성
 
-#include "stack.hpp"
+- 객체가 `std::string`, `char*` 등 힙 (Heap) 메모리를 가리키는 포인터를 포함할 경우 **직렬화**를 수행해야 함
+  - 힙 메모리를 사용하는 객체를 직렬화 없이 이진 형태로 내보낼 경우, **무효한 데이터**가 내보내짐
+  - e.g., 객체를 이진 쓰기 (write) 시, 포인터의 주소값 (예: `0x7FFF1234`)만 파일에 저장됨
+- 직렬화는 이진 쓰기 이전에 포인터가 가리키는 실제 데이터를 파일에 저장하는 과정
 
-int main() {
-  try {
-    Stack<int> stack(3);
-    stack.push(10);
-    stack.push(20);
-    stack.push(30);
-
-    // Uncommenting this line will throw an exception
-    // stack.push(40);
-
-    std::cout << "Popped: " << stack.pop() << std::endl;
-    std::cout << "Popped: " << stack.pop() << std::endl;
-    std::cout << "Popped: " << stack.pop() << std::endl;
-
-    // Uncommenting this line will throw an exception
-    // std::cout << "Popped: " << stack.pop() << std::endl;
-
-  } catch (const StackException& e) {
-    std::cerr << "Exception occurred: " << e.what()
-              << ", Location: " << e.where() << std::endl;
-  }
-
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/10/serialization.cc --from 9 --to 16 --no-comment)
 
 ---
 
-## 템플릿과 관련한 기타 문제 (Other Issues)
+## 이진 입출력 (Binary Input/Output) (Cont'd - 7)
 
-### `friend`
+- 이진 입출력 직렬화 예제 코드
 
-* 클래스 템플릿은 일반 함수, 함수 템플릿, 특수화된 함수 템플릿을 `friend`로 가질 수 있음
-
-```cpp
-#include <iostream>
-
-// Function declarations
-void NonTemplateFunction();
-
-template <typename T>
-void TemplateFunction(T value);
-
-// specialization for int
-template <>
-void TemplateFunction<int>(int value);
-
-template <typename T>
-class MyClass {
-  T value_;  // Internal value of the class
-
- public:
-  explicit MyClass(T value) : value_(value) {}
-
-  // Declare friend functions
-  friend void NonTemplateFunction();
-  template <typename U>
-  friend void TemplateFunction(U value);
-  friend void TemplateFunction<int>(int value);
-};
-```
+[//]: # (INCLUDE: ./cpp/10/serialization.cc --to 18)
 
 ---
 
-### 별칭 (Aliases)
+## 이진 입출력 (Binary Input/Output) (Cont'd - 8)
 
-* 템플릿은 코드가 길어짐에 따라 가독성이 낮아질 수 있음
-* 별칭 (`using`)을 사용해 코드의 길이를 줄이거나 더욱 명료한 표현을 통해 가독성을 높일 수 있음
-* 별칭은 단순한 이름 변경일 뿐 새로운 형을 만드는 것이 아님
-
-```cpp
-// This allows us to use the alias as the full definition of the class
-using IntStack = Stack<int>;
-using DoubleStack = Stack<double>;
-using StringStack = Stack<std::string>;
-
-// Then we can use the type definitions in our program as shown below:
-IntStack s1;
-DoubleStack s2;
-StringStack s3;
-```
-
-```cpp
-template<typename T>
-using Ptr = T*;  // Using 'using' to define a pointer alias in a concise way
-
-int x = 42;
-Ptr<int> intPointer = &x;  // Using the Ptr alias to declare an int pointer
-```
+[//]: # (INCLUDE: ./cpp/10/serialization.cc --from 19)
 
 ---
 
-### 상속 (Inheritance)
+## 문자열 스트림 (String Streams)
 
-* 클래스 템플릿 또는 일반 클래스를 기반으로 사용해 새로운 클래스 템플릿을 파생할 수 있음
+![center](Figure_16_13.png)
 
-#### 템플릿 클래스에서 상속
-
-```cpp
-template <typename T>
-class BaseTemplate {
-  T value_;
-
- public:
-  BaseTemplate(T val) : value_(val) {}
-};
-
-template <typename T>
-class DerivedTemplate : public BaseTemplate<T> {
- public:
-  DerivedTemplate(T val) : BaseTemplate<T>(val) {}
-};
-```
-
-#### 일반 클래스에서 템플릿 클래스 파생
-
-```cpp
-class NonTemplateClass {
-  int value_;
-
- public:
-  NonTemplateClass(int val) : value_(val) {}
-};
-
-template <typename T>
-class DerivedFromNonTemplate : public NonTemplateClass {
- public:
-  DerivedFromNonTemplate(T val) : NonTemplateClass(val) {}
-};
-```
+- `<sstream>` 헤더 파일 사용
+- C++ 문자열을 소스 또는 싱크로 활용
 
 ---
 
-### 이전에 학습했던 클래스 (Previously Learned Classes)
+## 문자열 스트림 (String Streams) (Cont'd - 1)
 
-* 이전에 학습한 클래스 중 일부는 **클래스 템플릿**
+### 문자열 스트림 멤버 함수 `str()`
 
-#### C++ 문자열 클래스
+- 파일 스트림과 달리 소스 또는 싱크와의 연결이 필요하지 않음
+- 문자열 스트림 클래스의 `str` 함수를 사용해 현재 스트림 객체의 데이터를 설정하거나 읽어올 수 있음:
 
-* 클래스 템플릿을 [`std::basic_string`](https://en.cppreference.com/w/cpp/string/basic_string) 형으로 특수화한 것
+[//]: # (INCLUDE: ./cpp/10/string.cc --from 5 --to 13 --no-comment)
 
-```cpp
-template <typename CharT,
-          typename Traits = std::char_traits<CharT>,
-          typename Allocator = std::allocator<CharT>>
-class basic_string;
-```
-
-* `CharT`
-  * 문자열 구성에 사용하는 개별 문자 형
-  * C++ 문자열은 제네릭 형 `CharT`를 `char` 형으로 특수화한 것
-* `Traits`
-  * 문자열 연산 방법을 정의하는 클래스
-  * `Traits` 형은 기본 형이 지정되어 있으며, 필요에 따라 변경해 사용 가능
-* `Allocator`
-  * 메모리 관리 방법을 정의하는 클래스
-  * `Allocator` 형은 기본 형이 지정되어 있으며, 필요에 따라 변경해 사용 가능
+[//]: # (INCLUDE: ./cpp/10/string.cc --from 15 --to 20 --no-comment)
 
 ---
 
-* my_char_traits.hpp
+## 문자열 스트림 (String Streams) (Cont'd - 2)
 
-```cpp
-#pragma once
+- 문자열 스트림 객체 사용 예제 코드
 
-#include <cctype>
-#include <iostream>
-#include <string>
-
-// Custom char_traits implementation to get case-insensitive comparison
-class MyCharTraits : public std::char_traits<char> {
-  // std::char_traits requires specific method names like `lt` and `compare`
-  // for STL compatibility. These methods are static to allow direct access
-  // without instantiating the class. Changing method names breaks the contract
-  // and causes the standard library to fail.
-
- public:
-  static int MyRank(char c) noexcept { return std::tolower(c); }
-
-  static bool lt(const char c1, const char c2) noexcept {
-    return MyRank(c1) < MyRank(c2);
-  }
-  static int compare(const char* s1, const char* s2, size_t n) noexcept {
-    while (n--) {
-      if (MyRank(*s1) < MyRank(*s2)) return -1;
-      if (MyRank(*s1) > MyRank(*s2)) return 1;
-      ++s1;
-      ++s2;
-    }
-    return 0;
-  }
-};
-```
+[//]: # (INCLUDE: ./cpp/10/string1.cc)
 
 ---
 
-* main.cc
+## 데이터 형식화 (Formatting Data)
 
-```cpp
-#include <iostream>
+- 스트림 객체는 데이터 형식을 변경하는 조정자 (manipulators)를 사용할 수 있음
+  - `std::ios` 클래스에 정의되어 있음
+- 삽입 연산자와 추출 연산자에 조정자를 같이 **연쇄적으로 사용**해 데이터를 형식화할 수 있음
 
-#include "my_char_traits.hpp"
+[//]: # (INCLUDE: ./cpp/10/manip.cc --from 2 --to 5 --no-comment)
 
-int main() {
-  // Using MyCharTraits with basic_string
-  std::basic_string<char, MyCharTraits> my_s1 = "ABcd";
-  std::basic_string<char, MyCharTraits> my_s2 = "abCD";
-  std::cout << "MyCharTraits: " << std::boolalpha << (my_s1 == my_s2)
-            << std::endl;
-
-  // Using std::string for comparison
-  std::string s1 = "ABcd";
-  std::string s2 = "abCD";
-  std::cout << "C++ string: " << std::boolalpha << (s1 == s2) << std::endl;
-
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/10/manip.cc --from 12 --to 15 --no-comment)
 
 ---
 
-#### 입출력 클래스
+## 데이터 형식화 (Formatting Data) (Cont'd - 1)
 
-* [`std::basic_istream`](https://en.cppreference.com/w/cpp/io/basic_istream), [`std::basic_ostream`](https://en.cppreference.com/w/cpp/io/basic_ostream) 클래스 템플릿을 특수화한 것
+- 매개변수 없는 조정자 예: 텍스트 출력 색상을 변경하는 조정자 ([control sequence introducer](https://en.wikipedia.org/wiki/ANSI_escape_code#Control_Sequence_Introducer_commands), `\033 n m`)
 
-```cpp
-template <typename CharT, typename Traits = std::char_traits<CharT>>
-class basic_istream;
+[//]: # (INCLUDE: ./cpp/10/manip1.cc)
 
-template <typename CharT, typename Traits = std::char_traits<CharT>>
-class basic_ostream;
-```
+---
 
-* `std::cin` 객체와 `std::cout` 객체는 `CharT` 형을 `char`형으로 특수화하여 생성한 객체
+## 데이터 형식화 (Formatting Data) (Cont'd - 2)
 
-```cpp
-using std::istream = std::basic_istream<char>;
-using std::ostream = std::basic_ostream<char>;
-```
+- 매개변수 있는 조정자 예: 간단한 로깅 클래스
+
+[//]: # (INCLUDE: ./cpp/10/manip2.cc)
