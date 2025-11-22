@@ -56,8 +56,8 @@ class LargeBufferWithoutNoexcept {
   }
 
  private:
-  LargeBufferWithoutNoexcept& operator=(
-      const LargeBufferWithoutNoexcept&) = delete;
+  LargeBufferWithoutNoexcept& operator=(const LargeBufferWithoutNoexcept&) =
+      delete;
   LargeBufferWithoutNoexcept& operator=(LargeBufferWithoutNoexcept&&) = delete;
 };
 
@@ -71,9 +71,7 @@ int main() {
     std::chrono::high_resolution_clock::time_point start =
         std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < 20; ++i) {
-      vec.push_back(LargeBuffer(100'000));
-    }
+    for (int i = 0; i < 20; ++i) { vec.push_back(LargeBuffer(100'000)); }
 
     std::chrono::high_resolution_clock::time_point end =
         std::chrono::high_resolution_clock::now();
