@@ -12,11 +12,11 @@ class Location {
   }
 };
 
-void foo() { std::cout << Location(__func__) << "Hello" << std::endl; }
-void bar() { std::cout << Location(__func__) << "Hello" << std::endl; }
-void qux() { std::cout << Location(__func__) << "Hello" << std::endl; }
+void Foo() { std::cout << Location(__func__) << "Hello" << std::endl; }
+void Bar() { std::cout << Location(__func__) << "Hello" << std::endl; }
+void Qux() { std::cout << Location(__func__) << "Hello" << std::endl; }
 
 int main() {
-  foo(), bar(), qux();
+  Foo(), Bar(), Qux();
   return 0;
 }
