@@ -1,674 +1,439 @@
-# 이동 의미론 (Move Semantics)
+<!-- _class: lead -->
+# 객체지향프로그래밍
+
+## 이동 의미론 (Move Semantics)
+
+### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
+
+---
 
 ## 이동 생성자
 
-* C++ 생성자 종류
-  * 기본 생성자 (default constructor)
-  * 매개변수 생성자 (parameterized constructor)
-  * 복사 생성자 (copy constructor)
-  * **이동 생성자 (move constructor)**
-
-* 클래스 내에 이동 생성자가 구현되어 있지 않다면 다른 생성자처럼 컴파일러가 암묵적으로 생성함
-* `std::move` 함수를 사용해 이동 연산을 사용할 수 있음
-
----
+- C++ 생성자 종류는 아래와 같음:
+  - 기본 생성자 (default constructor)
+  - 매개변수 생성자 (parameterized constructor)
+  - 복사 생성자 (copy constructor)
+  - **이동 생성자 (move constructor)**
+- 클래스 내에 이동 생성자가 구현되어 있지 않다면 컴파일러가 암묵적으로 생성함
+- 이동 생성자를 호출하기 위해서는 `std::move` 함수를 사용해야 함
+  - `<utility>` 헤더 파일 필요
 
 ### 복사 생성자의 한계
 
-* 객체를 복사해야 하는 상황에서 호출되는 생성자
-  * 새로운 메모리 공간을 할당한 뒤, 기존 객체로부터 복사해오는 형태
-  * 객체의 데이터가 클 경우 빈번한 복사 생성자 호출은 성능 저하의 원인이 됨
-
-```cpp
-#include <iostream>
-
-class LargeData {
-  int* data_;
-
- public:
-  LargeData() : data_(new int[1'000'000]) {
-    std::cout << "Default constructor called" << std::endl;
-  }
-  ~LargeData() {
-    if (data_) delete[] data_;
-    std::cout << "Destructor called" << std::endl;
-  }
-
-  // Copy constructor
-  LargeData(const LargeData& other) : data_(new int[1'000'000]) {
-    std::copy(other.data_, other.data_ + 1'000'000, data_);
-    std::cout << "Copy constructor called" << std::endl;
-  }
-};
-
-int main() {
-  LargeData a;      // Create an object
-  LargeData b = a;  // Copy constructor is called
-  return 0;
-}
-```
-
----
+- 객체를 복사해야 하는 상황에서 복사 생성자가 호출됨
+  - 새로운 메모리 공간을 할당한 뒤, 기존 객체로부터 복사해오는 형태
+- 객체의 데이터가 클 경우 빈번한 복사 생성자 호출은 성능 저하의 원인이 됨
 
 ### 이동 생성자의 도입
 
-* **객체의 소유권만을 이전하는 연산**
-  * 복사가 불필요한 상황에서 빠르게 객체의 소유권만을 이전
-
-```cpp
-#include <iostream>
-#include <utility>
-
-class LargeData {
-  int* data_;
-
- public:
-  LargeData() : data_(new int[1'000'000]) {
-    std::cout << "Default constructor called" << std::endl;
-  }
-  ~LargeData() {
-    if (data_) delete[] data_;
-    std::cout << "Destructor called" << std::endl;
-  }
-
-  // Copy constructor
-  LargeData(const LargeData& other) : data_(new int[1'000'000]) {
-    std::copy(other.data_, other.data_ + 1'000'000, data_);
-    std::cout << "Copy constructor called" << std::endl;
-  }
-
-  // Move constructor
-  LargeData(LargeData&& other) noexcept : data_(other.data_) {
-    other.data_ = nullptr;  // IMPORTANT: Nullify the source's data pointer
-    std::cout << "Move constructor called" << std::endl;
-  }
-};
-
-int main() {
-  LargeData a;                 // Default constructor
-  LargeData b = a;             // Copy constructor
-  LargeData c = std::move(a);  // Move constructor
-  return 0;
-}
-```
+- **객체의 소유권만을 이전하는 생성자**로, 복사가 불필요한 상황에서 활용됨
 
 ---
 
-### 이동 생성자 형태
+## 이동 생성자 (Cont'd - 1)
 
-```cpp
-// Move constructor
-LargeData(LargeData&& other) noexcept : data_(other.data_) {
-  other.data_ = nullptr;  // Nullify the source's data pointer
-  std::cout << "Move constructor called" << std::endl;
-}
+### 이동 생성자 구현
 
-LargeData c = std::move(a);  // Call move constructor
-```
+[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 15 --to 18 --no-comment)
 
-#### 좌측값 참조 (`&`, *lvalue* reference)와 우측값 참조 (`&&`, *rvalue* reference)
+- 매개변수 `other`은 소유권을 **넘겨주는** 객체이며, 생성자를 호출한 호스트 객체가 소유권을 **넘겨받음**
+  - 객체의 소유권만 전달한 것이지, **객체가 소멸된 것은 아님**
+- 새로 생성될 객체에 소유권을 넘겨준 원본 객체는 이후 **안전하게 소멸될 수 있도록** 멤버를 적절히 무효화 (nullify)해야 함
 
-* 좌측값 참조는 실체화된 객체의 별명으로 사용
+### 이동 생성자 호출
 
-```cpp
-int x = 10;
-int& ref = x;
-```
-
-* 우측값 참조는 **임시 객체**의 별명으로 사용
-  * **리터럴도 우측값 참조에 사용될 수 있음**
-  * 컴파일 시점에 리터럴이 우측값 참조에 사용될 경우 임시 객체를 생성함
-    * 임시 객체는 이를 참조하는 우측값 참조가 소멸될 때 같이 소멸됨
-* 주로 **이동 생성자 또는 이동 할당 연산자**에서 주로 사용
-
-```cpp
-int&& rref_literal = 20; // While rref_literal is valid, 20 exists in memory.
-std::string&& rref_object = std::move(str);
-```
+[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 27 --to 27 --no-comment)
 
 ---
 
-#### `noexcept`
+## 이동 생성자 (Cont'd - 2)
 
-* 복사 생성자는 예외가 발생하더라도 원본 객체를 유지할 수 있음
-* 이동 생성자는 예외가 발생하면 **원본 객체를 유지할 것이라는 보장이 없음**
-  * 소유권이 이동하게 됨에 따라 이동된 (moved-from) 객체는 **비정의** 상태가 됨
+- 복사 생성자로 새로운 객체를 생성하는 예제
 
-```cpp
-// Copy constructor
-LargeData(const LargeData& other) : data_(new int[1'000'000]) {
-  std::copy(other.data_, other.data_ + 1'000'000, data_);
-  std::cout << "Copy constructor called" << std::endl;
-}
-
-// Move constructor
-LargeData(LargeData&& other) noexcept : data_(other.data_) {
-  other.data_ = nullptr;  // Nullify the source's data pointer
-  std::cout << "Move constructor called" << std::endl;
-}
-```
+[//]: # (INCLUDE: ./cpp/11/move_ctor1.cc --to 19)
 
 ---
 
-* 표준 라이브러리는 이동 생성자가 `noexcept`인 경우에만 이동 연산 사용
-  * 그렇지 않으면 예외 안전성을 보장하기 위해 **복사 생성자를 사용**
-* 이동 생성자에 `noexcept`를 명시하지 않으면 성능 저하가 발생할 수 있음
+## 이동 생성자 (Cont'd - 3)
 
-```cpp
-#include <chrono>
-#include <iostream>
-
-class Test {
- public:
-  Test() : data_(new int(42)) {}
-  ~Test() { if (data_) delete data_; }
-  Test(const Test& other) : data_(new int(*other.data_)) {}
-  Test(Test&& other) : data_(other.data_) { other.data_ = nullptr; }
-
- private:
-  int* data_;
-};
-
-class TestNoExcept {
- public:
-  TestNoExcept() : data_(new int(42)) {}
-  ~TestNoExcept() { if (data_) delete data_; }
-  TestNoExcept(const TestNoExcept& other) : data_(new int(*other.data_)) {}
-  TestNoExcept(TestNoExcept&& other) noexcept : data_(other.data_) {
-    other.data_ = nullptr;
-  }
-
- private:
-  int* data_;
-};
-```
+[//]: # (INCLUDE: ./cpp/11/move_ctor1.cc --from 20)
 
 ---
 
-```cpp
-template <typename T>
-void RunBenchmark(const char* label) {
-  T* objs = new T[10'000'000];
-  auto start = std::chrono::high_resolution_clock::now();
-  for (int i = 0; i < 10'000'000; ++i) T moved_objs = std::move(objs[i]);
-  auto end = std::chrono::high_resolution_clock::now();
-  auto diff =
-      std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  std::cout << label << " elapsed: " << diff.count() << " ms\n";
-  delete[] objs;
-}
+## 이동 생성자 (Cont'd - 4)
 
-int main() {
-  RunBenchmark<Test>("Without noexcept"); // Without noexcept elapsed: 122 ms
-  RunBenchmark<TestNoExcept>("With noexcept"); // With noexcept elapsed: 119 ms
-  return 0;
-}
-```
+- **이동 생성자**로 새로운 객체를 생성하는 예제
+
+[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --to 20)
 
 ---
 
-#### `std::move`
+## 이동 생성자 (Cont'd - 5)
 
-```cpp
-template<typename T>
-constexpr typename std::remove_reference<T>::type&& move(T&& t) noexcept {
-  return static_cast<typename std::remove_reference<T>::type&&>(t);
-}
-```
-
-* `<utility>` 헤더에 정의되어 있는 함수
-* 객체를 우측값으로 형 변환만 수행
-  * **실제로 객체를 이동하는 것이 아닌, 이동할 수 있는 대상으로 표시하는 것**
-* `std::move` 함수의 반환값은 **이동할 수 있는 상태의 객체**가 됨
-* `std::move` 함수의 반환값이 이동 관련 의미를 갖는 문장에 함께 사용되면 **소유권**이 이전됨
-
-```cpp
-std::string str = "Hello";
-
-std::move(str);
-std::cout << str << std::endl;  // there's no side effects, > Hello
-
-std::string moved_str = std::move(str);  // move semantics, call a move ctor
-std::cout << str << std::endl;  // str is moved to moved_str, > <EMPTY>
-```
-
-* `moved_str`은 이동 연산을 사용해 `str`의 소유권을 가져옴
-* **소유권을 잃은 객체는 더 이상 사용할 수 없음 (undefined behavior)**
-  * 소유권을 잃은 객체가 사용자 정의 형일 경우, 재사용 시 결과를 알 수 없음
-  * 소유권을 읽은 객체가 기본 자료형은 경우, 재사용 가능
+[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 21)
 
 ---
 
-## [C++에서의 값 범위 (Value Category)](https://medium.com/@barryrevzin/value-categories-in-c-17-f56ae54bccbe)
+## 이동 생성자 (Cont'd - 6)
 
-![center h:400](Figure_Value_Category.png)
+### 좌측값 참조 (`&`, *lvalue* Reference)와 우측값 참조 (`&&`, *rvalue* Reference)
 
-* *lvalue* (좌측값)
-* *prvalue* (Pure Rvalue, 순수 우측값)
-* *xvalue* (eXpiring Value, 만료되는 값)
-* *glvalue* (Generalized Lvalue)
-* *rvalue* (우측값)
+[//]: # (INCLUDE: ./cpp/11/reference.cc --from 2 --to 4 --no-comment)
 
----
+[//]: # (INCLUDE: ./cpp/11/reference.cc --from 6 --to 7 --no-comment)
 
-### *glvalue*
-
-* *lvalue*
-  * 식별자와 메모리 주소를 가지는 값
-
-  ```cpp
-  int x = 10;
-  int& ref = x; // x is lvalue
-  ```
-
-* *xvalue*
-  * 식별자와 메모리 주소를 가지지만, **소멸되거나 자원이 이동될 예정인 값**
-
-### *rvalue*
-
-* *prvalue*
-  * 순수한 계산 결과로, 메모리 주소나 식별자가 없음 (e.g., 리터럴)
-  * 문자열 리터럴은 정적 공간에 메모리를 갖는 특별한 리터럴이자 *prvalue*
-
-  ```cpp
-  int GetValue() { return 100; }
-
-  int y = GetValue(); // returned value is prvalue
-  ```
-
-* *xvalue*
-  * ***xvalue*는 *glvalue***이지만 이동 관련 연산을 지원하기 위해 *rvalue*로도 평가될 수 있음
+- 좌측값 참조는 실체화된 객체의 별명
+- 우측값 참조는 **임시 객체 또는 리터럴**의 별명
+  - 컴파일 시점에 리터럴이 우측값 참조에 사용될 경우 임시 객체를 생성함
+  - 우측값 참조 소멸 시 임시 객체도 같이 소멸됨
+- **이동 생성자 또는 이동 대입 연산자**에서 주로 사용
 
 ---
 
-### *xvalue*
+## 이동 생성자 (Cont'd - 7)
 
-* C++11에 도입된 값 범주
-* **이동 연산에 의해 소멸될 객체를 표현하는 값**
-* *glvalue*의 특징 (객체의 식별자와 메모리 주소를 가짐)과 *rvalue*의 특징 (이동 가능)이 결합됨
+### `noexcept` 지정자
 
-#### *xvalue*가 *glvalue*가 되는 경우
+- 복사 생성자는 예외가 발생해도 안전함
+  - 원본 객체는 생성자 안에서 **읽기 전용**이며, 예외가 발생하더라도 원본 객체는 아무런 영향을 받지 않고 보존됨
 
-* *xvalue*가 주소를 참조하는 형태로 평가되는 경우
+[//]: # (INCLUDE: ./cpp/11/move_ctor1.cc --from 14 --to 17 --no-comment)
 
-```cpp
-#include <iostream>
-#include <string>
-#include <utility>
+- **이동 생성자는 예외를 발생시키지 않아야 함**
+  - 원본 객체의 자원 소유권을 이전하는 과정에서 **원본 객체의 상태가 변함**
+  - 예외가 발생하면 원본 객체를 초기 상태로 되돌리지 못할 수 있음
 
-int main() {
-  std::string str = "Hello, World!";
-  std::string moved_str = std::move(str);
-
-  // returned value is xvalue, but it's still also glvalue.
-  std::move(str).clear();  // clear the moved-from object explicitly
-  str = "New Value";
-  std::cout << str << std::endl;
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 15 --to 18 --no-comment)
 
 ---
 
-#### *xvalue*가 *rvalue*가 되는 경우
+## 우측값으로의 형 변환 (Casting To *rvalue*)
 
-* `std::move`의 반환형으로써 임시 객체로 사용될 때
-  * 우측값 레퍼런스는 `std::move`로부터 반환된 객체를 사용할 수 있음
-* 리터럴에서 우측값 레퍼런스, 함수 반환, `const` 좌측값 레퍼런스 등 문맥에 의해 파생된 임시 객체
+### [`std::move`](https://en.cppreference.com/w/cpp/utility/move.html)
 
-```cpp
-#include <iostream>
-#include <utility>
+![w:501 center](image.png)
 
-class MyClass {
- public:
-  MyClass() = default;
-  MyClass(const MyClass&) { std::cout << "Copy Constructor\n"; }
-  MyClass(MyClass&&) noexcept { std::cout << "Move Constructor\n"; }
-};
+- `<utility>` 헤더에 정의되어 있는 함수로, **인자가 이동될 수 있도록 *rvalue* 참조로 형변환**
 
-void Process(MyClass obj) {}
+[//]: # (INCLUDE: ./cpp/11/move.cc --from 6 --to 14 --no-comment)
 
-int main() {
-  MyClass a;
-  std::cout << "Process(a): ";
-  Process(a);  // passing 'a' as a lvalue
-  std::cout << "Process(std::move(a)): ";
-  // the parameter of the move ctor is MyClass&&, so xvalue treated as an rvalue
-  Process(std::move(a));  // passing 'a' as a xvalue
-
-  MyClass b;
-  std::cout << "\nMyClass c = b: ";
-  MyClass c = b;  // assigning 'a' as a lvalue
-  // The class has a move ctor, so returned value treated as an rvalue
-  std::cout << "MyClass d = std::move(b): ";
-  MyClass d = std::move(b);  // assigning 'a' as a xvalue
-  return 0;
-}
-```
+- 별도 규정이 없다면, 이동 (move)된 표준 라이브러리 객체는 **유효하지만 지정되지 않은 (valid but unspecified) 상태**가 됨
+  - 객체 내부 값은 알 수 없지만, 클래스 불변식 (class invariant)은 유지됨
+    - 전제 조건 (precondition)이 없는 멤버 함수는 안전하게 호출 가능
+- 대부분 표준 라이브러리 객체는 규정이 없으나, 일부 규정이 명시된 경우가 있음:
+  - `std::unique_ptr`: 내부 포인터는 이동 후 반드시 `nullptr`이 됨
 
 ---
 
-### *xvalue* 사용 시 유의사항
+## C++ 값 범주 (Value Categories)
 
-* *xvalue*를 잘못 사용한 형태
+![center](image-1.png)
 
-```cpp
-#include <iostream>
+### 기본 범주 (Primary Categories): *lvalue*, *prvalue*, *xvalue*
 
-class A {
- public:
-  A() { std::cout << "ctor\n"; }
-  A(const A& a) { std::cout << "copy ctor\n"; }
-  A(A&& a) { std::cout << "move ctor\n"; }
-};
-
-class B {
-  A a_;
-
- public:
-  B(A&& a) : a_(a) {}  // move ctor expected, but copy ctor
-};
-
-int main() {
-  A a;
-  B b(std::move(a));
-  return 0;
-}
-```
-
-* *xvalue*는 *glvalue*
-* `a_(a)` 표현식 평가 시 *glvalue*를 처리할 수 있는 복사 생성자가 연관됨
+### 복합 범주 (Composite Categories): *glvalue*, *rvalue*
 
 ---
 
-* 올바르게 *xvalue*를 사용한 형태
+## C++ 값 범주 (Value Categories) (Cont'd - 1)
 
-```cpp
-#include <iostream>
+### *lvalue* (Left Value)
 
-class A {
- public:
-  A() { std::cout << "ctor\n"; }
-  A(const A& a) { std::cout << "copy ctor\n"; }
-  A(A&& a) { std::cout << "move ctor\n"; }
-};
+- 정체성 (identity, 고유한 메모리 주소를 가지는 것)이 있고, 이동될 수 없는 값
+  - 주소 연산자 (`&`)를 통해 메모리 주소를 취할 수 있음
+  - e.g., 변수 이름, 좌측값 참조를 반환하는 함수 호출, 문자열 리터럴
 
-class B {
-  A a_;
-
- public:
-  B(A&& a) : a_(std::move(a)) {}  // move ctor
-};
-
-int main() {
-  A a;
-  B b(std::move(a));
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 5 --to 7 --no-comment)
 
 ---
 
-## 스마트 포인터에서의 이동
+## C++ 값 범주 (Value Categories) (Cont'd - 2)
 
-* `std::unique_ptr`은 복사와 대입이 제거된 형
-* 다른 지역으로 소유권을 이동해야 할 경우 `std::move` 함수를 사용할 수 있음
-* 이동 후의 스마트 포인터는 `nullptr`을 갖게 됨
+### *prvalue* (Pure Rvalue)
 
-```cpp
-#include <memory>
+- 정체성이 없고 (주소 없음), 이동 가능한 값
+  - 초기화하는 값 또는 임시적인 계산 결과
+  - e.g., 문자열을 제외한 리터럴 (`10`, `nullptr`, `true`), 반환형이 참조가 아닌 함수 호출
 
-void ProcessResource(std::unique_ptr<Resource> res) { // Use res }
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 10 --to 12 --no-comment)
 
-int main() {
-  std::unique_ptr<Resource> my_resource = std::make_unique<Resource>();
-  // Transfer ownership using move semantics
-  ProcessResource(std::move(my_resource));
-  // my_resource is now nullptr
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 15 --to 15 --no-comment)
+
+### *xvalue* (eXpiring Value)
+
+- 정체성이 있고, 이동도 가능한 값
+  - 곧 소멸될 예정인 객체로서, **자원을 넘겨줄 수 있는 상태**인 객체
+  - e.g., `std::move` 함수의 반환 값, 우측값 참조 (`T&&`)를 반환하는 함수 호출
 
 ---
 
-## 이동 할당 연산자
+## C++ 값 범주 (Value Categories) (Cont'd - 3)
 
-* my_class.hpp
+### *glvalue* (Generalized Lvalue)
 
-```cpp
-#pragma once
+- *lvalue* + *xvalue*
+- 메모리상에 위치가 결정되어 있어 데이터 멤버나 멤버 함수를 사용하거나 다형성 동작이 가능함
 
-#include <iostream>
-#include <utility>  // for std::move
+### *rvalue* (Right Value)
 
-class MyClass {
-  int* data_;
-
- public:
-  MyClass() : data_(new int[1'000'000]) {
-    std::cout << "Default constructor called (new memory allocated)"
-              << std::endl;
-  }
-
-  ~MyClass() {
-    if (data_) delete[] data_;
-    std::cout << "Destructor called" << std::endl;
-  }
-
-  // Move constructor
-  MyClass(MyClass&& other) noexcept;
-
-  // Copy constructor
-  MyClass(const MyClass& other);
-
-  // Copy assignment operator
-  MyClass& operator=(const MyClass& other);
-
-  // Move assignment operator
-  MyClass& operator=(MyClass&& other) noexcept;
-};
-```
+- *prvalue* + *xvalue*
+- **이동 시킬 수 있는 (moveable) 상태**로, 이동 생성자나 이동 대입 연산자의 인자가 될 수 있음
 
 ---
 
-* my_class.cc
+## C++ 값 범주 (Value Categories) (Cont'd - 4)
 
-```cpp
-#include "my_class.hpp"
+### *xvalue*가 *glvalue*로서 동작하는 경우
 
-#include <algorithm>  // for std::copy
-#include <iostream>
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 21 --to 26 --no-comment)
 
-MyClass::MyClass(MyClass&& other) noexcept : data_(other.data_) {
-  other.data_ = nullptr;
-  std::cout << "Move constructor called" << std::endl;
-}
+### *xvalue*가 *rvalue*로서 동작하는 경우
 
-MyClass::MyClass(const MyClass& other) : data_(new int[1'000'000]) {
-  std::copy(other.data_, other.data_ + 1'000'000, data_);
-  std::cout << "Copy constructor called (new memory allocated)" << std::endl;
-}
-
-MyClass& MyClass::operator=(const MyClass& other) {
-  if (this != &other) {  // Self-assignment check
-    int* new_data = new int[1'000'000];
-    std::copy(other.data_, other.data_ + 1'000'000, new_data);
-    delete[] data_;  // Release old memory
-    data_ = new_data;
-    std::cout << "Copy assignment operator called (deep copy)" << std::endl;
-  }
-  return *this;
-}
-
-MyClass& MyClass::operator=(MyClass&& other) noexcept {
-  if (this != &other) {   // Self-assignment check
-    delete[] data_;       // Release old memory
-    data_ = other.data_;  // Transfer ownership
-    other.data_ = nullptr;
-    std::cout << "Move assignment operator called (just gave ownership)"
-              << std::endl;
-  }
-  return *this;
-}
-```
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 30 --to 32 --no-comment)
 
 ---
 
-* main.cc
+## C++ 값 범주 (Value Categories) (Cont'd - 5)
 
-```cpp
-#include "my_class.hpp"
+### *xvalue* 사용 시 주의사항: 이름이 있는 우측값 참조
 
-void SwapUsingCopy(MyClass& first, MyClass& second) {
-  MyClass temp(first);
-  first = second;
-  second = temp;
-}
+> 이름이 있는 우측값 참조 (named *rvalue* reference)는 *lvalue*로 평가된다.
 
-void SwapUsingMove(MyClass& first, MyClass& second) {
-  MyClass temp(std::move(first));
-  first = std::move(second);
-  second = std::move(temp);
-}
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 37 --to 45 --no-comment)
 
-int main() {
-  MyClass obj1, obj2;
-  SwapUsingCopy(obj1, obj2);
-  SwapUsingMove(obj1, obj2);
-  return 0;
-}
-```
+- 컴파일 오류 없이 **조용히 복사 생성자를 호출**하여 성능 저하를 야기하는 형태
+- **식별자가 있는 객체는 함부로 자원을 뺏기지 않도록 *lvalue*로 보호됨**
+- `std::move` 함수를 사용해 **이동 가능성**을 명시할 때에만 이동이 허용됨 (*xvalue*)
 
 ---
 
-## 전달 참조와 완벽한 전달
+## C++ 값 범주 (Value Categories) (Cont'd - 6)
 
-* 다음 주어진 코드는 사용자가 경우에 따라 명시적으로 전달할 값을 관리해야 하는 형태
-  * 이동 생성자를 호출하려면 `std::move`를 명시적으로 사용해야 함
+- 더 이상 사용되지 않는 변수는 `std::move`를 사용해 **이동 가능성**을 명시해야 함
 
-```cpp
-#include <iostream>
-#include <utility>
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 47 --to 54 --no-comment)
 
-class MyString {
- public:
-  MyString(const char* str) { std::cout << "Constructed from const char*\n"; }
-  MyString(const MyString& other) { std::cout << "Copy Constructed\n"; }
-  MyString(MyString&& other) { std::cout << "Move Constructed\n"; }
-};
+- *lvalue*인 매개변수 `foo`를 *xvalue*로 올바르게 전달하는 형태
 
-int main() {
-  const char* cstr = "Hello";
-  MyString s1 = cstr;
-  MyString s2 = s1;
-  MyString s3 = std::move(MyString(s1));
-  return 0;
-}
-```
+---
 
-* 전달 참조와 완벽한 전달을 사용하면 함수 사용 형태를 더욱 직관적으로 개선할 수 있음
+## C++ 값 범주 (Value Categories) (Cont'd - 7)
+
+### 참조 바인딩 규칙 (Reference Binding)
+
+|Reference Type|Binds to *lvalue*|Binds to *xvalue*|Binds to *prvalue*|Notes|
+|---|---|---|---|---|
+|`T&`|Allowed|Error|Error|Modifiable *lvalues* only|
+|`const T&`|Allowed|Allowed|Allowed|Universal; extends lifetime of temporary objects for *prvalues*|
+|`T&&`|Error|Allowed|Allowed|Accepts only **move candidates** (*rvalues*)|
+
+---
+
+## 이동 대입 연산자
+
+- 이동 생성자는 다른 객체로부터 내용물을 가져와 새로운 객체를 생성하는 과정
+- 이동 대입 연산자는 **이미 내용물이 있는 객체를 비우고, 다른 객체의 내용물로 채우는 과정**
+
+### 자기 대입 방지 (Self-Assignment Check)
+
+- 자기 자신을 이동시키려 할 때, 자원을 먼저 삭제하는 실수를 예방하기 위해 주소 비교 (`this != &other`)가 선행되어야 함
+
+### 기존 자원 해제 (Resource Release)
+
+- 새로운 자원을 가져오기 전에, 자신이 갖고 있던 자원을 미리 반환하여 메모리 누수를 방지해야 함
+
+---
+
+## 이동 대입 연산자 (Cont'd - 1)
+
+- `my_class.hpp`
+
+[//]: # (INCLUDE: ./cpp/11/move/my_class.hpp)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 2)
+
+- `my_class.cc`
+
+[//]: # (INCLUDE: ./cpp/11/move/my_class.cc --to 20)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 3)
+
+[//]: # (INCLUDE: ./cpp/11/move/my_class.cc --from 21)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 4)
+
+- `main.cc`
+
+[//]: # (INCLUDE: ./cpp/11/move/main.cc)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 5)
+
+### Copy And Swap Idiom
+
+#### 현재 코드 (고전적 방식)
+
+- `operator=` 내부에서 `if (this != &other)`로 자기 대입을 검사함
+- `delete[] data_`를 호출하여 기존 자원을 직접 해제함
+- `new int[...]`로 새 메모리를 직접 할당함
+- 현재 코드의 단점:
+  - 복사 생성자와 대입 연산자 간에 코드 중복이 발생함
+  - 예외 안전성 (exception safety)을 보장하기 위해 코드가 복잡해질 수 있음
+
+#### Copy And Swap 방식
+
+- `swap` 래퍼 함수 (멤버 혹은 `friend`)를 먼저 구현함
+- 대입 연산자는 매개변수로 **복사본 (copy)을 전달**받음
+- 내부에서 `swap`을 호출하여, 복사본과 내 자원을 서로 교환함
+- 함수가 끝날 때 복사본 (내 옛날 자원을 가지게 된 객체)이 소멸되면서 **자연스럽게 메모리가 해제**됨
+
+---
+
+## 이동 대입 연산자 (Cont'd - 6)
+
+- `my_class.hpp`
+
+[//]: # (INCLUDE: ./cpp/11/copy_and_swap/my_class.hpp)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 7)
+
+- `my_class.cc`
+
+[//]: # (INCLUDE: ./cpp/11/copy_and_swap/my_class.cc --to 21)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 8)
+
+[//]: # (INCLUDE: ./cpp/11/copy_and_swap/my_class.cc --from 22)
+
+---
+
+## 이동 대입 연산자 (Cont'd - 9)
+
+- `main.cc`
+
+[//]: # (INCLUDE: ./cpp/11/copy_and_swap/main.cc)
+
+---
+
+## 함수로의 값 전달
+
+- 함수로 값을 전달할 때 **불필요한 임시 객체가 생성**되어 비효율적인 동작을 하는 경우들이 존재함
+
+[//]: # (INCLUDE: ./cpp/11/my_string.cc --to 18 --no-comment)
+
+- **완벽한 전달**을 사용하면 불필요한 임시 객체 생성을 억제해 효율적인 동작이 가능함
 
 ---
 
 ## 전달 참조 (Forwarding Reference, Universal Reference)
 
-* 함수 템플릿에서 컴파일 시점에 수행되는 형 추론에 의해 결정되는 `T&&` 형태의 매개 변수
-* **좌측값과 우측값**을 모두 수용할 수 있음
+- 템플릿 형 추론 과정에서 `T&&`로 선언된 매개변수가 갖는 특별한 성질
 
-```cpp
-template <typename T>
-void func(T&& arg); // T&& is forwarding reference
-```
+[//]: # (INCLUDE: ./cpp/11/forwarding_reference.cc --from 2 --to 6 --no-comment)
 
-* `T`는 함수 호출 시 사용된 전달 인자의 형에 따라 결정됨
-* 전달 인자가 좌측값이면 `T`는 `T&`가 되어 결국 `T&`가 됨
-* 전달 인자가 우측값이면 `T`는 그대로 `T`가 되어 결국 `T&&`가 됨
+- 전달 참조는 **좌측값 (*lvalue*)과 우측값 (*rvalue*)을 모두 수용 가능**
+  - 인자가 *lvalue*면 `T`는 `T&`로 추론됨
+  - 인자가 *rvalue*면 `T`는 비참조형 `T`로 추론됨 (최종 `T&&`)
+- 전달 참조는 **원본 인자의 값 범주 (value category) 정보를 손실 없이 보존**
+
+---
+
+## 참조 붕괴 (Reference Collapsing)
+
+- 컴파일러가 이중 참조 (`&&`, 참조에 대한 참조)를 처리할 때 단일 참조로 단순화하는 규칙
+
+|First Reference|Second Reference|Collapsed Result|Note|
+|---|---|---|---|
+|`T&` |`&` |`T&`|*lvalue* dominates|
+|`T&` |`&&`|`T&`|*lvalue* dominates|
+|`T&&`|`&` |`T&`|*lvalue* dominates|
+|`T&&`|`&&`|`T&&`|Only *rvalue* + *rvalue* = *rvalue*|
+
+- Boolean analogy: `&`를 1 (True), `&&`를 0 (False)으로 가정할 때, 논리 OR 연산 결과와 동일
 
 ---
 
 ## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html)
 
-* 함수 템플릿의 매개 변수의 특성 (좌측값 또는 우측값)을 그대로 다른 함수로 전달할 때 사용
-* `std::forward` 함수 사용
+- 전달 참조와 참조 붕괴 규칙, `std::forward` (`<utility>` 헤더 파일 필요)를 사용하여 구현한 함수
 
-```cpp
-template <class T>
-constexpr T&& forward(std::remove_reference_t<T>& t) noexcept;  // (1)
+![w:524 center](image-4.png)
 
-template <class T>
-constexpr T&& forward(std::remove_reference_t<T>&& t) noexcept;  // (2)
-```
+![w:524 center](image-5.png)
 
-### 참조 붕괴 (Reference Collapsing)
-
-* `&`는 `true`, `&&`는 `false`로 치환한 뒤 `|` (or) 연산을 수행
-  * `T& &`는 `T&`로 붕괴
-  * `T& &&`는 `T&`로 붕괴
-  * `T&& &`는 `T&`로 붕괴
-  * `T&& &&`는 `T&&`로 붕괴
+- **인자의 값 범주와 자료형을 훼손 없이 원본 그대로 전달함**
+- **임시 객체 생성 억제** 효과가 있음
+  - 원본 그대로 전달할 수 있으므로, 중간 단계 (e.g., 래퍼 함수)에서 불필요한 임시 객체 생성, 복사, 이동을 완벽히 제거
+  - `const T&` 또는 pass-by-value 방식보다 효율적으로 동작
+- 임시 객체 생성 억제를 위한 **조건**을 만족해야 함
+  - 원본 인자를 전달 받는 함수 또는 객체가 전달된 인자를 처리할 수 있는 오버로딩을 지원해야 함
+    - e.g., 생성자, 대입 연산자, 일반 함수, etc.
+- 만약 조건을 만족하지 않는다면 임시 객체가 생성되어 성능 최적화를 사용할 수 없음
 
 ---
 
-* 앞서 소개했던 코드에 전달 참조와 완벽한 전달을 적용한 예
+## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 1)
 
-```cpp
-#include <iostream>
+### 완벽한 전달 장점 1 - 인자의 값 범주와 속성을 유지하여 전달
 
-class MyString {
- public:
-  MyString(const char* str) { std::cout << "Constructed from const char*\n"; }
-  MyString(const MyString& other) { std::cout << "Copy Constructed\n"; }
-  MyString(MyString&& other) { std::cout << "Move Constructed\n"; }
-};
-
-template <typename T>
-MyString createMyString(T&& arg) {
-  return MyString(std::forward<T>(arg));
-}
-
-int main() {
-  const char* cstr = "Hello";
-  MyString s1 = createMyString(cstr);
-  MyString s2 = createMyString(s1);
-  MyString s3 = createMyString(MyString(s1));
-  return 0;
-}
-```
+[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --to 15 --no-comment)
 
 ---
 
-* `std::forward` 사용 예
+## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 2)
 
-```cpp
-#include <iostream>
-#include <utility>
+[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --from 18 --to 19 --no-comment)
 
-void identify(int& x) { std::cout << "int&\n"; }
-void identify(const int& x) { std::cout << "const int&\n"; }
-void identify(int&& x) { std::cout << "int&&\n"; }
+- 변수 `a`는 이름 있는 *lvalue*이고, `T`는 `int&`로 추론됨
+- 매개변수 `arg`는 이름 있는 `int&`형 변수이므로 *lvalue*로 간주됨
+- `std::forward<T>(arg)`는 참조 붕괴 규칙에 의해 `int&`가 됨
 
-template <typename T>
-void func(T&& arg) {
-  std::cout << "without std::forward" << std::endl;
-  identify(arg);
-  std::cout << "with std::forward" << std::endl;
-  identify(std::forward<T>(arg));
-}
+[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --from 21 --to 22 --no-comment)
 
-int main() {
-  int a = 10;
-  const int b = 20;
+- 변수 `b`는 이름 있는 `const` *lvalue*이고, `T`는 `const int&`로 추론됨
+- 매개변수 `arg`는 이름 있는 `const int&`형 변수이므로 *lvalue*로 간주됨
+- `std::forward<T>(arg)`는 참조 붕괴 규칙에 의해 `const int&`가 됨
 
-  std::cout << "Passing lvalue a:\n";
-  func(a);
+---
 
-  std::cout << "\nPassing const lvalue b:\n";
-  func(b);
+## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 3)
 
-  std::cout << "\nPassing rvalue 30:\n";
-  func(30);
+[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --from 24 --to 24 --no-comment)
 
-  return 0;
-}
-```
+- 리터럴 `30`은 **이름 없는 임시 객체** *prvalue*이고, `T`는 `int`로 추론됨
+- 매개변수 `arg`는 이름 있는 `int&&`형 변수이지만, **이름을 가진 모든 변수는 *lvalue*로 간주됨**
+  - `int&` 형 변수로 간주되며, *rvalue* 속성을 잃음
+- `std::forward<T>(arg)`는 `int&&`가 됨
+  - **`std::forward`를 사용해야 속성 손실 없이 완벽히 전달 가능**
+
+---
+
+## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 4)
+
+### 완벽한 전달 장점 2 - 불필요한 임시 객체 생성 억제
+
+[//]: # (INCLUDE: ./cpp/11/my_string_perfect_forwarding.cc --to 20)
+
+---
+
+## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 5)
+
+[//]: # (INCLUDE: ./cpp/11/my_string_perfect_forwarding.cc --from 21)
+
+- `"Alice"`는 문자열 리터럴이며, 메모리 주소를 갖고 있는 *lvalue*
+- `SetName`의 인자로 전달하면 `T`는 `const char*&`로 추론됨
+- `name`은 `const char*& &&`에서 참조 붕괴 규칙에 의해 `const char*&`형이 됨
+- `std::forward<T>(name)`은 참조 붕괴 규칙에 의해 `const char*&`형이 됨
+- **`name_`은 `std::string`형 객체이며, `operator=(const char*)` 오버로딩이 존재함**
+- **임시 객체 생성 없이 `name_`에 `"Alice"`를 바로 전달함**
