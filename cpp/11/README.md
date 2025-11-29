@@ -209,11 +209,13 @@
 
 ## C++ 값 범주 (Value Categories) (Cont'd - 6)
 
-- 더 이상 사용되지 않는 변수는 `std::move`를 사용해 **이동 가능성**을 명시해야 함
+- 이름이 있는 우측값 참조는 `std::move`를 사용해 값 범주를 *lvalue*에서 *xvalue*로 바꾸어 **이동 가능성**을 명시해야 함
 
 [//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 47 --to 54 --no-comment)
 
-- *lvalue*인 매개변수 `foo`를 *xvalue*로 올바르게 전달하는 형태
+### 이름이 있는 우측값 참조를 *lvalue*로 간주하는 이유
+
+[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 64 --to 70 --no-comment)
 
 ---
 
@@ -280,19 +282,21 @@
 
 #### 현재 코드 (고전적 방식)
 
-- `operator=` 내부에서 `if (this != &other)`로 자기 대입을 검사함
-- `delete[] data_`를 호출하여 기존 자원을 직접 해제함
-- `new int[...]`로 새 메모리를 직접 할당함
-- 현재 코드의 단점:
-  - 복사 생성자와 대입 연산자 간에 코드 중복이 발생함
-  - 예외 안전성 (exception safety)을 보장하기 위해 코드가 복잡해질 수 있음
+- `operator=` 내부에서 `if (this != &other)`로 자기 대입 검사를 수행해야 함
+- 명시적으로 자원을 할당하거나 소멸해야 함
+- **복사 대입과 이동 대입을 별도 구현**해야 하므로 유지보수 비용 증가
+- 메모리 할당 실패 시 **원본 객체가 이미 삭제**되어 복구가 어려움
 
 #### Copy And Swap 방식
 
-- `swap` 래퍼 함수 (멤버 혹은 `friend`)를 먼저 구현함
-- 대입 연산자는 매개변수로 **복사본 (copy)을 전달**받음
-- 내부에서 `swap`을 호출하여, 복사본과 내 자원을 서로 교환함
-- 함수가 끝날 때 복사본 (내 옛날 자원을 가지게 된 객체)이 소멸되면서 **자연스럽게 메모리가 해제**됨
+- **단일 대입 연산자로 복사와 이동 모두 처리**
+  - 코드 중복 제거 및 유지보수성 향상
+- 대입 연산 시 매개변수로 **복사본 (call-by-value)을 전달**받음
+  - **자기 대입 검사 (`if (this != &other)`) 불필요**
+  - 예외가 발생해도 원본 객체는 **이전 상태 유지**
+  - 자원 할당과 소멸이 **자동**으로 이루어짐 (RAII, Resource Acquisition Is Initialization)
+- 강한 예외 안전성 (strong exception safety) 보장
+  - `std::swap` 함수를 사용하여 두 객체 간 멤버의 **포인터**만 교환하므로 예외 발생 없음
 
 ---
 
@@ -377,9 +381,14 @@
   - 원본 그대로 전달할 수 있으므로, 중간 단계 (e.g., 래퍼 함수)에서 불필요한 임시 객체 생성, 복사, 이동을 완벽히 제거
   - `const T&` 또는 pass-by-value 방식보다 효율적으로 동작
 - 임시 객체 생성 억제를 위한 **조건**을 만족해야 함
-  - 원본 인자를 전달 받는 함수 또는 객체가 전달된 인자를 처리할 수 있는 오버로딩을 지원해야 함
-    - e.g., 생성자, 대입 연산자, 일반 함수, etc.
-- 만약 조건을 만족하지 않는다면 임시 객체가 생성되어 성능 최적화를 사용할 수 없음
+  - 원본 인자를 전달 받는 함수 또는 객체가 전달된 인자를 처리할 수 있는 오버로딩 (생성자, 연산자, etc.)을 지원해야 함
+  - 조건을 만족하지 않는다면 임시 객체가 생성되어 최적화가 불가함
+
+| Aspect | `std::move` | Perfect Forwarding |
+|--------|-----------|-------------------|
+| **Conversion** | *lvalue* -> *xvalue* | **Category Preservation** |
+| **Selectivity** | Explicit Choice | Automatic Processing |
+| **Purpose** | Explicit Move Intent | Prevent Attribute Loss |
 
 ---
 
