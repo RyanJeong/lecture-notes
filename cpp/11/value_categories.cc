@@ -59,3 +59,13 @@ int main() {
   Xvalue1();
   return 0;
 }
+
+#ifdef CPP_11_NOBUILD
+void Process(std::string&& s) {
+  // If `s` were an rvalue, move constructor would be silently invoked here,
+  // causing ambiguity: users wouldn't know if `s` is moved or copied without
+  // explicit std::move.
+  std::string str = s;
+  std::cout << str << std::endl;
+}
+#endif
