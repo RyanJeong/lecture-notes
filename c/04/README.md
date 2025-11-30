@@ -770,7 +770,7 @@ int add(int a, int b); /* a function declaration */
 
 ## Header Files (Cont'd - 1)
 
-### `#include "..."` vs. `#include <...>`
+### `#include "..."` vs `#include <...>`
 
 - `#include "..."`은 사용자 정의 헤더 파일을 포함할 때 사용
   1. 포함 지시문이 작성된 소스 파일의 위치를 기준으로 `"..."` 경로에서 헤더 파일 탐색

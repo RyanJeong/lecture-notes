@@ -711,7 +711,7 @@ print them in order
 
 ---
 
-## Pointers vs. Multi-dimensional Arrays
+## Pointers vs Multi-dimensional Arrays
 
 ### 2차원 배열과 포인터 배열 간 차이
 
