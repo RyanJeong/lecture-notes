@@ -27,7 +27,7 @@
 | **Reference Count** | None | Auto-tracked | Not tracked |
 | **Overhead** | Minimal | Moderate | Moderate |
 | **Use Case** | Exclusive ownership | Shared ownership | Break circular references |
-| **Memory Deallocation** | Automatic on destruction | When ref count = 0 | N/A (no ownership) |
+| **Memory Deallocation** | Automatic on destruction | When reference count = 0 | N/A (no ownership) |
 
 ---
 
@@ -130,7 +130,7 @@
 
 - `<memory>` 헤더 파일 필요
 - 피관리 객체 생성과 `std::unique_ptr` 래핑을 한 번에 처리하는 함수
-  - `new` + `std::unique_ptr` 생성자 호출보다 간결함 (동적 할당 횟수를 1번만 수행)
+  - `new` + `std::unique_ptr` 생성자 호출보다 간결함 (동적 할당을 **한 번만 수행**)
   - 예외 안전성을 보장함
 
 [//]: # (INCLUDE: ./cpp/12/make_unique.cc --from 10 --to 19 --no-comment)
@@ -180,7 +180,7 @@
 
 - `<memory>` 헤더 파일 필요
 - 피관리 객체 생성과 `std::shared_ptr` 래핑을 한 번에 처리하는 함수
-  - `new` + `std::shared_ptr` 생성자 호출보다 간결함 (동적 할당 횟수를 1번만 수행)
+  - `new` + `std::unique_ptr` 생성자 호출보다 간결함 (동적 할당을 **한 번만 수행**)
   - 예외 안전성을 보장함
 
 [//]: # (INCLUDE: ./cpp/12/shared_ptr_make_shared.cc --from 20 --to 29 --no-comment)
@@ -311,8 +311,10 @@
 
 - 객체 소멸: **strong count가 0**이 되면 피관리 객체의 메모리를 해제함
   - **제어 블록은 유지됨**
-  - 만약 제어 블록이 피관리 객체와 함께 소멸된다면, **`std::weak_ptr`의 `lock` 메서드 호출 시 이미 해제된 메모리에 접근할 수 있음**
-    - Segmentation fault 발생 가능
+  - 만약 제어 블록이 피관리 객체와 함께 소멸된다면, **`std::weak_ptr`의 `lock` 메서드 호출 시 문제가 발생함:**
+    - `std::weak_ptr::lock` 메서드는 **제어 블록**을 참조해 객체의 strong count가 0인지 아닌지를 확인
+    - 만약 객체 소멸 시점에 제어 블록이 동시에 소멸된다면, `lock` 메서드는 **이미 해제된 제어 블록을 역참조함**
+      - Segmentation fault 발생 가능
   - 따라서 제어 블록은 weak count가 0이 될 때까지 유지되어야 함
 - 제어 블록 소멸: **strong count가 0**이고 **weak count도 0**일 때 제어 블록의 메모리가 해제됨
 
