@@ -6,6 +6,11 @@ class MyObject {
   void DoSomething() { std::cout << "Doing something\n"; }
 };
 
+void UniquePtrs(std::unique_ptr<MyObject> p1, std::unique_ptr<MyObject> p2) {
+  p1->DoSomething();
+  p2->DoSomething();
+}
+
 int main() {
   {
     // Traditional way to create a unique_ptr
@@ -17,5 +22,8 @@ int main() {
     std::unique_ptr<MyObject> ptr = std::make_unique<MyObject>();
     ptr->DoSomething();
   }
+  // An exception may occur, which may cause a memory leak. (not exception-safe)
+  UniquePtrs(std::unique_ptr<MyObject>(new MyObject()),
+             std::unique_ptr<MyObject>(new MyObject()));
   return 0;
 }
