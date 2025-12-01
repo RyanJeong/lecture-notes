@@ -130,10 +130,9 @@
 
 - `<memory>` 헤더 파일 필요
 - 피관리 객체 생성과 `std::unique_ptr` 래핑을 한 번에 처리하는 함수
-  - `new` + `std::unique_ptr` 생성자 호출보다 간결함 (동적 할당을 **한 번만 수행**)
   - 예외 안전성을 보장함
 
-[//]: # (INCLUDE: ./cpp/12/make_unique.cc --from 10 --to 19 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/make_unique.cc --from 15 --to 27 --no-comment)
 
 ---
 
@@ -324,9 +323,10 @@
 
 - 참조 카운트 외에 객체 생명주기 관리를 위한 메타데이터 저장소
   - [Custom deleter](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr): **피관리 객체 소멸 시 수행할 해제 방법** (기본값: `delete`)
-    - 사용자가 정의한 삭제 함수 또는 객체를 저장
-  - [custom allocator](https://en.cppreference.com/w/cpp/memory/shared_ptr/allocate_shared): **제어 블록의 메모리 할당 및 해제 방법** (기본값: `std::allocator`)
-    - 사용자가 정의한 메모리 할당기를 저장
+    - 사용자가 정의한 삭제 함수 또는 객체를 저장 (e.g., C API의 동적 해제)
+  - [Custom allocator](https://en.cppreference.com/w/cpp/memory/shared_ptr/allocate_shared): **제어 블록 (또는 피관리 객체)의 메모리 할당 및 해제 방법** (기본값: `std::allocator`)
+    - `std::make_shared<T>`는 제어 블록과 피관리 객체를 할당기 방식으로 할당 또는 해제
+    - 사용자가 정의한 메모리 할당기를 저장 (e.g., 성능 향상을 위한 메모리 풀)
 - `std::shared_ptr`와 `std::weak_ptr`가 제어 블록을 공유하므로, 저장된 메타데이터를 공통으로 활용
 - **타입 소거 (type erasure)의 물리적 기반**으로 활용:
   - `std::shared_ptr<T>` 객체 자체는 삭제자 또는 할당기의 구체적인 타입 정보를 알지 못함
