@@ -8,9 +8,9 @@ int main() {
     Stack<std::string> stack;
     stack.Push("Henry");
     stack.Push("William");
-    std::cout << "Stack size: " << stack.Size() << std::endl;
+    std::cout << "Stack size: " << stack.size() << std::endl;
 
-    while (stack.Size() > 0) {
+    while (stack.size() > 0) {
       std::cout << "Node value at the top: " << stack.Top() << std::endl;
       stack.Pop();
     }

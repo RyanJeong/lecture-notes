@@ -10,5 +10,5 @@ class Stack {
   void Push(const T& data) { list_.Insert(0, data); }
   void Pop() { list_.Erase(0); }
   T Top() const { return list_.GetNodeData(0); }
-  int Size() const noexcept { return list_.count(); }
+  int size() const noexcept { return list_.count(); }
 };
