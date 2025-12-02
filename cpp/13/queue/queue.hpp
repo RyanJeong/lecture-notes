@@ -7,10 +7,10 @@ class Queue {
   List<T> list_;  // Composition: Stack uses List internally
 
  public:
-  void Push(const T& data) { list_.Insert(Size(), data); }
+  void Push(const T& data) { list_.Insert(size(), data); }
   void Pop() { list_.Erase(0); }
 
   T Front() const { return list_.GetNodeData(0); }
-  T Back() const { return list_.GetNodeData(Size() - 1); }
-  int Size() const noexcept { return list_.count(); }
+  T Back() const { return list_.GetNodeData(size() - 1); }
+  int size() const noexcept { return list_.count(); }
 };
