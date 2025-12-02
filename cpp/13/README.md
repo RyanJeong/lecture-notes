@@ -60,7 +60,7 @@
 - 기반 조건: `fib(0) = 0, fib(1) = 1`
 - 일반 조건: `fib(n) = fib(n - 1) + fib(n - 2)`
 
-[//]: # (INCLUDE: ./cpp/13/fib1.cc --from 3 --to 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/fib1.cc --from 3 --to 6 --no-comment)
 
 ---
 
