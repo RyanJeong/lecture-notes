@@ -386,7 +386,7 @@
 
 | Aspect | `std::move` | Perfect Forwarding |
 |--------|-----------|-------------------|
-| **Conversion** | *lvalue* -> *xvalue* | **Category Preservation** |
+| **Conversion** | *lvalue* → *xvalue* | **Category Preservation** |
 | **Selectivity** | Explicit Choice | Automatic Processing |
 | **Purpose** | Explicit Move Intent | Prevent Attribute Loss |
 
