@@ -650,26 +650,31 @@
 - `binary_search_tree.hpp`
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --to 14)
+
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 9)
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 15 --to 36)
+
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 10)
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 37 --to 53)
+
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 11)
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 54 --to 69)
+
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 12)
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 70 --to 90)
+
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 13)
@@ -683,8 +688,101 @@
 - `main.cc`
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/main.cc --to 19)
+
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 15)
 
 [//]: # (INCLUDE: ./cpp/13/binary_search_tree/main.cc --from 20)
+
+---
+
+## Appendix. 람다 함수와 `std::function`
+
+### `std::function` 없이 람다를 직접 사용하는 경우의 한계
+
+- 람다 함수는 컴파일러가 생성하는 익명의 고유한 클래스 타입을 가짐
+  - 정확한 타입을 코드에 명시할 수 없음
+  - 따라서 `template <typename T>` 또는 `auto`를 사용해야 함
+- 람다는 시그니처 (반환형과 인자)가 같아도, **작성된 위치가 다르면 서로 다른 타입**
+
+[//]: # (INCLUDE: ./cpp/13/appendix_lambda.cc --from 18 --to 21 --no-comment)
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 1)
+
+### `std::function`을 사용해야 하는 이유 1 - 서로 다른 람다를 하나의 컨테이너에 저장할 때
+
+- 람다는 시그니처가 같아도 **컴파일러가 생성한 타입이 다르므로** `std::vector<auto>` 같은 것이 불가능
+- `std::function`은 타입 소거 (type erasure) 메커니즘을 통해 **시그니처가 같은 모든 람다를 하나의 타입으로 포장**
+  - 서로 다른 람다들도 같은 `std::function` 타입으로 저장 가능
+
+[//]: # (INCLUDE: ./cpp/13/appendix_lambda.cc --to 15 --no-comment)
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 2)
+
+### `std::function`을 사용해야 하는 이유 2 - 클래스 멤버 변수로 저장해야 할 때 (콜백 패턴)
+
+- 람다를 함수 인자로 받아 **즉시 실행하는 것이 아니라 나중에 실행하기 위해 저장**해야 하는 경우
+  - 템플릿으로 멤버를 만들면 클래스 전체가 템플릿화되어야 함
+  - `std::function`을 사용하면 구체적인 타입을 멤버로 선언 가능
+
+[//]: # (INCLUDE: ./cpp/13/appendix_lambda.cc --from 24 --to 34 --no-comment)
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 3)
+
+### `std::function`을 사용해야 하는 이유 2 - 구현과 인터페이스 분리 (헤더와 소스 파일 분리)
+
+- `template <typename T>`를 사용하면 **구현 코드가 반드시 헤더 파일**에 있어야 함
+- `std::function`은 구체적인 타입이므로 코드를 헤더 파일과 소스 파일로 나누어 관리할 수 있음
+
+[//]: # (INCLUDE: ./cpp/13/event_handler.hpp)
+
+[//]: # (INCLUDE: ./cpp/13/event_handler.cc)
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 4)
+
+### `std::function`의 성능 오버헤드
+
+- `std::function`은 내부적으로 **가상 함수와 유사한 메커니즘 (타입 소거)을 사용**
+- 람다의 캡처 크기가 크면 **동적 메모리 할당 (heap allocation)** 발생
+  - 템플릿을 직접 사용하는 것보다 약간 더 느린 성능
+- **성능이 중요한 경우**: 템플릿 사용 권장
+- 성능이 덜 중요한 경우: `std::function` 사용
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 5)
+
+### `std::function`이 받을 수 있는 범주 (Callable Objects)
+
+- `std::function`은 **() 연산자로 호출할 수 있는 모든 것 (callable)을 담을 수 있음**
+
+| Category | Description | Example |
+|----------|-------------|----------|
+| Function Pointer | Global function, static function | `void Foo(int a) { ... }` |
+| Lambda Function | Lambda with or without capture | `[x](int a) { return x + a; }` |
+| Function Object (Functor) | Class/struct with `operator()` | `class Functor { int operator()(int a) { ... } };` |
+| Member Function | Member function bound to object instance | `&MyClass::doSomething` |
+| `std::bind` Result | Function object with bound parameters | `std::bind(...)` |
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 6)
+
+### `std::function`과 다양한 Callable 타입
+
+[//]: # (INCLUDE: ./cpp/13/callable.cc --to 18)
+
+---
+
+## Appendix. 람다 함수와 `std::function` (Cont'd - 7)
+
+[//]: # (INCLUDE: ./cpp/13/callable.cc --from 19)
