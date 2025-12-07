@@ -192,7 +192,7 @@
 ### `splice()`
 
 - 다른 리스트의 노드를 **포인터 연결**만으로 이동
-- **복사하지 없아 매우 효율적**
+- **복사하지 않아 매우 효율적**
 
 ---
 
@@ -256,7 +256,7 @@
 
 ## Container Adapters (컨테이너 어댑터) (Cont'd - 2)
 
-### 4.2 `std::queue` - FIFO (First In First Out)
+### `std::queue` - FIFO (First In First Out)
 
 - 기본 자료구조: `deque`
   - `vector` (불가능, front 제거 기능 없음), `list`로 변경 가능
@@ -423,13 +423,13 @@
 
 ---
 
-## associative containers (연관 컨테이너) (cont'd - 11)
+## Associative Containers (연관 컨테이너) (Cont'd - 11)
 
 [//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 44 --to 63)
 
 ---
 
-## associative containers (연관 컨테이너) (cont'd - 12)
+## Associative Containers (연관 컨테이너) (Cont'd - 12)
 
 [//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 64)
 
