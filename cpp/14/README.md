@@ -46,7 +46,6 @@
 
 - 반복자는 포인터의 개념을 일반화한 클래스 템플릿
 - 포인터처럼 `*` (역참조), `->` (멤버 접근), `++` (다음 요소로 이동) 연산 지원
-- 컨테이너의 물리적 구조 (배열인지, 연결 리스트인지 등)를 투명하게 처리
 - **반복자는 알고리즘과 컨테이너 사이의 추상화 계층**
   - 알고리즘 함수들은 컨테이너를 직접 알지 못함
   - 오직 반복자를 통해서만 데이터에 접근
@@ -89,7 +88,7 @@
 ### 주의사항
 
 - `std::sort`는 **Random Access Iterator** 요구
-  - `list` (Bidirectional)에서는 사용 불가
+  - `list` (bidirectional)에서는 사용 불가
   - `list::sort()` 멤버 함수 사용해야 함
 - 반복자 타입은 컨테이너의 메모리 구조에 따라 결정됨
 
@@ -140,7 +139,7 @@
 
 ### `std::deque` - Double-ended Queue
 
-- 여러 개의 고정 크기 메모리 블록(chunk)을 포인터 배열로 관리하며, 메모리가 연속적이지 않음
+- 여러 개의 고정 크기 메모리 블록 (chunk)을 포인터 배열로 관리하며, 메모리가 연속적이지 않음
 
 ![center](image-4.png)
 
@@ -373,13 +372,21 @@
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 5)
 
-- 단어 빈도수 분석
+- 사용자 정의형을 담는 `std::map` 객체
 
 [//]: # (INCLUDE: ./cpp/14/map.cc)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 6)
+
+- 단어 빈도수 분석
+
+[//]: # (INCLUDE: ./cpp/14/word_freq.cc)
+
+---
+
+## Associative Containers (연관 컨테이너) (Cont'd - 7)
 
 ### Unordered Containers: `std::unordered_map` 과 `std::unordered_set`
 
@@ -397,13 +404,13 @@
 
 ---
 
-## Associative Containers (연관 컨테이너) (Cont'd - 7)
+## Associative Containers (연관 컨테이너) (Cont'd - 8)
 
 ![h:500 center](image-10.png)
 
 ---
 
-## Associative Containers (연관 컨테이너) (Cont'd - 8)
+## Associative Containers (연관 컨테이너) (Cont'd - 9)
 
 - 사용자 정의형을 담는 `std::unordered_map` 객체
 
@@ -411,25 +418,25 @@
 
 ---
 
-## Associative Containers (연관 컨테이너) (Cont'd - 9)
+## Associative Containers (연관 컨테이너) (Cont'd - 10)
 
 [//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 20 --to 27)
 
 ---
 
-## Associative Containers (연관 컨테이너) (Cont'd - 10)
+## Associative Containers (연관 컨테이너) (Cont'd - 11)
 
 [//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 28 --to 43)
 
 ---
 
-## Associative Containers (연관 컨테이너) (Cont'd - 11)
+## Associative Containers (연관 컨테이너) (Cont'd - 12)
 
 [//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 44 --to 63)
 
 ---
 
-## Associative Containers (연관 컨테이너) (Cont'd - 12)
+## Associative Containers (연관 컨테이너) (Cont'd - 13)
 
 [//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 64)
 
