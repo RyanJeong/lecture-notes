@@ -333,7 +333,7 @@
 
 ### Ordered Containers: `std::map` 과 `std::set`
 
-- 균형 이진 트리 (red-black tree) 를 사용하여 **항상 정렬된 상태 유지**
+- 균형 이진 트리 (red-black tree)를 사용하여 **항상 정렬된 상태 유지**
 - 삽입, 삭제, 검색 모두 $O(\log N)$
 
 | Feature | `map` | `set` |
@@ -579,17 +579,11 @@
 
 ## Appendix A. Push vs Emplace (Cont'd - 6)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --from 17 --to 30)
-
----
-
-## Appendix A. Push vs Emplace (Cont'd - 7)
-
 [//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --from 31 --to 45)
 
 ---
 
-## Appendix A. Push vs Emplace (Cont'd - 8)
+## Appendix A. Push vs Emplace (Cont'd - 7)
 
 [//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --from 46)
 
