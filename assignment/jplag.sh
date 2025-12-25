@@ -4,8 +4,6 @@ for dir_name in $(find . -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | grep -
   echo "$dir_name"
   pushd "$dir_name" >/dev/null
 
-  port=$((port + 1))
-
   java -jar "$HOME"/jplag/cli/target/jplag-*-jar-with-dependencies.jar \
     -l cpp \
     -M run \
@@ -13,3 +11,5 @@ for dir_name in $(find . -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | grep -
 
   popd >/dev/null
 done
+
+echo "Run `viewer.sh <ASMT_DEST_DIR>` to check similarity results and decide whether to reject scoring due to high similarity."
