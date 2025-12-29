@@ -41,6 +41,9 @@ A Document Summarizing the Grading Process for Assignments**
     ```shell
     # e.g.,
     ./evaluate_all.sh ./2025_2_564016_01_2583782/ ./dju-asmt/asmt2-cpp/
+    ./evaluate_all.sh ./2025_2_564016_02_2583786/ ./dju-asmt/asmt2-cpp/
+    ./evaluate_all.sh ./2025_2_564016_01_3586204/ ./dju-asmt/asmt3-cpp/
+    ./evaluate_all.sh ./2025_2_564016_02_3586203/ ./dju-asmt/asmt3-cpp/
     ```
 
 ## TODO
