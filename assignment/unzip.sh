@@ -48,7 +48,18 @@ find . -name "*.zip" | while IFS= read -r zip_file; do
 
       # .zip file (case-insensitive)
       if [[ "${file,,}" == *.zip ]]; then
-        if ! unzip "$file" -d "${file%/*}" >/dev/null; then
+        # Rename to lowercase for unzip
+        dir_path="${file%/*}"
+        file_name="${file##*/}"
+        lower_file="${dir_path}/${file_name,,}"
+        if [[ "$file" != "$lower_file" ]]; then
+          mv "$file" "$lower_file"
+          file="$lower_file"
+        fi
+        # Try to extract, ignore exit code (exit 1 might still be success with warnings)
+        unzip "$file" -d "${file%/*}" >/dev/null 2>&1
+        # Only log if nothing was extracted
+        if ! ls -A "${file%/*}" | grep -v "$(basename "$file")" >/dev/null 2>&1; then
           echo ">>>> ${file}" >>"$PWD"/"$result"
         fi
       else

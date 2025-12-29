@@ -89,6 +89,7 @@ while IFS= read -r aout_path; do
   eval_status=$?
 
   # Append result to results.txt
+  echo >>"$RESULTS_FILE"
   echo "---" >>"$RESULTS_FILE"
   echo "Path: $aout_path" >>"$RESULTS_FILE"
 
