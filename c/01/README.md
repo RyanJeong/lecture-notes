@@ -424,7 +424,7 @@ for (initialization; condition; updation) {
 - 키보드에서 `'A'`를 입력하면, 실제로 텍스트 입력 스트림에 전달되는 값은 `0x41`(`65`)
 - 텍스트 출력 스트림에 `0x41`(`65`) 값이 존재할 경우, 모니터에 표현되는 결과는 `'A'`
 
-![center h:360](image-7.png)
+![center h:360](img/07-ascii.png)
 
 ---
 
@@ -599,13 +599,13 @@ for (initialization; condition; updation) {
 
 [//]: # (INCLUDE: ./c/01/src/count_improved.c --from 13)
 
-### 조건문 (`if` 문)
-
-- `if` 키워드 다음에 등장하는 조건이 참일 경우, 조건문 본문 수행
-
 ---
 
 ## Character Input and Output (Cont'd - 17)
+
+### 조건문 (`if` 문)
+
+- `if` 키워드 다음에 등장하는 조건이 참일 경우, 조건문 본문 수행
 
 ### 연산자의 결합 방향 (Operator Associativity)
 
