@@ -1,0 +1,368 @@
+# LECTURE.md — C++14 강의 자료 검토 지침
+
+이 문서는 `cpp/` 디렉터리 내 모든 `README.md` 파일을 검토할 때 적용하는 규칙 모음입니다.  
+검토 요청 시 이 문서를 함께 첨부하면 아래 항목 전체를 한 번에 검토할 수 있습니다.
+
+---
+
+## 0. 언어 표준
+
+- **C++14 (ISO/IEC 14882:2014)** 기준으로 작성된 강의 자료
+- C++17 이상 전용 기능이 사용되면 오류로 간주
+  - `if constexpr`, `std::optional`, `std::variant`, 구조적 바인딩(`auto [a, b] = ...`), `std::string_view` 등 C++17 전용 기능 사용 불가
+  - `concept`, `requires`, `co_await` 등 C++20 전용 기능 사용 불가
+  - `std::format` (C++20), `std::span` (C++20) 사용 불가
+- C++11 기능은 허용 (`auto`, 범위 기반 `for`, 람다, 이동 의미론, `nullptr`, `std::unique_ptr`, `std::shared_ptr` 등)
+- C++14 추가 기능도 허용 (일반화 람다, 반환 타입 추론 `auto` 함수, `std::make_unique` 등)
+- 코드 스타일은 Google C++ Style Guide 를 참고하되, 강의 자료 특성상 간결성을 우선
+
+---
+
+## 1. 용어 일관성
+
+| 잘못된 표현 | 올바른 표현 | 비고 |
+|---|---|---|
+| `형` (단독 사용) | `타입` | "정수형" → "정수 타입", "반환형" → "반환 타입" |
+| `자료형` | `자료형` | **유지** — `자료형` 은 그대로 사용 |
+| `인수` | `전달인자` | "함수 인수" → "함수 전달인자" |
+| `argument` (한글 문맥) | `전달인자` | |
+| `parameter` (한글 문맥) | `매개변수` | |
+| `매개 변수` (띄어쓰기) | `매개변수` | 붙여 씀 |
+| `전달 인자` (띄어쓰기) | `전달인자` | 붙여 씀 |
+| `반환 값` (띄어쓰기) | `반환값` | 붙여 씀 |
+| `return type` (한글 문맥) | `반환 타입` | |
+| `데이터형` | `자료형` 또는 `타입` | |
+| `포인터형` | `포인터 타입` | |
+| `참조형` | `참조 타입` | |
+| `저장 부류` | `저장 클래스` | `storage class` 번역 |
+| `기저 클래스` | `기반 클래스` | `base class` 번역 |
+| `파생된 클래스` | `파생 클래스` | `derived class` 번역 |
+| `순수 가상 함수` | `순수 가상 함수` | **유지** |
+| `추상 클래스` | `추상 클래스` | **유지** |
+| `생성자 함수` | `생성자` | `constructor` 번역 |
+| `소멸자 함수` | `소멸자` | `destructor` 번역 |
+| `오버로딩` / `오버라이딩` | `오버로딩` / `오버라이딩` | 혼용 금지, 의미에 맞게 구분 |
+| `재정의` | `오버라이딩` | `override` 번역 |
+| `다형` | `다형성` | `polymorphism` 번역 |
+| `상속받다` | `상속하다` | "기반 클래스를 상속하다" |
+| `인스턴스화` | `인스턴스화` | **유지** |
+| `객체 생성` | `인스턴스화` 또는 `객체 생성` | 문맥에 맞게 사용 |
+| `스마트 포인터형` | `스마트 포인터 타입` | |
+| `소유권 이전` | `소유권 이동` 또는 `소유권 전달` | 이동 의미론 문맥 시 `이동` 선호 |
+| `우측값` | `*rvalue*` | 설명 문장에서 이탤릭 사용 |
+| `좌측값` | `*lvalue*` | 설명 문장에서 이탤릭 사용 |
+| `예외를 던지다` | `예외를 발생시키다` 또는 `throw 하다` | 문맥에 맞게 |
+| `예외를 잡다` | `예외를 처리하다` 또는 `catch 하다` | 문맥에 맞게 |
+
+---
+
+## 2. 괄호 위치 규칙
+
+### 2-1. 함수 호출 — 함수명과 여는 괄호 사이 공백 금지
+
+```
+/* 잘못된 예 */
+std::cout << std::endl;
+foo (x);
+Bar::baz (a, b);
+
+/* 올바른 예 */
+foo(x);
+Bar::baz(a, b);
+```
+
+- 생성자 초기화 목록에서도 동일: `radius_(radius)` O, `radius_ (radius)` X
+
+### 2-2. 설명 문장 내 괄호 — 앞 단어와 붙여 쓰기
+
+```
+/* 잘못된 예 */
+`std::string` 클래스 (문자열 관리)를 사용
+
+/* 올바른 예 */
+`std::string` 클래스(문자열 관리)를 사용
+```
+
+### 2-3. 조사 앞 괄호 생략 시 문장 매끄러움
+
+- 괄호를 생략하더라도 괄호 바로 앞 단어(또는 코드 명칭)와 조사가 자연스럽게 연결되어야 함
+- 기준: 괄호 바로 앞 단어의 발음 끝 받침으로 조사 결정
+
+---
+
+## 3. 한국어 조사 규칙
+
+### 3-1. 기본 원칙
+
+영어 식별자·키워드에 붙는 조사는 **영어 단어를 한국어로 발음했을 때의 끝소리(받침 유무)** 로 결정합니다.
+
+| 받침 | 주격 | 목적격 | 보조사(주제) | 보조사(대조) | 접속 | 도구/방향 |
+|---|---|---|---|---|---|---|
+| 없음 | 가 | 를 | 는 | 는 | 와 | 로 |
+| 있음 (ㄹ 제외) | 이 | 을 | 은 | 은 | 과 | 으로 |
+| ㄹ 받침 | 이 | 를 | 은 | 은 | 와 | 로 |
+
+### 3-2. 자주 등장하는 식별자·키워드 발음 및 조사
+
+| 식별자/키워드 | 한국어 발음 | 끝 받침 | 예시 |
+|---|---|---|---|
+| `int` | 인트 | ㅌ | `int`는, `int`를, `int`와, `int`로 |
+| `double` | 더블 | ㄹ | `double`은, `double`를, `double`와, `double`로 |
+| `bool` | 불 | ㄹ | `bool`은, `bool`를, `bool`와, `bool`로 |
+| `void` | 보이드 | 없음 | `void`가, `void`를, `void`와, `void`로 |
+| `auto` | 오토 | 없음 | `auto`가, `auto`를, `auto`와, `auto`로 |
+| `nullptr` | 널포인터 | 없음 | `nullptr`가, `nullptr`를, `nullptr`와, `nullptr`로 |
+| `NULL` | 널 | ㄹ | `NULL`은, `NULL`를, `NULL`와, `NULL`로 |
+| `true` / `false` | 트루 / 폴스 | 없음 / ㅅ | `true`가 / `false`는 |
+| `class` | 클래스 | ㅅ | `class`는, `class`를, `class`와 |
+| `struct` | 스트럭트 | ㅅ | `struct`는, `struct`를 |
+| `public` | 퍼블릭 | ㄱ | `public`은, `public`을, `public`과, `public`으로 |
+| `private` | 프라이빗 | ㅅ | `private`은, `private`을, `private`과 |
+| `protected` | 프로텍티드 | 없음 | `protected`가, `protected`를, `protected`와, `protected`로 |
+| `virtual` | 버추얼 | ㄹ | `virtual`은, `virtual`를, `virtual`와, `virtual`로 |
+| `override` | 오버라이드 | 없음 | `override`가, `override`를, `override`와 |
+| `const` | 콘스트 | ㅅ | `const`는, `const`를, `const`와 |
+| `static` | 스태틱 | ㄱ | `static`은, `static`을, `static`과, `static`으로 |
+| `inline` | 인라인 | ㄴ | `inline`은, `inline`을, `inline`과, `inline`으로 |
+| `explicit` | 익스플리싯 | ㅅ | `explicit`는, `explicit`을 |
+| `friend` | 프렌드 | 없음 | `friend`가, `friend`를, `friend`와, `friend`로 |
+| `template` | 템플릿 | ㅅ | `template`는, `template`를 |
+| `typename` | 타입네임 | ㅁ | `typename`은, `typename`을 |
+| `namespace` | 네임스페이스 | ㅅ | `namespace`는, `namespace`를 |
+| `using` | 유징 | ㅇ | `using`은, `using`을, `using`과 |
+| `new` | 뉴 | 없음 | `new`가, `new`를, `new`와, `new`로 |
+| `delete` | 딜리트 | ㅅ | `delete`는, `delete`를 |
+| `throw` | 쓰로 | 없음 | `throw`가, `throw`를, `throw`와, `throw`로 |
+| `catch` | 캐치 | 없음 | `catch`가, `catch`를, `catch`와 |
+| `try` | 트라이 | 없음 | `try`가, `try`를, `try`와 |
+| `noexcept` | 노익셉트 | ㅅ | `noexcept`는, `noexcept`를 |
+| `this` | 디스 | ㅅ | `this`는, `this`를, `this`를 통해 |
+| `operator` | 오퍼레이터 | 없음 | `operator`가, `operator`를, `operator`와 |
+| `return` | 리턴 | ㄴ | `return`은, `return`을, `return`과, `return`으로 |
+| `for` | 포 | 없음 | `for`가, `for`를, `for`와, `for`로 |
+| `if` / `else` | 이프 / 엘스 | 없음 / ㅅ | `if`가 / `else`는 |
+| `while` | 와일 | ㄹ | `while`은, `while`를, `while`와, `while`로 |
+| `switch` | 스위치 | 없음 | `switch`가, `switch`를, `switch`와 |
+| `case` | 케이스 | ㅅ | `case`는, `case`를 |
+| `default` | 디폴트 | ㅅ | `default`는, `default`를 |
+| `dynamic_cast` | 다이나믹캐스트 | ㅅ | `dynamic_cast`는, `dynamic_cast`를 |
+| `static_cast` | 스태틱캐스트 | ㅅ | `static_cast`는, `static_cast`를 |
+| `reinterpret_cast` | 리인터프리트캐스트 | ㅅ | `reinterpret_cast`는, `reinterpret_cast`를 |
+| `const_cast` | 콘스트캐스트 | ㅅ | `const_cast`는, `const_cast`를 |
+| `ptr` | 포인터 | 없음 | `ptr`가, `ptr`를, `ptr`와, `ptr`로 |
+| `ref` | 레퍼런스 | ㅅ | `ref`는, `ref`를 |
+| `cur` | 커렌트 | ㅅ | `cur`는, `cur`를 |
+| `del` | 딜리트 | ㅅ | `del`는, `del`를 → **주의**: "딜"로 읽으면 ㄹ받침 → `del`은, `del`를 |
+| `add` | 애드 | 없음 | `add`가, `add`를, `add`와, `add`로 |
+| `begin` | 비긴 | ㄴ | `begin`은, `begin`을, `begin`과, `begin`으로 |
+| `next` | 넥스트 | ㅅ | `next`는, `next`를 |
+| `prev` | 프레브 | 없음 | `prev`가, `prev`를, `prev`와, `prev`로 |
+| `head` | 헤드 | 없음 | `head`가, `head`를, `head`와, `head`로 |
+| `other` | 아더 | 없음 | `other`가, `other`를, `other`와, `other`로 |
+| `T` (템플릿 파라미터) | 티 | 없음 | `T`가, `T`를, `T`와, `T`로 |
+| `vptr` | 브이포인터 | 없음 | `vptr`가, `vptr`를 |
+| `vbtable` | 브이비테이블 | ㄹ | `vbtable`은, `vbtable`를 |
+| `lvalue` | 엘벨류 | 없음 | *lvalue*가, *lvalue*를, *lvalue*와 |
+| `rvalue` | 알벨류 | 없음 | *rvalue*가, *rvalue*를, *rvalue*와 |
+| `prvalue` | 피알벨류 | 없음 | *prvalue*가, *prvalue*를 |
+| `xvalue` | 엑스벨류 | 없음 | *xvalue*가, *xvalue*를 |
+| `glvalue` | 지엘벨류 | 없음 | *glvalue*가, *glvalue*를 |
+
+### 3-3. 자주 틀리는 패턴
+
+- ㄹ받침 목적격: `NULL`을 (X) → `NULL`를 (O)
+- ㄹ받침 도구격: `NULL`으로 (X) → `NULL`로 (O)
+- `ptr`은 전체 단어 "pointer(포인터)" 발음 기준 → 받침 없음 → `ptr`는, `ptr`를, `ptr`와, `ptr`로
+- `del`은 전체 단어 "delete(딜리트)" 발음 기준 → 끝 받침 ㅅ → `del`는, `del`를  
+  또는 약어 그 자체 "del(딜)" 로 읽을 경우 → ㄹ받침 → `del`은, `del`를
+  **→ 프로젝트 내에서 한 가지로 통일 필요**
+- `cur`은 "current(커렌트)" 발음 기준 → 끝 받침 ㅅ → `cur`는, `cur`를
+
+---
+
+## 4. 마크다운 서식 규칙
+
+### 4-1. 프로그래밍 전용 용어 — 이탤릭
+
+다음 용어들은 설명 문장(description text)에서 backtick 이 아닌 이탤릭(`*term*`)으로 표기합니다.  
+코드 블록 내부(```` ``` ```` 사이)는 적용하지 않습니다.
+
+| 용어 | 표기 |
+|---|---|
+| lvalue | `*lvalue*` |
+| rvalue | `*rvalue*` |
+| prvalue | `*prvalue*` |
+| xvalue | `*xvalue*` |
+| glvalue | `*glvalue*` |
+| lvalue reference | `*lvalue reference*` |
+| rvalue reference | `*rvalue reference*` |
+| boolean type | `*boolean type*` |
+| Literals (문맥에 따라) | `*Literals*` |
+
+### 4-2. 코드·식별자 — 인라인 코드(backtick)
+
+- 키워드(`int`, `class`, `virtual`, ...)
+- 함수명(`std::move`, `std::forward`, ...)
+- 변수명, 멤버명, 매크로명
+- 표준 라이브러리 타입명(`std::string`, `std::vector`, `std::unique_ptr`, ...)
+- 파일명(`iostream`, `memory`, ...)
+- 템플릿 파라미터(`T`, `U`, ...)
+- 연산자 그 자체(`->`, `::`, `.*`, `->*`, ...)
+
+### 4-3. 수식 — KaTeX
+
+- 수학 공식, 시간 복잡도 등 수식은 인라인 `$O(n)$` 또는 블록 `$$..$$` 으로 표기
+
+---
+
+## 5. 코드 정확성 체크리스트
+
+### 5-1. C++14 이하에서 허용되지 않는 문법
+
+- [ ] `if constexpr` → C++17, 사용 불가
+- [ ] 구조적 바인딩 `auto [a, b] = pair;` → C++17, 사용 불가
+- [ ] `std::optional`, `std::variant`, `std::string_view` → C++17, 사용 불가
+- [ ] `[[nodiscard]]`, `[[maybe_unused]]` → C++17, 사용 불가
+- [ ] `std::format` → C++20, 사용 불가
+- [ ] `concept`, `requires` → C++20, 사용 불가
+
+### 5-2. 이동 의미론(Move Semantics)
+
+- 이동 생성자·이동 대입 연산자에서 이동 후 원본 객체의 내부 포인터는 `nullptr` 로 무효화해야 함
+- `std::move`는 소유권 이동을 의미하지, 복사를 막는 것이 아님
+- `std::forward`는 완전 전달(perfect forwarding)에만 사용
+- 이름 있는 *rvalue reference* 변수는 *lvalue* 로 간주됨
+
+### 5-3. 스마트 포인터
+
+- `std::unique_ptr`: 소유권 공유 불가, 복사 불가, 이동만 가능
+- `std::shared_ptr`: 참조 카운트 기반, 순환 참조 주의
+- `std::weak_ptr`: 소유권 없음, 유효성 확인 후 `lock()` 으로 사용
+- `std::make_unique` 는 C++14 부터 사용 가능 (C++11 불가)
+- `new`/`delete` 직접 사용보다 스마트 포인터 권장하는 이유 설명 시, 예외 안전성(exception safety) 언급
+
+### 5-4. 상속·가상 함수
+
+- 순수 가상 함수(`= 0`)가 있으면 추상 클래스 → 직접 인스턴스화 불가
+- 기반 클래스 소멸자는 `virtual` 로 선언해야 파생 클래스 소멸자가 올바르게 호출됨
+- `override` 키워드 사용 시 기반 클래스에 `virtual` 이 없으면 오버라이딩이 아님 → 컴파일 오류
+- 다중 상속 + 가상 상속(`virtual` 상속) 설명 시 다이아몬드 문제 명시
+
+### 5-5. 템플릿
+
+- 함수 템플릿 특수화와 오버로딩 혼동 금지
+- 클래스 템플릿 정의는 헤더 파일에 위치해야 함 (링크 오류 방지)
+- 템플릿 인자 추론 규칙에서 `T&&` (forwarding reference) vs `T&&` (rvalue reference) 구분 필요
+
+### 5-6. 예외 처리
+
+- `throw` 없는 함수에 `noexcept` 명시 — 성능 최적화와 이유 설명 필요
+- `catch(...)` 는 어떤 예외든 처리 — 남용 시 오류 은폐 가능
+- 소멸자에서 예외 발생 → 기본적으로 `std::terminate` 호출 (C++11부터 소멸자는 암묵적으로 `noexcept`)
+
+### 5-7. 캐스팅
+
+| 캐스트 | 용도 | 주의사항 |
+|---|---|---|
+| `static_cast` | 컴파일 타임 타입 변환 | 다운캐스트 안전성 미보장 |
+| `dynamic_cast` | 런타임 다운캐스트 | 가상 함수 있어야 사용 가능, 실패 시 `nullptr` 반환 |
+| `const_cast` | `const`/`volatile` 제거 | 원본이 `const` 이면 수정 → UB |
+| `reinterpret_cast` | 비트 수준 재해석 | 대부분의 경우 UB 위험 |
+| C 스타일 캐스트 `(T)` | 위 네 가지 중 하나 선택 적용 | 어떤 캐스트가 적용되는지 불명확, 사용 지양 |
+
+### 5-8. 코드 완전성
+
+- 설명을 위한 예시 코드 스니펫(e.g., 구문 형식 설명, 의도적 오류 예시)을 제외하고, **모든 코드는 그 자체로 완전해야 함**
+  - 완전한 코드 = `#include`, 클래스·함수 정의 포함 여부 등 컴파일·실행이 가능한 수준
+  - 예시 스니펫 여부가 불명확한 경우 불완전한 코드로 보고
+
+- **슬라이드 분할 코드** — 슬라이드 지면 한계로 하나의 코드가 여러 슬라이드에 걸쳐 나뉠 수 있음
+  - 앞 슬라이드 코드의 **마지막 줄**이 `/* continues on next slide */` 이면, 해당 코드는 다음 슬라이드로 이어짐
+  - 뒷 슬라이드 코드의 **첫 번째 줄**이 `/* continued from previous slide */` 이면, 해당 코드는 앞 슬라이드에서 이어받은 것임
+  - 위 두 주석이 쌍을 이루는 분할 코드는 **불완전한 코드로 보고하지 않음** — 슬라이드를 순서대로 이어 붙이면 완전한 프로그램이 되어야 함
+  - 분할 코드 체인의 중간·끝 슬라이드에서 `/* continued from previous slide */` 없이 코드가 뚝 끊기거나, `/* continues on next slide */` 없이 미완성 상태로 끝나는 경우는 불완전한 코드로 보고
+
+- 코드 블록 내에 아래 문구가 포함되어 있으면 **잘못 붙여넣은 코드**이므로 반드시 보고:
+
+```
+DO NOT CONTAIN THIS LINE IN THE MARKDOWN
+```
+
+---
+
+## 6. 내용 정확성 체크리스트
+
+### 6-1. OOP 관련
+
+- `std::ios` 는 순수 가상 함수 없음 → 추상 클래스가 아님, 하지만 `protected` 생성자로 직접 인스턴스화 불가
+- `std::ostream`, `std::istream` 은 복사 불가(복사 생성자/대입 연산자 삭제됨)
+- `this` 포인터는 비 `static` 멤버 함수 내에서만 사용 가능
+- 접근 지정자 기본값: `class` → `private`, `struct` → `public`
+
+### 6-2. 메모리 모델
+
+- 스택(stack): 지역 변수, 함수 호출 프레임 → 자동 관리
+- 힙(heap): 동적 할당(`new`, `malloc`) → 수동 해제 필요(또는 스마트 포인터)
+- 정적 저장 기간: 전역 변수, `static` 지역 변수 → 프로그램 종료 시 소멸, 0으로 자동 초기화
+- 미정의 동작(UB): 미초기화 변수 사용, 해제 후 사용(use-after-free), 이중 해제(double-free)
+
+### 6-3. 연산자 오버로딩
+
+- 대입 연산자 반환 타입은 `T&` (자기 참조 반환) → `*this` 반환
+- 비교 연산자는 `const` 멤버 함수로 정의
+- `operator<<`, `operator>>` 는 보통 `friend` 로 정의
+
+### 6-4. 스트림 / 출력
+
+- `std::endl` 은 `'\n'` + 버퍼 플러시 — 성능에 민감한 코드에서 `'\n'` 선호
+- `std::cin >> x` 실패 시 스트림 오류 상태 → `clear()` 후 재사용
+
+### 6-5. Value Category (값 범주)
+
+- *lvalue*: 이름 있는 객체, 주소 획득 가능
+- *rvalue*: 임시 객체 또는 이름 없는 객체
+  - *prvalue* (pure rvalue): 리터럴, 임시 객체
+  - *xvalue* (expiring value): `std::move()` 의 결과
+- 이름 있는 *rvalue reference* 변수는 *lvalue* 로 간주됨
+
+### 6-6. STL 컨테이너·반복자
+
+- `std::vector`: 연속 메모리, 동적 크기, Random Access Iterator
+- `std::list`: 이중 연결 리스트, Bidirectional Iterator — `std::sort` 사용 불가, `list::sort()` 사용
+- `std::map`/`std::set`: 정렬된 연관 컨테이너, Bidirectional Iterator
+- `std::unordered_map`/`std::unordered_set`: 해시 기반, 정렬 없음
+
+---
+
+## 7. 어색한 표현 교정 가이드
+
+| 어색한 표현 | 개선 표현 |
+|---|---|
+| `~을 통하여` | `~을 통해` |
+| `~하여야 합니다` | `~해야 함` |
+| `~하게 됩니다` | `~됨` |
+| `값을 리턴한다` | `값을 반환함` |
+| `call한다` | `호출함` |
+| `상속을 받는다` | `상속한다` |
+| `객체를 만든다` | `객체를 생성한다` 또는 `인스턴스화한다` |
+| `delete한다` | `소멸시킨다` 또는 `해제한다` |
+| `nullptr가 됩니다` | `nullptr가 됨` |
+| `함수를 부른다` | `함수를 호출함` |
+| `포인터가 죽는다` | `포인터가 무효화된다` 또는 `댕글링 포인터가 된다` |
+| `컴파일시` | `컴파일 시` (띄어쓰기) |
+| `런타임시` | `런타임 시` (띄어쓰기) |
+| `라이브러리를 include한다` | `라이브러리를 포함한다` 또는 `헤더를 포함한다` |
+| `클래스를 implement한다` | `클래스를 구현한다` |
+| `선언되어야만 합니다` | `선언되어야 함` |
+
+---
+
+## 8. 검토 요청 시 사용법
+
+아래 프롬프트와 함께 검토 대상 `README.md` 내용을 첨부하십시오.
+
+```
+아래 LECTURE.md 규칙에 따라 첨부한 README.md를 검토하고,
+개선이 필요한 부분을 항목별로 정리해 주십시오.
+수정은 직접 수행하지 말고, 발견된 문제만 보고합니다.
+```
