@@ -5,7 +5,8 @@ int main(void)
 {
     int c; /* instead of char type */
 
-    /* 연산자 우선순위 !=가 =보다 높음 */
+    /* the != operator has a higher precedence than =, so parentheses are needed
+       to ensure that the = operator is evaluated before the != operator. */
     while ((c = getchar()) != EOF)
         putchar(c);
 
