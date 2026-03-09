@@ -501,7 +501,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 8)
 
-### 형에 따른 값 표현 범위
+### 타입에 따른 값 표현 범위
 
 [//]: # (INCLUDE: ./c/01/src/getchar_putchar.c --from 5 --to 7 --no-comment)
 
