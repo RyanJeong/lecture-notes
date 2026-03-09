@@ -11,7 +11,7 @@
 
 [//]: # (INCLUDE: ./cpp/12/pointer_class.cc --from 2 --to 20 --no-comment)
 
-- 동적 메모리 관리를 자동화하기 위한 포인터 래퍼 (wrapper) 클래스
+- 동적 메모리 관리를 자동화하기 위한 포인터 래퍼(wrapper) 클래스
 - 메모리 누수와 수동 메모리 관리 문제 해결
 - 표준 라이브러리의 스마트 포인터는 **제네릭 프로그래밍을 활용하여 메모리 안전성 향상**
 
@@ -89,13 +89,13 @@
 ## `std::unique_ptr`
 
 - `<memory>` 헤더 파일 필요
-- 피관리 객체 (managed object)에 대한 **배타적 소유권 (exclusive ownership)을 행사**하는 스마트 포인터
+- 피관리 객체(managed object)에 대한 **배타적 소유권(exclusive ownership)을 행사**하는 스마트 포인터
 - 복사와 대입 불가
   - 복사 생성자와 복사 대입 연산자가 `delete`키워드로 명시적으로 삭제됨
   - 소유권 이동은 이동 생성자와 이동 대입 연산자로 가능
 - 자동 메모리 해제 제공
-  - 스마트 포인터 객체가 유효 범위를 벗어나면 자동으로 소멸자 호출 (**RAII 원칙**)
-  - 스마트 포인터 소멸자는 동적 할당된 피관리 객체를 동적 해제 (`delete`)
+  - 스마트 포인터 객체가 유효 범위를 벗어나면 자동으로 소멸자 호출(**RAII 원칙**)
+  - 스마트 포인터 소멸자는 동적 할당된 피관리 객체를 동적 해제(`delete`)
 
 [//]: # (INCLUDE: ./cpp/12/raii2.cc --from 7 --to 14 --no-comment)
 
@@ -139,8 +139,8 @@
 ## `std::shared_ptr`
 
 - `<memory>` 헤더 파일 필요
-- 피관리 객체에 대한 **공유 소유권 (shared ownership)을 행사**하는 스마트 포인터
-- 참조 개수 계산 (reference counting)을 통해 피관리 객체의 생명 주기 관리
+- 피관리 객체에 대한 **공유 소유권(shared ownership)을 행사**하는 스마트 포인터
+- 참조 개수 계산(reference counting)을 통해 피관리 객체의 생명 주기 관리
   - `std::unique_ptr`과의 차이점:
     - `std::unique_ptr`: 단일 소유권으로 **스마트 포인터 소멸 시 피관리 객체도 반드시 해제**
     - `std::shared_ptr`: **참조 개수가 0이 될 때만 피관리 객체 메모리 해제**
@@ -154,10 +154,10 @@
 
 ### 제어 블록 (Control Block)
 
-- `std::unique_ptr`은 피관리 객체를 가리키는 포인터만 멤버로 가짐 (크기: 1개 포인터)
+- `std::unique_ptr`은 피관리 객체를 가리키는 포인터만 멤버로 가짐(크기: 1개 포인터)
 - `std::shared_ptr`은 두 개의 포인터를 멤버로 가지므로 **오버헤드가 더 큼**
   - 첫 번째 포인터: 피관리 객체를 가리킴
-  - 두 번째 포인터: 제어 블록 (참조 개수, 커스텀 삭제자 등)을 가리킴
+  - 두 번째 포인터: 제어 블록(참조 개수, 커스텀 삭제자 등)을 가리킴
 
 ![h:300 center](Picture1.png)
 
@@ -179,7 +179,7 @@
 
 - `<memory>` 헤더 파일 필요
 - 피관리 객체 생성과 `std::shared_ptr` 래핑을 한 번에 처리하는 함수
-  - `new` + `std::unique_ptr` 생성자 호출보다 간결함 (동적 할당을 **한 번만 수행**)
+  - `new` + `std::shared_ptr` 생성자 호출보다 간결함(동적 할당을 **한 번만 수행**)
   - 예외 안전성을 보장함
 
 [//]: # (INCLUDE: ./cpp/12/shared_ptr_make_shared.cc --from 20 --to 29 --no-comment)
@@ -190,8 +190,8 @@
 
 ### `std::shared_ptr` 사용 시 주의사항
 
-- 원시 포인터를 사용해 `std::shared_ptr`을 생성할 경우 **이중 해제 (double free)를 유발함**
-  - 서로 다른 제어 블록 (control block)을 생성하면서 참조 개수 (strong count)가 분산됨
+- 원시 포인터를 사용해 `std::shared_ptr`을 생성할 경우 **이중 해제(double free)를 유발함**
+  - 서로 다른 제어 블록(control block)을 생성하면서 참조 개수(strong count)가 분산됨
 
 [//]: # (INCLUDE: ./cpp/12/shared_ptr_make_shared.cc --to 17 --no-comment)
 
@@ -201,11 +201,11 @@
 
 ### `std::enable_shared_from_this`
 
-- `std::shared_ptr`로 관리되는 객체가 메서드 내에서 자기 자신 (`this`)에 대한 소유권을 공유해야 하는 상황
+- `std::shared_ptr`로 관리되는 객체가 메서드 내에서 자기 자신(`this`)에 대한 소유권을 공유해야 하는 상황
   - e.g., 비동기 프로그래밍, 상호 참조, etc.
 - `this` 포인터로 `std::shared_ptr`를 생성하면 기존 제어 블록과 독립된 **새로운 제어 블록**이 할당됨
-  - 참조 개수가 분리되어 객체 소멸 시 **이중 해제 (double free) 발생 가능**
-- 이 상황에서는 `std::enable_shared_from_this`를 상속받아 `shared_from_this` 함수를 호출해야 함
+  - 참조 개수가 분리되어 객체 소멸 시 **이중 해제(double free) 발생 가능**
+- 이 상황에서는 `std::enable_shared_from_this`를 상속하여 `shared_from_this` 함수를 호출해야 함
   - 기존 제어 블록을 공유하는 `std::shared_ptr` 인스턴스를 반환
 
 [//]: # (INCLUDE: ./cpp/12/enable_shared_from_this.cc --to 12 --no-comment)
@@ -242,15 +242,15 @@
 
 [//]: # (INCLUDE: ./cpp/12/best_friend3.cc --from 27 --to 28 --no-comment)
 
-- **순환 참조 (circular reference)로 인한 메모리 누수 발생**
+- **순환 참조(circular reference)로 인한 메모리 누수 발생**
 
 ---
 
 ## `std::weak_ptr`
 
-- `std::weak_ptr`은 `std::shared_ptr`을 관찰 (객체의 소멸 여부 확인)하기 위한 스마트 포인터
+- `std::weak_ptr`은 `std::shared_ptr`을 관찰(객체의 소멸 여부 확인)하기 위한 스마트 포인터
   - **소유권을 갖지 않으며**, 피관리 객체의 메모리 해제 책임을 갖지 않음
-  - 관찰 목적의 스마트 포인터이므로, **참조 개수 (strong count)를 증가시키지 않음**
+  - 관찰 목적의 스마트 포인터이므로, **참조 개수(strong count)를 증가시키지 않음**
 - `std::weak_ptr`은 객체로의 직접 참조가 불가능하므로 `lock` 메서드를 사용해야 함
   - `lock` 메서드는 관찰 대상이 유효하다면 `std::shared_ptr` 값을, 이미 소멸되었다면 `nullptr`을 반환
 
@@ -285,12 +285,12 @@
 ### 생성 시점 (Instantiation)
 
 - 제어 블록 생성: 최초의 `std::shared_ptr` 객체가 생성될 때 힙 영역에 단 한 번 할당됨
-  - `std::make_shared<T>` 사용: `T`형 객체와 제어 블록을 단일 메모리 블록에 연속으로 할당 (성능 최적화)
-    - **동적 할당을 한 번만 수행함** (메모리 할당 효율성 증가)
-  - `new T` (생성자 주입) 사용: `T`형 객체와 별도로 제어 블록을 독립적으로 할당
-    - **동적 할당을 총 두 번 수행함** (메모리 할당 오버헤드 증가)
+  - `std::make_shared<T>` 사용: `T`타입 객체와 제어 블록을 단일 메모리 블록에 연속으로 할당(성능 최적화)
+    - **동적 할당을 한 번만 수행함**(메모리 할당 효율성 증가)
+  - `new T` (생성자 주입) 사용: `T`타입 객체와 별도로 제어 블록을 독립적으로 할당
+    - **동적 할당을 총 두 번 수행함**(메모리 할당 오버헤드 증가)
     - **주의**: 동일한 raw pointer로 여러 개의 `std::shared_ptr`를 각각 생성하면, 독립된 제어 블록이 중복 생성됨
-      - **이중 해제 오류 초래** (미정의 동작 발생)
+      - **이중 해제 오류 초래**(미정의 동작 발생)
 
 ### 카운터의 역할 (Role of Counters)
 
@@ -322,23 +322,23 @@
 ## 제어 블록의 기타 데이터 (Other Data)
 
 - 참조 카운트 외에 객체 생명주기 관리를 위한 메타데이터 저장소
-  - [Custom deleter](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr): **피관리 객체 소멸 시 수행할 해제 방법** (기본값: `delete`)
-    - 사용자가 정의한 삭제 함수 또는 객체를 저장 (e.g., C API의 동적 해제)
-  - [Custom allocator](https://en.cppreference.com/w/cpp/memory/shared_ptr/allocate_shared): **제어 블록 (또는 피관리 객체)의 메모리 할당 및 해제 방법** (기본값: `std::allocator`)
+  - [Custom deleter](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr): **피관리 객체 소멸 시 수행할 해제 방법**(기본값: `delete`)
+    - 사용자가 정의한 삭제 함수 또는 객체를 저장(e.g., C API의 동적 해제)
+  - [Custom allocator](https://en.cppreference.com/w/cpp/memory/shared_ptr/allocate_shared): **제어 블록(또는 피관리 객체)의 메모리 할당 및 해제 방법**(기본값: `std::allocator`)
     - `std::make_shared<T>`는 제어 블록과 피관리 객체를 할당기 방식으로 할당 또는 해제
-    - 사용자가 정의한 메모리 할당기를 저장 (e.g., 성능 향상을 위한 메모리 풀)
+    - 사용자가 정의한 메모리 할당기를 저장(e.g., 성능 향상을 위한 메모리 풀)
 - `std::shared_ptr`와 `std::weak_ptr`가 제어 블록을 공유하므로, 저장된 메타데이터를 공통으로 활용
-- **타입 소거 (type erasure)의 물리적 기반**으로 활용:
+- **타입 소거(type erasure)의 물리적 기반**으로 활용:
   - `std::shared_ptr<T>` 객체 자체는 삭제자 또는 할당기의 구체적인 타입 정보를 알지 못함
   - 객체 소멸 시, 제어 블록에 저장된 함수 포인터 또는 함수 객체를 호출하여 실제 삭제 작업 위임
-  - 런타임에 올바른 삭제자가 동적으로 선택됨 (동적 바인딩)
+  - 런타임에 올바른 삭제자가 동적으로 선택됨(동적 바인딩)
 
 ### 타입 소거 (Type Erasure)
 
-- 서로 다른 구체적 타입 (삭제자, 할당기 등)을 가진 객체들을 공통된 단일 인터페이스로 추상화하는 기법
+- 서로 다른 구체적 타입(삭제자, 할당기 등)을 가진 객체들을 공통된 단일 인터페이스로 추상화하는 기법
   - 제어 블록 내부의 가상 함수와 상속을 통해 런타임에 올바른 삭제자를 호출
-  - 다형성 (polymorphism)을 활용한 동적 디스패치
-  - `std::shared_ptr<T>`는 삭제자 또는 할당기 타입이 서로 달라도 **동일한 자료형**으로 취급됨
+  - 다형성(polymorphism)을 활용한 동적 디스패치
+  - `std::shared_ptr<T>`는 삭제자 또는 할당기 타입이 서로 달라도 **동일한 타입**으로 취급됨
 
 ---
 
@@ -350,7 +350,7 @@
 
 ## 스마트 포인터에서의 이동
 
-- `std::unique_ptr`은 복사와 대입 연산이 명시적으로 삭제된 형
+- `std::unique_ptr`은 복사와 대입 연산이 명시적으로 삭제된 타입
 - 다른 지역으로 소유권을 이동해야 할 경우 `std::move` 함수를 사용할 수 있음
 - 이동 후의 스마트 포인터는 `nullptr`을 갖게 됨
 

@@ -23,7 +23,7 @@
 
 ### Coding Conventions
 
-| Item | C (KNR style) | C++ ([Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)) |
+| Item | C (K&R style) | C++ ([Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)) |
 | ---- | ------------- | ---------------------------- |
 | Indentation         | 4 spaces      | 2 spaces |
 | Function brace style| Opening brace on a new line | Opening brace on the same line as function signature |
@@ -41,7 +41,7 @@
 
 ### Declaration Position
 
-- C는 블록 시작 시점에만 선언 허용
+- C89/C90은 블록 시작 시점에만 선언 허용(C99부터는 필요한 위치에서 선언 가능)
 - C++는 필요한 위치에서 선언 가능
   - 변수 선언과 변수 사용 위치가 가까워 코드 가독성 증가
   - 불필요한 객체 생애주기 감소
@@ -56,7 +56,7 @@
 
 - C는 0, 1과 같은 정수 값을 사용해 참과 거짓 표현
   - C99부터 `<stdbool.h>` 도입
-- C++는 기본 자료형 `bool` 형 키워드 `true`, `false`를 사용해 참과 거짓 표현
+- C++는 `bool` 타입 키워드 `true`, `false`를 사용해 참과 거짓 표현
 
 [//]: # (INCLUDE: ./cpp/01/bool.cc)
 
@@ -75,13 +75,13 @@
 
 ## 이름 공간 (Namespace)
 
-- 식별자 (identifier)의 소속 (scope)을 구분하기 위한 도구
+- 식별자(identifier)의 소속(scope)을 구분하기 위한 도구
 - 식별자 중복으로 인한 컴파일 오류 예방 가능
 - e.g., `std::cout`은 `cout` 객체가 `std`라는 이름 공간에 속해있음을 의미
 
 ### 예시
 
-- 두 개의 다른 이름 공간 (`foo`, `bar`)을 사용해 `Qux()` 정의
+- 두 개의 다른 이름 공간(`foo`, `bar`)을 사용해 `Qux()` 정의
 
 [//]: # (INCLUDE: ./cpp/01/namespace.cc)
 
@@ -126,11 +126,11 @@
 
 ### `using` 선언과 `using` 지시어
 
-- `using` 선언 (using-declaration)은 특정 식별자만 선택적으로 지정하여 사용할 수 있도록 함
+- `using` 선언(using-declaration)은 특정 식별자만 선택적으로 지정하여 사용할 수 있도록 함
 
 [//]: # (INCLUDE: ./cpp/01/using1.cc)
 
-- `using` 지시어 (using-directive)는 해당 이름 공간의 모든 식별자를 지정하여 사용할 수 있도록 함
+- `using` 지시어(using-directive)는 해당 이름 공간의 모든 식별자를 지정하여 사용할 수 있도록 함
 
 [//]: # (INCLUDE: ./cpp/01/using2.cc)
 
@@ -146,8 +146,8 @@
 ### 이름 없는 이름 공간 (Anonymous Namespace, Unnamed Namespace)
 
 - C의 `static` 키워드와 같은 역할
-  - 내부 연결성 (internal linkage) 부여
-  - 동일 번역 단위 (translation unit)에서만 접근 가능
+  - 내부 연결성(internal linkage) 부여
+  - 동일 번역 단위(translation unit)에서만 접근 가능
 
 [//]: # (INCLUDE: ./cpp/01/anony_ns.cc)
 
@@ -231,7 +231,7 @@
 
 ### 데이터 형식화 (Formatting Data)
 
-- [조정자 (Manipulators)](https://en.cppreference.com/w/cpp/io/manip.html)를 사용해 입출력 형식 제어
+- [조정자(Manipulators)](https://en.cppreference.com/w/cpp/io/manip.html)를 사용해 입출력 형식 제어
 
 ### 임시 조정자 (Temporary Manipulators)
 
@@ -326,8 +326,8 @@
 
 ## 레퍼런스 (Reference)
 
-- 기존 객체에 대한 별칭 (alias)을 만드는 메커니즘
-- 레퍼런스는 선언 시 **반드시 객체에 연결 (binding)되어야 함**
+- 기존 객체에 대한 별칭(alias)을 만드는 메커니즘
+- 레퍼런스는 선언 시 **반드시 객체에 연결(binding)되어야 함**
 - `&` 기호를 사용해 선언
 
 [//]: # (INCLUDE: ./cpp/01/ref.cc)
@@ -430,7 +430,7 @@
 
 - 이미 실체화된 배열을 가리키는 레퍼런스
 - **레퍼런스 지시자와 배열 이름을 괄호로 함께 묶어주어야 함**
-  - 레퍼런스 선언자 (`&`, reference declaration)은 배열 크기 지시자 (`[]`, array size specifier)보다 우선순위가 낮음
+  - 레퍼런스 선언자(`&`, reference declaration)는 배열 크기 지시자(`[]`, array size specifier)보다 우선순위가 낮음
 
 [//]: # (INCLUDE: ./cpp/01/ref_arr.cc)
 

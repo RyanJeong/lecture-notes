@@ -11,9 +11,9 @@
 
 > A program normally uses several classes with different relationships between them.
 
-- 관계는 상속 (inheritance), 연관 (association), 의존 (dependency)이 있음
-  - 소유 (aggregation), 구성 (composition)은 연관의 특별한 형태
-  - 소유와 구성은 연관의 부분 집합 (subset)
+- 관계는 상속(inheritance), 연관(association), 의존(dependency)이 있음
+  - 소유(aggregation), 구성(composition)은 연관의 특별한 형태
+  - 소유와 구성은 연관의 부분 집합(subset)
 
 ![center](Figure_11_1.png)
 
@@ -24,7 +24,7 @@
 ![center](Figure_UML_Diagrams.png)
 
 - 소프트웨어 시스템의 구조와 동작을 시각적으로 표현하기 위한 표준화된 모델링 언어
-- 정의된 문법 (syntax)과 의미론 (semantics)을 갖춘 언어
+- 정의된 문법(syntax)과 의미론(semantics)을 갖춘 언어
   - 표준화된 기호와 규칙을 통해 일관된 방식으로 시스템을 표현하고 이해할 수 있음
   - 다이어그램을 통해 시스템의 의미를 정확하게 파악할 수 있음
 - 프로그래밍 언어가 코드로 시스템을 표현하듯, UML은 시각적 다이어그램으로 시스템을 표현
@@ -76,14 +76,14 @@ Car -- Person : < owns
 
 - 두 클래스는 *is-a* 관계로 표현됨
   - A horse *is an* animal.
-  - `Animal` 은 기반 클래스 (일반적인 의미)
-  - `Horse` 는 기반 클래스로부터 구체화된 파생 클래스 (구체적인 의미)
-- 파생 클래스(derived class)는 기반 클래스 (base class)로부터 구체화한 결과물
+  - `Animal` 은 기반 클래스(일반적인 의미)
+  - `Horse` 는 기반 클래스로부터 구체화된 파생 클래스(구체적인 의미)
+- 파생 클래스(derived class)는 기반 클래스(base class)로부터 구체화한 결과물
 - 클래스 다이어그램에서 상속 표현 시 두 클래스 사이에 실선으로 된 화살표를 사용
-  - 파생 클래스 (`Horse`)가 기반 클래스 (`Animal`)를 가리킴
-  - 속이 빈 삼각형 화살촉 (`─▷`)이 기반 클래스를 향하도록 표현
-    - 관계에서의 주어 (파생 클래스)로부터 대상 (부모 클래스)을 가리키도록 표현
-- 기반 클래스를 슈퍼클래스 (superclass), 파생 클래스를 서브클래스 (subclass)라고 부르기도 함
+  - 파생 클래스(`Horse`)가 기반 클래스(`Animal`)를 가리킴
+  - 속이 빈 삼각형 화살촉(`─▷`)이 기반 클래스를 향하도록 표현
+    - 관계에서의 주어(파생 클래스)로부터 대상(부모 클래스)을 가리키도록 표현
+- 기반 클래스를 슈퍼클래스(superclass), 파생 클래스를 서브클래스(subclass)라고 부르기도 함
 
 ---
 
@@ -93,9 +93,9 @@ Car -- Person : < owns
 
 - **파생 클래스는 기반 클래스의 모든 멤버를 사용할 수 있음**
   - 기반 클래스의 생성자, 소멸자, 대입 연산자는 예외로 상속되지 않음
-- 파생 클래스는 기반 클래스에서 상속받은 내용에 필요에 따라 데이터 멤버 또는 멤버 함수 추가 가능
+- 파생 클래스는 기반 클래스에서 상속한 내용에 필요에 따라 데이터 멤버 또는 멤버 함수 추가 가능
 - 상속은 세 가지 형태로 할 수 있음
-  - 접근 지정자는 생략될 수 있으며, 생략 시 `private` 상속 (the default inheritance)
+  - 접근 지정자는 생략될 수 있으며, 생략 시 `private` 상속(the default inheritance)
 
 ![center](Figure_11_4.png)
 
@@ -111,8 +111,8 @@ Car -- Person : < owns
 
 - A student *is a* person.
   - `Person` 클래스는 기반 클래스, `Student` 클래스는 파생 클래스
-  - `Person` 클래스는 주민등록번호를 저장할 데이터 멤버 (`identity`) 필요
-  - `Student` 클래스는 주민등록번호와 학점을 저장할 데이터 멤버 (`identity`, `gpa`) 필요
+  - `Person` 클래스는 주민등록번호를 저장할 데이터 멤버(`identity`) 필요
+  - `Student` 클래스는 주민등록번호와 학점을 저장할 데이터 멤버(`identity`, `gpa`) 필요
     - `identity` 는 기반 클래스로부터 상속됨
     - `Student` 클래스에 `gpa`만 추가하면 됨
 
@@ -136,11 +136,11 @@ Car -- Person : < owns
 
 ### 클래스 다이어그램의 클래스 기호와 표기법
 
-- 클래스 기호 (class symbol)는 세 영역으로 구분됨
+- 클래스 기호(class symbol)는 세 영역으로 구분됨
   - 상단 부분: 클래스 이름 표현
-  - 중간 부분: 클래스의 속성 (데이터 멤버) 표현
-  - 하단 부분: 클래스의 행위 (멤버 함수) 표현
-- 중간과 하단 부분에서의 클래스 멤버 가시성 표기법 (visibility notation):
+  - 중간 부분: 클래스의 속성(데이터 멤버) 표현
+  - 하단 부분: 클래스의 행위(멤버 함수) 표현
+- 중간과 하단 부분에서의 클래스 멤버 가시성 표기법(visibility notation):
   - `+` :  `public`
   - `-` :  `private`
   - `#` :  `protected`
@@ -174,8 +174,8 @@ Car -- Person : < owns
 
 - 기반 클래스 객체는 데이터 멤버 `identity` 를 가짐
 - 파생 클래스 객체는 데이터 멤버 `gpa` 와 **상속 받은 기반 클래스 멤버인 `identity`를 가짐**
-- `identity`는 `private` 멤버이므로, 기반 클래스 범위 (base class scope)에서만 접근 가능
-- **파생 클래스 객체는 파생 클래스 범위 (derived class scope)를 가짐**
+- `identity`는 `private` 멤버이므로, 기반 클래스 범위(base class scope)에서만 접근 가능
+- **파생 클래스 객체는 파생 클래스 범위(derived class scope)를 가짐**
   - 파생 클래스 메서드는 `identity`에 접근 불가
 
 ---
@@ -199,7 +199,7 @@ Car -- Person : < owns
 
 ### 오버라이드 함수 (Overridden Member Functions)
 
-- **상속 관계에 있는** 기반 클래스와 파생 클래스의 함수 시그니처 (매개변수 형태)가 서로 같은 경우
+- **상속 관계에 있는** 기반 클래스와 파생 클래스의 함수 시그니처(매개변수 형태)가 서로 같은 경우
 
 [//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 5 --to 21 --no-comment)
 
@@ -237,7 +237,7 @@ Car -- Person : < owns
 
 ### 오버라이드 함수 활용 - 작업 위임 (Delegation of Duty)
 
-- 파생 클래스는 작업의 일부를 상위 클래스에 위임 (delegation of duty) 가능
+- 파생 클래스는 작업의 일부를 상위 클래스에 위임(delegation of duty) 가능
 
 ### 작업 위임의 예: 함수 오버라이드와 작업 위임을 사용해 공통된 이름의 멤버 함수 사용
 
@@ -266,10 +266,10 @@ Car -- Person : < owns
   2. 매개변수 생성자
   3. 복사 생성자
   4. 소멸자
-  5. 대입 연산자 (연산자 오버로딩 학습 시 소개)
+  5. 대입 연산자(연산자 오버로딩 학습 시 소개)
 
 - 따라서 파생 클래스의 생성자는 기반 클래스의 데이터 멤버 초기화 불가
-  - 일반적으로 클래스는 데이터 멤버를 `private` 으로 지정 (캡슐화)
+  - 일반적으로 클래스는 데이터 멤버를 `private` 으로 지정(캡슐화)
   - 기반 클래스의 데이터 멤버는 **기반 클래스 범위에서만 접근 가능**
 - 마찬가지로 파생 클래스의 소멸자는 기반 클래스의 데이터 멤버 소멸 불가
 
@@ -287,13 +287,13 @@ Car -- Person : < owns
 - 파생 클래스의 소멸자는 파생 클래스 데이터 멤버를 먼저 소멸한 뒤 기반 클래스 소멸자 호출
   - 소멸자는 객체 소멸 시점에 시스템에 의해 자동 호출되는 멤버 함수
   - 파생 클래스 객체 소멸 시 파생 클래스의 소멸자와 기반 클래스의 소멸자가 순차적으로 호출됨
-- **생성자와 소멸자의 처리 순서는 역순임의 유의**
+- **생성자와 소멸자의 처리 순서는 역순임에 유의**
 
 ---
 
 ## 상속 (Inheritance) (Cont'd - 16)
 
-### 기반 클래스 형 객체와 파생 클래스 형 객체의 초기화 과정
+### 기반 클래스 타입 객체와 파생 클래스 타입 객체의 초기화 과정
 
 ![center](Figure_11_11.png)
 
@@ -341,7 +341,7 @@ Car -- Person : < owns
 
 ### Protected vs Private
 
-- `private` 데이터 멤버는 캡슐화가 적용되지만, 추가적인 코드 작성이 요구됨 (e.g., 작업 위임)
+- `private` 데이터 멤버는 캡슐화가 적용되지만, 추가적인 코드 작성이 요구됨(e.g., 작업 위임)
 - `protected` 데이터 멤버는 코드가 간결해지지만, **캡슐화 원칙에 위배됨**
 
 ### 상속 막기 (Blocking Inheritance)
@@ -373,7 +373,7 @@ Car -- Person : < owns
   - **두 클래스는 *is-a* 관계로 표현할 수 없음**
     - 두 클래스 모두 `set_width()`, `set_height()` 메서드가 있다고 가정
     - `Rectangle` 클래스는 높이와 너비 값이 다를 수 있음
-    - `Square` 클래스는 높이와 너비가 항상 같아야 함 (정사각형 속성)
+    - `Square` 클래스는 높이와 너비가 항상 같아야 함(정사각형 속성)
     - 따라서 `Rectangle` 객체를 사용하는 코드에서 `Square` 객체로 대치할 경우 **동작이 달라짐**
       - e.g., `set_width()` 호출 시 `Square`는 높이도 변경해야 함
 
@@ -397,7 +397,7 @@ Car -- Person : < owns
 
 ![center](Figure_11_16.png)
 
-- 대부분 `public` 상속 (*is-a* 관계)을 사용하지만, 다른 유형으로도 상속 가능
+- 대부분 `public` 상속(*is-a* 관계)을 사용하지만, 다른 유형으로도 상속 가능
 
 ---
 
@@ -440,9 +440,9 @@ Car -- Person : < owns
   - 서로 연관되는 관계이므로 *is-related-to* 관계임
 - 연관 관계는 한 클래스가 다른 클래스의 객체를 데이터 멤버로 보유해 참조하는 관계
 - 클래스 다이어그램에서 연관을 표현하는 방법
-  1. 양방향 연관은 실선 (`───`)으로 표현한다.
-  2. 단방향 연관은 주체가 되는 클래스로부터 연관 되는 클래스를 향하여 화살표 (`→`)로 표현한다.
-  3. 필요하다면 화살표에 역할 이름 (role name, e.g., `lives at`)을 표현한다.
+  1. 양방향 연관은 실선(`───`)으로 표현한다.
+  2. 단방향 연관은 주체가 되는 클래스로부터 연관 되는 클래스를 향하여 화살표(`→`)로 표현한다.
+  3. 필요하다면 화살표에 역할 이름(role name, e.g., `lives at`)을 표현한다.
 
 ---
 
@@ -488,10 +488,10 @@ Car -- Person : < owns
 
 - 소유 관계는 두 클래스를 *has-a* 관계로 표현
   - A person *has a* birth date.
-  - 소유하는 클래스는 주체 혹은 소유자 (aggregator)
-  - 소유되는 클래스는 대상 혹은 소유물 (aggregatee)
+  - 소유하는 클래스는 주체 혹은 소유자(aggregator)
+  - 소유되는 클래스는 대상 혹은 소유물(aggregatee)
   - 사람은 소유자이며, 생일은 소유물
-- 클래스 다이어그램에서의 빈 마름모 (`◇`)는 소유 관계에서의 소유자를 의미함
+- 클래스 다이어그램에서의 빈 마름모(`◇`)는 소유 관계에서의 소유자를 의미함
   - `Person` 클래스는 `Date` 객체를 데이터 멤버로 가짐
   - 표기: `Person ◇── Date`
 
@@ -506,7 +506,7 @@ Car -- Person : < owns
     - A person *has a* birth date.
     - A person *has multiple* email addresses.
     - A person *has multiple* addresses.
-- **소유 관계에서 소유물의 생애 주기 (lifetime)는 소유자의 생애 주기와 독립적**
+- **소유 관계에서 소유물의 생애 주기(lifetime)는 소유자의 생애 주기와 독립적**
   - 소유자와 소유물은 서로 독립적으로 생성되고 소멸될 수 있음
 
 ---
@@ -553,10 +553,10 @@ Car -- Person : < owns
 
 - 구성 관계는 두 클래스를 *consists-of* 관계로 표현
   - An employee *consists of* a name.
-  - 구성하는 클래스는 주체 혹은 구성체 (container)
-  - 구성되는 클래스는 대상 혹은 구성요소 (containee)
+  - 구성하는 클래스는 주체 혹은 구성체(container)
+  - 구성되는 클래스는 대상 혹은 구성요소(containee)
   - 직원은 구성체이며, 이름은 구성 요소
-- 클래스 다이어그램에서의 속이 채워진 마름모 (`◆`)는 구성 관계에서의 구성체를 의미함
+- 클래스 다이어그램에서의 속이 채워진 마름모(`◆`)는 구성 관계에서의 구성체를 의미함
   - `Employee` 클래스는 `Name` 객체를 데이터 멤버로 가짐
   - 표기: `Employee ◆── Name`
 
@@ -624,13 +624,13 @@ Car -- Person : < owns
 ![center](Figure_11_21.png)
 
 - 의존 관계는 두 클래스를 *uses-a* 관계로 표현
-- 상속 혹은 연관 (연관의 특별한 형태인 소유와 구성을 포함)보다 약한 관계
+- 상속 혹은 연관(연관의 특별한 형태인 소유와 구성을 포함)보다 약한 관계
 - 다음 경우들은 의존 관계:
-  1. 한 클래스의 멤버 함수가 다른 클래스 형 객체를 매개변수로 받는다.
-  2. 한 클래스의 멤버 함수 반환형이 다른 클래스 형이다.
-  3. 한 클래스의 멤버 함수 내에 다른 클래스 형 객체를 지역 변수로 사용한다.
+  1. 한 클래스의 멤버 함수가 다른 클래스 타입 객체를 매개변수로 받는다.
+  2. 한 클래스의 멤버 함수 반환 타입이 다른 클래스 타입이다.
+  3. 한 클래스의 멤버 함수 내에 다른 클래스 타입 객체를 지역 변수로 사용한다.
   4. 한 클래스의 멤버 함수가 다른 클래스의 멤버 함수 혹은 정적 멤버 함수를 호출한다.
-- 의존은 항상 단방향 관계이며, 주체가 되는 클래스로부터 의존하는 클래스를 향하여 점선 화살표 (`--→`)로 표현
+- 의존은 항상 단방향 관계이며, 주체가 되는 클래스로부터 의존하는 클래스를 향하여 점선 화살표(`--→`)로 표현
 
 ---
 
@@ -646,11 +646,11 @@ Car -- Person : < owns
 
 | 관계 유형 | 표기법 | 의미 | 예시 |
 |---------|-------|------|------|
-| 상속 (Inheritance) | 속이 빈 삼각형 화살촉 (`─▷`) | *is-a* 관계 | Student *is a* Person. |
-| 연관 (Association) | 실선 (`──`)| 일반적인 관계 | Student *studies* Course. |
-| 소유 (Aggregation) | 빈 마름모가 있는 실선 (`◇─>`)| *has-a* 관계 | University *has* Departments. |
-| 구성 (Composition) | 채워진 마름모가 있는 실선 (`◆─>`)| *consists-of* 관계 | Employee *consists of* a Name. |
-| 의존 (Dependency) | 점선 화살표 (`-→`) | *uses-a* 관계 | Function uses Parameters. |
+| 상속(Inheritance) | 속이 빈 삼각형 화살촉(`─▷`) | *is-a* 관계 | Student *is a* Person. |
+| 연관(Association) | 실선(`──`)| 일반적인 관계 | Student *studies* Course. |
+| 소유(Aggregation) | 빈 마름모가 있는 실선(`◇─>`)| *has-a* 관계 | University *has* Departments. |
+| 구성(Composition) | 채워진 마름모가 있는 실선(`◆─>`)| *consists-of* 관계 | Employee *consists of* a Name. |
+| 의존(Dependency) | 점선 화살표(`-→`) | *uses-a* 관계 | Function uses Parameters. |
 
 ---
 

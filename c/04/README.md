@@ -8,8 +8,8 @@
 
 ### 범위 (Scope Rules), 연결성 (Linkage), 저장 기간 (Storage) 규칙
 
-- 네 개의 범위 (파일 스코프, 블록 스코프, 함수 스코프, 프로토타입 스코프)
-- 세 개의 연결성 (외부 연결성, 내부 연결성, 없음)
+- 네 개의 범위(파일 스코프, 블록 스코프, 함수 스코프, 프로토타입 스코프)
+- 세 개의 연결성(외부 연결성, 내부 연결성, 없음)
 - 선언에 따른 객체 저장 기간
 - 선언과 정의의 차이
 
@@ -29,7 +29,7 @@
 
 #### 응집도 증가 및 결합도 감소
 
-- 관련 코드를 독립 영역 (함수)으로 분리
+- 관련 코드를 독립 영역(함수)으로 분리
 - **지역 분리로 인한 불필요한 상호작용 제거**
 
 #### 재사용성
@@ -50,7 +50,7 @@
 
 ### 입력 문자열 중 특정 패턴이 포함된 문자열만 출력하는 프로그램
 
-- 세 함수 (`getline`, `strindex`, `printf`)를 사용
+- 세 함수(`getline`, `strindex`, `printf`)를 사용
   - `printf` 함수는 표준 함수
   - `getline`, `strindex` 함수는 사용자 정의 함수
 
@@ -91,9 +91,9 @@ return‑type function‑name(parameter‑list)
 }
 ```
 
-- ANSI C 이전에는 반환형 또는 매개변수 자료형 생략이 가능했으나, ANSI C부터 자료형 생략은 **금지**되었음
+- ANSI C 이전에는 반환 타입 또는 매개변수 타입 생략이 가능했으나, C99부터 타입 생략은 **금지**되었음
 - 함수 정의 시 매개변수를 사용하지 않는다면 `void` 키워드를 사용해 의도를 분명히 할 것
-- 값을 반환하지 않는 함수의 자료형은 `void` 키워드를 사용할 것
+- 값을 반환하지 않는 함수의 타입은 `void` 키워드를 사용할 것
 
 ### 함수 간 통신 방법
 
@@ -117,8 +117,8 @@ jump-statement:
     return expression(opt) ; ←
 ```
 
-- 함수의 반환형이 `void`가 아니라면 반환문을 통해 함수 호출 측으로 값을 전달할 수 있음
-- 반환문 표현식의 평가된 자료형과 함수의 반환형이 서로 다를 경우, **함수의 반환형**으로 형 변환
+- 함수의 반환 타입이 `void`가 아니라면 반환문을 통해 함수 호출 측으로 값을 전달할 수 있음
+- 반환문 표현식의 평가된 타입과 함수의 반환 타입이 서로 다를 경우, **함수의 반환 타입**으로 타입 변환
 
 [//]: # (INCLUDE: ./c/04/return_type.c)
 
@@ -176,7 +176,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 ## Functions Returning Non-integers
 
-### 비정수형 값 반환 예 - 표준 함수 `atof`
+### 비정수 타입 값 반환 예 - 표준 함수 `atof`
 
 [//]: # (INCLUDE: ./c/04/02.c)
 
@@ -223,8 +223,8 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 - `main.c` 파일 내에 `func.c`에서 정의된 함수를 선언 없이 사용할 경우, **컴파일 시 오류가 발생하지 않음**
   - 컴파일 오류는 링크 과정에서 함수의 호출부와 연결되어야 할 구현부를 찾지 못할 때 발생
   - `main.c` 파일 내에 함수 선언이 누락됐더라도 링크 과정에서 구현부를 찾아 연결할 수 있음
-  - 문제는 컴파일러가 `main.c`를 목적 파일로 변환할 때 **함수의 반환형을 암묵적으로 `int`로 가정함**
-    - 현대 표준 (C99 이후)에서는 함수 선언 누락 시 컴파일 오류가 발생함
+  - 문제는 컴파일러가 `main.c`를 목적 파일로 변환할 때 **함수의 반환 타입을 암묵적으로 `int`로 가정함**
+    - 현대 표준(C99 이후)에서는 함수 선언 누락 시 컴파일 오류가 발생함
 
 ---
 
@@ -248,15 +248,15 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 ### 내부 (Internal)와 외부 (External)
 
-- 내부는 **함수의 본문** 또는 **복합문**을 의미하며, 변수 (지역 변수와 매개변수), 함수의 선언, 문장 사용 가능
+- 내부는 **함수의 본문** 또는 **복합문**을 의미하며, 변수(지역 변수와 매개변수), 함수의 선언, 문장 사용 가능
   - **문장은 내부에만 존재할 수 있음**
-- 외부는 **함수 외부**를 의미하며, 변수 (전역 변수), 함수의 선언, 함수의 정의 사용 가능
+- 외부는 **함수 외부**를 의미하며, 변수(전역 변수), 함수의 선언, 함수의 정의 사용 가능
   - **함수 정의는 외부에만 존재할 수 있음**
 
 ### 내부 변수와 외부 변수의 차이
 
 - 내부 변수는 블록 내에서만 사용 가능하나, 외부 변수는 다른 지역에서도 접근해 사용 가능
-- 내부 변수는 블록의 생애주기 (lifecycle)에 의존하나, 외부 변수는 프로그램의 생애주기에 의존함
+- 내부 변수는 블록의 생애주기(lifecycle)에 의존하나, 외부 변수는 프로그램의 생애주기에 의존함
 - 내부 변수는 초기화를 생략하면 임의의 값이 들어있으나, 외부 변수는 초기화를 생략해도 0으로 초기화됨
 
 ### 외부 변수 사용 시 주의사항
@@ -272,20 +272,20 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 ### 외부 변수를 이용한 계산기
 
-- Postfix notation (Reverse Polish Notation, RPN)에 스택 (stack)을 사용하는 사칙연산 계산기
+- Postfix notation(Reverse Polish Notation, RPN)에 스택(stack)을 사용하는 사칙연산 계산기
 
 #### Infix Notation, Postfix Notation
 
 - 사람은 사칙연산을 표현할 때 infix 표기를 사용
   - 연산자가 피연산자 사이에 위치하는 표기법
   - e.g., `(1 - 2) * (4 + 5)`
-- Postfix 표기의 장점은 **스택 (stack) 자료 구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
+- Postfix 표기의 장점은 **스택(stack) 자료 구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
   - 연산자가 피연산자 뒤에 위치하는 표기법
   - e.g., `1 2 - 4 5 + *`
 
 #### 스택 (Stack)
 
-- 한쪽 방향에서만 데이터를 추가 (push)하거나 제거 (pop)할 수 있는 구조
+- 한쪽 방향에서만 데이터를 추가(push)하거나 제거(pop)할 수 있는 구조
 
 ![h:200 center](image-1.png)
 
@@ -391,7 +391,7 @@ int main(void)
 ```
 
 - **뺄셈과 나눗셈은 교환법칙이 성립하지 않음**
-- 평가 순서는 `&&`, `||`. `?:`, `,` 연산자 외에는 미정의 (unspecified)이므로 순서를 명확히 표현해야 함
+- 평가 순서는 `&&`, `||`. `?:`, `,` 연산자 외에는 미정의(unspecified)이므로 순서를 명확히 표현해야 함
 - 나눗셈 연산 시 제수는 0이 아닌 수여야 함
 
 ---
@@ -424,7 +424,7 @@ double pop(void)
 }
 ```
 
-- 전역 변수는 파일 범위 (file scope)를 가짐
+- 전역 변수는 파일 범위(file scope)를 가짐
   - 전역 변수의 이름은 선언 지점으로부터 파일의 끝까지 유효
   - 두 전역 변수 `sp`, `val`은 `main` 함수에서 접근할 수 없도록 **의도적으로** `main` 함수 이후에 선언한 것
 
@@ -496,8 +496,8 @@ void ungetch(int c) /* push character back on input */
 
 > The scope of an identifier is the portion of the program in which the identifier can be used to denote the object, function, or tag with which it is associated.
 
-- 범위 (scope)는 식별자 (identifiers)가 유효하게 사용될 수 있는 코드 범위를 의미
-- 번역 단위 (translation unit)는 하나의 C 소스 파일이 전처리기에 의해 전처리된 결과물을 의미
+- 범위(scope)는 식별자(identifiers)가 유효하게 사용될 수 있는 코드 범위를 의미
+- 번역 단위(translation unit)는 하나의 C 소스 파일이 전처리기에 의해 전처리된 결과물을 의미
 
 | Scope Type          | Applicable Identifiers        | Start Point                 | End Point                   | Summary Description                     |
 |---------------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------------------|
@@ -512,7 +512,7 @@ void ungetch(int c) /* push character back on input */
 
 ### 파일 스코프 (File Scope)
 
-- 식별자 (변수 또는 함수의 이름) 선언이 전역 공간 (outside of all blocks)에 위치한 경우
+- 식별자(변수 또는 함수의 이름) 선언이 전역 공간(outside of all blocks)에 위치한 경우
 - 식별자는 선언된 위치로부터 파일의 끝까지 유효함
 
 [//]: # (INCLUDE: ./c/04/file_scope.c)
@@ -547,7 +547,7 @@ void ungetch(int c) /* push character back on input */
 
 - 함수 선언에 사용한 매개변수만 사용하는 스코프
 - 선언에 등장하는 매개변수 식별자는 선언 내에서만 유효함
-- **형 검사 목적으로만 사용**
+- **타입 검사 목적으로만 사용**
 
 [//]: # (INCLUDE: ./c/04/prototype_scope.c)
 
@@ -559,15 +559,15 @@ void ungetch(int c) /* push character back on input */
 
 > A storage-class specifier declares the storage duration, linkage, and visibility (scope) of an object or function.
 
-- 연결성 (linkage)은 식별자가 다른 파일 (translation unit)에서도 공유될 수 있는지 여부를 의미
-- 저장 기간 (storage duration)은 객체 (objects)가 메모리에 존재하는 생애주기를 의미
+- 연결성(linkage)은 식별자가 다른 파일(translation unit)에서도 공유될 수 있는지 여부를 의미
+- 저장 기간(storage duration)은 객체(objects)가 메모리에 존재하는 생애주기를 의미
 - `typedef` 키워드는 문법적으로만 분류된 형태임
 
 | Keyword     | Scope        | Linkage          | Storage Duration              | Description                                 |
 |-------------|--------------|------------------|-------------------------------|---------------------------------------------|
 | `auto`      | Block         | None             | Automatic (expires at block end) | Default for local variables                |
 | `register`  | Block         | None             | Automatic                     | Cannot take address, register optimization hint |
-| `static`    | Block / File  | Internal          | Static (until program ends)   | Retains value / Not accessible from other files |
+| `static`    | Block / File  | None / Internal   | Static (until program ends)   | Retains value / Not accessible from other files |
 | `extern`    | Block / File  | External          | Static                        | References a definition from another file   |
 | `typedef`   | Block / File  | None              | None (type alias only)        | Defines a new type name (alias)             |
 
@@ -633,7 +633,7 @@ Storage Duration : Static      / Static
 - 저장 기간은 정적이므로, **프로그램 시작 시 생성되어 프로그램 종료 시 소멸**
 - 정적 변수는 초기화가 생략되어도 0으로 자동 초기화됨
 - 블록 범위에서의 정적 변수는 블록이 종료되어도 소멸되지 않음
-- 파일 범위에서의 정적 식별자는 내부 연결성 (internal linkage)이므로, **다른 파일에서 사용 불가**
+- 파일 범위에서의 정적 식별자는 내부 연결성(internal linkage)이므로, **다른 파일에서 사용 불가**
 
 ```c
 #include <stdio.h>
@@ -666,9 +666,9 @@ Storage Duration : Static      / Static
 ```
 
 - 다른 파일에 있는 함수 정의 또는 외부 변수를 참조할 수 있게 함
-  - `static` 키워드를 사용하지 않은 함수 정의와 외부 변수의 선언은 외부 연결성 (external linkage)임
+  - `static` 키워드를 사용하지 않은 함수 정의와 외부 변수의 선언은 외부 연결성(external linkage)임
 - 같은 파일 내에서 외부 변수를 블록에서 사용할 때 `extern` 키워드는 선택사항
-- 하나의 링크 대상 (컴파일 후 생성될 실행 파일)에 두 정의가 동시에 존재하면 정의 중복으로 인한 컴파일 오류 발생
+- 하나의 링크 대상(컴파일 후 생성될 실행 파일)에 두 정의가 동시에 존재하면 정의 중복으로 인한 컴파일 오류 발생
 
 ```c
 /* file1.c */
@@ -683,7 +683,7 @@ int get_g(void)
 {
     extern int global_g; /* `extern` is required to use `global_g` */
     extern int g; /* `extern` is optional, since `g` is already visible due to
-                   * file scope */
+                   - file scope */
 
     return global_g + g;
 }
@@ -734,8 +734,8 @@ char buf[BUFSIZE];
 - Heap 영역에는 동적 메모리가 저장됨
 - .bss 영역에는 초기화되지 않은 외부 변수와 정적 변수가 저장됨
 - .data 영역에는 초기화된 외부 변수와 정적 변수가 저장됨
-- .text 영역에는 일반 함수와 정적 함수, 상수 일부가 저장됨
-  - 상수는 엄격히 구분하면 .rodata 영역에 저장됨
+- .rodata 영역에는 문자열 리터럴 등 읽기 전용 상수 데이터가 저장됨
+- .text 영역에는 일반 함수와 정적 함수가 저장됨
 
 ---
 
@@ -756,9 +756,9 @@ int add(int a, int b); /* a function declaration */
 ```c
 /* 1. Include a custom header file using relative paths */
 #include "my_math.h"          /* a. Include my_math.h from the current
-                               *    directory */
+                               -    directory */
 #include "include/my_math.h"  /* b. Include my_math.h from the 'include'
-                               *    subdirectory */
+                               -    subdirectory */
 ```
 
 ```c
@@ -775,7 +775,7 @@ int add(int a, int b); /* a function declaration */
 - `#include "..."`은 사용자 정의 헤더 파일을 포함할 때 사용
   1. 포함 지시문이 작성된 소스 파일의 위치를 기준으로 `"..."` 경로에서 헤더 파일 탐색
   2. 1번 과정에서 못 찾았다면, 컴파일 시 `-I` 옵션으로 추가 지정한 경로에서 헤더 파일 탐색
-  3. 2번 과정에서 못 찾았다면, 표준 포함 경로 (e.g., `/usr/include`)에서 헤더 파일 탐색
+  3. 2번 과정에서 못 찾았다면, 표준 포함 경로(e.g., `/usr/include`)에서 헤더 파일 탐색
   4. 3번 과정에서 못 찾았다면, 전처리 단계에서 오류 발생
 - `#include <...>`은 표준 라이브러리 헤더 파일을 포함할 때 사용
   1. 컴파일러 설치 시 설정된 표준 포함 경로에서만 탐색
@@ -801,7 +801,7 @@ int add(int a, int b); /* a function declaration */
 
 [//]: # (INCLUDE: ./c/04/header/src/foo.c)
 
-- 현재 경로 (`./`)에서 컴파일 시 `I./include` 옵션을 같이 전달하면 `foo.h` 헤더 파일을 올바르게 탐색할 수 있음
+- 현재 경로(`./`)에서 컴파일 시 `I./include` 옵션을 같이 전달하면 `foo.h` 헤더 파일을 올바르게 탐색할 수 있음
 
 ```bash
 gcc src/foo.c -o foo.i -I./include -E -P
@@ -815,7 +815,7 @@ gcc src/foo.c -o foo.i -I./include -E -P
 
 - 전처리가 된 파일을 얻고자 할 때 사용하는 옵션
   - `-E`: 전처리만 수행하고 컴파일하지 않음
-  - `-P`: 전처리 결과에 포함되는 라인 마커 (line marker)를 전부 제거
+  - `-P`: 전처리 결과에 포함되는 라인 마커(line marker)를 전부 제거
 - **번역 단위**를 얻을 수 있음
 
 [//]: # (INCLUDE: ./c/04/header/foo.i)
@@ -966,7 +966,7 @@ int main(void)
 
 ### 스택 프레임 (Stack Frame)
 
-- 함수는 호출될 때마다 스택 메모리 영역에 스택 프레임 (stack frame)이 생성됨
+- 함수는 호출될 때마다 스택 메모리 영역에 스택 프레임(stack frame)이 생성됨
 
 ```text
 +-----------------------------------------+
@@ -1046,7 +1046,7 @@ int main(void)
 
 ## The C Preprocessor
 
-- 전처리 과정에서 사용되는 전처리문 (preprocessing directives) 소개
+- 전처리 과정에서 사용되는 전처리문(preprocessing directives) 소개
 
 ### 파일 포함 (File Inclusion)
 
@@ -1056,10 +1056,10 @@ int main(void)
 #include token-sequence
 ```
 
-- 전처리문 위치로 대상 (헤더 파일)의 내용을 포함
+- 전처리문 위치로 대상(헤더 파일)의 내용을 포함
 - 사용자 정의 헤더 파일 포함 시 `"filename"` 사용
 - 표준 라이브러리 헤더 파일 포함 시 `<filename>` 사용
-- 토큰 (token-sequence)를 사용할 수도 있음
+- 토큰(token-sequence)을 사용할 수도 있음
 
 ```c
 #include <stdio.h>
@@ -1081,7 +1081,7 @@ int main(void)
 #undef identifier
 ```
 
-- 식별자 (identifier)를 토큰 (token-sequence)으로 치환
+- 식별자(identifier)를 토큰(token-sequence)으로 치환
 - 식별자는 변수명 규칙을 따르며, **대문자로 작성하는 것이 관례**
 - 식별자는 전처리문 위치로부터 파일의 끝까지 또는 `#undef`로 식별자를 명시적으로 해제하기 전까지 유효
 
@@ -1099,7 +1099,7 @@ int main(void)
 
 printf("%s", "TOKEN");    /* the string "TOKEN" is not the token TOKEN */
 printf("%s", TOKENIZER);  /* the token TOKENIZER is not the same with the token
-                           * TOKEN */
+                           - TOKEN */
 ```
 
 ---
@@ -1111,7 +1111,7 @@ printf("%s", TOKENIZER);  /* the token TOKENIZER is not the same with the token
 [//]: # (INCLUDE: ./c/04/macro_func.c)
 
 - 매개변수를 받아 치환하는 형태
-- 함수보다 빠르게 동작 (in-line code이므로 함수 호출을 하지 않음)
+- 함수보다 빠르게 동작(in-line code이므로 함수 호출을 하지 않음)
 - **잘못된 전달인자를 넘겨주면 오류가 발생할 수 있음**
   - 전처리 과정에서 식별자는 토큰으로 치환만 되며, 자료헝을 상관하지 않음
 
@@ -1121,13 +1121,13 @@ printf("%s", TOKENIZER);  /* the token TOKENIZER is not the same with the token
 
 ### 함수형 매크로 사용 시 주의사항
 
-- 부수 효과가 있는 표현은 잘못된 결과를 초래할 수 있음
+- 부수효과가 있는 표현은 잘못된 결과를 초래할 수 있음
 
 ```c
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 MAX(i++, j++);  /* ((i++) > (j++) ? (i++) : (j++)) */
                 /* -> Due to side effects, the larger value is incremented
-                 *    twice, not once. */
+                 -    twice, not once. */
 ```
 
 - 매개변수 토큰에 괄호를 잘못 사용하거나 쓰지 않아 매크로 치환이 의도와는 다르게 되는 경우
@@ -1144,7 +1144,7 @@ SQUARE(x + 1);  /* x + 1 * x + 1 */
 
 ### 매크로 치환의 다양한 형태 2 - 여러 줄 매크로 (Multi-Line Macro)
 
-- 토큰에 여러 문장을 사용해야 할 경우 **연결됨**을 나타내는 백슬래시 (`\`)를 각 행 끝에 표현
+- 토큰에 여러 문장을 사용해야 할 경우 **연결됨**을 나타내는 백슬래시(`\`)를 각 행 끝에 표현
   - 전처리기는 `\` 기호를 만나면 줄바꿈을 무시하고 하나의 긴 토큰으로 인식
 
 [//]: # (INCLUDE: ./c/04/macro.c)
@@ -1288,5 +1288,5 @@ SQUARE(x + 1);  /* x + 1 * x + 1 */
 ```
 
 - 헤더 가드 구현 시 관례적으로 `#ifndef` 형태가 더 널리 사용됨
-  - 첫 번째 형태 (`#if !defined(MACRO)`)는 표현이 길고 부정 연산자 (`!`)를 포함하여 가독성이 저하됨
-  - 두 번째 형태 (`#ifndef MACRO`)는 더 간결하고 의미가 직접적으로 드러나 가독성과 명확성이 향상됨
+  - 첫 번째 형태(`#if !defined(MACRO)`)는 표현이 길고 부정 연산자(`!`)를 포함하여 가독성이 저하됨
+  - 두 번째 형태(`#ifndef MACRO`)는 더 간결하고 의미가 직접적으로 드러나 가독성과 명확성이 향상됨

@@ -10,14 +10,14 @@
 ## STL 개요 및 구조
 
 - C++ 표준 라이브러리의 핵심 파트
-- 일반화 프로그래밍 (generic programming) 기법 적용
+- 제네릭 프로그래밍(generic programming) 기법 적용
 - 재사용 가능한 클래스와 함수의 집합
 
 ### STL 핵심 가치
 
 - **Reusability**: 컨테이너는 `int`, `string`, 사용자 정의 클래스 등 모든 데이터 타입 지원
 - **Efficiency**: 템플릿 사용으로 컴파일 타임에 코드 생성 → 런타임 오버헤드 최소화
-- **Modularity**: 컨테이너 (데이터 저장)와 알고리즘 (데이터 처리)이 반복자 인터페이스를 통해 분리
+- **Modularity**: 컨테이너(데이터 저장)와 알고리즘(데이터 처리)이 반복자 인터페이스를 통해 분리
   - *N*개의 컨테이너와 *M*개의 알고리즘이 주어졌을 때, *N+M*의 노력으로 *N×M*개 조합 구현 가능
 
 ---
@@ -28,15 +28,15 @@
 
 ![center](image.png)
 
-- **Containers (컨테이너)**
-  - 데이터를 저장하고 관리하는 객체 (e.g., `vector`, `list`, `map`, `set`, `deque`)
-- **Iterators (반복자)**
-  - 컨테이너의 내부 구조 (배열, 연결 리스트 등)를 추상화
+- **Containers(컨테이너)**
+  - 데이터를 저장하고 관리하는 객체(e.g., `vector`, `list`, `map`, `set`, `deque`)
+- **Iterators(반복자)**
+  - 컨테이너의 내부 구조(배열, 연결 리스트 등)를 추상화
   - 포인터와 유사한 인터페이스 제공
-- **Algorithms (알고리즘)**
-  - `<algorithm>` 헤더에 정의된 템플릿 함수 (e.g., 검색, 정렬, 수정, 개수 세기 등 데이터 처리 함수)
-- **Function Objects (함수 객체)**
-  - 함수처럼 동작하는 객체 (functor)를 사용해 알고리즘의 동작 방식을 유연하게 결정 (e.g., 정렬 순서)
+- **Algorithms(알고리즘)**
+  - `<algorithm>` 헤더에 정의된 템플릿 함수(e.g., 검색, 정렬, 수정, 개수 세기 등 데이터 처리 함수)
+- **Function Objects(함수 객체)**
+  - 함수처럼 동작하는 객체(functor)를 사용해 알고리즘의 동작 방식을 유연하게 결정(e.g., 정렬 순서)
 
 ---
 
@@ -49,7 +49,8 @@
 - **반복자는 알고리즘과 컨테이너 사이의 추상화 계층**
   - 알고리즘 함수들은 컨테이너를 직접 알지 못함
   - 오직 반복자를 통해서만 데이터에 접근
-  - 컨테이너를 `vector`에서 `list`로 변경해도 정렬(`sort`), 탐색(`find`) 코드 **수정 불필요**
+  - 컨테이너를 `vector`에서 `list`로 변경해도 탐색(`find`) 코드 **수정 불필요**
+    - 단, `std::sort`는 random access iterator를 요구하므로 `list`에서는 `list::sort` 멤버 함수를 사용해야 함
 
 ---
 
@@ -63,11 +64,11 @@
 
 ![center](image-2.png)
 
-- **Input Iterator (입력 반복자)**: 컨테이너에서 순방향으로 읽기만 가능
-- **Output Iterator (출력 반복자)**: 컨테이너에 순방향으로 쓰기만 가능
-- **Forward Iterator (전진 반복자)**: 순방향으로 읽기/쓰기 모두 가능
-- **Bidirectional Iterator (양방향 반복자)**: 양방향으로 읽기/쓰기 모두 가능
-- **Random Access Iterator (임의 접근 반복자)**: 배열처럼 임의 위치에서 읽기/쓰기/비교 모두 가능
+- **Input Iterator(입력 반복자)**: 컨테이너에서 순방향으로 읽기만 가능
+- **Output Iterator(출력 반복자)**: 컨테이너에 순방향으로 쓰기만 가능
+- **Forward Iterator(전진 반복자)**: 순방향으로 읽기/쓰기 모두 가능
+- **Bidirectional Iterator(양방향 반복자)**: 양방향으로 읽기/쓰기 모두 가능
+- **Random Access Iterator(임의 접근 반복자)**: 배열처럼 임의 위치에서 읽기/쓰기/비교 모두 가능
 
 ---
 
@@ -116,16 +117,16 @@
 
 ### `std::vector` - 특징
 
-- 인덱스를 통한 조회 ($O(1)$), 매우 빠름
-- 끝에 추가/삭제: 빠름 ($O(1)$ **amortized**)
-- 중간 삽입/삭제: 느림 ($O(n)$), 뒤의 모든 데이터를 밀어야 함
+- 인덱스를 통한 조회($O(1)$), 매우 빠름
+- 끝에 추가/삭제: 빠름($O(1)$ **amortized**)
+- 중간 삽입/삭제: 느림($O(n)$), 뒤의 모든 데이터를 밀어야 함
 - Random access iterator 제공
 
 ### 용량 관리 (Capacity vs Size)
 
 - `size()`: 실제 저장된 데이터 개수
 - `capacity()`: 실제 할당된 메모리 공간
-- `reserve(n)`: 잦은 메모리 재할당 방지, 미리 공간 확보 (성능 최적화의 핵심)
+- `reserve(n)`: 잦은 메모리 재할당 방지, 미리 공간 확보(성능 최적화의 핵심)
 
 ---
 
@@ -139,7 +140,7 @@
 
 ### `std::deque` - Double-ended Queue
 
-- 여러 개의 고정 크기 메모리 블록 (chunk)을 포인터 배열로 관리하며, 메모리가 연속적이지 않음
+- 여러 개의 고정 크기 메모리 블록(chunk)을 포인터 배열로 관리하며, 메모리가 연속적이지 않음
 
 ![center](image-4.png)
 
@@ -183,9 +184,9 @@
 
 ### `std::list` 특징
 
-- Bidirectional iterator 제공 (random access 불가)
+- Bidirectional iterator 제공(random access 불가)
 - 임의 접근(`[]`) 불가능 - $O(n)$ 소요
-- 반복자(위치)만 알면 삽입/삭제 매우 빠름 ($O(1)$)
+- 반복자(위치)만 알면 삽입/삭제 매우 빠름($O(1)$)
 - 앞/뒤 모두 $O(1)$ 추가/삭제 가능
 
 ### `splice()`
@@ -232,14 +233,14 @@
 
 ## Container Adapters (컨테이너 어댑터)
 
-- **기존 컨테이너의 기능을 제한하여 특정 자료구조처럼 동작하도록 만든 래퍼 (wrapper) 클래스**
+- **기존 컨테이너의 기능을 제한하여 특정 자료구조처럼 동작하도록 만든 래퍼(wrapper) 클래스**
   - 반복자를 제공하지 않고, `find()`, `sort()` 등 알고리즘 사용 불가
 
 ### `std::stack` - LIFO (Last In First Out)
 
 - 기본 자료구조: `deque`
   - `vector`, `list`로 변경 가능
-- 맨 위 (top)에서만 추가/삭제
+- 맨 위(top)에서만 추가/삭제
 
 [//]: # (INCLUDE: ./cpp/14/stack.hpp --from 5 --no-comment)
 
@@ -284,7 +285,7 @@
 ### `std::priority_queue` - 우선순위 큐
 
 - 기본 자료구조: `vector` (내부적으로 max-heap 유지)
-  - `deque`, `list`로 변경 가능
+  - `deque`로 변경 가능
 - 우선순위가 높은 요소부터 꺼냄
 
 ![h:360 center](image-7.png)
@@ -332,7 +333,7 @@
 
 ### Ordered Containers: `std::map` 과 `std::set`
 
-- 균형 이진 트리 (red-black tree)를 사용하여 **항상 정렬된 상태 유지**
+- 균형 이진 트리(red-black tree)를 사용하여 **항상 정렬된 상태 유지**
 - 삽입, 삭제, 검색 모두 $O(\log N)$
 
 | Feature | `map` | `set` |
@@ -390,7 +391,7 @@
 
 ### Unordered Containers: `std::unordered_map` 과 `std::unordered_set`
 
-- 해시 테이블 (Hash Table)을 사용하며, **정렬되지 않음**
+- 해시 테이블(Hash Table)을 사용하며, **정렬되지 않음**
 - 평균: 삽입, 삭제, 검색 $O(1)$
 - 최악: 해시 충돌 많을 시 $O(n)$
 
@@ -447,7 +448,7 @@
 ### 알고리즘의 특징
 
 - `<algorithm>` 헤더에 정의된 템플릿 함수이며, **컨테이너 멤버 함수가 아닌 전역 함수**
-- **반복자 범위** (`begin`, `end`)를 인자로 받아 동작하며, **컨테이너의 내부 구조에 무관하게 작동**
+- **반복자 범위**(`begin`, `end`)를 인자로 받아 동작하며, **컨테이너의 내부 구조에 무관하게 작동**
 
 [//]: # (INCLUDE: ./cpp/14/snippet_algo.hpp --from 7 --to 15 --no-comment)
 
@@ -507,11 +508,11 @@
 
 [//]: # (INCLUDE: ./cpp/14/algo.cc --from 9 --to 10 --no-comment)
 
-- STL 내장 함수 객체 (comparator) (`<functional>` 헤더 파일 필요)
+- STL 내장 함수 객체(comparator)(`<functional>` 헤더 파일 필요)
 
 [//]: # (INCLUDE: ./cpp/14/algo.cc --from 15 --to 16 --no-comment)
 
-- Lambda 표현식 (권장)
+- Lambda 표현식(권장)
 
 [//]: # (INCLUDE: ./cpp/14/algo.cc --from 21 --to 22 --no-comment)
 

@@ -9,12 +9,12 @@
 
 ## C-문자열 (C-Strings)
 
-- `char`형 배열을 사용해 문자열 기록
-  - `char`형 배열 마지막 요소에는 문자열 끝을 표현하는 널 문자 (null character, `\0`) 저장
+- `char`타입 배열을 사용해 문자열 기록
+  - `char`타입 배열 마지막 요소에는 문자열 끝을 표현하는 널 문자(null character, `\0`) 저장
 
 ![center](Figure_10_1.png)
 
-- 문자열 선언 시 축약 표현 (shorthand) 사용 가능
+- 문자열 선언 시 축약 표현(shorthand) 사용 가능
 
 ![center](Figure_10_2.png)
 
@@ -26,7 +26,7 @@
 
 ### 문자열 리터럴
 
-- **읽기 전용 영역 (.rodata)에 할당되는 이름 없는 상수 객체**
+- **읽기 전용 영역(.rodata)에 할당되는 이름 없는 상수 객체**
   - 문자열 리터럴 등 상수 데이터가 저장됨
   - 힙 영역처럼 이름 없는 객체 허용
 - 포인터를 통해 문자열 리터럴에 접근 가능
@@ -70,7 +70,7 @@
 - C++는 표준 문자열 제공, `<string>` 헤더 파일 포함 시 사용 가능
 - **클래스**로 구현되어 있음
 - **문자열 저장 시 널 문자를 포함하지 않음**
-- 문자열 크기 (size)와 용량 (capacity) 개념 사용
+- 문자열 크기(size)와 용량(capacity) 개념 사용
 - 문자열 인스턴스는 힙 영역에 문자열 저장
 
 ![center](Figure_10_7.png)
@@ -83,9 +83,9 @@
 
 - 포인터
   - 힙 영역에 기록되어 있는 문자열을 가리킴
-- 크기 (size)
-  - 문자열 객체의 문자열 길이 (현재 저장된 문자 수)
-- 용량 (capacity)
+- 크기(size)
+  - 문자열 객체의 문자열 길이(현재 저장된 문자 수)
+- 용량(capacity)
   - 문자열 객체가 **현재 사용중인 메모리 재할당 없이 저장할 수 있는** 최대 문자 수
 
 #### 크기와 용량을 구분한 이유
@@ -186,7 +186,7 @@
 
 [//]: # (INCLUDE: ./cpp/04/snippet_shallow.cc --to 18 --no-comment)
 
-- 기본 복사 생성자 (synthesized copy constructor)는 얕은 복사 (shallow copy) 수행
+- 기본 복사 생성자(synthesized copy constructor)는 얕은 복사(shallow copy) 수행
   - 새로 생성되는 객체의 데이터 멤버 값은 복사할 객체의 데이터 멤버 값으로 설정됨
 
 ---
@@ -241,7 +241,7 @@ Aborted
 
 ## `explicit`
 
-- 암묵적 변환 (implicit conversion)을 불허하고자 할 때 사용
+- 암묵적 변환(implicit conversion)을 불허하고자 할 때 사용
 
 [//]: # (INCLUDE: ./cpp/04/snippet.cc --from 22 --to 36 --no-comment)
 
@@ -297,12 +297,12 @@ Aborted
 
 ### 문자열 검색 관련 함수와 `std::string::npos`
 
-- 문자열 검색 함수 (`find`, `rfind`, `find_first_of` 등)은 다음과 같은 특징을 가짐:
-  - 검색 성공 시: 찾은 위치의 인덱스 (0-based) 반환
+- 문자열 검색 함수(`find`, `rfind`, `find_first_of` 등)는 다음과 같은 특징을 가짐:
+  - 검색 성공 시: 찾은 위치의 인덱스(0-based) 반환
   - 검색 실패 시: `std::string::npos` 값 반환
 - `std::string::npos`
   - 특수한 상수 값으로 문자열 내에서 위치를 찾지 못했음을 나타냄
-  - `size_t` 타입의 최대값 (`-1`을 `size_t`로 변환한 값)
+  - `size_t` 타입의 최대값(`-1`을 `size_t`로 변환한 값)
   - 검색 실패 여부 확인에 필수적으로 사용됨
   
 [//]: # (INCLUDE: ./cpp/04/snippet_str.cc --from 5 --to 10 --no-comment)
@@ -343,7 +343,7 @@ Aborted
 
 ## 표준 C++ 문자열 (Cont'd - 10)
 
-- 정방향 포함 문자 검색 ([`find_first_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_first_of)), 역방향 포함 문자 검색 ([`find_last_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_last_of))
+- 정방향 포함 문자 검색([`find_first_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_first_of)), 역방향 포함 문자 검색([`find_last_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_last_of))
 
 [//]: # (INCLUDE: ./cpp/04/str_find_of.cc)
 
@@ -351,7 +351,7 @@ Aborted
 
 ## 표준 C++ 문자열 (Cont'd - 11)
 
-- 정방향 불포함 문자 검색 ([`find_first_not_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_first_not_of)), 역방향 불포함 문자 검색 ([`find_last_not_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_last_not_of))
+- 정방향 불포함 문자 검색([`find_first_not_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_first_not_of)), 역방향 불포함 문자 검색([`find_last_not_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_last_not_of))
 
 [//]: # (INCLUDE: ./cpp/04/str_find_not_of.cc)
 
@@ -369,14 +369,14 @@ Aborted
 
 ### 토큰화 (Tokenizing)
 
-- 텍스트를 의미 있는 단위 (토큰)로 분리하는 과정, 문자열 처리에서 자주 사용되는 기법으로 다음과 같은 응용에 활용됨:
-  - 구분자 (delimiter)로 분리된 단어 추출
+- 텍스트를 의미 있는 단위(토큰)로 분리하는 과정, 문자열 처리에서 자주 사용되는 기법으로 다음과 같은 응용에 활용됨:
+  - 구분자(delimiter)로 분리된 단어 추출
   - CSV 파일의 필드 분리
   - 명령어 라인 인자 파싱
 - C++ 문자열에서의 토큰화 구현 방법:
-  1. `find_first_not_of`: 구분자가 아닌 첫 문자 위치를 찾음 (토큰 시작점)
-  2. `find_first_of`: 구분자의 위치를 찾음 (토큰 종료점)
-  3. `substr`: 시작점과 종료점 사이의 부분 문자열 (토큰)을 추출
+  1. `find_first_not_of`: 구분자가 아닌 첫 문자 위치를 찾음(토큰 시작점)
+  2. `find_first_of`: 구분자의 위치를 찾음(토큰 종료점)
+  3. `substr`: 시작점과 종료점 사이의 부분 문자열(토큰)을 추출
 
 ![center](Figure_10_10.png)
 

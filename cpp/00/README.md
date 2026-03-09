@@ -1,7 +1,7 @@
 <!-- _class: lead -->
 # 객체지향프로그래밍
 
-## 강의 소개
+## 오리엔테이션
 
 ### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
 
@@ -17,13 +17,13 @@
 
 ### Procedural Programming
 
-- 함수 (functions) 중심이며, 데이터 (수동적 객체, passive objects)와 함수가 **분리**된 채 절차에 따라 프로그램 동작
+- 함수(functions) 중심이며, 데이터(수동적 객체, passive objects)와 함수가 **분리**된 채 절차에 따라 프로그램 동작
 
 [//]: # (INCLUDE: ./cpp/00/procedural_vs_oop.cc --from 4 --to 8 --no-comment)
 
 ### Object-Oriented Programming
 
-- 객체 (objects) 중심이며, 데이터 (능동적 객체, active objects)와 함수가 **결합**된 객체들의 상호작용으로 프로그램 동작
+- 객체(objects) 중심이며, 데이터(능동적 객체, active objects)와 함수가 **결합**된 객체들의 상호작용으로 프로그램 동작
 
 [//]: # (INCLUDE: ./cpp/00/procedural_vs_oop.cc --from 10 --to 15 --no-comment)
 
@@ -72,7 +72,7 @@
 
 ### 다중 패러다임 언어
 
-- 절차적 프로그래밍, 객체지향 프로그래밍, 제네릭 프로그래밍 (generic programming)
+- 절차적 프로그래밍, 객체지향 프로그래밍, 제네릭 프로그래밍(generic programming)
 - **[높은 범용성](https://pypl.github.io/PYPL.html)**
 
 ![center h:400](image-7.png)
@@ -94,7 +94,7 @@
 
 ### Main Textbook
 
-- [Forouzan, B. A., & Gilberg, R. F. (2021). 포르잔 C++ 바이블 (윤인성, Trans.). 한빛아카데미.](https://www.hanbit.co.kr/store/books/look.php?p_code=B1851418066) (원저: C++ Programming: An Object-Oriented Approach)
+- [Forouzan, B. A., & Gilberg, R. F. (2021). 포르잔 C++ 바이블(윤인성, Trans.). 한빛아카데미.](https://www.hanbit.co.kr/store/books/look.php?p_code=B1851418066)(원저: C++ Programming: An Object-Oriented Approach)
 
 ### Supplementary Textbook
 
@@ -108,15 +108,15 @@
 - Visual Studio Code + Docker
   - 일관된 개발환경 제공
   - [C/C++ 실습환경 구축 안내](https://docs.google.com/document/d/1Y0WzkcZvEqpdyq3ftU6r96EAgTDSOkMHiTRezgyn9BE/edit?tab=t.0#heading=h.h4paq5txnttj)
-- [C++14](https://en.cppreference.com/w/cpp/14) (2014년 표준)
+- [C++14](https://en.cppreference.com/w/cpp/14)(2014년 표준)
   - 스마트 포인터, 제네릭, 이동 의미론 등 핵심 기능이 포함된 최소 표준
 
 ## 평가
 
 |구분|배점|비고|
 |:---:|:---:|:---|
-|중간고사|30%|필기시험 (주관식/객관식)|
-|기말고사|30%|필기시험 (주관식/객관식)|
+|중간고사|30%|필기시험(주관식/객관식)|
+|기말고사|30%|필기시험(주관식/객관식)|
 |과제|30%|레포트 1회, 프로그래밍 2회|
 |출석|10%|4분의 1 이상 결석 시 F|
 |합계|100%||
