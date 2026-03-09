@@ -1,65 +1,62 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# ============================================================================
+# clean.sh
+# ============================================================================
+# Usage:
+#   ./clean.sh
+#
+# Description:
+#   Run clean.sh for both c/ and cpp/ subdirectories.
+#
+# Options:
+#   -h, --help   Show this help message
+#
+# Examples:
+#   ./clean.sh
+#
+# ============================================================================
 
 set -euo pipefail
 
-# Color functions (using printf)
-color_red() { printf "\033[31m%s\033[0m" "$1"; }
-color_green() { printf "\033[32m%s\033[0m" "$1"; }
-color_yellow() { printf "\033[33m%s\033[0m" "$1"; }
-color_blue() { printf "\033[34m%s\033[0m" "$1"; }
-color_magenta() { printf "\033[35m%s\033[0m" "$1"; }
-color_cyan() { printf "\033[36m%s\033[0m" "$1"; }
-color_bold() { printf "\033[1m%s\033[0m" "$1"; }
+# Color output functions (compatible with macOS and Linux)
+color_red() { printf '\033[31m'; }
+color_green() { printf '\033[32m'; }
+color_yellow() { printf '\033[33m'; }
+color_reset() { printf '\033[0m'; }
 
-# Logging functions
-info() { printf "%s %s\n" "$(color_green "[$(basename "$0")][INFO]")" "$1"; }
-warn() { printf "%s %s\n" "$(color_yellow "[$(basename "$0")][WARN]")" "$1"; }
-error() { printf "%s %s\n" "$(color_red "[$(basename "$0")][ERROR]")" "$1"; }
-debug() { printf "%s %s\n" "$(color_cyan "[$(basename "$0")][DEBUG]")" "$1"; }
+info() { printf '%s\n' "$(color_green)[INFO]$(color_reset) ${1:-}"; }
+error() { printf '%s\n' "$(color_red)[ERROR]$(color_reset) ${1:-}" >&2; }
 
-TARGETS="c cpp"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-DIR=$(dirname $0)
-debug $DIR
+show_help() {
+  awk '/^# =====/{delim++; if(delim==3) exit; next} delim==2 && /^# /{sub(/^# ?/, ""); print}' "$0"
+}
 
-for target in $TARGETS; do
-  pushd "$DIR/$target"
+error_exit() {
+  error "$1"
+  exit "${2:-1}"
+}
 
-  info "Clean generated files ..."
-  for file in $(find . -type f \( -name "temp.pdf" -o -name "temp.md" -o -name "temp.pptx" -o -name "a.out" -o ! -name "*.*" \)); do
-    info "Removing $file ..."
-    rm $file
+main() {
+  case "${1:-}" in
+  -h | --help)
+    show_help
+    exit 0
+    ;;
+  esac
+
+  for target in c cpp; do
+    local script="${SCRIPT_DIR}/${target}/clean.sh"
+    [ -f "${script}" ] || error_exit "clean.sh not found: ${script}"
+    info "Running ${target}/clean.sh ..."
+    bash "${script}"
   done
 
-  info "Clean unnecessary image files ..."
-  for dir in $(find . -mindepth 1 -maxdepth 1 -type d); do
-    cd $dir
-    mapfile -t FS_IMGS < <(find . -regextype posix-extended -iregex '.*\.(png|jpe?g|gif|bmp|webp|svg)' |
-      sed 's|^\./||' |
-      sort)
-    echo "Filesystem : ${FS_IMGS[@]}"
-    echo
-    mapfile -t README_IMGS < <(grep -E '^!\[' README.md 2>/dev/null |
-      sed -n 's/.*(\([^)]*\)).*/\1/p' |
-      sort)
-    echo "README.md  : ${README_IMGS[@]}"
-    echo
+  info "All clean complete."
+}
 
-    for img in "${FS_IMGS[@]}"; do
-      skip=false
-      for used in "${README_IMGS[@]}"; do
-        if [[ "$img" == "$used" ]]; then
-          skip=true
-          break
-        fi
-      done
-      $skip || (info "$img will be removed ..." && rm -rf $img)
-    done
-    cd ../
-  done
-
-  popd
-done
-
-rm -rf pdf
-rm -rf pptx
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+  main "$@"
+fi
