@@ -501,15 +501,15 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 8)
 
-### 타입에 따른 값 표현 범위
+### 타입 (자료형)에 따른 값 표현 범위
 
 [//]: # (INCLUDE: ./c/01/src/getchar_putchar.c --from 5 --to 7 --no-comment)
 
-- `int` 타입은 정수를 표현하는 자료형
-- `char` 타입은 문자를 표현하는 자료형
+- `int` 타입은 정수를 표현하는 타입
+- `char` 타입은 문자를 표현하는 타입
 - `getchar` 함수는 문자 하나를 입력 스트림으로부터 읽어와 반환하는 함수
 - `char` 타입 변수가 아닌 `int` 타입 변수를 사용한 이유는 **`getchar` 함수가 `EOF`를 반환할 수 있기 때문**
-  - `char` 타입은 1바이트(256가지 값)를 담을 수 있는 자료형으로, ASCII 문자 집합(0~127)을 포함함
+  - `char` 타입은 1바이트(256가지 값)를 담을 수 있는 타입으로, ASCII 문자 집합(0~127)을 포함함
   - `EOF`는 `getchar` 함수를 호출했을 때, 더 이상의 데이터가 입력 스트림에 없을 경우 반환하는 상태 값
   - `getchar` 함수는 문자(256 개) 뿐만 아니라 입력 스트림 상태(1 개)도 반환
     - 반환 가능한 종류는 총 257가지
@@ -537,7 +537,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 11)
 
-### `long` 타입 (자료형)
+### `long` 타입
 
 - `int` 타입은 약 -21억 ~ 21억 사이의 값을 표현할 수 있음
 - `long` 타입은 `int` 타입보다 **같거나 더 넓은 범위의 값을 표현할 수 있음**
@@ -706,7 +706,7 @@ for (initialization; condition; updation) {
 
 - 사용자가 직접 필요에 따라 함수를 정의할 수 있음
 - 함수 정의 형식은 `RETURN_TYPE FUNCTION_NAME(PARAMETERS) { STATEMENTS }`
-  - `RETURN_TYPE`: 자료형, 함수 종료 시 해당 자료형 값을 반환
+  - `RETURN_TYPE`: 타입, 함수 종료 시 해당 타입 값을 반환
     - 만약 함수 종료 시 값을 반환하지 않는 함수라면, `void` 사용
   - `FUNCTION_NAME`: 함수의 이름, 함수 호출 시 사용
   - `PARAMETERS`: 매개변수, 함수 호출 시 전달되는 값
@@ -743,7 +743,7 @@ for (initialization; condition; updation) {
     - `power` 함수는 호출 시 두 개의 `int` 타입 전달인자가 필요
     - `power` 함수 종료 시 `int` 타입 값 반환
 - **함수 정의에서의 매개변수 이름과 함수 선언에서의 매개변수 이름은 같지 않아도 됨**
-  - 컴파일러에게 필요한 정보는 매개변수 이름이 아닌 **함수 호출 시 필요한 매개변수의 개수와 각 매개변수의 자료형**
+  - 컴파일러에게 필요한 정보는 매개변수 이름이 아닌 **함수 호출 시 필요한 매개변수의 개수와 각 매개변수의 타입**
 - 함수 선언과 함수 정의는 서로 동일한 반환 타입, 이름, 매개변수의 형태를 가져야 함
 
 ---
