@@ -101,8 +101,8 @@
 
 - C의 역사는 다음과 같음:
   - 1972, The first C occurred at AT&T Bell Labs
-  - 1989, ANSI (American National Standards Institute) C89
-  - 1990, ANSI C standard was adopted by ISO (International Organization for Standardization)
+  - 1989, ANSI(American National Standards Institute) C89
+  - 1990, ANSI C standard was adopted by ISO(International Organization for Standardization)
     - C89와 C90의 내용은 서로 같음
   - 1999, ANSI C99
   - ...
