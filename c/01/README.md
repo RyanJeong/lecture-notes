@@ -256,9 +256,9 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 26 --to 27 --no-comment)
 
 - `printf` 함수의 첫 번째 전달인자는 화면에 실제로 출력되는 문자열(형식 문자열, format string)
-- `printf` 함수의 형식 문자열이 변환 지정자(conversion specifiers)를 포함하면, 형식 문자열 뒤에 등장하는 전달인자를 형식화할 수 있음
-  - 변환 지정자는 `%` 기호로 시작하는 연속된 문자열
-  - **형식 문자열 내 변환 지정자의 수와 뒤따르는 전달인자의 수는 일치해야 함**
+- 형식 문자열이 변환 지정자(conversion specifiers)를 포함하면, 형식 문자열 뒤에 등장하는 전달인자를 형식화할 수 있음
+- 변환 지정자는 `%` 기호로 시작하는 연속된 문자열
+- **형식 문자열 내 변환 지정자의 수와 뒤따르는 전달인자의 수는 일치해야 함**
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 31 --to 34 --no-comment)
 
