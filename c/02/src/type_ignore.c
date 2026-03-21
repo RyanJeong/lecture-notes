@@ -15,19 +15,19 @@ int i = x; /* An int can't represent `x`; it's converted to an unsigned int */
 int main(void)
 {
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-    float f = 3.14;
-    /* Although `f` is a float, when passed to printf (a variadic function),
-       it is promoted to double. So we must use %f, not %lf. */
+    float f = 3.14f;
+    double d = 2.718;
+
+    /* Although `f` is float, when passed to printf (a variadic function),
+       it is promoted to double */
     printf("float promoted to double: %f\n", f);
 
-    /* double type variables work the same way here */
-    double d = 2.718;
-    printf("double remains double: %f\n", d);
+    printf("double remains double: %f\n", d); /* use %f for double, not %lf */
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 #if 1               /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     int a = 'A';    /* Converting a narrower operand into a wider one is ok */
-    char c = 12345; /* Convertint a wider operand into a narrower one like this
+    char c = 12345; /* Converting a wider operand into a narrower one like this
                        could cause information to be lost (Warning) */
 #endif              /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
