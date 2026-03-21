@@ -23,7 +23,7 @@
 
 ---
 
-## 프로그램 (Programs)
+## 프로그램(Programs)
 
 - 기계어 명령들의 집합
   - 각 명령어는 매우 원시적인 수준의 연산(extremely primitive)을 수행
@@ -55,7 +55,7 @@
 
 ---
 
-## 프로그램 생성 과정 - 컴파일 (Compilations)
+## 프로그램 생성 과정 - 컴파일(Compilations)
 
 - CPU는 기계어(machine code)를 처리하는 장치
 - 고급 언어(e.g., C, C++, etc.)로 작성된 코드는 CPU가 이해할 수 없음
@@ -82,7 +82,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 [//]: # (INCLUDE: ./c/01/src/hello_world.c)
 
-### `#include` 명령 (전처리 명령, Preprocessor Instruction)
+### `#include` 명령(전처리 명령, Preprocessor Instruction)
 
 [//]: # (INCLUDE: ./c/01/src/hello_world.c --from 1 --to 1 --no-comment)
 
@@ -107,7 +107,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 ## Getting Started (Cont'd - 3)
 
-### `return` 문 (반환문)
+### `return` 문(반환문)
 
 [//]: # (INCLUDE: ./c/01/src/hello_world.c --from 8 --to 8 --no-comment)
 
@@ -134,13 +134,13 @@ $ echo $?
 - `printf` 함수를 호출하는 문장으로, **`stdio.h` 헤더 파일이 필요함**
 - 전달인자(arguments, `"Hello, World\n"`)를 콘솔 화면에 출력하는 역할 수행
 
-### 문자열 (Strings)
+### 문자열(Strings)
 
 - 큰따옴표(`"`)를 사용해 표현한 값으로, 여러 문자들을 묶은 값
   - 작은따옴표(`'`)를 사용해 표현한 값은 문자 하나를 의미
 - 문자열(character string) 또는 문자열 상수(string constant)라고 부름
 
-### 이스케이프 시퀀스 (Escape Sequence)
+### 이스케이프 시퀀스(Escape Sequence)
 
 - 백슬래시(`\`) 뒤에 한 문자 또는 숫자 조합이 오는 문자 조합
 - **백슬래시를 포함한 두 개 이상의 문자 조합이지만, 한 문자(a character)로 간주**
@@ -166,7 +166,7 @@ $ echo $?
 
 ## Variables and Arithmetic Expressions (Cont'd - 1)
 
-### 주석 (Comments)
+### 주석(Comments)
 
 - 프로그램 내에 메모를 하거나 해당 프로그램을 설명하는 용도
 - 프로그램의 구조와 정보를 코드를 읽는 사람에게 전달할 수 있음
@@ -179,7 +179,7 @@ $ echo $?
 
 ## Variables and Arithmetic Expressions (Cont'd - 2)
 
-### 변수 (Variables)
+### 변수(Variables)
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 7 --to 8 --no-comment)
 
@@ -201,7 +201,7 @@ double → double-precision floating point
 
 ## Variables and Arithmetic Expressions (Cont'd - 3)
 
-### 대입문 (Assignment Statements)
+### 대입문(Assignment Statements)
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 10 --to 13 --no-comment)
 
@@ -218,7 +218,7 @@ double → double-precision floating point
 
 ## Variables and Arithmetic Expressions (Cont'd - 4)
 
-### 산술 표현식 (Arithmetic Expressions)
+### 산술 표현식(Arithmetic Expressions)
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 15 --to 15 --no-comment)
 
@@ -251,7 +251,7 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 ## Variables and Arithmetic Expressions (Cont'd - 6)
 
-### 형식에 따른 출력 (Formatted Output)
+### 형식에 따른 출력(Formatted Output)
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 26 --to 27 --no-comment)
 
@@ -311,7 +311,7 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 42 --to 43 --no-comment)
 
-### 일관성 (Consistency)을 유지할 것
+### 일관성(Consistency)을 유지할 것
 
 [//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 47 --to 55 --no-comment)
 
@@ -344,7 +344,7 @@ for (initialization; condition; updation) {
 
 ## The For Statement (Cont'd - 2)
 
-### 기호 상수 (Symbolic Constants)
+### 기호 상수(Symbolic Constants)
 
 - 코드 내 **정수 타입 상수**를 사용했으나, 주석 등 설명이 부족해 코드를 명확히 이해하는 데 한계가 있음
 
@@ -387,7 +387,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output
 
-### 스트림 (Streams)
+### 스트림(Streams)
 
 - 프로그램에서 입력과 출력을 간단히 사용할 수 있는 인터페이스(interfaces)
 - C 표준 입출력 라이브러리는 스트림을 기반으로 구현됨
@@ -406,23 +406,23 @@ for (initialization; condition; updation) {
 
 #### `getchar` 함수
 
-- 키보드는 데이터 소스(data source)로써, 키보드를 누르면 데이터가 생성되어 입력 스트림(input stream)에 기록됨
+- 키보드는 데이터 소스(data source)로서, 키보드를 누르면 데이터가 생성되어 입력 스트림(input stream)에 기록됨
 - `getchar` 함수는 입력 스트림에 기록된 문자 하나를 프로그램으로 읽어옴
 
 #### `putchar` 함수
 
-- 모니터는 데이터 싱크(data sink)로써, 출력 스트림(output stream)에 있는 데이터는 모니터로 전달되어 처리됨
+- 모니터는 데이터 싱크(data sink)로서, 출력 스트림(output stream)에 있는 데이터는 모니터로 전달되어 처리됨
 - `putchar` 함수는 문자 하나를 전달인자로 넘겨받아 출력 스트림으로 내보냄
 
 ---
 
 ## Character Input and Output (Cont'd - 2)
 
-### ASCII (American Standard Code for Information Interchange)
+### ASCII(American Standard Code for Information Interchange)
 
 - 컴퓨터에서 문자 하나를 표현하기 위해 0 ~ 127 사이의 정수 값으로 연결한 표준
-- 키보드에서 `'A'`를 입력하면, 실제로 텍스트 입력 스트림에 전달되는 값은 `0x41`(`65`)
-- 텍스트 출력 스트림에 `0x41`(`65`) 값이 존재할 경우, 모니터에 표현되는 결과는 `'A'`
+- 키보드에서 `'A'`를 입력하면, 실제로 텍스트 입력 스트림에 전달되는 값은 `0x41` (`65`)
+- 텍스트 출력 스트림에 `0x41` (`65`) 값이 존재할 경우, 모니터에 표현되는 결과는 `'A'`
 
 ![center h:360](img/07-ascii.png)
 
@@ -430,19 +430,19 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 3)
 
-### 문자 상수 (Character Constants)
+### 문자 상수(Character Constants)
 
 - 작은따옴표 사이에 쓰여진 문자 값
 - 문자 상수는 문자 코드(character code)에 정의된 정수값
-- e.g., ASCII 문자 코드를 사용하는 시스템에서의 문자 상수 `'A'`는 정수 값 `0x41`(`65`)을 의미
+- e.g., ASCII 문자 코드를 사용하는 시스템에서의 문자 상수 `'A'`는 정수 값 `0x41` (`65`)을 의미
 
 ### 상수 주의사항
 
 - `1` vs `'1'`
   - `1`은 **정수 상수**이며, 정수 값 `1`을 나타냄
-  - `'1'`은 **문자 상수**이며, ASCII 정수 값 `0x31`(`49`)를 나타냄
+  - `'1'`은 **문자 상수**이며, ASCII 정수 값 `0x31` (`49`)를 나타냄
 - `'\n'` vs `"\n"`
-  - `'\n'`은 **문자 상수**이며, ASCII 정수 값 `0x0A`(`10`)를 나타냄
+  - `'\n'`은 **문자 상수**이며, ASCII 정수 값 `0x0A` (`10`)를 나타냄
   - `"\n"`은 **문자열 상수**
 
 ---
@@ -453,13 +453,13 @@ for (initialization; condition; updation) {
 
 [//]: # (INCLUDE: ./c/01/src/copy_1st.c)
 
-- `Ctrl + D`를 누르면 텍스트 입력 스트림으로 `EOF`(end-of-file)가 전달되어 프로그램이 종료됨
+- `Ctrl + D`를 누르면 텍스트 입력 스트림으로 `EOF` (end-of-file)가 전달되어 프로그램이 종료됨
 
 ---
 
 ## Character Input and Output (Cont'd - 5)
 
-### 관계 연산자 (Relational Operators)
+### 관계 연산자(Relational Operators)
 
 - 두 피연산자의 관계를 평가해 참(`true`) 또는 거짓(`false`)으로 결과를 반환
 
@@ -488,7 +488,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 7)
 
-### 연산자 우선순위 (Operator Precedence)
+### 연산자 우선순위(Operator Precedence)
 
 - 표현식 내 연산자들은 우선순위에 따라 높은 우선순위의 연산자부터 평가됨
 - **대입 연산자(`=`)는 관계 연산자(`!=`)보다 우선순위가 낮음**
@@ -501,7 +501,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 8)
 
-### 타입 (자료형)에 따른 값 표현 범위
+### 타입에 따른 값 표현 범위
 
 [//]: # (INCLUDE: ./c/01/src/getchar_putchar.c --from 5 --to 7 --no-comment)
 
@@ -527,7 +527,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 10)
 
-### 연산자 `++` (증가 연산자, Increment Operator)
+### `++` (증가 연산자, Increment Operator)
 
 - 변수의 값을 1 증가시키는 연산자
 
@@ -603,11 +603,11 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 17)
 
-### 조건문 (`if` 문)
+### 조건문(`if` 문)
 
 - `if` 키워드 다음에 등장하는 조건이 참일 경우, 조건문 본문 수행
 
-### 연산자의 결합 방향 (Operator Associativity)
+### 연산자의 결합 방향(Operator Associativity)
 
 [//]: # (INCLUDE: ./c/01/src/count_improved.c --from 12 --to 12 --no-comment)
 
@@ -621,7 +621,7 @@ for (initialization; condition; updation) {
 
 ## Character Input and Output (Cont'd - 18)
 
-### 논리 연산자 (Logical Operators)
+### 논리 연산자(Logical Operators)
 
 [//]: # (INCLUDE: ./c/01/src/count_improved_ignore.c --from 21 --to 23 --no-comment)
 
@@ -730,7 +730,7 @@ for (initialization; condition; updation) {
 
 ## Functions (Cont'd - 3)
 
-### 함수 선언 (Function Declarations)
+### 함수 선언(Function Declarations)
 
 [//]: # (INCLUDE: ./c/01/src/power.c --from 3 --to 3 --no-comment)
 
@@ -750,7 +750,7 @@ for (initialization; condition; updation) {
 
 ## Functions (Cont'd - 4)
 
-### 지역 변수 (Local Variables)
+### 지역 변수(Local Variables)
 
 [//]: # (INCLUDE: ./c/01/src/local_variable_ignore.c)
 
