@@ -4,7 +4,7 @@
     "commands": [
       {
         "match": ".*/(c|cpp)/\\d{2}/README\\.md",
-        "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf && cat ${file} | grep ')\\*\\*' | grep -v ']('"
+        "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf && cat ${file} | grep -P '\\)\\*\\*\\S'"
       }
     ]
   },
