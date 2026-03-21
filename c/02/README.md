@@ -508,12 +508,12 @@ $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 - *E* = `0`, *M* = `0`  
   - 부동소수점에서 **0**(`±0`)을 표현하는 방식(부호 비트에 따라 `+0` 또는 `-0`)  
 - *E* = `0`, *M* ≠ `0`  
-  - 서브노멀 값(subnormal number, denormalized number)을 표현: $$(-1)^S \times 0.M \times 2^{-1022}$$  
+  - 서브노멀 값(subnormal number, denormalized number)을 표현: $(-1)^S \times 0.M \times 2^{-1022}$
   - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용(언더플로우)**  
   - 정규화된 수와 달리 **implicit bit**가 없으므로 정밀도가 더 낮음  
   - 연산 결과가 서브노멀 값보다도 작을 경우 **0으로 처리됨(flush to zero)**  
 - *E* = `1` ~ `2046`, *M* = any value  
-  - 정규화된 수(normalized number)를 표현: $$(-1)^S \times 1.M \times 2^{E - 1023}$$  
+  - 정규화된 수(normalized number)를 표현: $(-1)^S \times 1.M \times 2^{E - 1023}$
   - 일반적인 부동소수점 값을 저장할 때 사용  
 - *E* = `2047`, *M* = `0`  
   - **연산 결과가 표현할 수 있는 최대치를 초과해 오버플로우가 발생한 경우**  
@@ -1174,7 +1174,8 @@ n: 3         (decimal)
 
 ## Type Conversions
 
-- 표현식에 서로 다른 타입의 피연산자가 같이 사용될 경우 타입 변환이 발생함(e.g., `1 + 2.3` 표현식은 정수 `1`을 실수 `1.0`으로 변환)
+- 표현식에 서로 다른 타입의 피연산자가 같이 사용될 경우 타입 변환이 발생함
+  - e.g., `1 + 2.3` 표현식은 정수 `1`을 실수 `1.0`으로 변환
 - 정수 승격, 실수 승격을 포함하는 더 포괄된 개념
 
 ### 자동 타입 변환(Implicit Conversion, Automatic Conversion)
@@ -1235,7 +1236,8 @@ n: 3         (decimal)
 
 - 서로 다른 산술 타입 간 연산(binary arithmetic operations)이 일어날 때 다음 규칙 적용:
   1. 정수 승격
-      - `char`, `signed char`, `unsigned char`, `short`, `unsigned short`, `enum` 타입은 `int` 또는 `unsigned int` 타입으로 승격
+      - `char`, `signed char`, `unsigned char`, `short`, `unsigned short`, `enum` 타입:
+      `int` 또는 `unsigned int` 타입으로 승격
   2. 산술 타입 변환
       1. 두 피연산자 중 하나라도 `long double` 타입이면 둘 다 `long double` 타입으로 변환
       2. 그렇지 않고 하나라도 `double` 타입이면 둘 다 `double` 타입으로 변환
