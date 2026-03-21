@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define ABS(x) ((x) * ((x > 0) - (x < 0)))
+#define ABS(x) ((x) * (((x) > 0) - ((x) < 0)))
 
 int main(void)
 {
