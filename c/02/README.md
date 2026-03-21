@@ -14,7 +14,7 @@
 
 [//]: # (INCLUDE: ./c/02/src/variables_ignore.c --from 4 --to 6 --no-comment)
 
-- ANSI C(ISO C90) 표준은 `_`로 시작하는 식별자(변수명)를 표준 라이브러리 및 구현 내부에서 사용함
+- ANSI C (ISO C90) 표준은 `_`로 시작하는 식별자(변수명)를 표준 라이브러리 및 구현 내부에서 사용함
   - 변수명 첫 글자에 밑줄은 사용 가능하나, **표준 헤더파일 내 식별자와 충돌할 수 있음(사용하지 않는 것을 권장)**
 
 [//]: # (INCLUDE: ./c/02/src/variables_ignore.c --from 10 --to 10 --no-comment)
@@ -33,7 +33,7 @@
 - 지역 변수는 함수라는 제한된 범위가 맥락을 보완하므로, **간결한 명칭** 사용 권장
 - 전역 변수는 사용 범위가 넓어 맥락 파악이 어려우므로, 이름만으로도 용도를 알 수 있게 **상세한 명칭** 사용 권장
 
-[//]: # (INCLUDE: ./c/02/variable_name.c)
+[//]: # (INCLUDE: ./c/02/src/variable_name.c)
 
 ---
 
@@ -65,7 +65,7 @@
 
 ![center](img/00-data-model.png)
 
-- 데이터 모델은 아래 규칙을 준수해 정수 타입의 타입을 표현:
+- 데이터 모델은 아래 규칙을 준수해 정수 타입의 크기를 표현:
   1. `short`, `int` 타입은 적어도 2 바이트 이상의 크기를 가져야 한다.
   2. `long` 타입은 적어도 4 바이트 이상의 크기를 가져야 한다.
   3. `short` 타입의 크기는 `int` 타입보다 클 수 없다.
@@ -75,7 +75,7 @@
 
 ## Data Types and Sizes (Cont'd - 2)
 
-### 부호 타입 (`signed`)과 무부호 타입 (`unsigned`)
+### 부호 타입(`signed`)과 무부호 타입(`unsigned`)
 
 - `char`, `int` 타입은 **한정사를 사용해 부호 값 또는 무부호 값을 표현**할 수 있음
   - 한정사를 생략한 정수 타입은 부호 값을 표현:
@@ -181,7 +181,7 @@ Maximum unsigned long   : 18446744073709551615
 
 ## Data Types and Sizes (Cont'd - 9)
 
-### MSB (Most Significant Bit)
+### MSB(Most Significant Bit)
 
 - 정수 타입 값을 표현하는 비트 중 **가장 중요한 역할**을 하는 비트
 - 부호 타입 정수에서는 MSB가 **부호**를 결정
@@ -223,7 +223,7 @@ Maximum unsigned long   : 18446744073709551615
 
 ## Data Types and Sizes (Cont'd - 11)
 
-### 음의 정수 표현 방법 1 - 부호화 절대치 (Sign-Magnitude)
+### 음의 정수 표현 방법 1 - 부호화 절대치(Sign-Magnitude)
 
 ![center h:240](img/02-sign-magnitude.png)
 
@@ -242,7 +242,7 @@ Maximum unsigned long   : 18446744073709551615
 
 ## Data Types and Sizes (Cont'd - 12)
 
-### 음의 정수 표현 방법 2 - 보수화 (Complement)
+### 음의 정수 표현 방법 2 - 보수화(Complement)
 
 - 뺄셈을 컴퓨터 내부에서 쉽게 수행하기 위해 뺄셈을 덧셈으로 치환하는 과정
 - *n*진수는 ***n*의 보수**와 ***n - 1*의 보수**를 사용할 수 있음
@@ -260,7 +260,7 @@ Maximum unsigned long   : 18446744073709551615
 
 ## Data Types and Sizes (Cont'd - 13)
 
-### 1의 보수 (1's Complement)
+### 1의 보수(1's Complement)
 
 ![center](img/03-complement1.png)
 
@@ -283,7 +283,7 @@ Maximum unsigned long   : 18446744073709551615
 
 ## Data Types and Sizes (Cont'd - 15)
 
-### 2의 보수 (2's Complement)
+### 2의 보수(2's Complement)
 
 ![center](img/04-complement2.png)
 
@@ -347,7 +347,7 @@ Maximum unsigned long   : 18446744073709551615
 
 ## Data Types and Sizes (Cont'd - 21)
 
-### 고정소수점 (Fixed-Point)
+### 고정소수점(Fixed-Point)
 
 - 실수 값을 표현하는 **비표준 방식**이며, 필요에 따라 정의해 사용할 수 있음
 - 오차가 발생하지 않으나, **표현할 수 있는 값의 범위가 제한적인 방법**
@@ -377,7 +377,7 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 
 ## Data Types and Sizes (Cont'd - 23)
 
-### 부동소수점 (Floating-Point)
+### 부동소수점(Floating-Point)
 
 - 실수 값을 표현하는 **표준 방식**
   - [IEEE Standard for Floating-Point Arithmetic (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754)
@@ -393,7 +393,7 @@ e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예
 
 ## Data Types and Sizes (Cont'd - 24)
 
-### 단정도 부동소수점 (Single-Precision Floating-Point)
+### 단정도 부동소수점(Single-Precision Floating-Point)
 
 ![center](img/09-single-precision.png)
 
@@ -471,7 +471,7 @@ $$(-1)^S \times 1.M \times 2^{E - 127}$$
 
 ## Data Types and Sizes (Cont'd - 28)
 
-### 배정도 부동소수점 (Double-Precision Floating-Point)
+### 배정도 부동소수점(Double-Precision Floating-Point)
 
 ![center](img/10-double-precision.png)
 
@@ -595,7 +595,7 @@ f1:  9999876.0, f2: 99998768.0
 
 ```text
 Float type's mantissa has 24 bits (including the hidden bit).
-f1: 16777216.0, f2: 16777216.0, f3: 16777216.0, f4: 16777218.0
+f3: 16777216.0, f4: 16777216.0, f5: 16777216.0, f6: 16777218.0
 ```
 
 ---
@@ -619,7 +619,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 [//]: # (INCLUDE: ./c/02/src/compare_float1.c)
 
-- 실수 값 비교 시 **오차를 고려하여야 함**
+- 실수 값 비교 시 **오차를 고려해야 함**
 - `float` 타입의 기계 앱실론(machine epsilon, 이론적으로 표현 가능한 가장 작은 상대 오차값)은 1.19 × 10⁻⁷
   - 실제 계산에서는 오차가 더 누적되므로, 허용 오차는 1 × 10⁻⁵, (`1e-5`) 사용
 - `double` 타입의 기계 앱실론은 2.22 × 10⁻¹⁶
@@ -713,7 +713,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 ### 문자 상수
 
 - `'A'`, `'1'`, `'\n'`처럼 작은 따옴표로 감싼 값
-- **프로그램은 문자 상수를 정수(`int`)형 값으로 처리**
+- **프로그램은 문자 상수를 정수(`int`) 타입 값으로 처리**
   - 문자 인코딩 표(e.g., ASCII, EBCDIC, etc.)를 참조해 특정 정수 값으로 대응
 
 #### 문자 상수 사용 시 주의사항
@@ -750,7 +750,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 ## Constants (Cont'd - 5)
 
-### 이스케이프 시퀀스 - 문자 리터럴 (Character Literal) 표현
+### 이스케이프 시퀀스 - 문자 리터럴(Character Literal) 표현
 
 | Escape Sequence | Meaning        | ASCII Code (Decimal) |
 | --------------- | -------------- |--------------------- |
@@ -796,7 +796,7 @@ Null character in the middle
 
 ## Constants (Cont'd - 8)
 
-### 상수 표현식 (Constant Expressions)
+### 상수 표현식(Constant Expressions)
 
 - 표현식 중 일부는 반드시 상수를 사용해 표현해야 함 (e.g., 배열의 크기, etc.)
   - 상수 표현은 컴파일 시 값이 결정되어 있는 상태(compile time)
@@ -808,13 +808,13 @@ Null character in the middle
 
 ## Constants (Cont'd - 9)
 
-### 문자열 상수 (String Constants or String Literals)
+### 문자열 상수(String Constants or String Literals)
 
 - 문자열 상수는 큰 따옴표로 감싼 값으로, 문자열 내에 문자가 존재하지 않거나 하나 이상의 문자가 구성될 수 있음
   - e.g., `"Hello"`, `""`, etc.
 - 문자열로 큰 따옴표(`"`)를 표현해야 할 경우 이스케이프 문자를 사용해 표현해야 함(`\"`)
 - `char` 타입 배열은 문자열 상수를 보관할 수 있으며, 마지막 배열 원소는 반드시 널 문자(`'\0'`)로 저장되어야 함
-  - 보관할 문자열의 길이가 `SIZE`라면, `char` 타입 배열은 최소 `SIZE + 1` 크기 이상이여야 함
+  - 보관할 문자열의 길이가 `SIZE`라면, `char` 타입 배열은 최소 `SIZE + 1` 크기 이상이어야 함
 - 다음 주어진 두 표현 `'x'`와 `"x"`는 **같지 않음**
   - `'x'`는 정수로 표현되는 문자 상수
   - `"x"`는 `'x'`, `'\0'`으로 표현되는 문자열 상수
@@ -844,7 +844,7 @@ Null character in the middle
 
 ## Constants (Cont'd - 12)
 
-### 열거 상수 (Enumeration Constants)
+### 열거 상수(Enumeration Constants)
 
 - 키워드 `enum`을 사용해 여러 개의 정수 타입 상수를 선언할 수 있음
 - 열거된 이름에 값을 지정하지 않으면 다음 규칙을 따름:
@@ -892,7 +892,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ## Operators
 
-### 산술 연산자 (Arithmetic Operators)
+### 산술 연산자(Arithmetic Operators)
 
 - `+`, `-` 연산자는 `*`, `/`, `%` 연산자보다 우선순위가 낮음
 
@@ -939,7 +939,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ## Operators (Cont'd - 3)
 
-### 관계 연산자 (Relational Operators)
+### 관계 연산자(Relational Operators)
 
 - 관계 연산자는 산술 연산자보다 **우선순위가 낮음**
   - 다음 표현식 `idx < size - 1`은 `idx < (size - 1)`로 평가됨
@@ -957,7 +957,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ## Operators (Cont'd - 4)
 
-### 논리 연산자 (Logical Operators)
+### 논리 연산자(Logical Operators)
 
 - 논리 연산자는 관계 연산자보다 우선순위가 낮음
 
@@ -966,7 +966,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 | `&&`     | Logical and | `c >= '0' && c <= '9'`                     | Left-to-right |
 | `⎮⎮`     | Logical or  | `(c == ' ') ⎮⎮ (c == '\n') ⎮⎮ (c == '\t')` | Left-to-right |
 
-#### Short-circuit evaluation(SCE) 적용
+#### Short-Circuit Evaluation(SCE) 적용
 
 - 논리 연산자로 연결된 여러 개의 표현식은 다음 조건을 만족하면 즉시 평가를 종료함:
   - `&&`: 현재 항의 계산 결과가 거짓이면 즉시 계산을 중지하고 전체 항을 거짓으로 평가
@@ -987,7 +987,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ## Operators (Cont'd - 6)
 
-### 전위 증감 연산자 (Prefix Increment and Decrement Operators)
+### 전위 증감 연산자(Prefix Increment and Decrement Operators)
 
 | Operator | Description                | Example | Associativity |
 | -------- | -------------------------- | ------- | ------------- |
@@ -1000,12 +1000,12 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ## Operators (Cont'd - 7)
 
-### 후위 증감 연산자 (Postfix Increment and Decrement Operators)
+### 후위 증감 연산자(Postfix Increment and Decrement Operators)
 
 | Operator | Description                           | Example | Associativity |
 | -------- | ------------------------------------- | ------- | ------------- |
-| `++`     | Uses the value first, then increments | `i++`   | Left-to-right |
-| `--`     | Uses the value first, then decrements | `i--`   | Left-to-right |
+| `++`     | Uses the value first, then increments | `i++`   | Right-to-left |
+| `--`     | Uses the value first, then decrements | `i--`   | Right-to-left |
 
 [//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 16 --to 19 --no-comment)
 
@@ -1041,7 +1041,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ## Operators (Cont'd - 11)
 
-### 비트 연산자 (Bitwise Operators)
+### 비트 연산자(Bitwise Operators)
 
 | Operator | Description                         | Example  | Associativity |
 | -------- | ----------------------------------- | -------- | ------------- |
@@ -1054,8 +1054,8 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 비트 연산자는 피연산자에 대해 비트 연산을 수행하며, **피연산자는 반드시 정수 타입이어야 함**
   - 실수 타입 피연산자는 사용 불가
-  - `char` 또는 `short` 타입은 **암묵적으로 `int`타입이 됨(integral promotions)**
-- 이동 연산(`<<`, `>>`) 시 좌측 피연산자는 **부호 여부에 따라 결과가 달라지며**, 우측 피연산자는 **반드시 0 이상**이여야 함
+  - `char` 또는 `short` 타입은 **암묵적으로 `int` 타입이 됨(integral promotions)**
+- 이동 연산(`<<`, `>>`) 시 좌측 피연산자는 **부호 여부에 따라 결과가 달라지며**, 우측 피연산자는 **반드시 0 이상**이어야 함
   - **우측 피연산자가 음수일 경우 UB(undefined behavior)**
 
 ---
@@ -1066,7 +1066,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
   - **부호 타입 정수의 왼쪽 이동 연산 결과가 표현 범위를 넘으면 UB(undefined behavior)**
 - 오른쪽 이동 연산은 비트를 오른쪽으로 이동시키며, 왼쪽은 **좌측 피연산자의 부호 여부에 따라 달라짐**
   - 무부호 타입 정수의 오른쪽 이동 시 왼쪽은 항상 `0`으로 채워짐(논리 이동)
-  - 부호 타입 정수의 오른쪽 이동 시 왼쪽은 **구현된 정의를 따름(implementation-defined)**(보통 산술 이동을 채택)
+  - 부호 타입 정수의 오른쪽 이동 시 왼쪽은 **구현된 정의를 따름**(implementation-defined, 보통 산술 이동을 채택)
 
 [//]: # (INCLUDE: ./c/02/src/bit.c)
 
@@ -1102,7 +1102,7 @@ n: 3         (decimal)
 
 ## Operators (Cont'd - 15)
 
-### 지정 연산자 (Assignment Operators)
+### 지정 연산자(Assignment Operators)
 
 - 지정 연산자는 대입 연산자(`=`)와 복합 대입 연산자(`op=`)가 있음
   - 복합 대입 연산자의 형태 `exp1 op= exp2`는 `exp1 = exp1 op exp2` 형태의 축약 표현
@@ -1145,7 +1145,7 @@ n: 3         (decimal)
 
 ## Type Promotions
 
-### ANSI C (C89) §3.2.1.1 — "Integral Promotions" (정수 승격)
+### ANSI C (C89) §3.2.1.1 — "Integral Promotions"(정수 승격)
 
 > A "char", a "short int", or an enumerated type may be used in an expression whenever an "int" or "unsigned int" may be used. If an "int" can represent all values of the original type, the value is converted to an int; otherwise, it is converted to an unsigned int.
 
@@ -1160,7 +1160,7 @@ n: 3         (decimal)
 
 ## Type Promotions (Cont'd)
 
-### ANSI C (C89) §3.2.1.2 — "Floating Promotions" (실수 승격)
+### ANSI C (C89) §3.2.1.2 — "Floating Promotions"(실수 승격)
 
 > A float expression may be promoted to double when used in an expression.
 
@@ -1168,7 +1168,7 @@ n: 3         (decimal)
   - 배정도 부동소수점은 단정도 부동소수점보다 항상 높은 정밀도를 가짐
   - 정수 승격과 달리 **조건 없이 `double` 타입으로 승격됨**
 
-[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 4 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 18 --to 25 --no-comment)
 
 ---
 
@@ -1177,7 +1177,7 @@ n: 3         (decimal)
 - 표현식에 서로 다른 타입의 피연산자가 같이 사용될 경우 타입 변환이 발생함(e.g., `1 + 2.3` 표현식은 정수 `1`을 실수 `1.0`으로 변환)
 - 정수 승격, 실수 승격을 포함하는 더 포괄된 개념
 
-### 자동 타입 변환 (Implicit Conversion, Automatic Conversion)
+### 자동 타입 변환(Implicit Conversion, Automatic Conversion)
 
 [//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 29 --to 31 --no-comment)
 
@@ -1185,10 +1185,11 @@ n: 3         (decimal)
 
 ## Type Conversions (Cont'd - 1)
 
-### 명시적 타입 변환 (Explicit Conversion)
+### 명시적 타입 변환(Explicit Conversion)
 
 - `(type) expression` 형태를 사용하면 `expression` 타입을 `type` 으로 타입 변환
-  - `(type)`은 **타입 변환 연산자(type conversion operator)**로, 오른쪽에서 왼쪽으로의 결합 방향을 가짐
+  - `(type)`은 타입 변환 연산자(type conversion operator)
+  - 오른쪽에서 왼쪽으로의 결합 방향을 가짐
 - 명시적으로 타입 변환을 표현하여 사용자의 의도를 명확히 표현할 수 있음
 - 암묵적인 타입 변환에서의 정보 손실은 경고를 출력하나, **명시적인 타입 변환에서의 정보 손실은 경고를 출력하지 않음**
 
@@ -1230,7 +1231,7 @@ n: 3         (decimal)
 
 ## Type Conversions (Cont'd - 6)
 
-### 암묵적 산술 타입 변환 (Implicit Arithmetic Conversion)
+### 암묵적 산술 타입 변환(Implicit Arithmetic Conversion)
 
 - 서로 다른 산술 타입 간 연산(binary arithmetic operations)이 일어날 때 다음 규칙 적용:
   1. 정수 승격
@@ -1240,10 +1241,14 @@ n: 3         (decimal)
       2. 그렇지 않고 하나라도 `double` 타입이면 둘 다 `double` 타입으로 변환
       3. 그렇지 않고 하나라도 `float` 타입이면 둘 다 `float` 타입으로 변환
   3. 정수 변환 - 변환 순위(rank, rank(`int`) < rank(`long`))와 부호 여부(signedness)를 고려하여 변환
-      1. **rank(`unsigned`) ≥ rank(`signed`)** 인 경우: `signed` → `unsigned`
-      2. **rank(`signed`) > rank(`unsigned`)** 이고 `signed`가 `unsigned`의 모든 값을 표현 가능한 경우: `unsigned` → `signed`
-      3. **rank(`signed`) > rank(`unsigned`)** 이고 `signed`가 `unsigned`의 모든 값을 표현 불가한 경우: 둘 다 더 높은 rank의 `unsigned`
-      4. **두 피연산자 모두 `unsigned`** 인 경우: 두 피연산자 중 더 높은 rank로 변환
+      1. rank(`unsigned`) ≥ rank(`signed`)인 경우:
+      `signed` → `unsigned`
+      2. rank(`signed`) > rank(`unsigned`)이고 `signed`가 `unsigned`의 모든 값을 표현 가능한 경우:
+      `unsigned` → `signed`
+      3. rank(`signed`) > rank(`unsigned`)이고 `signed`가 `unsigned`의 모든 값을 표현 불가한 경우:
+      둘 다 더 높은 rank의 `unsigned`
+      4. 두 피연산자 모두 `unsigned`인 경우:
+      두 피연산자 중 더 높은 rank로 변환
 
 ---
 
@@ -1283,7 +1288,7 @@ n: 3         (decimal)
 
 ## Conditional Expressions
 
-### 삼항 연산자 (Ternary operator)
+### 삼항 연산자(Ternary Operator)
 
 - 삼항 연산자의 형태 `condition ? expr_if_true : expr_if_false`는 `if` 조건문을 축약한 형태
 - `expr_if_true`와 `expr_if_false`의 타입이 다르다면, 타입 변환 법칙이 적용됨
@@ -1315,7 +1320,7 @@ n: 3         (decimal)
 
 ## Precedence and Order of Evaluation (Cont'd - 1)
 
-### 연산자의 우선순위 (Precedence)와 결합 방향 (Associativity) 적용 규칙
+### 연산자의 우선순위(Precedence)와 결합 방향(Associativity) 적용 규칙
 
 1. 아직 결합되지 않은 표현식들 중에서, 우선순위가 가장 높은 연산자가 있는 표현식을 먼저 찾는다.
 2. 선택된 연산자에 대해, 결합 방향(왼쪽에서 오른쪽, 또는 오른쪽에서 왼쪽)에 따라 해당 표현식을 먼저 결합한다.
@@ -1328,7 +1333,7 @@ n: 3         (decimal)
 
 ## Precedence and Order of Evaluation (Cont'd - 2)
 
-### 평가 순서 (Evaluation Order)
+### 평가 순서(Evaluation Order)
 
 - 피연산자들의 값을 계산(evaluation)하고, 그 부수효과(side effects)를 실행하는 순서
 
