@@ -5,7 +5,7 @@ int main(void)
     int n = 24, i;
 
     for (i = 1; i <= n; ++i) {
-        /* Original else-if statement:
+        /* Original if-else statement:
         if (!(i % 10) || i == n)
             printf("%2d\n", i);
         else
