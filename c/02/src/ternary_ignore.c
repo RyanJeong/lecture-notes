@@ -12,7 +12,7 @@ int main(void)
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     int n = 2;
 
-    /* You can replace this else-if statement with ternary operator:
+    /* You can replace this if-else statement with ternary operator:
        if (n == 1)
            printf("You have %d item\n", n);
        else
