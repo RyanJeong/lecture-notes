@@ -32,7 +32,7 @@ int main(void)
        * is evaluated first.
        *   e.g., extern int a = 4, b = 5, c = 6;
        *         f(): increment all global variables by 1, return their sum.
-       *         g(): multiplie all global variables by 2, return their sum. */
+       *         g(): multiply all global variables by 2, return their sum. */
     int i1 = f() + g();
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
