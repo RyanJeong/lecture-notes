@@ -351,7 +351,7 @@ Maximum unsigned long   : 18446744073709551615
 
 - 실수 값을 표현하는 **비표준 방식**이며, 필요에 따라 정의해 사용할 수 있음
 - 오차가 발생하지 않으나, **표현할 수 있는 값의 범위가 제한적인 방법**
-e.g., 고정소수점을 표현하기 위한 1 byte, 2 bytes, 4 bytes 정의 예시
+- 1 byte, 2 bytes, 4 bytes 고정 소수점 타입 정의 예시:
 
 ![center](img/08-fixed-point.png)
 
