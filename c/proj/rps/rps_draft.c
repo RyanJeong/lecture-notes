@@ -1,7 +1,7 @@
-#include <ctype.h> /*  isspace()   */
+#include <ctype.h> /* for isspace(), tolower() */
 #include <stdio.h>
-#include <stdlib.h> /*  srand(), rand() */
-#include <time.h>   /*  time(NULL)  */
+#include <stdlib.h> /* for srand(), rand() */
+#include <time.h>   /* for time(NULL) */
 
 enum {
     ROCK,     /* 0  */
@@ -71,9 +71,10 @@ int main(void)
             break;
         case 'e':
             printf("Exit the game!\n");
-            if (cnt)
+            if (cnt) {
                 printf("Played: %3d, Win rate: %.2f%%\n", cnt,
                        (win / (double) cnt) * 100.0);
+            }
             break;
         default:
             if (c != 'h')

@@ -1,7 +1,7 @@
-#include <ctype.h> /*  isdigit() */
+#include <ctype.h> /* for isdigit() */
 #include <stdio.h>
-#include <stdlib.h> /*  srand(), rand() */
-#include <time.h>   /*  time(NULL)  */
+#include <stdlib.h> /* for srand(), rand() */
+#include <time.h>   /* for time(NULL) */
 
 enum {
     LOTTO_SIZE = 6,
