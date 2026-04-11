@@ -8,7 +8,7 @@
 #
 # Description:
 #   Remove generated files: temp.pdf, temp.md, temp.pptx, a.out,
-#   extensionless binaries, and error_file_lists.txt.
+#   object files (.o), extensionless binaries, and error_file_lists.txt.
 #
 # Options:
 #   -h, --help   Show this help message
@@ -59,6 +59,11 @@ main() {
   while IFS= read -r -d '' file; do
     remove_if_exists "${file}"
   done < <(find "${SCRIPT_DIR}" -type f \( -name "temp.pdf" -o -name "temp.md" -o -name "temp.pptx" -o -name "a.out" \) -print0)
+
+  # Remove object files (.o)
+  while IFS= read -r -d '' file; do
+    remove_if_exists "${file}"
+  done < <(find "${SCRIPT_DIR}" -type f -name "*.o" -print0)
 
   # Remove extensionless executables (binary files without a dot in filename)
   while IFS= read -r -d '' file; do
