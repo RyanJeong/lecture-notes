@@ -7,12 +7,14 @@
 #   ./check_syntax.sh [DIR]
 #
 # Description:
-#   Check C++14 syntax for all .cc files (excluding *_part* and *_ignore*).
+#   Check C++14 syntax for all .cc files under */src/
+#   (excluding *_part* and *_ignore*).
+#   If a Makefile is found, also runs make to verify the build.
 #   Results are written to error_file_lists.txt in the script directory.
 #
 # Arguments:
 #   DIR   Optional subdirectory to scan (e.g., 00, 04).
-#         If omitted or not found, all subdirectories are scanned.
+#         If omitted, all numbered directories are processed.
 #
 # Options:
 #   -h, --help   Show this help message
@@ -51,9 +53,6 @@ error_exit() {
 
 check_files() {
   local scan_dir="$1"
-  local error_count=0
-
-  >"${ERROR_FILE}"
 
   while IFS= read -r -d '' file; do
     local basename
@@ -69,16 +68,26 @@ check_files() {
       printf '%s\n' "${file}" >>"${ERROR_FILE}"
       g++ "${file}" ${GCC_FLAGS} >>"${ERROR_FILE}" 2>&1 || true
       printf '%s\n' "========================================" >>"${ERROR_FILE}"
-      error_count=$((error_count + 1))
+      ERROR_COUNT=$((ERROR_COUNT + 1))
     fi
   done < <(find "${scan_dir}" -name "*.cc" -print0 | sort -z)
+}
 
-  if [ -s "${ERROR_FILE}" ]; then
-    warn "${error_count} file(s) with errors. See: ${ERROR_FILE}"
-    cat "${ERROR_FILE}"
-  else
-    info "All files passed syntax check."
-  fi
+check_makefiles() {
+  local scan_dir="$1"
+
+  while IFS= read -r -d '' makefile; do
+    local dir
+    dir="$(dirname "${makefile}")"
+    info "Build: ${dir}"
+    if ! make -C "${dir}" >/dev/null 2>&1; then
+      printf '%s\n' "${makefile}" >>"${ERROR_FILE}"
+      make -C "${dir}" >>"${ERROR_FILE}" 2>&1 || true
+      printf '%s\n' "========================================" >>"${ERROR_FILE}"
+      ERROR_COUNT=$((ERROR_COUNT + 1))
+    fi
+    make -C "${dir}" clean >/dev/null 2>&1 || true
+  done < <(find "${scan_dir}" -name "Makefile" -print0 | sort -z)
 }
 
 main() {
@@ -89,19 +98,41 @@ main() {
     ;;
   esac
 
-  local scan_dir="${SCRIPT_DIR}"
+  ERROR_COUNT=0
+  >"${ERROR_FILE}"
+
+  local scan_dirs=()
 
   if [ -n "${1:-}" ]; then
-    local candidate="${SCRIPT_DIR}/${1}"
+    local candidate="${SCRIPT_DIR}/${1}/src"
     if [ -d "${candidate}" ]; then
-      scan_dir="${candidate}"
-      info "Scanning directory: ${scan_dir}"
+      scan_dirs+=("${candidate}")
+      info "Scanning directory: ${candidate}"
     else
-      warn "Directory not found: ${candidate} -- scanning all directories."
+      error_exit "Directory not found: ${SCRIPT_DIR}/${1}"
     fi
+  else
+    local dir
+    for dir in "${SCRIPT_DIR}"/[0-9][0-9]; do
+      if [ -d "${dir}/src" ]; then
+        scan_dirs+=("${dir}/src")
+      fi
+    done
+    info "Scanning all src/ directories"
   fi
 
-  check_files "${scan_dir}"
+  local scan_dir
+  for scan_dir in "${scan_dirs[@]}"; do
+    check_files "${scan_dir}"
+    check_makefiles "${scan_dir}"
+  done
+
+  if [ -s "${ERROR_FILE}" ]; then
+    warn "${ERROR_COUNT} error(s) found. See: ${ERROR_FILE}"
+    cat "${ERROR_FILE}"
+  else
+    info "All files passed syntax check."
+  fi
 }
 
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
