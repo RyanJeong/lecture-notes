@@ -7,12 +7,12 @@
 #   ./formatter.sh [DIR]
 #
 # Description:
-#   Format all .c and .h files using clang-format with K&R style.
-#   File permissions are set to 755 after formatting.
+#   Format all .c and .h files under */src/ using clang-format
+#   with K&R style. File permissions are set to 755 after formatting.
 #
 # Arguments:
 #   DIR   Optional subdirectory to format (e.g., 00, 04).
-#         If omitted or not found, all subdirectories are processed.
+#         If omitted, all numbered directories are processed.
 #
 # Options:
 #   -h, --help   Show this help message
@@ -70,19 +70,30 @@ main() {
     ;;
   esac
 
-  local scan_dir="${SCRIPT_DIR}"
+  local scan_dirs=()
 
   if [ -n "${1:-}" ]; then
-    local candidate="${SCRIPT_DIR}/${1}"
+    local candidate="${SCRIPT_DIR}/${1}/src"
     if [ -d "${candidate}" ]; then
-      scan_dir="${candidate}"
-      info "Formatting directory: ${scan_dir}"
+      scan_dirs+=("${candidate}")
+      info "Formatting directory: ${candidate}"
     else
-      warn "Directory not found: ${candidate} -- formatting all directories."
+      error_exit "Directory not found: ${SCRIPT_DIR}/${1}"
     fi
+  else
+    local dir
+    for dir in "${SCRIPT_DIR}"/[0-9][0-9]; do
+      if [ -d "${dir}/src" ]; then
+        scan_dirs+=("${dir}/src")
+      fi
+    done
+    info "Formatting all src/ directories"
   fi
 
-  format_files "${scan_dir}"
+  local scan_dir
+  for scan_dir in "${scan_dirs[@]}"; do
+    format_files "${scan_dir}"
+  done
 }
 
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
