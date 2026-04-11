@@ -8,7 +8,7 @@
 #
 # Description:
 #   Remove generated files: temp.pdf, temp.md, temp.pptx, a.out,
-#   extensionless binaries, and error_file_lists.txt.
+#   object files (.o), extensionless binaries, and error_file_lists.txt.
 #
 # Options:
 #   -h, --help   Show this help message
@@ -63,12 +63,25 @@ main() {
   # Remove extensionless executables (binary files without a dot in filename)
   while IFS= read -r -d '' file; do
     remove_if_exists "${file}"
-  done < <(find "${SCRIPT_DIR}" -type f ! -name '*.*' -print0)
+  done < <(find "${SCRIPT_DIR}" -type f ! -name '*.*' ! -name 'Makefile' -print0)
+
+  # Remove object files (.o)
+  while IFS= read -r -d '' file; do
+    remove_if_exists "${file}"
+  done < <(find "${SCRIPT_DIR}" -type f -name "*.o" -print0)
 
   # Remove error_file_lists.txt
   while IFS= read -r -d '' file; do
     remove_if_exists "${file}"
   done < <(find "${SCRIPT_DIR}" -name "error_file_lists.txt" -print0)
+
+  # Run make clean in directories containing a Makefile
+  while IFS= read -r -d '' makefile; do
+    local dir
+    dir="$(dirname "${makefile}")"
+    info "Run make clean in: ${dir}"
+    make -C "${dir}" clean >/dev/null 2>&1
+  done < <(find "${SCRIPT_DIR}" -name "Makefile" -print0)
 
   info "Clean complete."
 }
