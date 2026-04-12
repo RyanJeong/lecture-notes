@@ -347,7 +347,7 @@ labeled-statement:
 
 ## Iteration-Statements (Cont'd - 5)
 
-- ASCII 숫자 문자들을 정수로 변환하는 `atoi` 함수
+- ASCII 숫자 문자열을 정수로 변환하는 `atoi` 함수
   - 2장에서 소개한 `atoi`에서 **부호 처리**가 추가됨
 
 [//]: # (INCLUDE: ./c/03/src/atoi.c)
