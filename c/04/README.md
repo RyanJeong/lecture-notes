@@ -1,23 +1,9 @@
-# Functions and Program Structure
+<!-- _class: lead -->
+# 컴퓨터프로그래밍기초
 
-## Goals of This Chapter
+## Functions and Program Structure
 
-### 함수 사용의 이점과 선언 (프로토타입, Prototype)의 필요성 이해
-
-- 함수를 이용한 모듈화 및 사용자 정의 헤더 파일 소개
-
-### 범위 (Scope Rules), 연결성 (Linkage), 저장 기간 (Storage) 규칙
-
-- 네 개의 범위(파일 스코프, 블록 스코프, 함수 스코프, 프로토타입 스코프)
-- 세 개의 연결성(외부 연결성, 내부 연결성, 없음)
-- 선언에 따른 객체 저장 기간
-- 선언과 정의의 차이
-
-### 헤더 파일과 전처리기의 역할
-
-- 전처리 지시문을 활용한 헤더 가드
-
-### 재귀 호출의 작동 원리와 스택 프레임
+### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
 
 ---
 
@@ -27,32 +13,25 @@
 
 ### 함수 사용 이점
 
-#### 응집도 증가 및 결합도 감소
-
-- 관련 코드를 독립 영역(함수)으로 분리
-- **지역 분리로 인한 불필요한 상호작용 제거**
-
-#### 재사용성
-
-- 필요할 때 함수 호출만 하면 됨
-
-#### 가독성 향상
-
-- 재사용되는 코드를 함수로 분리해 사용함에 따라 코드가 구조화되고 간결해짐
-
-#### 유지보수성 향상
-
-- 함수 수정이 필요할 경우 **해당 함수에 대해서만 수정**
+1. 응집도 증가 및 결합도 감소
+    - 관련 코드를 독립 영역(함수)으로 분리
+    - **지역 분리로 인한 불필요한 상호작용 제거**
+2. 재사용성
+    - 필요할 때 함수 호출만 하면 됨
+3. 가독성 향상
+    - 재사용되는 코드를 함수로 분리해 사용함에 따라 코드가 구조화되고 간결해짐
+4. 유지보수성 향상
+    - 함수 수정이 필요할 경우 **해당 함수에 대해서만 수정**
 
 ---
 
 ## Basics of Functions (Cont'd - 1)
 
-### 입력 문자열 중 특정 패턴이 포함된 문자열만 출력하는 프로그램
-
-- 세 함수(`getline`, `strindex`, `printf`)를 사용
-  - `printf` 함수는 표준 함수
-  - `getline`, `strindex` 함수는 사용자 정의 함수
+- 입력 문자열 중 특정 패턴이 포함된 문자열만 출력하는 함수 기반 프로그램
+  - 세 함수(`getline`, `strindex`, `printf`)를 사용
+    - `printf` 함수는 표준 함수, `getline`, `strindex` 함수는 사용자 정의 함수
+  - UNIX 유틸리티 중 `grep`을 모방한 프로그램
+    - e.g., 패턴이 `"ould"`일 경우 입력에 대한 출력 예시
 
 ```text
 while (there's another line)           → getline
@@ -60,26 +39,35 @@ while (there's another line)           → getline
         print it                       → printf
 ```
 
-- UNIX 유틸리티 중 `grep`을 모방한 프로그램
-  - e.g., 패턴이 `"ould"`일 경우 입력에 대한 출력 예시
-
-![center](image.png)
+![h:300 center](img/00-grep.png)
 
 ---
 
 ## Basics of Functions (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/04/01_part1.c)
+[//]: # (INCLUDE: ./c/04/src/grep.c --to 8)
 
 ---
 
 ## Basics of Functions (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/04/01_part2.c)
+[//]: # (INCLUDE: ./c/04/src/grep.c --from 10 --to 24)
 
 ---
 
 ## Basics of Functions (Cont'd - 4)
+
+[//]: # (INCLUDE: ./c/04/src/grep.c --from 26 --to 38)
+
+---
+
+## Basics of Functions (Cont'd - 5)
+
+[//]: # (INCLUDE: ./c/04/src/grep.c --from 40)
+
+---
+
+## Basics of Functions (Cont'd - 6)
 
 ### 함수 정의
 
@@ -93,21 +81,21 @@ return‑type function‑name(parameter‑list)
 
 - ANSI C 이전에는 반환 타입 또는 매개변수 타입 생략이 가능했으나, C99부터 타입 생략은 **금지**되었음
 - 함수 정의 시 매개변수를 사용하지 않는다면 `void` 키워드를 사용해 의도를 분명히 할 것
-- 값을 반환하지 않는 함수의 타입은 `void` 키워드를 사용할 것
+- 값을 반환하지 않는 함수의 타입은 `void` 키워드 사용
 
 ### 함수 간 통신 방법
 
-| Category             | Description                                                       |
-|----------------------|-------------------------------------------------------------------|
-| Argument / Parameter | Value is copied and passed to the **callee**                         |
-| Return Value         | Computation result is copied back to the **caller**                  |
+| Category                   | Description                                                               |
+|----------------------------|---------------------------------------------------------------------------|
+| Argument / Parameter       | Value is copied and passed to the **callee**                              |
+| Return Value               | Computation result is copied back to the **caller**                       |
 | External (Global) Variable | Shared access without copying; **beware of tight coupling when overused** |
 
 ---
 
-## Basics of Functions (Cont'd - 5)
+## Basics of Functions (Cont'd - 7)
 
-### 반환문
+### 값 반환
 
 ```text
 jump-statement:
@@ -117,18 +105,27 @@ jump-statement:
     return expression(opt) ; ←
 ```
 
-- 함수의 반환 타입이 `void`가 아니라면 반환문을 통해 함수 호출 측으로 값을 전달할 수 있음
-- 반환문 표현식의 평가된 타입과 함수의 반환 타입이 서로 다를 경우, **함수의 반환 타입**으로 타입 변환
+- 함수의 반환 타입이 `void`가 아니라면 함수 호출 측으로 값을 반환할 수 있음
 
-[//]: # (INCLUDE: ./c/04/return_type.c)
+[//]: # (INCLUDE: ./c/04/src/return_ignore.c --from 2 --to 5 --no-comment)
+
+[//]: # (INCLUDE: ./c/04/src/return_ignore.c --from 11 --to 11 --no-comment)
 
 ---
 
-## Basics of Functions (Cont'd - 6)
+## Basics of Functions (Cont'd - 8)
+
+- 반환 표현식의 평가된 타입과 함수의 반환 타입이 서로 다를 경우, **함수의 반환 타입**으로 타입 변환
+
+[//]: # (INCLUDE: ./c/04/src/return_type.c)
+
+---
+
+## Basics of Functions (Cont'd - 9)
 
 ### 다중 소스 파일 구성
 
-- 입력 문자열 중 특정 패턴이 포함된 문자열만 출력하는 프로그램을 아래와 같이 여러 소스 파일로 분할할 수 있음
+- **입력 문자열 중 특정 패턴이 포함된 문자열만 출력하는 함수 기반 프로그램**은 아래와 같이 여러 파일로 분할 가능:
 
 ```text
 .
@@ -137,25 +134,39 @@ jump-statement:
 `-- strindex.c
 ```
 
+---
+
+## Basics of Functions (Cont'd - 10)
+
 - `getline.c`
 
-[//]: # (INCLUDE: ./c/04/02_grep/getline.c)
+[//]: # (INCLUDE: ./c/04/src/grep/getline.c)
 
 ---
 
-## Basics of Functions (Cont'd - 7)
+## Basics of Functions (Cont'd - 11)
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/04/02_grep/main.c)
+[//]: # (INCLUDE: ./c/04/src/grep/main.c --to 8)
 
 ---
 
-## Basics of Functions (Cont'd - 8)
+## Basics of Functions (Cont'd - 12)
+
+[//]: # (INCLUDE: ./c/04/src/grep/main.c --from 10)
+
+---
+
+## Basics of Functions (Cont'd - 13)
 
 - `strindex.c`
 
-[//]: # (INCLUDE: ./c/04/02_grep/strindex.c)
+[//]: # (INCLUDE: ./c/04/src/grep/strindex.c)
+
+---
+
+## Basics of Functions (Cont'd - 14)
 
 ### 빌드 방법
 
@@ -176,15 +187,15 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 ## Functions Returning Non-integers
 
-### 비정수 타입 값 반환 예 - 표준 함수 `atof`
+- ASCII 숫자 문자열을 실수로 변환하는 `atof` 함수
 
-[//]: # (INCLUDE: ./c/04/02.c)
+[//]: # (INCLUDE: ./c/04/src/atof.c)
 
 ---
 
 ## Functions Returning Non-integers (Cont'd - 1)
 
-### 기초적인 계산기 프로그램
+- 기초적인 계산기 프로그램
 
 ```text
 .
@@ -192,13 +203,17 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 `-- main.c
 ```
 
-- `main.c`
-
-[//]: # (INCLUDE: ./c/04/04_sum/main.c)
-
 ---
 
 ## Functions Returning Non-integers (Cont'd - 2)
+
+- `main.c`
+
+[//]: # (INCLUDE: ./c/04/src/rudimentary_calc/main.c)
+
+---
+
+## Functions Returning Non-integers (Cont'd - 3)
 
 ### 다중 소스 파일 컴파일 시 주의사항
 
@@ -212,7 +227,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
    (Object files + system libraries → Linking → Single executable file)
 ```
 
-- 만약 아래와 같이 프로그램을 작성할 경우 문제가 발생할 수 있음
+- 만약 아래와 같이 프로그램을 작성할 경우 문제가 발생할 수 있음:
 
 ```text
 .
@@ -220,27 +235,22 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 `-- main.c # Declarations of the functions implemented in func.c are missing
 ```
 
-- `main.c` 파일 내에 `func.c`에서 정의된 함수를 선언 없이 사용할 경우, **컴파일 시 오류가 발생하지 않음**
+- `func.c`에서 정의된 함수를 `main.c` 내에 선언 없이 사용할 경우, **컴파일 시 오류가 발생하지 않음**
   - 컴파일 오류는 링크 과정에서 함수의 호출부와 연결되어야 할 구현부를 찾지 못할 때 발생
-  - `main.c` 파일 내에 함수 선언이 누락됐더라도 링크 과정에서 구현부를 찾아 연결할 수 있음
-  - 문제는 컴파일러가 `main.c`를 목적 파일로 변환할 때 **함수의 반환 타입을 암묵적으로 `int`로 가정함**
     - 현대 표준(C99 이후)에서는 함수 선언 누락 시 컴파일 오류가 발생함
+- 문제는 컴파일러가 소스 파일을 목적 파일로 변환할 때 **선언이 누락된 함수의 반환 타입을 암묵적으로 `int`로 가정함**
 
 ---
 
-## Functions Returning Non-integers (Cont'd - 3)
+## Functions Returning Non-integers (Cont'd - 4)
 
 - `func.c`
 
-[//]: # (INCLUDE: ./c/04/no_dcl_function/func.c)
+[//]: # (INCLUDE: ./c/04/src/no_dcl_function_ignore.c --from 2 --to 10 --no-comment)
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/04/no_dcl_function/main.c)
-
-```text
-100 0.000000
-```
+[//]: # (INCLUDE: ./c/04/src/no_dcl_function_ignore.c --from 16 --to 18 --no-comment)
 
 ---
 
@@ -259,58 +269,53 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 - 내부 변수는 블록의 생애주기(lifecycle)에 의존하나, 외부 변수는 프로그램의 생애주기에 의존함
 - 내부 변수는 초기화를 생략하면 임의의 값이 들어있으나, 외부 변수는 초기화를 생략해도 0으로 초기화됨
 
-### 외부 변수 사용 시 주의사항
-
-- 외부 변수를 많은 함수가 사용할 경우 **과한 의존 관계**가 형성되어 모듈성이 저하됨
-- 이름이 너무 간결할 경우 충돌 또는 다른 지역에서 감춰질 위험이 있음
-
-[//]: # (INCLUDE: ./c/04/shadow_external.c)
-
 ---
 
 ## External Variables (Cont'd - 1)
 
-### 외부 변수를 이용한 계산기
+### 외부 변수 사용 시 주의사항
 
-- Postfix notation(Reverse Polish Notation, RPN)에 스택(stack)을 사용하는 사칙연산 계산기
+- 외부 변수를 많은 함수가 사용할 경우 **과한 의존 관계**가 형성되어 모듈성이 저하됨
+- 이름이 너무 간결할 경우 이름 충돌 또는 다른 지역에서 이름이 감춰질 위험이 있음
 
-#### Infix Notation, Postfix Notation
-
-- 사람은 사칙연산을 표현할 때 infix 표기를 사용
-  - 연산자가 피연산자 사이에 위치하는 표기법
-  - e.g., `(1 - 2) * (4 + 5)`
-- Postfix 표기의 장점은 **스택(stack) 자료 구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
-  - 연산자가 피연산자 뒤에 위치하는 표기법
-  - e.g., `1 2 - 4 5 + *`
-
-#### 스택 (Stack)
-
-- 한쪽 방향에서만 데이터를 추가(push)하거나 제거(pop)할 수 있는 구조
-
-![h:200 center](image-1.png)
+[//]: # (INCLUDE: ./c/04/src/shadow_external.c)
 
 ---
 
 ## External Variables (Cont'd - 2)
 
-### 스택을 사용한 Postfix Notation 수식 처리 과정
+- Postfix notation(Reverse Polish Notation, RPN), 스택(stack)을 사용하는 외부변수 기반 계산기 프로그램
+  - Infix notation: 연산자가 피연산자 사이에 위치하는 표기법
+    - 사람은 사칙연산을 표현할 때 infix 표기를 사용
+    - e.g., `(1 - 2) * (4 + 5)`
+  - Postfix notation: 연산자가 피연산자 뒤에 위치하는 표기법
+    - Postfix 표기의 장점은 **스택(stack) 자료 구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
+    - e.g., `1 2 - 4 5 + *`
+  - 스택 (Stack)
+    - 한쪽 방향에서만 데이터를 추가(push)하거나 제거(pop)할 수 있는 구조
 
-- Postfix 표기의 수식을 다음 규칙에 따라 처리:
-  1. 수식 중 피연산자는 스택에 push한다.
-  2. 수식 중 연산자는 스택에 있는 두 개의 데이터를 pop하여 연산한 뒤, 결과를 다시 스택에 push한다.
-  - e.g., `1 2 - 4 5 + *`
-
-| Token | `1` | `2` | `-` | `4` | `5` | `+` | `*` |
-|---|---|---|---|---|---|---|---|
-|0  | **`1`** | `1` | **`-1`** | `-1` | `-1` | `-1` | **`-9`** |
-|1  |  | **`2`** |  | **`4`** | `4` | **`9`** |  |
-|2  |  |  |  |  | **`5`** |  |  |
+![h:250 center](image-1.png)
 
 ---
 
 ## External Variables (Cont'd - 3)
 
-### 외부 변수를 이용한 계산기 - 프로그램 구조
+- 스택을 사용한 postfix notation 수식 처리 과정:
+  1. 수식 중 피연산자는 스택에 push한다.
+  2. 수식 중 연산자는 스택에 있는 두 개의 데이터를 pop하여 연산한 뒤, 결과를 다시 스택에 push한다.
+  - e.g., `1 2 - 4 5 + *`
+
+| Token | `1`     | `2`     | `-`      | `4`     | `5`     | `+`     | `*`      |
+|-------|---------|---------|----------|---------|---------|---------|----------|
+|0      | **`1`** | `1`     | **`-1`** | `-1`    | `-1`    | `-1`    | **`-9`** |
+|1      |         | **`2`** |          | **`4`** | `4`     | **`9`** |          |
+|2      |         |         |          |         | **`5`** |         |          |
+
+---
+
+## External Variables (Cont'd - 4)
+
+- 외부 변수 기반 계산기 프로그램 구조
 
 ```text
 while (next operator or operand is not end-of-file indicator)
@@ -328,67 +333,15 @@ while (next operator or operand is not end-of-file indicator)
 
 ---
 
-## External Variables (Cont'd - 4)
+## External Variables (Cont'd - 5)
 
-```c
-#include <stdio.h>
-#include <stdlib.h> /* for atof() */
-
-#define MAXOP 100  /* max size of operand or operator */
-#define NUMBER '0' /* signal that a number was found */
-
-int getop(char[]);
-void push(double);
-double pop(void);
-
-/* reverse Polish calculator */
-int main(void)
-{
-    int type;
-    double op2;
-    char s[MAXOP];
-
-    while ((type = getop(s)) != EOF) {
-        switch (type) {
-        case NUMBER:
-            push(atof(s));
-            break;
-        case '+':
-            push(pop() + pop());
-            break;
-        case '*':
-            push(pop() * pop());
-            break;
-```
+[//]: # (INCLUDE: ./c/04/src/stack_calc.c --to 22)
 
 ---
 
-## External Variables (Cont'd - 5)
+## External Variables (Cont'd - 6)
 
-```c
-        case '-':
-            op2 = pop();
-            push(pop() - op2); /* push(pop() - pop()): UB! */
-            break;
-        case '/':
-            op2 = pop();
-            if (op2 != 0.0)
-                push(pop() / op2);
-            else
-                printf("error: zero divisor\n");
-            break;
-        case '\n':
-            printf("\t%.8g\n", pop());
-            break;
-        default:
-            printf("error: unknown command %s\n", s);
-            break;
-        }
-    }
-
-    return 0;
-}
-```
+[//]: # (INCLUDE: ./c/04/src/stack_calc.c --from 23 --to 39)
 
 - **뺄셈과 나눗셈은 교환법칙이 성립하지 않음**
 - 평가 순서는 `&&`, `||`. `?:`, `,` 연산자 외에는 미정의(unspecified)이므로 순서를 명확히 표현해야 함
@@ -396,96 +349,37 @@ int main(void)
 
 ---
 
-## External Variables (Cont'd - 6)
-
-```c
-#define MAXVAL 100 /* maximum depth of val stack */
-
-int sp = 0;         /* next free stack position */
-double val[MAXVAL]; /* value stack */
-
-/* push: push f onto value stack */
-void push(double f)
-{
-    if (sp < MAXVAL)
-        val[sp++] = f;
-    else
-        printf("error: stack full, can't push %g\n", f);
-}
-
-/* pop: pop and return top value from stack */
-double pop(void)
-{
-    if (sp > 0)
-        return val[--sp];
-    printf("error: stack empty\n");
-
-    return 0.0;
-}
-```
-
-- 전역 변수는 파일 범위(file scope)를 가짐
-  - 전역 변수의 이름은 선언 지점으로부터 파일의 끝까지 유효
-  - 두 전역 변수 `sp`, `val`은 `main` 함수에서 접근할 수 없도록 **의도적으로** `main` 함수 이후에 선언한 것
-
----
-
 ## External Variables (Cont'd - 7)
 
-```c
-#include <ctype.h> /* for isdigit() */
+[//]: # (INCLUDE: ./c/04/src/stack_calc.c --from 40 --to 55)
 
-int getch(void);
-void ungetch(int);
-
-/* getop: get next character or numeric operand */
-int getop(char s[])
-{
-    int i, c;
-
-    while ((s[0] = c = getch()) == ' ' || c == '\t') {}
-    s[1] = '\0';
-    if (!isdigit(c) && c != '.')
-        return c; /* not a number */
-    i = 0;
-    if (isdigit(c)) /* collect integer part */
-        while (isdigit(s[++i] = c = getch())) {}
-    if (c == '.') /* collect fraction part */
-        while (isdigit(s[++i] = c = getch())) {}
-    s[i] = '\0';
-    if (c != EOF)
-        ungetch(c);
-
-    return NUMBER;
-}
-```
+- 전역 변수의 이름은 선언 지점으로부터 파일의 끝까지 유효
+  - 전역 변수는 파일 범위(file scope)를 가짐
+- 두 전역 변수 `sp`, `val`은 `main` 함수에서 접근할 수 없도록 **의도적으로** `main` 함수 이후에 선언한 것
 
 ---
 
 ## External Variables (Cont'd - 8)
 
-```c
-#define BUFSIZE 100
+[//]: # (INCLUDE: ./c/04/src/stack_calc.c --from 57 --to 76)
 
-char buf[BUFSIZE]; /* buffer for ungetch */
-int bufp = 0;      /* next free position in buf */
+- 헤더 파일에 작성된 함수 선언들은 `#include` 전처리문으로 파일을 포함한 지점으로부터 해당 소스 파일의 끝까지 유효
 
-int getch(void) /* get a (possibly pushed-back) character */
-{
-    return (bufp > 0) ? buf[--bufp] : getchar();
-}
+---
 
-void ungetch(int c) /* push character back on input */
-{
-    if (bufp >= BUFSIZE)
-        printf("ungetch: too many characters\n");
-    else
-        buf[bufp++] = c;
-}
-```
+## External Variables (Cont'd - 9)
 
-- 프로그램은 데이터 입력 시 입력 스트림에 있는 데이터를 읽어옴
-- 만약 처리해야 할 데이터보다 더 많은 데이터를 읽어온 경우, `ungetch` 함수를 사용해 값을 보존해야 함
+[//]: # (INCLUDE: ./c/04/src/stack_calc.c --from 78 --to 99)
+
+---
+
+## External Variables (Cont'd - 10)
+
+[//]: # (INCLUDE: ./c/04/src/stack_calc.c --from 101)
+
+- `#define` 지시자로 작성된 매크로는 해당 매크로를 정의한 지점으로부터 해당 소스 파일의 끝까지 유효
+- 프로그램이 데이터를 읽어올 때, 만약 읽어야 할 데이터보다 더 많은 데이터를 읽어온 경우 이를 어딘가에 보존해야 함
+- `ungetch` 함수는 읽어온 데이터 중 보존해야 할 데이터(아직 처리하지 않은 데이터)를 보존
 - `getch` 함수는 보존된 데이터가 있다면 이를 먼저 사용한 뒤, 입력 스트림을 통해 데이터를 읽어옴
 
 ---
@@ -497,7 +391,6 @@ void ungetch(int c) /* push character back on input */
 > The scope of an identifier is the portion of the program in which the identifier can be used to denote the object, function, or tag with which it is associated.
 
 - 범위(scope)는 식별자(identifiers)가 유효하게 사용될 수 있는 코드 범위를 의미
-- 번역 단위(translation unit)는 하나의 C 소스 파일이 전처리기에 의해 전처리된 결과물을 의미
 
 | Scope Type          | Applicable Identifiers        | Start Point                 | End Point                   | Summary Description                     |
 |---------------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------------------|
@@ -505,6 +398,8 @@ void ungetch(int c) /* push character back on input */
 | **Block Scope**     | Local variables, parameters   | Point of declaration        | End of the enclosing block  | Visible only within the block           |
 | **Function Scope**  | Labels (for `goto`)           | Beginning of the function   | End of the function         | Labels are visible anywhere in function |
 | **Prototype Scope** | Parameter names in prototypes | Beginning of the prototype  | End of the prototype        | Names are valid only in the prototype   |
+
+- 번역 단위(translation unit)는 하나의 C 소스 파일이 전처리기에 의해 전처리된 결과물을 의미
 
 ---
 
@@ -515,7 +410,7 @@ void ungetch(int c) /* push character back on input */
 - 식별자(변수 또는 함수의 이름) 선언이 전역 공간(outside of all blocks)에 위치한 경우
 - 식별자는 선언된 위치로부터 파일의 끝까지 유효함
 
-[//]: # (INCLUDE: ./c/04/file_scope.c)
+[//]: # (INCLUDE: ./c/04/src/file_scope.c)
 
 ---
 
@@ -526,7 +421,7 @@ void ungetch(int c) /* push character back on input */
 - 식별자가 블록 내에 위치한 경우
 - 식별자는 블록 내 선언된 위치로부터 해당 블록의 끝까지 유효함
 
-[//]: # (INCLUDE: ./c/04/block_scope.c)
+[//]: # (INCLUDE: ./c/04/src/block_scope.c)
 
 ---
 
@@ -537,7 +432,7 @@ void ungetch(int c) /* push character back on input */
 - 레이블만 사용하는 스코프
 - 레이블이 등장한 함수 전체에서 유효함
 
-[//]: # (INCLUDE: ./c/04/function_scope.c)
+[//]: # (INCLUDE: ./c/04/src/function_scope.c)
 
 ---
 
@@ -545,11 +440,11 @@ void ungetch(int c) /* push character back on input */
 
 ### 프로토타입 스코프 (Prototype Scope)
 
-- 함수 선언에 사용한 매개변수만 사용하는 스코프
+- 함수 선언에 사용되는 매개변수만 사용하는 스코프
 - 선언에 등장하는 매개변수 식별자는 선언 내에서만 유효함
 - **타입 검사 목적으로만 사용**
 
-[//]: # (INCLUDE: ./c/04/prototype_scope.c)
+[//]: # (INCLUDE: ./c/04/src/prototype_scope.c)
 
 ---
 
@@ -561,15 +456,14 @@ void ungetch(int c) /* push character back on input */
 
 - 연결성(linkage)은 식별자가 다른 파일(translation unit)에서도 공유될 수 있는지 여부를 의미
 - 저장 기간(storage duration)은 객체(objects)가 메모리에 존재하는 생애주기를 의미
-- `typedef` 키워드는 문법적으로만 분류된 형태임
 
-| Keyword     | Scope        | Linkage          | Storage Duration              | Description                                 |
-|-------------|--------------|------------------|-------------------------------|---------------------------------------------|
-| `auto`      | Block         | None             | Automatic (expires at block end) | Default for local variables                |
-| `register`  | Block         | None             | Automatic                     | Cannot take address, register optimization hint |
-| `static`    | Block / File  | None / Internal   | Static (until program ends)   | Retains value / Not accessible from other files |
-| `extern`    | Block / File  | External          | Static                        | References a definition from another file   |
-| `typedef`   | Block / File  | None              | None (type alias only)        | Defines a new type name (alias)             |
+| Keyword     | Scope        | Linkage         | Storage Duration                 | Description                                     |
+|-------------|--------------|-----------------|----------------------------------|-------------------------------------------------|
+| `auto`      | Block        | None            | Automatic (expires at block end) | Default for local variables                     |
+| `register`  | Block        | None            | Automatic                        | Cannot take address, register optimization hint |
+| `static`    | Block / File | None / Internal | Static (until program ends)      | Retains value / Not accessible from other files |
+| `extern`    | Block / File | External        | Static                           | References a definition from another file       |
+| `typedef`   | Block / File | None            | None (type alias only)           | Defines a new type name (alias) **only**        |
 
 ---
 
