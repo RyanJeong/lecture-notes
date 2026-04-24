@@ -25,7 +25,7 @@ int main(void)
             break;
         case '-':
             op2 = pop();
-            push(pop() - op2); /* push(pop() – pop()): Error! */
+            push(pop() - op2); /* push(pop() - pop()): Error! */
             break;
         case '/':
             op2 = pop();

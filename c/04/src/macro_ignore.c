@@ -14,7 +14,7 @@ SQUARE(x + 1); /* x + 1 * x + 1 */
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 void foo(void)
 {
-    /* The two format-specifier strings of `printf` are the actually same */
+    /* The two format-specifier strings of `printf` are actually the same */
     printf("Integer variable "
            "x"
            " is %d\n",
