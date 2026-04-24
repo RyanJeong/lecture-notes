@@ -872,12 +872,12 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ### 지역 변수 선언
 
-- 지역 변수(local variable or automatic variable)는 선언 시 **쓰레기 값(undefined value)을 갖는 변수가 생성됨**
+- 지역 변수(local variable or automatic variable)는 선언 시 초기화자가 없다면 **쓰레기 값(undefined value)을 가짐**
 - 지역 변수 초기화에 사용하는 초기화자(initializer)에는 아무 표현식이나 사용 가능
 
 ### 전역 변수 선언
 
-- 전역 변수는 선언 시 **0으로 초기화된 변수가 생성됨**
+- 전역 변수는 선언 시 초기화자가 없다면 **0으로 초기화됨**
 - 전역 변수 초기화에 사용하는 초기화자에는 **상수 표현식**만 사용 가능
 
 ### 한정사 `const`
