@@ -236,7 +236,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 ```
 
 - `func.c`에서 정의된 함수를 `main.c` 내에 선언 없이 사용할 경우, **컴파일 시 오류가 발생하지 않음**
-  - 컴파일 오류는 링크 과정에서 함수의 호출부와 연결되어야 할 구현부를 찾지 못할 때 발생
+  - 링크 오류는 링크 과정에서 함수의 호출부와 연결되어야 할 구현부를 찾지 못할 때 발생
     - 현대 표준(C99 이후)에서는 함수 선언 누락 시 컴파일 오류가 발생함
 - 문제는 컴파일러가 소스 파일을 목적 파일로 변환할 때 **선언이 누락된 함수의 반환 타입을 암묵적으로 `int`로 가정함**
 
@@ -256,7 +256,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 ## External Variables
 
-### 내부 (Internal)와 외부 (External)
+### 내부(Internal)와 외부(External)
 
 - 내부는 **함수의 본문** 또는 **복합문**을 의미하며, 변수(지역 변수와 매개변수), 함수의 선언, 문장 사용 가능
   - **문장은 내부에만 존재할 수 있음**
@@ -291,7 +291,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
   - Postfix notation: 연산자가 피연산자 뒤에 위치하는 표기법
     - Postfix 표기의 장점은 **스택(stack) 자료 구조와 같이 사용할 경우 연산자와 피연산자 간 대응을 명확히 할 수 있음**
     - e.g., `1 2 - 4 5 + *`
-  - 스택 (Stack)
+  - 스택(Stack)
     - 한쪽 방향에서만 데이터를 추가(push)하거나 제거(pop)할 수 있는 구조
 
 ![h:250 center](img/01-stack.png)
@@ -344,7 +344,7 @@ while (next operator or operand is not end-of-file indicator)
 [//]: # (INCLUDE: ./c/04/src/stack_calc.c --from 23 --to 39)
 
 - **뺄셈과 나눗셈은 교환법칙이 성립하지 않음**
-- 평가 순서는 `&&`, `||`. `?:`, `,` 연산자 외에는 미정의(unspecified)이므로 순서를 명확히 표현해야 함
+- 평가 순서는 `&&`, `||`, `?:`, `,` 연산자 외에는 미정의(unspecified)이므로 순서를 명확히 표현해야 함
 - 나눗셈 연산 시 제수는 0이 아닌 수여야 함
 
 ---
@@ -552,7 +552,7 @@ Storage Duration : Static           / Static
 - 다른 파일에 있는 함수 정의 또는 외부 변수를 참조할 수 있게 함(external linkage)
   - `static` 키워드를 사용하지 않은 식별자에 대해 접근할 수 있도록 함
 - 같은 파일 내에 선언된 전역 변수를 블록에서 사용할 때 `extern` 키워드는 선택사항
-  - 전역 변수는 기본적으로 파일 스코프이므로 내부 연결성을 가짐
+  - 전역 변수는 파일 스코프를 가지며, `static`이 없으면 기본 연결성은 외부 연결성임
 - 하나의 번역 단위(translation unit)에 정의가 여러 개 존재하면 정의 중복으로 인한 컴파일 오류 발생
 
 ---
@@ -571,7 +571,7 @@ Storage Duration : Static           / Static
 
 ## Scope Rules (Cont'd - 12)
 
-### 외부 선언 (External Declarations)과 외부 정의 (External Definitions)
+### 외부 선언(External Declarations)과 외부 정의(External Definitions)
 
 - 함수는 선언과 정의를 구분하지만, **변수 선언은 곧 정의를 의미**
   - 선언은 식별자의 존재를 알리며, 정의는 식별자의 메모리를 할당
@@ -692,7 +692,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 ## Header Files (Cont'd - 4)
 
-### 헤더 가드 (Header Guard)
+### 헤더 가드(Header Guard)
 
 - 다음은 헤더 파일이 **중복 포함**되어 컴파일 시 오류 발생
 
@@ -709,7 +709,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 - 헤더 가드는 헤더 파일이 전처리 과정에서 **중복 포함되는 것을 방지**함
 - 전통적으로 전처리문 중 `#ifndef`를 사용해 구현
 
-[//]: # (INCLUDE: ./c/04/src/header_guard_ignore.c --from 21 --to 27 --no-comment)
+[//]: # (INCLUDE: ./c/04/src/header_guard_ignore.c --from 21 --to 28 --no-comment)
 
 [//]: # (INCLUDE: ./c/04/src/header_guard_ignore.c --from 10 --to 11 --no-comment)
 
@@ -814,7 +814,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 ## Recursion (Cont'd - 2)
 
-### 스택 프레임 (Stack Frame)
+### 스택 프레임(Stack Frame)
 
 - 함수는 호출될 때마다 스택 메모리 영역에 스택 프레임(stack frame)이 생성됨
 
@@ -882,7 +882,7 @@ Stack (Low Address)
 
 - 전처리 과정에서 사용되는 전처리문(preprocessing directives) 소개
 
-### 파일 포함 (File Inclusion)
+### 파일 포함(File Inclusion)
 
 ```text
 #include <filename>
@@ -901,7 +901,7 @@ Stack (Low Address)
 
 ## The C Preprocessor (Cont'd - 1)
 
-### 매크로 치환 (Macro Substitution)
+### 매크로 치환(Macro Substitution)
 
 ```text
 #define identifier token-sequence
@@ -927,14 +927,14 @@ Stack (Low Address)
 
 ## The C Preprocessor (Cont'd - 3)
 
-### 매크로 치환의 다양한 형태 1 - 함수형 매크로 (Function-Like Macro Definition)
+### 매크로 치환의 다양한 형태 1 - 함수형 매크로(Function-Like Macro Definition)
 
 [//]: # (INCLUDE: ./c/04/src/macro_func.c)
 
 - 매개변수를 받아 치환하는 형태
 - 함수보다 빠르게 동작(in-line code이므로 함수 호출을 하지 않음)
 - **잘못된 전달인자를 넘겨주면 오류가 발생할 수 있음**
-  - 전처리 과정에서 식별자는 토큰으로 치환만 되며, 자료형을 상관하지 않음
+  - 전처리 과정에서 식별자는 토큰으로 치환만 되며, 타입을 상관하지 않음
 
 ---
 
@@ -954,7 +954,7 @@ Stack (Low Address)
 
 ## The C Preprocessor (Cont'd - 5)
 
-### 매크로 치환의 다양한 형태 2 - 여러 줄 매크로 (Multi-Line Macro)
+### 매크로 치환의 다양한 형태 2 - 여러 줄 매크로(Multi-Line Macro)
 
 - 토큰에 여러 문장을 사용해야 할 경우 **연결됨**을 나타내는 백슬래시(`\`)를 각 행 끝에 표현
   - 전처리기는 `\` 기호를 만나면 줄바꿈을 무시하고 하나의 긴 토큰으로 인식
@@ -965,7 +965,7 @@ Stack (Low Address)
 
 ## The C Preprocessor (Cont'd - 6)
 
-### 여러 줄 매크로 (Multi-Line Macro) 사용 시 권장 형태
+### 여러 줄 매크로(Multi-Line Macro) 사용 시 권장 형태
 
 - 매크로를 사용한 복합문 표현 시 **do-while문을 사용하는 것이 일반적임**
 - Do-while문 없이 사용한 여러 줄 매크로는 일부 문맥에서 오작동할 수 있음
@@ -978,9 +978,9 @@ Stack (Low Address)
 
 ### 매크로 치환의 다양한 형태 3 - 함수형 매크로의 문자열 전달 방법
 
-- **함수형 매크로의 전달인자로 문자열은 사용할 수 없음**
-  - 전처리기는 전처리 과정에서 큰따옴표는 `\"` 형태로, 역슬래시는 `\\` 형태로 치환함
-- 토큰 내 문자열을 사용해야 할 경우 문자열 역할을 수행할 토큰 앞에 `#`을 붙여 사용해야 함
+- 식별자 이름 자체를 문자열로 변환하려면 문자열화 연산자 `#`를 사용해야 함
+  - `#` 연산자는 매개변수 토큰을 문자열 리터럴로 변환함
+- 함수형 매크로의 전달인자로 문자열 리터럴도 사용 가능
 
 [//]: # (INCLUDE: ./c/04/src/macro3.c)
 
@@ -998,7 +998,7 @@ Stack (Low Address)
 
 ## The C Preprocessor (Cont'd - 9)
 
-### 매크로 치환의 다양한 형태 4 - 토큰 연결 연산자 (Token-Pasting Operator)
+### 매크로 치환의 다양한 형태 4 - 토큰 연결 연산자(Token-Pasting Operator)
 
 - `##` 연산자는 토큰 연결 연산자이며, 전처리 연산자 중 하나임
 - 전처리 과정에서 `##` 연산자를 사용해 표현한 토큰은 하나의 토큰으로 연결됨
@@ -1017,7 +1017,7 @@ Stack (Low Address)
 
 ## The C Preprocessor (Cont'd - 11)
 
-### 조건부 포함 (Conditional Inclusion)
+### 조건부 포함(Conditional Inclusion)
 
 ```text
 #if constant-expression
