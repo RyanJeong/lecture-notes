@@ -1,7 +1,7 @@
 <!-- _class: lead -->
 # 컴퓨터프로그래밍기초
 
-## Pointers  and  Arrays
+## Pointers and Arrays
 
 ### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
 
