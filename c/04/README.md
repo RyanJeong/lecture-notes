@@ -835,16 +835,21 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 ```text
 Stack (High Address)
 +-------------------+
-| n = 1             | <-- printd(1), top of the stack
-| return address    | <-- an address of the next op, putchar(12 % 10 + '0');
-+-------------------+
-| n = 12            | <-- printd(12)
-| return address    | <-- an address of the next op, putchar(123 % 10 + '0');
+|                   | <-- main() (no parameters or local variables)
+| return address    | <-- to C runtime (OS)
+| prev frame ptr    | <-- C runtime's frame ptr
 +-------------------+
 | n = 123           | <-- printd(123)
 | return address    | <-- an address of the next op, return 0;
+| prev frame ptr    | <-- main()'s frame ptr
 +-------------------+
-| return address    | <-- main()
+| n = 12            | <-- printd(12)
+| return address    | <-- an address of the next op, putchar(123 % 10 + '0');
+| prev frame ptr    | <-- printd(123)'s frame ptr
++-------------------+
+| n = 1             | <-- printd(1), top of the stack
+| return address    | <-- an address of the next op, putchar(12 % 10 + '0');
+| prev frame ptr    | <-- printd(12)'s frame ptr
 +-------------------+
 Stack (Low Address)
 ```
