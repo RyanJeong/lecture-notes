@@ -604,7 +604,7 @@ print them in order
 [//]: # (INCLUDE: ./c/05/src/n_dim_arr.c --from 4 --to 9 --no-comment)
 
 - 표현식 `matrix[i][j]` 는 `*(*(matrix + i) + j)` 로 계산
-- 오프셋 계산 식은 `i * <COLUMNS> + j`
+- 오프셋 계산 식은 `(i * <COLUMNS>) + j`
 
 ---
 
@@ -615,7 +615,7 @@ print them in order
 [//]: # (INCLUDE: ./c/05/src/n_dim_arr.c --from 27 --to 36 --no-comment)
 
 - 표현식 `cube[i][j][k]` 는 `*(*(*(cube + i) + j) + k)` 로 계산
-- 오프셋 계산식은 `(i * <ROWS> + j) * <COLUMNS> + k`
+- 오프셋 계산식은 `(i * <ROWS> * <COLUMNS>) + (j * <COLUMNS>) + k`
 
 ---
 
@@ -692,12 +692,12 @@ print them in order
 
 ![center](img/23-name.png)
 
-- 2차원 배열의 각 행 길이는 고정(총 60 bytes를 연속적으로 메모리에 할당)
+- 포인터 배열의 각 행 길이는 **가변**(총 4개의 포인터 변수를 연속적으로 메모리에 할당)
+  - 문자열 26(14 + 4 + 4 + 4) bytes + 포인터 32(8 * 4, if the machine is LP64) bytes 사용
 
 ![center](img/24-aname.png)
 
-- 포인터 배열의 각 행 길이는 **가변**(총 4개의 포인터 변수를 연속적으로 메모리에 할당)
-  - 문자열 26(14 + 4 + 4 + 4) bytes + 포인터 32(8 * 4, if the machine is LP64) bytes 사용
+- 2차원 배열의 각 행 길이는 **고정**(총 60 bytes를 연속적으로 메모리에 할당)
 
 ---
 
