@@ -6,7 +6,7 @@ MAX(i++, j++); /* ((i++) > (j++) ? (i++) : (j++)) */
 #endif         /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-#define SQUARE(x) x *x
+#define SQUARE(x) (x * x)
 SQUARE(x + 1); /* x + 1 * x + 1 */
                /* -> Missing parentheses cause incorrect evaluation */
 #endif         /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
