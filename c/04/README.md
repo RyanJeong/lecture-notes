@@ -879,6 +879,8 @@ Stack (Low Address)
 
 [//]: # (INCLUDE: ./c/04/src/qsort.c --from 20)
 
+- 배열 `16, 4, 12, 9, 13, 15, 1, 8, 11` 오름차순 정렬 과정
+
 ![center](img/06-qsort.png)
 
 ---
@@ -949,11 +951,11 @@ Stack (Low Address)
 
 - 부수효과가 있는 표현은 잘못된 결과를 초래할 수 있음
 
-[//]: # (INCLUDE: ./c/04/src/macro_ignore.c --from 2 --to 5)
+[//]: # (INCLUDE: ./c/04/src/macro_ignore.c --from 2 --to 5 --no-comment)
 
 - 매개변수 토큰에 괄호를 잘못 사용하거나 쓰지 않아 매크로 치환이 의도와는 다르게 되는 경우
 
-[//]: # (INCLUDE: ./c/04/src/macro_ignore.c --from 9 --to 11)
+[//]: # (INCLUDE: ./c/04/src/macro_ignore.c --from 9 --to 11 --no-comment)
 
 ---
 
