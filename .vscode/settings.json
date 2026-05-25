@@ -8,6 +8,15 @@
       }
     ]
   },
+
+  "diffEditor.ignoreTrimWhitespace": false,
+  "chat.tools.terminal.autoApprove": {
+    "/^grep -nE \"자료형\\|데이터형\\|저장 부류\\|매개 변수\\|전달 인자\\|반환 값\\|정수형\\|실수형\\|문자형\\|포인터형\\|이여야\\|것입니다\\|하여야\\|하게 됩니다\\|통하여\" c/04/temp\\.md \\|\\| true && grep -nP \"\\\\\\)\\\\\\*\\\\\\*\\(\\?!\\$\\)\" c/04/temp\\.md \\|\\| true && grep -n \"DO NOT CONTAIN THIS LINE IN THE MARKDOWN\" c/04/temp\\.md \\|\\| true$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  },
+
   // Munseong: disable autosave to avoid frequent rebuilds
   "files.autoSave": "off",
 
