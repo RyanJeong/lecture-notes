@@ -832,3 +832,33 @@ void free(void *p);
 ## Appendix C. Example Program Using `qsort` and `bsearch` (Cont'd)
 
 [//]: # (INCLUDE: ./c/06/src/bsearch.c --from 11)
+
+---
+
+## Appendix D. `volatile`
+
+- **컴파일러 최적화로부터 보호**가 필요한 객체에 사용하는 타입 한정자(type qualifier)
+  - 객체의 값이 프로그램 외부(하드웨어, 시그널 핸들러 등)에서 변경될 수 있음을 컴파일러에 알림
+  - 컴파일러는 `volatile` 객체에 대한 접근을 **캐시하거나 생략하지 않고**, 매번 실제 메모리를 통해 수행
+- 주요 사용 사례:
+  1. **메모리 맵 I/O 레지스터** — 하드웨어가 언제든 값을 변경할 수 있는 레지스터
+  2. **시그널 핸들러** — 시그널 핸들러에서 수정되는 전역 변수
+  3. **`setjmp`/`longjmp`** — 비지역 분기 이후에도 올바른 값을 보장해야 하는 변수
+- `volatile`은 원자성(atomicity)이나 스레드 안전성(thread safety)을 보장하지 않음
+
+---
+
+## Appendix D. `volatile` (Cont'd)
+
+[//]: # (INCLUDE: ./c/06/src/volatile_example.c --to 10)
+
+---
+
+## Appendix D. `volatile` (Cont'd - 2)
+
+[//]: # (INCLUDE: ./c/06/src/volatile_example.c --from 12)
+
+- `g_done`은 `handle_sigint` 시그널 핸들러에 의해 수정되는 전역 변수
+- `volatile` 없이는 컴파일러가 `g_done`을 레지스터에 캐시
+- **시그널 수신 이후에도 루프가 종료되지 않을 수 있음**
+- `volatile`로 선언하면 매 반복마다 `g_done`을 실제 메모리에서 읽도록 강제됨
