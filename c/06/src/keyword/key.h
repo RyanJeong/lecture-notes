@@ -1,5 +1,5 @@
-#ifndef ___KEYWORD_KEY_H___
-#define ___KEYWORD_KEY_H___
+#ifndef __KEYWORD_KEY_H__
+#define __KEYWORD_KEY_H__
 
 struct key {
     char *word;
