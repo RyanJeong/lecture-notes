@@ -145,7 +145,7 @@ cat out
 
 ## Formatted Output — Printf (Cont'd - 4)
 
-### 정수타입 변환 지정자 예시 1
+### 정수 타입 변환 지정자 예시 1
 
 [//]: # (INCLUDE: ./c/07/src/printf_int1.c --from 6 --to 23 --no-comment)
 
@@ -153,7 +153,7 @@ cat out
 
 ## Formatted Output — Printf (Cont'd - 5)
 
-### 정수타입 변환 지정자 예시 2
+### 정수 타입 변환 지정자 예시 2
 
 [//]: # (INCLUDE: ./c/07/src/printf_int2.c --from 6 --to 19 --no-comment)
 
@@ -225,7 +225,7 @@ else
 
 - `printf` 함수의 실제 선언은 `int printf(char *fmt, ...)`
 - 함수의 매개변수 중 `...` 표현은 전달인자의 수 또는 타입이 **변한다**는 의미
-- 가변 전달인자는 함수 호출 시 **형이 승격된 값** 형태로 **이름 없는 객체**가 생성됨 (**call by value**)
+- 가변 전달인자는 함수 호출 시 **타입이 승격된 값** 형태로 **이름 없는 객체**가 생성됨 (**값에 의한 전달**)
   - `char` 또는 `short` 타입 객체는 `int` 타입으로 승격(§3.2.1.1 — "Integral Promotions")
   - `float` 타입 객체는 `double` 타입으로 승격(§3.2.1.2 — "Floating Promotions")
 
@@ -236,8 +236,8 @@ else
 - `va_start` 매크로는 `va_list` 타입 객체가 **이름 없는 객체 중 첫 객체를 가리키도록 초기화**
   - `va_list` 타입 객체를 사용하기 전에 반드시 호출되어야 함
 - `va_arg` 매크로는 `va_list` 타입 객체가 가리키는 이름 없는 객체를 지정한 타입으로 읽어옴
-  - `va_arg` 매크로가 호출될 때마다 `va_list`타입 객체는 자동으로 다음 이름 없는 객체를 가리킴
-- `va_end` 매크로는 `va_list`타입 객체를 정리(cleanup)
+  - `va_arg` 매크로가 호출될 때마다 `va_list` 타입 객체는 자동으로 다음 이름 없는 객체를 가리킴
+- `va_end` 매크로는 `va_list` 타입 객체를 정리(cleanup)
   - 가변 전달인자 함수 종료 전 반드시 호출해야 하며, 미호출 시 UB
 
 ---
@@ -265,7 +265,7 @@ else
   - `scanf` 함수의 전달인자는 **반드시 포인터여야 함**
   - 포인터 아닌 인자를 넘겨줘도 **컴파일 오류가 발생하지 않으므로 주의**할 것
 - 형식 문자열을 끝까지 처리했거나(exhausts) 전달인자 수 또는 타입이 형식 문자열과 일치하지 않으면 종료됨
-- 읽어온 데이터를 전달인자에 성공적으로 전달한 갯수를 정수 값으로 반환
+- 읽어온 데이터를 전달인자에 성공적으로 전달한 개수를 정수 값으로 반환
 - 표준 입력에 더 이상 읽어올 데이터가 없다면 `EOF` 반환
 
 [//]: # (INCLUDE: ./c/07/src/scanf.c)
@@ -304,7 +304,7 @@ else
 
 ## Formatted Input — Scanf (Cont'd - 3)
 
-### 정수타입 변환 지정자 예시
+### 정수 타입 변환 지정자 예시
 
 [//]: # (INCLUDE: ./c/07/src/scanf_int.c --from 6 --to 23 --no-comment)
 
@@ -337,7 +337,7 @@ else
 [//]: # (INCLUDE: ./c/07/src/scanf_white1.c --from 6 --to 13 --no-comment)
 
 - **형식 문자열 내 공백을 활용해 불필요한 공백을 소비하는 방법**
-- 표준 입력에 포함된 공백의 수 갯수와 관계 없이 사용 가능
+- 표준 입력에 포함된 공백의 개수와 관계없이 사용 가능
 
 ---
 
@@ -582,7 +582,7 @@ FILE *fp;
 
 ---
 
-## Error Handling — Stderr and Exit (Cont`d - 1)
+## Error Handling — Stderr and Exit (Cont'd - 1)
 
 - 오류 처리 개선 및 `stderr` 스트림을 적용한 `cat`
   - `cat` 첫 버전은 **일반 출력과 오류 출력 둘 다 표준 출력 스트림으로 전달**
@@ -592,13 +592,13 @@ FILE *fp;
 
 ---
 
-## Error Handling — Stderr and Exit (Cont`d - 2)
+## Error Handling — Stderr and Exit (Cont'd - 2)
 
 [//]: # (INCLUDE: ./c/07/src/advanced_cat.c --from 13 --to 33)
 
 ---
 
-## Error Handling — Stderr and Exit (Cont`d - 3)
+## Error Handling — Stderr and Exit (Cont'd - 3)
 
 [//]: # (INCLUDE: ./c/07/src/advanced_cat.c --from 34)
 
@@ -703,7 +703,7 @@ tolower(c)    return c converted to lower case
 
 ### 문자 되돌리기: `int ungetc(int c, FILE *fp)`
 
-- 문자 `c`를 스트림으로 다시 내보내며, 성공하면 `c`, 실패하면 `EOF` 반환
+- 문자 `c`를 입력 스트림에 다시 되돌려 놓으며, 성공하면 `c`, 실패하면 `EOF` 반환
 
 ### 시스템 명령 실행: `int system(const char *s)`
 
