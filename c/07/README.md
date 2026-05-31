@@ -147,7 +147,7 @@ cat out
 
 ### 정수 타입 변환 지정자 예시 1
 
-[//]: # (INCLUDE: ./c/07/src/printf_int1.c --from 6 --to 23 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/printf_int1.c --from 6 --to 24 --no-comment)
 
 ---
 
@@ -169,7 +169,7 @@ cat out
   - e.g., `1.234E+00`의 유효 숫자는 4개(`1`, `2`, `3`, `4`)
 - 변환 문자 `g`, `G`는 뒤따르는 0과 불필요한 소수점은 무시됨
 
-[//]: # (INCLUDE: ./c/07/src/printf_floating1.c --from 6 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/printf_floating1.c --from 6 --to 16 --no-comment)
 
 ---
 
