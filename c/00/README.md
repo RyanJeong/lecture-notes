@@ -10,7 +10,7 @@
 ## 프로그래밍
 
 - 프로그래밍 언어를 사용하여 프로그램을 만드는 작업
-  - 카카오톡, YouTube, Chrome, 계산기, etc.
+  - 카카오톡, YouTube, Chrome, 계산기 등
 
 ![center](img/01-programming-language.png)
 
@@ -100,11 +100,25 @@
 ## C 표준
 
 - C의 역사는 다음과 같음:
-  - 1972, The first C occurred at AT&T Bell Labs
+  - 1972, C was developed at AT&T Bell Labs
   - 1989, ANSI(American National Standards Institute) C89
-  - 1990, ANSI C standard was adopted by ISO(International Organization for Standardization)
+  - 1990, ANSI C was adopted as ISO/IEC 9899:1990 (C90)
     - C89와 C90의 내용은 서로 같음
   - 1999, ANSI C99
   - ...
-- **본 수업에서는 ANSI C(C89)를 사용**
+- **본 수업에서는 ANSI C (C89)를 사용**
   - 교재(TCPL) 또한 ANSI C 표준을 기반으로 하여 작성되었음
+
+---
+
+## 평가
+
+|구분|배점|비고|
+|:---:|:---:|:---|
+|중간고사|30%|필기시험(주관식/객관식)|
+|기말고사|30%|필기시험(주관식/객관식)|
+|과제|30%|레포트 1회, 프로그래밍 2회|
+|출석|10%|4분의 1 이상 결석 시 F|
+|합계|100%||
+
+- 지각 또는 결석 사유를 증빙할 공식 자료 제출 시 출결 정정 가능
