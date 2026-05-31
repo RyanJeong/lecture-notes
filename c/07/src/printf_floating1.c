@@ -5,6 +5,7 @@ int main(void)
 #if 1                           /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     printf(":%8.5f:\n", 1.25);  /* >: 1.25000: */
     printf(":%-8.5f:\n", 1.25); /* >:1.25000 : */
+
     printf(":%9.3f:\n", 3.141592);   /* >:    3.142:  */
     printf(":%-9.3f:\n", 3.141592);  /* >:3.142    :  */
     printf(":%9f:\n", 3.141592);     /* >: 3.141592:  */
