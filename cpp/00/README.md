@@ -7,31 +7,25 @@
 
 ---
 
-## [교과목 소개](https://ce.daejin.ac.kr/synap/skin/doc.html?fn=temp_1741311310808100&rs=/synap/result/bbs/612)
-
-![center h:480](image.png)
-
----
-
 ## 절차적 프로그래밍 vs 객체지향 프로그래밍
 
 ### Procedural Programming
 
 - 함수(functions) 중심이며, 데이터(수동적 객체, passive objects)와 함수가 **분리**된 채 절차에 따라 프로그램 동작
 
-[//]: # (INCLUDE: ./cpp/00/procedural_vs_oop.cc --from 4 --to 8 --no-comment)
+[//]: # (INCLUDE: ./cpp/00/src/procedural_vs_oop.cc --from 4 --to 8 --no-comment)
 
 ### Object-Oriented Programming
 
 - 객체(objects) 중심이며, 데이터(능동적 객체, active objects)와 함수가 **결합**된 객체들의 상호작용으로 프로그램 동작
 
-[//]: # (INCLUDE: ./cpp/00/procedural_vs_oop.cc --from 10 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/00/src/procedural_vs_oop.cc --from 10 --to 15 --no-comment)
 
 ---
 
 ## 절차적 프로그래밍 vs 객체지향 프로그래밍 (Cont'd)
 
-![center h:420](image-1.png)
+![center h:420](img/00-oop-vs-pp.png)
 
 - C는 절차적 프로그래밍 언어
 - C++은 절차적·객체지향 프로그래밍을 모두 지원하는 다중 패러다임 언어
@@ -47,8 +41,8 @@
 - [Bjarne Stroustrup](https://www.stroustrup.com/) - "C with Classes"
   - C에서 확장된 언어로, C++의 전신임
 
-| ![h:250 center](image-2.png) | ![h:250 center](image-3.png) |
-|---------------|---------------|
+| ![h:250 center](img/01-oop.png) | ![h:250 center](img/02-oop.png) |
+|---------------------------------|---------------------------------|
 
 ---
 
@@ -56,7 +50,7 @@
 
 ### C 문법과의 유사성을 바탕으로 객체지향 개념 학습
 
-[![center](image-4.png)](https://www.cs.uaf.edu/courses/cs301/2014-fall/notes/c-versus-cpp/index.html)
+[![center](img/03-books.png)](https://www.cs.uaf.edu/courses/cs301/2014-fall/notes/c-versus-cpp/index.html)
 
 ---
 
@@ -64,7 +58,7 @@
 
 ### 고성능 및 고효율
 
-[![center h:450](image-6.png)](https://greenlab.di.uminho.pt/wp-content/uploads/2017/09/paperSLE.pdf)
+[![center h:450](img/04-benchmarks.png)](https://greenlab.di.uminho.pt/wp-content/uploads/2017/09/paperSLE.pdf)
 
 ---
 
@@ -75,7 +69,7 @@
 - 절차적 프로그래밍, 객체지향 프로그래밍, 제네릭 프로그래밍(generic programming)
 - **[높은 범용성](https://pypl.github.io/PYPL.html)**
 
-![center h:400](image-7.png)
+![center h:400](img/05-ranking.png)
 
 ---
 
@@ -83,14 +77,14 @@
 
 ### [광범위한 활용 분야](https://www.stroustrup.com/applications.html)
 
-![center](image-8.png)
+![center](img/06-usages.png)
 
 ---
 
 ## 교재
 
-| ![center h:200](image-9.png) | ![center h:200](image-10.png) | ![center h:200](image-11.png) |
-|---|---|---|
+| ![center h:200](img/07-textbook.png) | ![center h:200](img/08-textbook.png) | ![center h:200](img/09-textbook.png) |
+|--------------------------------------|--------------------------------------|--------------------------------------|
 
 ### Main Textbook
 
