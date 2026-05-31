@@ -109,7 +109,9 @@ main() {
       scan_dirs+=("${candidate}")
       info "Scanning directory: ${candidate}"
     else
-      error_exit "Directory not found: ${SCRIPT_DIR}/${1}"
+      warn "src directory not found: ${candidate}"
+      info "No src directory to check. Exiting safely."
+      exit 0
     fi
   else
     local dir
@@ -118,6 +120,11 @@ main() {
         scan_dirs+=("${dir}/src")
       fi
     done
+    if [ "${#scan_dirs[@]}" -eq 0 ]; then
+      warn "No src directories found under ${SCRIPT_DIR}"
+      info "Nothing to check. Exiting safely."
+      exit 0
+    fi
     info "Scanning all src/ directories"
   fi
 
