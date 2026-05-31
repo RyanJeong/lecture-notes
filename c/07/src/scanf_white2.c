@@ -7,7 +7,7 @@ int main(void)
     char c;
 
     /* Suppose the user inputs: 1 d */
-    /* The space between 1 and d is consumed by the first scanf */
+    /* The space between 1 and d remains unread after the first scanf */
     scanf("%d", &n);         /* consume '1' */
     getchar();               /* consume ' ' */
     scanf("%c", &c);         /* consume 'd' */

@@ -14,8 +14,8 @@ int main(void)
     printf("%c\n", a[3]);            /* >A                                    */
     printf("%u\n", a[4]);            /* >4294967295                           */
     printf("%ld\n", (long) 1 << 32); /* >4294967296                           */
-    printf("%d\n", (long) 1 << 32);  /* >0                                    */
-    printf("%hd\n", 1 << 16);        /* >0                                    */
+    printf("%d\n", (long) 1 << 32);  /* UB: format mismatch(`%d` expects int) */
+    printf("%hd\n", 1 << 16);        /* implementation-defined conversion     */
     printf("%d\n", 1 << 16);         /* >65536                                */
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
