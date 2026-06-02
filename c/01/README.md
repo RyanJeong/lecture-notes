@@ -328,7 +328,7 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 ## The For Statement (Cont'd - 1)
 
 ### `for` 반복문
-  
+
 ```text
 for (initialization; condition; updation) {
     body of the loop (statements to be executed)
@@ -545,7 +545,7 @@ for (initialization; condition; updation) {
 - `printf` 함수를 사용해 `long` 타입 값을 출력하고자 할 경우, 변환 지정자 `%ld` 사용
 
 | Data type | Size (bytes) | Minimum value              | Maximum value             |
-| --------- |------------- |--------------------------- | ------------------------- |
+| --------- | ------------ | -------------------------- | ------------------------- |
 | `char`    | 1            | -128                       | 127                       |
 | `short`   | 2            | -32,768                    | 32,767                    |
 | `int`     | 4            | -2,147,483,648             | 2,147,483,647             |
@@ -571,10 +571,10 @@ for (initialization; condition; updation) {
 - `printf` 함수를 사용해 `double` 타입 값을 출력하고자 할 경우, 변환 지정자 `%f` 사용
   - `%.0f`: 실수 타입 데이터를 출력할 때, 소수점 자리를 출력하지 않도록 형식화
 
-| Data type | Size (bytes) | Precision (decimal digits) | Representable range                  |
-| --------- | ------------ | -------------------------- | ------------------------------------ |
-| `float`   | 4            | About 6~7                  | ±1.17549 × 10⁻³⁸ ~ ±3.40282 × 10³⁸   |
-| `double`  | 8            | About 15~16                | ±2.22507 × 10⁻³⁰⁸ ~ ±1.79769 × 10³⁰⁸ |
+| Data type | Size (bytes) | Precision (decimal digits) | Representable range |
+| --- | --- | --- | --- |
+| `float` | 4 | About 6~7 | ±1.17549 × 10⁻³⁸ ~ ±3.40282 × 10³⁸ |
+| `double` | 8 | About 15~16 | ±2.22507 × 10⁻³⁰⁸ ~ ±1.79769 × 10³⁰⁸ |
 
 ---
 

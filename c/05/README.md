@@ -63,12 +63,12 @@ type *identifier
 - 간접 참조(indirection)를 수행
 - 피연산자가 객체를 가리키는 포인터일 경우 연산 결과는 해당 객체를 나타내는 *lvalue*가 됨
 
-| Category                                | *lvalue*                        | *rvalue*                                          |
-| --------------------------------------- | --------------------------------| --------------------------------------------------|
-| **Meaning**                             | Refers to a memory **location** | Represents a **value**, not necessarily in memory |
-| **Can appear on left of `=`?**          | Yes                             | No                                                |
-| **Has identifiable address?** (`&expr`) | Yes                             | No                                                |
-| **Can be assigned to?**                 | Yes (e.g., `x = 5;`)            | No (e.g., `x + 1 = 5;` → error)                   |
+| Category | *lvalue* | *rvalue* |
+| --- | --- | --- |
+| **Meaning** | Refers to a memory **location** | Represents a **value**, not necessarily in memory |
+| **Can appear on left of `=`?** | Yes | No |
+| **Has identifiable address?** (`&expr`) | Yes | No |
+| **Can be assigned to?** | Yes (e.g., `x = 5;`) | No (e.g., `x + 1 = 5;` → error) |
 
 - *lvalue*는 값이 저장되는 메모리이며, *rvalue*는 평가된 값을 의미함
 - *lvalue*는 문맥에 따라 *rvalue*로 변환되나, *rvalue*는 *lvalue*가 될 수 없음
@@ -401,12 +401,12 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 > An array may be initialized by following its declaration with a list of initializers enclosed in braces and separated by commas.
 
-| Size Specified | Initializer Count Relation | Result                                 | Valid? |
-|----------------|----------------------------|----------------------------------------|--------|
-| n              | < n                        | Remaining elements set to 0            | Yes    |
-| n              | == n                       | Fully initialized                      | Yes    |
-| n              | > n                        | Error: too many initializers           | No     |
-| unspecified    | N/A                        | Size inferred from number of values    | Yes    |
+| Size Specified | Initializer Count Relation | Result                              | Valid? |
+| -------------- | -------------------------- | ----------------------------------- | ------ |
+| n              | < n                        | Remaining elements set to 0         | Yes    |
+| n              | == n                       | Fully initialized                   | Yes    |
+| n              | > n                        | Error: too many initializers        | No     |
+| unspecified    | N/A                        | Size inferred from number of values | Yes    |
 
 ---
 
@@ -630,8 +630,8 @@ print them in order
 
 #### *n*차원 배열의 첫 번째 차원 생략 가능 이유
 
-1. **전체 초기화자 개수로부터 첫 번째 차원의 크기를 추론할 수 있다.**  
-2. 하위 차원의 크기가 명확하므로 전체 요소 수를 하위 차원 수로 나누어 계산 가능하다.  
+1. **전체 초기화자 개수로부터 첫 번째 차원의 크기를 추론할 수 있다.**
+2. 하위 차원의 크기가 명확하므로 전체 요소 수를 하위 차원 수로 나누어 계산 가능하다.
 3. 결과적으로 첫 번째 차원 생략 시에도 배열은 컴파일 시에 완전한 타입(complete type)으로 간주한다.
 
 ---

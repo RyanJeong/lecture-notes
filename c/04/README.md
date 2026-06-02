@@ -86,7 +86,7 @@ return‑type function‑name(parameter‑list)
 ### 함수 간 통신 방법
 
 | Category                   | Description                                                               |
-|----------------------------|---------------------------------------------------------------------------|
+| -------------------------- | ------------------------------------------------------------------------- |
 | Argument / Parameter       | Value is copied and passed to the **callee**                              |
 | Return Value               | Computation result is copied back to the **caller**                       |
 | External (Global) Variable | Shared access without copying; **beware of tight coupling when overused** |
@@ -306,10 +306,10 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
   - e.g., `1 2 - 4 5 + *`
 
 | Token | `1`     | `2`     | `-`      | `4`     | `5`     | `+`     | `*`      |
-|-------|---------|---------|----------|---------|---------|---------|----------|
-|0      | **`1`** | `1`     | **`-1`** | `-1`    | `-1`    | `-1`    | **`-9`** |
-|1      |         | **`2`** |          | **`4`** | `4`     | **`9`** |          |
-|2      |         |         |          |         | **`5`** |         |          |
+| ----- | ------- | ------- | -------- | ------- | ------- | ------- | -------- |
+| 0     | **`1`** | `1`     | **`-1`** | `-1`    | `-1`    | `-1`    | **`-9`** |
+| 1     |         | **`2`** |          | **`4`** | `4`     | **`9`** |          |
+| 2     |         |         |          |         | **`5`** |         |          |
 
 ---
 
@@ -393,7 +393,7 @@ while (next operator or operand is not end-of-file indicator)
 - 범위(scope)는 식별자(identifiers)가 유효하게 사용될 수 있는 코드 범위를 의미
 
 | Scope Type          | Applicable Identifiers        | Start Point                 | End Point                   | Summary Description                     |
-|---------------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------------------|
+| ------------------- | ----------------------------- | --------------------------- | --------------------------- | --------------------------------------- |
 | **File Scope**      | Global variables, functions   | Point of declaration        | End of the translation unit | Visible throughout the file             |
 | **Block Scope**     | Local variables, parameters   | Point of declaration        | End of the enclosing block  | Visible only within the block           |
 | **Function Scope**  | Labels (for `goto`)           | Beginning of the function   | End of the function         | Labels are visible anywhere in function |
@@ -458,7 +458,7 @@ while (next operator or operand is not end-of-file indicator)
 - 저장 기간(storage duration)은 객체(objects)가 메모리에 존재하는 생애주기를 의미
 
 | Keyword     | Scope        | Linkage         | Storage Duration                 | Description                                     |
-|-------------|--------------|-----------------|----------------------------------|-------------------------------------------------|
+| ----------- | ------------ | --------------- | -------------------------------- | ----------------------------------------------- |
 | `auto`      | Block        | None            | Automatic (expires at block end) | Default for local variables                     |
 | `register`  | Block        | None            | Automatic                        | Cannot take address, register optimization hint |
 | `static`    | Block / File | None / Internal | Static (until program ends)      | Retains value / Not accessible from other files |
