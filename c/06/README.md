@@ -862,3 +862,101 @@ void free(void *p);
 - `volatile` 없이는 컴파일러가 `g_done`을 레지스터에 캐시
 - **시그널 수신 이후에도 루프가 종료되지 않을 수 있음**
 - `volatile`로 선언하면 매 반복마다 `g_done`을 실제 메모리에서 읽도록 강제됨
+
+---
+
+## Appendix E. Index vs Pointer `binsearch`
+
+- 3장에서 공부한 `binsearch`는 인덱스 기반, 6장에서 공부한 `binsearch`는 포인터 기반임
+  - 인덱스: **닫힌 구간** `[low, high]`, `high = n - 1`, 반복 조건 `low <= high`
+  - 포인터: **반열린 구간** `[low, high)`, `high = &tab[n]`, 반복 조건 `low < high`
+
+[//]: # (INCLUDE: ./c/03/src/binsearch.c)
+
+---
+
+## Appendix E. Index vs Pointer `binsearch` (Cont'd - 1)
+
+### `mid` 계산식: `(low + high) / 2` vs `low + (high - low) / 2`
+
+- **포인터끼리는 더할 수 없음**
+  - C는 `포인터 + 포인터` 연산을 **정의하지 않음**
+  - `포인터 + 포인터`는 의미가 없어 컴파일 에러, `포인터 - 포인터`만 합법
+  - 따라서 포인터 버전은 `low + (high - low) / 2` 형태만이 유일하게 성립함
+- **정수 오버플로 방지**
+  - `low + high`는 두 값이 매우 클 때 오버플로가 발생해 `mid`가 음수가 될 수 있음
+  - `high - low`는 항상 `high` 이하라 오버플로가 없어, 인덱스 버전에서도 권장되는 형태
+
+---
+
+## Appendix E. Index vs Pointer `binsearch` (Cont'd - 2)
+
+### `high` 경계: `n - 1` vs `&tab[n]`
+
+- 인덱스 버전: 닫힌 구간 `[low, high]`
+  - `high = n - 1`: 마지막 **유효 인덱스**, 양 끝이 모두 탐색 대상
+  - `mid` 제외 시 한 칸 건너뜀(`high = mid - 1`)
+  - 반복 조건은 `low <= high`
+- 포인터 버전: 반열린 구간 `[low, high)`
+  - `high = &tab[n]`: 마지막 원소의 **다음(past-the-end)**, 역참조하지 않는 경계 표식
+  - `high`가 배타적(exclusive)이므로 `high = mid`만으로 `mid`가 제외됨
+  - 반복 조건은 `low < high`
+- `&tab[n]`(반열린)을 택하는 이유:
+  1. "끝의 다음"은 반열린 구간의 상한과 정확히 일치 (C 표준이 만드는 것을 허용하는 포인터)
+  2. `high = mid - 1`을 쓰지 않으므로 `&tab[-1]` 같은 **배열 시작 이전 포인터(UB)** 생성을 회피
+  3. 불변식 `low <= mid < high`가 항상 성립하므로 `high = mid`가 상한을 **엄격히** 줄여 **종료를 보장**
+
+---
+
+## Appendix E. Index vs Pointer `binsearch` (Cont'd - 3)
+
+### 무한 루프: 닫힌 구간에 `high = mid`를 잘못 결합하면
+
+- `v = {10, 20, 30}`, `n = 3`, `x = 5`(모든 값보다 작음)로 추적한다고 가정
+
+[//]: # (INCLUDE: ./c/06/src/wrong_binsearch.c)
+
+---
+
+## Appendix E. Index vs Pointer `binsearch` (Cont'd - 4)
+
+```text
+ low high mid v[mid]   test         update
+  0   2   1    20      x < v[mid]   high = mid = 1
+  0   1   0    10      x < v[mid]   high = mid = 0
+  0   0   0    10      x < v[mid]   high = mid = 0   (no change!)
+  0   0   0    10      x < v[mid]   ... loops forever
+```
+
+- 닫힌 `[low, high]` + `low <= high` + `high = mid` (**무한 루프**)
+  - `low == high`인 한 원소 구간에서 `mid == low == high`
+
+---
+
+## Appendix E. Index vs Pointer `binsearch` (Cont'd - 5)
+
+### 올바른 두 버전은 항상 종료함 (같은 입력 `x = 5`)
+
+```text
+[index]  closed [low, high],  high = mid - 1,  while (low <= high)
+
+ low high mid   test         update
+  0   2   1     x < v[mid]   high = mid - 1 = 0
+  0   0   0     x < v[mid]   high = mid - 1 = -1
+
+  low <= high is false   ->   return -1
+```
+
+- 닫힌 `[low, high]` + `low <= high` + `high = mid - 1` (정상)
+
+```text
+[pointer]  half-open [low, high),  high = mid,  while (low < high)
+
+ low high mid   test         update
+  0   3   1     x < v[mid]   high = mid = 1
+  0   1   0     x < v[mid]   high = mid = 0
+
+  low < high is false    ->   return NULL
+```
+
+- 반열린 `[low, high)` + `low < high` + `high = mid` (정상)
