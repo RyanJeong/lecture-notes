@@ -7,7 +7,7 @@ int main(void)
         unsigned int : 0;
         unsigned int c : 1;
         unsigned int d : 8;
-    } bits;
+    } bits = { 0 };
 
     bits.a = 1;   /*         1 */
     bits.b = 2;   /*        10 */
