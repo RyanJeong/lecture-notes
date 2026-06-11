@@ -398,7 +398,7 @@ a pointer to the right child node
 
 [//]: # (INCLUDE: ./c/06/src/word_freq/tree.h --from 4 --to 9 --no-comment)
 
-- 구조체 이름이 선언되는 순간, 컴파일러는 이를 이름만 가진 불완전 타입(incomplete type)으로 간주됨
+- 구조체 이름이 선언되는 순간, 컴파일러는 이를 이름만 가진 불완전 타입(incomplete type)으로 간주
   - 구조체 정의가 마무리되어야 완전 타입(complete type)으로 간주
 - 자기 자신의 객체를 포함하는 것은 허용되지 않음
   - 불완전 타입 객체는 **실제 얼마큼의 메모리를 점유해야 할지 알 수 없으므로** 생성 불가
@@ -726,7 +726,7 @@ void free(void *p);
 
 ## Unions (Cont'd - 1)
 
-[//]: # (INCLUDE: ./c/06/src/union.c --from 5 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/union.c --from 6 --to 15 --no-comment)
 
 ![center](img/07-union.png)
 
