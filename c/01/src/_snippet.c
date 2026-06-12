@@ -135,6 +135,11 @@ void snippet8(void)
     /* ... */
     student_score[99] = 25;
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
+
+    (void) student_score1;   /* Avoid unused variable warning */
+    (void) student_score2;   /* Avoid unused variable warning */
+    (void) student_score100; /* Avoid unused variable warning */
+    (void) student_score;    /* Avoid unused variable warning */
 }
 
 #if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

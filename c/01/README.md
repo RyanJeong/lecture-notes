@@ -752,7 +752,7 @@ for (initialization; condition; updation) {
 
 ### 지역 변수(Local Variables)
 
-[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 141 --to 151 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 146 --to 156 --no-comment)
 
 - 함수 안에 선언된 변수는 지역 변수
 - 두 함수(`main`, `power`)는 둘 다 지역 변수 `i`를 선언해 사용
