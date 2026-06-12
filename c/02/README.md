@@ -12,16 +12,16 @@
 - 문자와 숫자, 밑줄(`_`) 사용 가능
 - **변수명 첫 글자에 숫자 사용 불가**
 
-[//]: # (INCLUDE: ./c/02/src/variables_ignore.c --from 4 --to 6 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 4 --to 6 --no-comment)
 
 - ANSI C (ISO C90) 표준은 `_`로 시작하는 식별자(변수명)를 표준 라이브러리 및 구현 내부에서 사용함
   - 변수명 첫 글자에 밑줄은 사용 가능하나, **표준 헤더파일 내 식별자와 충돌할 수 있음(사용하지 않는 것을 권장)**
 
-[//]: # (INCLUDE: ./c/02/src/variables_ignore.c --from 10 --to 10 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 10 --to 10 --no-comment)
 
 - 변수명의 대소문자는 구분됨
 
-[//]: # (INCLUDE: ./c/02/src/variables_ignore.c --from 14 --to 14 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 14 --to 14 --no-comment)
 
 ---
 
@@ -33,7 +33,7 @@
 - 지역 변수는 함수라는 제한된 범위가 맥락을 보완하므로, **간결한 명칭** 사용 권장
 - 전역 변수는 사용 범위가 넓어 맥락 파악이 어려우므로, 이름만으로도 용도를 알 수 있게 **상세한 명칭** 사용 권장
 
-[//]: # (INCLUDE: ./c/02/src/variable_name.c)
+[//]: # (INCLUDE: ./c/02/src/00_variable_name.c)
 
 ---
 
@@ -95,7 +95,7 @@
 
 ### LP64 데이터 모델의 타입 크기 - `char`
 
-[//]: # (INCLUDE: ./c/02/src/char.c)
+[//]: # (INCLUDE: ./c/02/src/01_char.c)
 
 ```text
 char size               :                    1
@@ -110,7 +110,7 @@ Maximum unsigned char   :                  255
 
 ### LP64 데이터 모델의 타입 크기 - `short`
 
-[//]: # (INCLUDE: ./c/02/src/short.c)
+[//]: # (INCLUDE: ./c/02/src/02_short.c)
 
 ```text
 short size              :                    2
@@ -125,7 +125,7 @@ Maximum unsigned short  :                65535
 
 ### LP64 데이터 모델의 타입 크기 - `int`
 
-[//]: # (INCLUDE: ./c/02/src/int.c)
+[//]: # (INCLUDE: ./c/02/src/03_int.c)
 
 ```text
 int size                :                    4
@@ -140,7 +140,7 @@ Maximum unsigned int    :           4294967295
 
 ### LP64 데이터 모델의 타입 크기 - `long`
 
-[//]: # (INCLUDE: ./c/02/src/long.c)
+[//]: # (INCLUDE: ./c/02/src/04_long.c)
 
 ```text
 long size               :                    8
@@ -155,14 +155,14 @@ Maximum unsigned long   : 18446744073709551615
 
 ### 정수 타입 변환 지정자 - `char`, `short`, `int`
 
-[//]: # (INCLUDE: ./c/02/src/int.c --from 7 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/03_int.c --from 8 --to 10 --no-comment)
 
 - 부호 타입 정수 값 출력 시 `%d` 사용
 - 무부호 타입 정수 값 출력 시 `%u` 사용
 
 ### 확장 정수 타입 변환 지정자 - `long`
 
-[//]: # (INCLUDE: ./c/02/src/long.c --from 7 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/04_long.c --from 8 --to 10 --no-comment)
 
 - 부호 타입 확장 정수 값 출력 시 `%ld` 사용
 - 무부호 타입 확장 정수 값 출력 시 `%lu` 사용
@@ -173,7 +173,7 @@ Maximum unsigned long   : 18446744073709551615
 
 > 다음 코드의 실행 결과는?
 
-[//]: # (INCLUDE: ./c/02/src/overflow.c)
+[//]: # (INCLUDE: ./c/02/src/05_overflow.c)
 
 ![center h:200](img/01-overflow.png)
 
@@ -337,7 +337,7 @@ Maximum unsigned long   : 18446744073709551615
 
 > 다음 코드의 실행 결과는?
 
-[//]: # (INCLUDE: ./c/02/src/precision.c)
+[//]: # (INCLUDE: ./c/02/src/06_precision.c)
 
 ![center h:200](img/07-precision.png)
 
@@ -367,8 +367,8 @@ Maximum unsigned long   : 18446744073709551615
 
 ```text
         S.(1) |   Int.(9)   | Frac.(6)    Fixed-Point Representation
-+36.25:   0   | 0 0010 0100 | 01 0000   ->      0000 1001 0001 0000
--36.25:   1   | 0 0010 0100 | 01 0000   ->      1000 1001 0001 0000
++36.25:   0   | 0 0010 0100 | 01 0000   →      0000 1001 0001 0000
+-36.25:   1   | 0 0010 0100 | 01 0000   →      1000 1001 0001 0000
 ```
 
 ---
@@ -576,7 +576,7 @@ $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 
 ### `float` 타입 오차 재현 - 1
 
-[//]: # (INCLUDE: ./c/02/src/float_example1.c)
+[//]: # (INCLUDE: ./c/02/src/07_float_example1.c)
 
 ```text
 A single-precision only has about 7 decimal digits of precision.
@@ -589,7 +589,7 @@ f1:  9999876.0, f2: 99998768.0
 
 ### `float` 타입 오차 재현 - 2
 
-[//]: # (INCLUDE: ./c/02/src/float_example2.c)
+[//]: # (INCLUDE: ./c/02/src/08_float_example2.c)
 
 ```text
 Float type's mantissa has 24 bits (including the hidden bit).
@@ -602,7 +602,7 @@ f3: 16777216.0, f4: 16777216.0, f5: 16777216.0, f6: 16777218.0
 
 ### `float` 타입 오차 재현 - 3
 
-[//]: # (INCLUDE: ./c/02/src/float_example3.c)
+[//]: # (INCLUDE: ./c/02/src/09_float_example3.c)
 
 ```text
 27.1 (may be simply 271/10) cannot be expressed as 2^n.
@@ -615,7 +615,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 ### 실수 값 비교
 
-[//]: # (INCLUDE: ./c/02/src/compare_float1.c)
+[//]: # (INCLUDE: ./c/02/src/10_compare_float1.c)
 
 - 실수 값 비교 시 **오차를 고려해야 함**
 - `float` 타입의 기계 앱실론(machine epsilon, 이론적으로 표현 가능한 가장 작은 상대 오차값)은 1.19 × 10⁻⁷
@@ -629,7 +629,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 ### 앱실론을 사용한 올바른 실수 값 비교
 
-[//]: # (INCLUDE: ./c/02/src/compare_float2.c)
+[//]: # (INCLUDE: ./c/02/src/11_compare_float2.c)
 
 ---
 
@@ -718,7 +718,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 - 문자 표현 시 반드시 문자 상수를 쓸 것
 
-[//]: # (INCLUDE: ./c/02/src/constants_ignore.c --from 6 --to 7 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 25 --to 26 --no-comment)
 
 - 1번 문장은 문자 상수 `'A'`를 현재 사용중인 시스템의 문자 인코딩 표를 참조하여 특정 정수 값으로 변환
   - ASCII를 사용하는 시스템에서는 `0x41` (`65`)
@@ -764,7 +764,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 - 이스케이프 시퀀스 형태의 문자 리터럴 출력
 
-[//]: # (INCLUDE: ./c/02/src/escape_sequence_literal.c)
+[//]: # (INCLUDE: ./c/02/src/12_escape_sequence_literal.c)
 
 ```text
 This is a backslash: \, single quote: ', double quote: ", question mark: ?
@@ -788,7 +788,7 @@ Null character in the middle
 | `\ooo`          | Octal value (e.g., `\132`) | up to `255` (`\377`) |
 | `\xhh`          | Hex value (e.g., `\x41`)   | up to `255` (`\xFF`) |
 
-[//]: # (INCLUDE: ./c/02/src/constants_ignore.c --from 11 --to 21 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 34 --to 44 --no-comment)
 
 ---
 
@@ -800,7 +800,7 @@ Null character in the middle
   - 상수 표현은 컴파일 시 값이 결정되어 있는 상태(compile time)
   - 변수는 런타임 시 값이 결정되는 상태(runtime)
 
-[//]: # (INCLUDE: ./c/02/src/constants_ignore.c --from 28 --to 32 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 48 --to 52 --no-comment)
 
 ---
 
@@ -818,7 +818,7 @@ Null character in the middle
   - `"x"`는 `'x'`, `'\0'`으로 표현되는 문자열 상수
 - 문자열 상수의 나열은 컴파일 시 하나의 문자열로 연결됨
 
-[//]: # (INCLUDE: ./c/02/src/constants_ignore.c --from 38 --to 42 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 60 --to 64 --no-comment)
 
 ---
 
@@ -827,7 +827,7 @@ Null character in the middle
 - 문자열 길이를 계산하는 `strlen` 함수
   - 문자열의 **널 문자**를 활용하여 문자열 길이 계산
 
-[//]: # (INCLUDE: ./c/02/src/strlen.c)
+[//]: # (INCLUDE: ./c/02/src/13_strlen.c)
 
 ---
 
@@ -836,7 +836,7 @@ Null character in the middle
 - `strlen` 함수를 사용한 문자열 길이 계산
   - 문자열 길이는 **문자열을 구성하는 실제 문자 개수를 의미**하며, 널 문자는 제외함
 
-[//]: # (INCLUDE: ./c/02/src/strlen_example.c)
+[//]: # (INCLUDE: ./c/02/src/14_strlen_example.c)
 
 ---
 
@@ -850,7 +850,7 @@ Null character in the middle
   2. 다른 열거된 이름에 값을 지정하지 않았다면 이전 열거된 이름의 값보다 1 큰 값을 갖는다.
 - 열거된 이름들은 고유해야 하지만, 이름들은 서로 같은 값을 가질 수 있음
 
-[//]: # (INCLUDE: ./c/02/src/constants_ignore.c --from 47 --to 59 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 73 --to 85 --no-comment)
 
 ---
 
@@ -864,7 +864,7 @@ Null character in the middle
 declarator = initializer;  ← NB: '=' is not an assignment operator
 ```
 
-[//]: # (INCLUDE: ./c/02/src/decl_ignore.c --from 15 --to 23 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 91 --to 100 --no-comment)
 
 ---
 
@@ -884,7 +884,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 변수 선언 시 한정사 `const`를 사용할 경우 **읽기 전용 변수가 생성됨**
 
-[//]: # (INCLUDE: ./c/02/src/decl_ignore.c --from 27 --to 29 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 114 --to 116 --no-comment)
 
 ---
 
@@ -979,7 +979,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 - 평가 결과는 항상 `0` (거짓) 또는 `1` (참)
 - `if`, `while`, `for` 등에서 조건 표현식의 값은 **`0`이면 거짓, 그 외 값은 참**으로 처리함
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 27 --to 29 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 128 --to 130 --no-comment)
 
 ---
 
@@ -992,7 +992,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 | `++`     | Increments the value first | `++i`   | Right-to-left |
 | `--`     | Decrements the value first | `--i`   | Right-to-left |
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 6 --to 8 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 139 --to 141 --no-comment)
 
 ---
 
@@ -1005,11 +1005,11 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 | `++`     | Uses the value first, then increments | `i++`   | Right-to-left |
 | `--`     | Uses the value first, then decrements | `i--`   | Right-to-left |
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 16 --to 19 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 148 --to 151 --no-comment)
 
 - 후위 증가 연산자와 전위 증가 연산자의 동작 차이
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 33 --to 38 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 158 --to 163 --no-comment)
 
 ---
 
@@ -1017,7 +1017,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 후위 증가 연산자를 활용한 문자열에서 특정 문자를 제거하는 `squeeze` 함수
 
-[//]: # (INCLUDE: ./c/02/src/squeeze.c)
+[//]: # (INCLUDE: ./c/02/src/15_squeeze.c)
 
 ---
 
@@ -1025,7 +1025,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 문자열 뒤에 다른 문자열을 연결하는 `strcat` 함수
 
-[//]: # (INCLUDE: ./c/02/src/strcat.c)
+[//]: # (INCLUDE: ./c/02/src/16_strcat.c)
 
 ---
 
@@ -1033,7 +1033,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - `strcat` 함수를 사용한 두 문자열 연결
 
-[//]: # (INCLUDE: ./c/02/src/strcat_example.c)
+[//]: # (INCLUDE: ./c/02/src/17_strcat_example.c)
 
 ---
 
@@ -1066,7 +1066,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
   - 무부호 타입 정수의 오른쪽 이동 시 왼쪽은 항상 `0`으로 채워짐(논리 이동)
   - 부호 타입 정수의 오른쪽 이동 시 왼쪽은 **구현된 정의를 따름**(implementation-defined, 보통 산술 이동을 채택)
 
-[//]: # (INCLUDE: ./c/02/src/bit.c)
+[//]: # (INCLUDE: ./c/02/src/18_bit.c)
 
 ---
 
@@ -1074,7 +1074,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 비트 연산자를 활용한 비트 마스킹
 
-[//]: # (INCLUDE: ./c/02/src/bit_mask.c)
+[//]: # (INCLUDE: ./c/02/src/19_bit_mask.c)
 
 ---
 
@@ -1082,7 +1082,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 비트 마스킹 기반의 특정 위치로부터 *n* 개의 비트를 반환하는 `getbits` 함수
 
-[//]: # (INCLUDE: ./c/02/src/getbits.c)
+[//]: # (INCLUDE: ./c/02/src/20_getbits.c)
 
 ```text
 x: 0110 1101 (binary)
@@ -1109,7 +1109,7 @@ n: 3         (decimal)
   - **관계 연산자, 논리 연산자, 비트 부정 연산자는 사용 불가**
 - 복합 대입 연산자는 표현을 간결화하며, 특히 표현이 복잡한 경우 유용함
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 46 --to 47 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 177 --to 178 --no-comment)
 
 ---
 
@@ -1117,11 +1117,11 @@ n: 3         (decimal)
 
 - **지정 연산자는 산술 연산자보다 우선순위가 낮음**
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 53 --to 57 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 194 --to 198 --no-comment)
 
 - **지정 연산자는 관계 연산자보다 우선순위가 낮음**
 
-[//]: # (INCLUDE: ./c/02/src/op_ignore.c --from 61 --to 65 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 202 --to 206 --no-comment)
 
 ---
 
@@ -1129,7 +1129,7 @@ n: 3         (decimal)
 
 - 지정 연산자 기반의 1 비트의 수를 계산하는 `bitcount` 함수
 
-[//]: # (INCLUDE: ./c/02/src/bitcount1.c)
+[//]: # (INCLUDE: ./c/02/src/21_bitcount1.c)
 
 ---
 
@@ -1137,7 +1137,7 @@ n: 3         (decimal)
 
 - 개선된 `bitcount` 함수
 
-[//]: # (INCLUDE: ./c/02/src/bitcount2.c)
+[//]: # (INCLUDE: ./c/02/src/22_bitcount2.c)
 
 ---
 
@@ -1152,7 +1152,7 @@ n: 3         (decimal)
   1. 변환되어야 할 타입의 값을 `int` 타입으로 원본 값을 표현할 수 있다면 `int`로 승격한다.
   2. 그렇지 않다면 `unsigned int`로 승격한다.
 
-[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 4 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 216 --to 224 --no-comment)
 
 ---
 
@@ -1166,7 +1166,7 @@ n: 3         (decimal)
   - 배정도 부동소수점은 단정도 부동소수점보다 항상 높은 정밀도를 가짐
   - 정수 승격과 달리 **조건 없이 `double` 타입으로 승격됨**
 
-[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 18 --to 25 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 237 --to 244 --no-comment)
 
 ---
 
@@ -1178,7 +1178,7 @@ n: 3         (decimal)
 
 ### 자동 타입 변환(Implicit Conversion, Automatic Conversion)
 
-[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 29 --to 31 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 254 --to 256 --no-comment)
 
 ---
 
@@ -1192,7 +1192,7 @@ n: 3         (decimal)
 - 명시적으로 타입 변환을 표현하여 사용자의 의도를 명확히 표현할 수 있음
 - 암묵적인 타입 변환에서의 정보 손실은 경고를 출력하나, **명시적인 타입 변환에서의 정보 손실은 경고를 출력하지 않음**
 
-[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 35 --to 37 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 263 --to 265 --no-comment)
 
 ---
 
@@ -1200,7 +1200,7 @@ n: 3         (decimal)
 
 - 타입 변환을 활용한 ASCII 숫자 문자들을 정수로 변환하는 `atoi` 함수
 
-[//]: # (INCLUDE: ./c/02/src/ascii.c)
+[//]: # (INCLUDE: ./c/02/src/23_ascii.c)
 
 ---
 
@@ -1208,7 +1208,7 @@ n: 3         (decimal)
 
 - ASCII 숫자 문자열 `"12345"`를 정수로 변환
 
-[//]: # (INCLUDE: ./c/02/src/ascii_example.c)
+[//]: # (INCLUDE: ./c/02/src/24_ascii_example.c)
 
 ---
 
@@ -1216,7 +1216,7 @@ n: 3         (decimal)
 
 - 타입 변환을 활용한 대문자를 소문자로 변환하는 `tolower` 함수
 
-[//]: # (INCLUDE: ./c/02/src/tolower.c)
+[//]: # (INCLUDE: ./c/02/src/25_tolower.c)
 
 ---
 
@@ -1224,7 +1224,7 @@ n: 3         (decimal)
 
 - 대문자 `'A'`를 소문자로 변환
 
-[//]: # (INCLUDE: ./c/02/src/tolower_example.c)
+[//]: # (INCLUDE: ./c/02/src/26_tolower_example.c)
 
 ---
 
@@ -1254,7 +1254,7 @@ n: 3         (decimal)
 
 ## Type Conversions (Cont'd - 7)
 
-[//]: # (INCLUDE: ./c/02/src/type_conversion.c)
+[//]: # (INCLUDE: ./c/02/src/27_type_conversion.c)
 
 ---
 
@@ -1266,7 +1266,7 @@ n: 3         (decimal)
   - 실수 타입에서 정수 타입으로 변환 시 소수 부분은 버려짐
   - `double` 타입에서 `float` 타입 변환 시 오차가 발생할 수 있음(정밀도가 부족한 경우 반올림 발생)
 
-[//]: # (INCLUDE: ./c/02/src/type_ignore.c --from 41 --to 48 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 275 --to 282 --no-comment)
 
 ---
 
@@ -1274,7 +1274,7 @@ n: 3         (decimal)
 
 - 난수 발생에 활용되는 `rand`, `srand` 함수
 
-[//]: # (INCLUDE: ./c/02/src/random.c)
+[//]: # (INCLUDE: ./c/02/src/28_random.c)
 
 ---
 
@@ -1282,7 +1282,7 @@ n: 3         (decimal)
 
 - `rand`, `srand` 함수를 활용한 난수 생성
 
-[//]: # (INCLUDE: ./c/02/src/random_example.c)
+[//]: # (INCLUDE: ./c/02/src/29_random_example.c)
 
 ---
 
@@ -1293,11 +1293,11 @@ n: 3         (decimal)
 - 삼항 연산자의 형태 `condition ? expr_if_true : expr_if_false`는 `if` 조건문을 축약한 형태
 - `expr_if_true`와 `expr_if_false`의 타입이 다르다면, 타입 변환 법칙이 적용됨
 
-[//]: # (INCLUDE: ./c/02/src/ternary_ignore.c --from 6 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 293 --to 296 --no-comment)
 
 - 표현식이 등장할 수 있는 곳이라면 어디든 사용 가능
 
-[//]: # (INCLUDE: ./c/02/src/ternary_ignore.c --from 13 --to 20 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 300 --to 307 --no-comment)
 
 ---
 
@@ -1305,7 +1305,7 @@ n: 3         (decimal)
 
 - 삼항 연산자를 활용한 형식화된 숫자 출력
 
-[//]: # (INCLUDE: ./c/02/src/ternary_example.c)
+[//]: # (INCLUDE: ./c/02/src/30_ternary_example.c)
 
 ---
 
@@ -1327,7 +1327,7 @@ n: 3         (decimal)
 3. 결합되지 않은 표현식이 아직 2개 이상 남아 있다면, 다시 1단계로 돌아간 뒤 우선순위가 가장 높은 연산자를 찾아 처리한다.
 4. 모든 연산이 결합되면, 최종적으로 결합된 표현식을 순서대로 평가(evaluate)한다.
 
-[//]: # (INCLUDE: ./c/02/src/precedence_ignore.c --from 7 --to 20 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 318 --to 331 --no-comment)
 
 ---
 
@@ -1337,7 +1337,7 @@ n: 3         (decimal)
 
 - 피연산자들의 값을 계산(evaluation)하고, 그 부수효과(side effects)를 실행하는 순서
 
-[//]: # (INCLUDE: ./c/02/src/precedence_ignore.c --from 24 --to 25 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 343 --to 344 --no-comment)
 
 - **대부분의 연산자는 평가 순서가 정의되지 않거나(unspecified), 명시적으로 지정되어 있지 않음(unsequenced)**
   - 동일한 코드라도 컴파일러에 따라 다른 결과를 초래할 수 있음
@@ -1350,7 +1350,7 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 1
 
-[//]: # (INCLUDE: ./c/02/src/precedence_ignore.c --from 30 --to 36 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 363 --to 369 --no-comment)
 
 ---
 
@@ -1358,7 +1358,7 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 2
 
-[//]: # (INCLUDE: ./c/02/src/precedence_ignore.c --from 41 --to 46 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 388 --to 393 --no-comment)
 
 ---
 
@@ -1366,7 +1366,7 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 3
 
-[//]: # (INCLUDE: ./c/02/src/precedence_ignore.c --from 51 --to 55 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 401 --to 405 --no-comment)
 
 ---
 
@@ -1374,4 +1374,4 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 4
 
-[//]: # (INCLUDE: ./c/02/src/precedence_ignore.c --from 59 --to 64 --no-comment)
+[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 414 --to 419 --no-comment)
