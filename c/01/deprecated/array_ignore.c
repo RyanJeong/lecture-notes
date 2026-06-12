@@ -4,7 +4,7 @@
 int main(void)
 {
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-    int student_score1, student_score2, /* ... */, student_score100;
+    int student_score1, student_score2, /* ... */ student_score100;
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

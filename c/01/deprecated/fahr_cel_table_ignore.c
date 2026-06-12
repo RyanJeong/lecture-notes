@@ -13,8 +13,8 @@ int main(void)
     fahr = lower;
 
 #if 1          /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-    100 = 200; /* This is an impossible assignment because the left-hand side
-                  is a constant literal. */
+    100 = 200; /* This is an impossible assignment because the left-hand side is
+                  a constant literal. */
 #endif         /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

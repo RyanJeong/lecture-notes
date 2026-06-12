@@ -80,11 +80,11 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 - `Hello, World` 출력 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/hello_world.c)
+[//]: # (INCLUDE: ./c/01/src/00_hello_world.c)
 
 ### `#include` 명령(전처리 명령, Preprocessor Instruction)
 
-[//]: # (INCLUDE: ./c/01/src/hello_world.c --from 1 --to 1 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/00_hello_world.c --from 2 --to 2 --no-comment)
 
 - 보통 코드의 맨 윗부분에 위치
 - 프로그램 실행에 필요한 기능들을 프로그램 내에 포함시킴
@@ -96,7 +96,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 ### `main` 함수
 
-[//]: # (INCLUDE: ./c/01/src/hello_world.c --from 3 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/00_hello_world.c --from 6 --to 8 --from 10 --to 10 --from 12 --to 12 --from 14 --to 14 --from 16 --to 16 --no-comment)
 
 - **프로그램의 시작점**이며, 프로그램 실행은 `main` 함수를 호출하는 것을 의미
 - 함수 내용은 중괄호(`{`, `}`)로 둘러싸여 있음
@@ -109,7 +109,7 @@ Brian W. Kernighan, Dennis Ritchie (1988). "C Programming Language (ed. Prentice
 
 ### `return` 문(반환문)
 
-[//]: # (INCLUDE: ./c/01/src/hello_world.c --from 8 --to 8 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/00_hello_world.c --from 14 --to 14 --no-comment)
 
 - 함수를 종료하는 문장
 - `main` 함수 종료는 **프로그램의 종료**를 의미
@@ -129,7 +129,7 @@ $ echo $?
 
 ### `printf` 문
 
-[//]: # (INCLUDE: ./c/01/src/hello_world.c --from 6 --to 6 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/00_hello_world.c --from 10 --to 10 --no-comment)
 
 - `printf` 함수를 호출하는 문장으로, **`stdio.h` 헤더 파일이 필요함**
 - 전달인자(arguments, `"Hello, World\n"`)를 콘솔 화면에 출력하는 역할 수행
@@ -152,7 +152,7 @@ $ echo $?
 
 - `printf` 문의 다양한 형태
 
-[//]: # (INCLUDE: ./c/01/src/printf.c)
+[//]: # (INCLUDE: ./c/01/src/01_printf.c)
 
 ---
 
@@ -160,7 +160,7 @@ $ echo $?
 
 - 화씨 온도를 섭씨 온도로 변환하는 프로그램(공식: $C^\circ = \frac{5}{9} \times (F^\circ - 32)$)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c)
+[//]: # (INCLUDE: ./c/01/src/02_fahr_cel_table.c)
 
 ---
 
@@ -173,7 +173,7 @@ $ echo $?
 - `/*  */` 사이에 위치한 모든 내용은 **전처리기**에 의해 제거
 - 프로그램 소스코드 내 공백 문자(a blank, tab, or newline)가 등장할 수 있는 위치에 사용 가능
 
-[//]: # (INCLUDE: ./c/01/src/comment.c)
+[//]: # (INCLUDE: ./c/01/src/03_comment.c)
 
 ---
 
@@ -181,7 +181,7 @@ $ echo $?
 
 ### 변수(Variables)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 7 --to 8 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/02_fahr_cel_table.c --from 8 --to 9 --no-comment)
 
 - 프로그램 내에서 데이터를 보관하는 용도
 - **모든 변수는 반드시 사용 전에 선언(declarations)되어야 함**
@@ -203,14 +203,14 @@ double → double-precision floating point
 
 ### 대입문(Assignment Statements)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 10 --to 13 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/02_fahr_cel_table.c --from 13 --to 16 --no-comment)
 
 - 변수에 값을 대입(assignments)할 때 사용하는 문장
 - 대입 연산자(`=`)를 사용해 변수에 값을 전달할 수 있음
 
 ### `while` 반복문
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 14 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/02_fahr_cel_table.c --from 19 --to 19 --from 21 --to 21 --from 23 --to 25 --no-comment)
 
 - `while` 키워드 다음에 등장하는 조건(conditions)을 만족하는 동안 중괄호 내 문장들을 여러 번 반복할 수 있음
 
@@ -220,7 +220,7 @@ double → double-precision floating point
 
 ### 산술 표현식(Arithmetic Expressions)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 15 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/02_fahr_cel_table.c --from 21 --to 21 --no-comment)
 
 - 산술 연산자를 사용하는 표현식
 
@@ -241,7 +241,7 @@ double → double-precision floating point
 
 $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 21 --to 22 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 6 --to 7 --no-comment)
 
 - 2번 문장의 `5 / 9` 표현은 두 피연산자가 **정수** 값
 - **정수 나눗셈에서 소수 부분은 버려지므로, `5 / 9`의 값은 0으로 평가됨**
@@ -253,14 +253,14 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 ### 형식에 따른 출력(Formatted Output)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 26 --to 27 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 21 --to 22 --no-comment)
 
 - `printf` 함수의 첫 번째 전달인자는 화면에 실제로 출력되는 문자열(형식 문자열, format string)
 - 형식 문자열이 변환 지정자(conversion specifiers)를 포함하면, 형식 문자열 뒤에 등장하는 전달인자를 형식화할 수 있음
 - 변환 지정자는 `%` 기호로 시작하는 연속된 문자열
 - **형식 문자열 내 변환 지정자의 수와 뒤따르는 전달인자의 수는 일치해야 함**
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 31 --to 34 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 26 --to 29 --no-comment)
 
 - `%d`는 대응되는 전달인자를 **정수** 값으로 출력
 - `%f`는 대응되는 전달인자를 **실수** 값으로 출력
@@ -271,7 +271,7 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 - 출력 형식이 개선된 화씨 온도를 섭씨 온도로 변환하는 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_formatted.c)
+[//]: # (INCLUDE: ./c/01/src/04_fahr_cel_table_formatted.c)
 
 ---
 
@@ -280,7 +280,7 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 - 실수 값을 사용한 화씨 온도를 섭씨 온도로 변환하는 프로그램
   - 실수 값과 정수 값이 같이 사용될 경우, **정수 값은 실수 값으로 처리됨**
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_floating_point.c)
+[//]: # (INCLUDE: ./c/01/src/05_fahr_cel_table_floating_point.c)
 
 ---
 
@@ -297,9 +297,9 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 - 한 줄에 여러 문장을 작성하면 코드의 가독성이 낮아짐
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 38 --to 38 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 38 --to 38 --no-comment)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table.c --from 8 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/02_fahr_cel_table.c --from 9 --to 9 --from 11 --to 11 --from 13 --to 15 --no-comment)
 
 ---
 
@@ -309,11 +309,11 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 - 연산자와 피연산자 간 관계를 명확히 하여 가독성을 높이기 위함
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 42 --to 43 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 45 --to 46 --no-comment)
 
 ### 일관성(Consistency)을 유지할 것
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_ignore.c --from 47 --to 55 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 50 --to 58 --no-comment)
 
 ---
 
@@ -321,7 +321,7 @@ $$C^\circ = \frac{5}{9} \times (F^\circ - 32)$$
 
 - `for` 반복문을 사용한 화씨 온도를 섭씨 온도로 변환하는 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_using_for.c)
+[//]: # (INCLUDE: ./c/01/src/06_fahr_cel_table_using_for.c)
 
 ---
 
@@ -348,7 +348,7 @@ for (initialization; condition; updation) {
 
 - 코드 내 **정수 타입 상수**를 사용했으나, 주석 등 설명이 부족해 코드를 명확히 이해하는 데 한계가 있음
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_using_for.c --from 8 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/06_fahr_cel_table_using_for.c --from 9 --to 10 --no-comment)
 
 - `#define` 전처리문을 활용하면 기호 상수를 사용할 수 있음
 
@@ -367,7 +367,7 @@ for (initialization; condition; updation) {
 
 - 기호 상수가 추가된 화씨 온도를 섭씨 온도로 변환하는 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_using_for_with_macro.c)
+[//]: # (INCLUDE: ./c/01/src/07_fahr_cel_table_using_for_with_macro.c)
 
 ---
 
@@ -377,11 +377,11 @@ for (initialization; condition; updation) {
 
 - `#define` 전처리문 사용 시, `REPLACEMENT_TEXT` 뒤에 세미콜론을 사용하지 않도록 주의
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_using_for_with_macro_ignore.c --from 8 --to 8 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 65 --to 65 --no-comment)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_using_for_with_macro_ignore.c --from 20 --to 22 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 69 --to 71 --no-comment)
 
-[//]: # (INCLUDE: ./c/01/src/fahr_cel_table_using_for_with_macro_ignore.c --from 26 --to 28 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 75 --to 77 --no-comment)
 
 ---
 
@@ -402,7 +402,7 @@ for (initialization; condition; updation) {
 
 - 표준 라이브러리 입출력 함수는 `stdio.h` 헤더 파일이 필요함
 
-[//]: # (INCLUDE: ./c/01/src/getchar_putchar.c --from 5 --to 8 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/08_getchar_putchar.c --from 7 --to 9 --from 11 --to 11 --no-comment)
 
 #### `getchar` 함수
 
@@ -451,7 +451,7 @@ for (initialization; condition; updation) {
 
 - 기본적인 문자 입출력 함수만을 사용해 구현하는 파일 복사 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/copy_1st.c)
+[//]: # (INCLUDE: ./c/01/src/09_copy_1st.c)
 
 - `Ctrl + D`를 누르면 텍스트 입력 스트림으로 `EOF` (end-of-file)가 전달되어 프로그램이 종료됨
 
@@ -482,7 +482,7 @@ for (initialization; condition; updation) {
 
 - 개선된 파일 복사
 
-[//]: # (INCLUDE: ./c/01/src/copy_2nd.c)
+[//]: # (INCLUDE: ./c/01/src/10_copy_2nd.c)
 
 ---
 
@@ -503,7 +503,7 @@ for (initialization; condition; updation) {
 
 ### 타입에 따른 값 표현 범위
 
-[//]: # (INCLUDE: ./c/01/src/getchar_putchar.c --from 5 --to 7 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/08_getchar_putchar.c --from 7 --to 9 --no-comment)
 
 - `int` 타입은 정수를 표현하는 타입
 - `char` 타입은 문자를 표현하는 타입
@@ -521,7 +521,7 @@ for (initialization; condition; updation) {
 
 - 문자 세기
 
-[//]: # (INCLUDE: ./c/01/src/count_1st.c)
+[//]: # (INCLUDE: ./c/01/src/11_count_1st.c)
 
 ---
 
@@ -531,7 +531,7 @@ for (initialization; condition; updation) {
 
 - 변수의 값을 1 증가시키는 연산자
 
-[//]: # (INCLUDE: ./c/01/src/count_ignore.c --from 14 --to 17 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 84 --to 87 --no-comment)
 
 ---
 
@@ -557,7 +557,7 @@ for (initialization; condition; updation) {
 
 - 개선된 문자 세기
 
-[//]: # (INCLUDE: ./c/01/src/count_2nd.c)
+[//]: # (INCLUDE: ./c/01/src/12_count_2nd.c)
 
 ---
 
@@ -583,7 +583,7 @@ for (initialization; condition; updation) {
 - 줄 세기
   - 줄 끝에 포함되는 `'\n'` 문자의 개수는 곧 줄의 개수
 
-[//]: # (INCLUDE: ./c/01/src/count_line.c)
+[//]: # (INCLUDE: ./c/01/src/13_count_line.c)
 
 ---
 
@@ -591,13 +591,13 @@ for (initialization; condition; updation) {
 
 - 줄의 수, 단어의 수, 문자의 수를 세는 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/count_improved.c --to 12)
+[//]: # (INCLUDE: ./c/01/src/14_count_improved.c --to 11 --from 13 --to 13)
 
 ---
 
 ## Character Input and Output (Cont'd - 16)
 
-[//]: # (INCLUDE: ./c/01/src/count_improved.c --from 13)
+[//]: # (INCLUDE: ./c/01/src/14_count_improved.c --from 15 --to 18 --from 20 --to 25 --from 27)
 
 ---
 
@@ -609,13 +609,13 @@ for (initialization; condition; updation) {
 
 ### 연산자의 결합 방향(Operator Associativity)
 
-[//]: # (INCLUDE: ./c/01/src/count_improved.c --from 12 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/14_count_improved.c --from 13 --to 13 --no-comment)
 
 - 표현식 내 연산자들은 결합 방향에 따라 연산자 주변 피연산자와 결합
 - 대입 연산자(`=`)는 **오른쪽에서 왼쪽으로 결합**
 - `nl = nw = nc = 0;` 문장은 아래와 같이 결합되어 평가됨:
 
-[//]: # (INCLUDE: ./c/01/src/count_improved_ignore.c --from 15 --to 17 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 97 --to 99 --no-comment)
 
 ---
 
@@ -623,7 +623,7 @@ for (initialization; condition; updation) {
 
 ### 논리 연산자(Logical Operators)
 
-[//]: # (INCLUDE: ./c/01/src/count_improved_ignore.c --from 21 --to 23 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 103 --to 105 --no-comment)
 
 - 논리 연산자(`&&`)는 논리곱(logical AND), (`||`)는 논리합(logical OR)
 - 논리 연산자는 **왼쪽에서 오른쪽으로 결합**
@@ -636,31 +636,31 @@ for (initialization; condition; updation) {
 
 ### `else` 문
 
-[//]: # (INCLUDE: ./c/01/src/count_improved.c --from 17 --to 22 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/14_count_improved.c --from 20 --to 25 --no-comment)
 
 - `if` 문의 조건이 참이라면 `if` 문의 본문을 수행하고, 조건이 거짓이라면 `else` 문의 본문을 수행
   - `else` 문이 없다면 아무 동작을 수행하지 않음
 - 위 코드는 아래 코드를 축약한 표현
 
-[//]: # (INCLUDE: ./c/01/src/count_improved_ignore.c --from 27 --to 33 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 112 --to 118 --no-comment)
 
 ---
 
 ## Arrays
 
-[//]: # (INCLUDE: ./c/01/src/array_ignore.c --from 7 --to 7 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 125 --to 125 --no-comment)
 
 - **동일한 성질을 갖는 같은 타입 변수를 여러 개 선언해야 하는 경우 배열을 사용하면 편리하게 선언할 수 있음**
 - 배열 선언 형식은 `TYPE NAME[SIZE]`
   - `TYPE` 타입 변수를 `SIZE` 개 선언하는 것
 
-[//]: # (INCLUDE: ./c/01/src/array_ignore.c --from 11 --to 11 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 129 --to 129 --no-comment)
 
 - 배열 선언 후 배열의 이름에 인덱스 번호를 지정하면 배열의 원소(elements)를 고를 수 있음
 - 배열 원소 선택은 `NAME[INDEX]`
   - 배열 선언 시 `SIZE` 크기로 선언했다면, **사용 가능한 인덱스 범위는 `0` ~ `(SIZE - 1)`**
 
-[//]: # (INCLUDE: ./c/01/src/array_ignore.c --from 15 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 133 --to 136 --no-comment)
 
 ---
 
@@ -668,13 +668,13 @@ for (initialization; condition; updation) {
 
 - 숫자 문자, 공백 문자, 그 외 문자의 빈도 계산 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/array.c --to 19)
+[//]: # (INCLUDE: ./c/01/src/15_array.c --to 12 --from 14 --to 15 --from 17 --to 21)
 
 ---
 
 ## Arrays (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/01/src/array.c --from 21)
+[//]: # (INCLUDE: ./c/01/src/15_array.c --from 23)
 
 ---
 
@@ -682,7 +682,7 @@ for (initialization; condition; updation) {
 
 ### ASCII 성질을 활용한 기술들
 
-[//]: # (INCLUDE: ./c/01/src/array.c --from 13 --to 14 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/15_array.c --from 14 --to 15 --no-comment)
 
 - ASCII에 정의된 숫자 문자는 **서로 인접해 있음**
   - `'0'`은 `0x30` (`48`), `'1'`은 `0x31` (`49`), ..., `'9'`는 `0x39` (`57`)
@@ -718,13 +718,13 @@ for (initialization; condition; updation) {
 
 - ${m}^{n}$을 계산하는 `power` 함수
 
-[//]: # (INCLUDE: ./c/01/src/power.c --to 14)
+[//]: # (INCLUDE: ./c/01/src/16_power.c --to 2 --from 4 --to 4 --from 6 --to 12 --from 14 --to 14 --from 21 --to 23)
 
 ---
 
 ## Functions (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/01/src/power.c --from 16)
+[//]: # (INCLUDE: ./c/01/src/16_power.c --from 25)
 
 ---
 
@@ -732,7 +732,7 @@ for (initialization; condition; updation) {
 
 ### 함수 선언(Function Declarations)
 
-[//]: # (INCLUDE: ./c/01/src/power.c --from 3 --to 3 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/16_power.c --from 4 --to 4 --no-comment)
 
 - 함수 정의 부분에서 함수의 본문 없이 사용한 문장
 - 컴파일러에게 함수의 정보를 알리는 용도로 사용
@@ -752,7 +752,7 @@ for (initialization; condition; updation) {
 
 ### 지역 변수(Local Variables)
 
-[//]: # (INCLUDE: ./c/01/src/local_variable_ignore.c)
+[//]: # (INCLUDE: ./c/01/src/_snippet.c --from 141 --to 151 --no-comment)
 
 - 함수 안에 선언된 변수는 지역 변수
 - 두 함수(`main`, `power`)는 둘 다 지역 변수 `i`를 선언해 사용
@@ -765,9 +765,9 @@ for (initialization; condition; updation) {
 
 ### 함수의 반환값
 
-[//]: # (INCLUDE: ./c/01/src/power.c --from 3 --to 3 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/16_power.c --from 4 --to 4 --no-comment)
 
-[//]: # (INCLUDE: ./c/01/src/power_ignore.c --from 26 --to 26 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/16_power.c --from 14 --to 14 --no-comment)
 
 - `power` 함수의 반환 타입은 `int` 타입
 - `printf` 함수의 형식 문자열은 세 개의 전달인자를 정수 타입으로 형식화 후 출력
@@ -776,13 +776,13 @@ for (initialization; condition; updation) {
   - 세 번째 변환 지정자 `%d`는 `power(-3, i)`의 반환값을 정수 타입으로 형식화 후 출력
 - 반환값은 아래와 같이 무시할 수도 있음
 
-[//]: # (INCLUDE: ./c/01/src/power_ignore.c --from 30 --to 30 --no-comment)
+[//]: # (INCLUDE: ./c/01/src/16_power.c --from 18 --to 18 --no-comment)
 
 ---
 
 ## Character Arrays
 
-[//]: # (INCLUDE: ./c/01/src/char_array.c)
+[//]: # (INCLUDE: ./c/01/src/17_char_array.c)
 
 - 가장 많이 사용되는 배열 형태 중 하나
 - `char` 타입 배열은 **문자열**을 저장할 수 있음
@@ -807,7 +807,7 @@ for (initialization; condition; updation) {
 
 - 함수로 `char` 타입 배열 전달
 
-[//]: # (INCLUDE: ./c/01/src/char_array_example.c)
+[//]: # (INCLUDE: ./c/01/src/18_char_array_example.c)
 
 ---
 
@@ -815,25 +815,25 @@ for (initialization; condition; updation) {
 
 - 입력된 문자열 중 가장 긴 문자열을 출력하는 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/print_longest.c --to 16)
+[//]: # (INCLUDE: ./c/01/src/19_print_longest.c --to 16)
 
 ---
 
 ## Character Arrays (Cont'd - 4)
 
-[//]: # (INCLUDE: ./c/01/src/print_longest.c --from 17 --to 27)
+[//]: # (INCLUDE: ./c/01/src/19_print_longest.c --from 17 --to 27)
 
 ---
 
 ## Character Arrays (Cont'd - 5)
 
-[//]: # (INCLUDE: ./c/01/src/print_longest.c --from 29 --to 43)
+[//]: # (INCLUDE: ./c/01/src/19_print_longest.c --from 29 --to 43)
 
 ---
 
 ## Character Arrays (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/01/src/print_longest.c --from 45)
+[//]: # (INCLUDE: ./c/01/src/19_print_longest.c --from 45)
 
 ---
 
@@ -865,22 +865,22 @@ for (initialization; condition; updation) {
 
 - 외부 변수를 사용하는 입력된 문자열 중 가장 긴 문자열을 출력하는 프로그램
 
-[//]: # (INCLUDE: ./c/01/src/print_longest_with_external_variable.c --to 19)
+[//]: # (INCLUDE: ./c/01/src/20_print_longest_with_external_variable.c --to 19)
 
 ---
 
 ## External Variables and Scope (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/01/src/print_longest_with_external_variable.c --from 20 --to 30)
+[//]: # (INCLUDE: ./c/01/src/20_print_longest_with_external_variable.c --from 20 --to 30)
 
 ---
 
 ## External Variables and Scope (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/01/src/print_longest_with_external_variable.c --from 32 --to 47)
+[//]: # (INCLUDE: ./c/01/src/20_print_longest_with_external_variable.c --from 32 --to 47)
 
 ---
 
 ## External Variables and Scope (Cont'd - 4)
 
-[//]: # (INCLUDE: ./c/01/src/print_longest_with_external_variable.c --from 49)
+[//]: # (INCLUDE: ./c/01/src/20_print_longest_with_external_variable.c --from 49)
