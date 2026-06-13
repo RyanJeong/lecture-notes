@@ -137,6 +137,7 @@ main() {
   if [ -s "${ERROR_FILE}" ]; then
     warn "${ERROR_COUNT} error(s) found. See: ${ERROR_FILE}"
     cat "${ERROR_FILE}"
+    exit 1
   else
     info "All files passed syntax check."
   fi
