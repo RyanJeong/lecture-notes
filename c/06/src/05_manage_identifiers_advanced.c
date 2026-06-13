@@ -2,6 +2,7 @@
 
 #define NSYM 100
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 struct {
     char *name; /* Identifier name */
     struct {
@@ -16,6 +17,7 @@ struct {
         char *sval; /* String value */
     } u;
 } symtab[NSYM];
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 enum { INT, FLOAT, STRING };
 

@@ -15,7 +15,7 @@
 
 ![center](img/00-coordinate.png)
 
-[//]: # (INCLUDE: ./c/06/src/struct.c --from 2 --to 6 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 2 --to 6 --no-comment)
 
 - `struct`는 구조체 선언을 위한 키워드이며, 태그(struct tag)는 구조체 식별에 사용됨
 - 구조체 태그는 생략 가능하며, 태그가 생략된 구조체는 익명 구조체(anonymous structure)가 됨
@@ -26,15 +26,15 @@
 
 ### 구조체 선언을 통해 정의한 구조체 타입 변수 선언
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 12 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 12 --to 15 --no-comment)
 
 ### 익명 구조체 선언의 동작 방식
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 21 --to 24 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 21 --to 24 --no-comment)
 
 - 각 익명 구조체 선언은 **고유한** 구조체 타입으로 간주되어 구분됨
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 30 --to 32 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 30 --to 32 --no-comment)
 
 ---
 
@@ -46,14 +46,14 @@
 - **멤버 또는 태그는 일반 변수와 같은 이름을 사용할 수 있음**
   - 문맥(context)에 의해 구분됨
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 37 --to 40 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 37 --to 40 --no-comment)
 
 ### 구조체 타입 변수 초기화
 
 - 배열처럼 중괄호 안에 초기화자 목록(list of initializers)을 쉼표로 구분하여 열거
 - 각 초기화자(initializer)는 **순서대로** 구조체 멤버의 초기화자로 사용
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 44 --to 46 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 44 --to 46 --no-comment)
 
 ---
 
@@ -63,7 +63,7 @@
 
 ![center](img/01-rect.png)
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 50 --to 55 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 50 --to 55 --no-comment)
 
 - 구조체 정의 시 이미 정의된 구조체를 멤버에 사용한 형태
 
@@ -75,7 +75,7 @@
 
 - 구조체 타입 변수의 멤버는 `.` (dot) 연산자를 사용해 접근 가능
 
-[//]: # (INCLUDE: ./c/06/src/struct.c  --from 63 --to 69 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c  --from 63 --to 69 --no-comment)
 
 ---
 
@@ -88,7 +88,7 @@
 - **그 외 연산은 허용하지 않으며**, 필요한 연산이 있다면 **직접 함수로 구현**해 사용해야 함
 - `struct point`, `struct rect` 타입을 조작할 수 있는 함수를 소개하면서, 구조체를 사용하는 함수의 유형 소개
 
-[//]: # (INCLUDE: ./c/06/src/struct_func.c --from 2 --to 10 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/00_struct_func.c --from 2 --to 10 --no-comment)
 
 ---
 
@@ -96,7 +96,7 @@
 
 ### 구조체의 각 멤버를 개별 인자로 함수에 전달 (Pass Components Separately)
 
-[//]: # (INCLUDE: ./c/06/src/struct_func.c --from 14 --to 25 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/00_struct_func.c --from 14 --to 25 --no-comment)
 
 - 일반 변수(매개변수)의 이름과 멤버의 이름이 **문맥에 의해 구분**됨
   - 이를 기반으로 매개변수가 어느 멤버와 연관되는지를 강조할 수 있음
@@ -109,7 +109,7 @@
 
 ### 구조체 전체를 함수에 전달 (Pass an Entire Structure)
 
-[//]: # (INCLUDE: ./c/06/src/struct_func.c --from 29 --to 42 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/00_struct_func.c --from 29 --to 42 --no-comment)
 
 - 구조체의 멤버에 대응되는 인자를 함수로 전달하는 대신, 구조체를 인자로 함수에 전달
 - 멤버 수가 많거나 멤버 크기가 큰 구조체를 함수의 인자로 사용할 경우 **성능 관점에서 불리함**
@@ -121,7 +121,7 @@
 
 ### 구조체의 포인터를 함수에 전달 (Pass a Pointer)
 
-[//]: # (INCLUDE: ./c/06/src/struct_func.c --from 48 --to 52 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/00_struct_func.c --from 48 --to 52 --no-comment)
 
 - 포인터 변수는 **가리키는 대상 관계없이 고정된 크기를 가짐**
 - 구조체를 함수로 전달 시 구조체를 직접 전달하는 것보다는 **구조체 포인터를 전달**하는 것이 **성능 관점에서 일반적으로 유리함**
@@ -132,7 +132,7 @@
 
 - 멤버 구성에 따른 구조체 객체 크기
 
-[//]: # (INCLUDE: ./c/06/src/cmp_struct_value_ptr.c)
+[//]: # (INCLUDE: ./c/06/src/01_cmp_struct_value_ptr.c)
 
 ---
 
@@ -159,9 +159,9 @@
 
 ### Operator Precedence with Struct Pointers
 
-[//]: # (INCLUDE: ./c/06/src/example_struct_ptr.c --from 2 --to 5 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 74 --to 77 --no-comment)
 
-[//]: # (INCLUDE: ./c/06/src/example_struct_ptr.c --from 11 --to 22 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 83 --to 94 --no-comment)
 
 ---
 
@@ -171,7 +171,7 @@
 
 - 예약어들을 보관할 배열과 각 예약어의 입력 빈도를 보관할 변수 하나가 필요함
 
-[//]: # (INCLUDE: ./c/06/src/keywords_snippet.c --from 4 --to 5 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 101 --to 102 --no-comment)
 
 - 각 배열은 인덱스를 기준으로 관련된 데이터를 나란히 저장하고 있음(평행 구조, parallel arrays)
 - **배열 기반 평행 구조 데이터는 서로 분리되어 있음**
@@ -179,7 +179,7 @@
   - 평행 구조 데이터를 함수 내에서 조작해야 할 경우, 평행 구조에 놓여 있는 모든 데이터를 인자로서 넘겨야 함
 - 평행 구조를 이루는 데이터는 구조체 배열을 사용해 **논리적으로 결합된 하나의 단위**로서 데이터를 조작할 수 있음
 
-[//]: # (INCLUDE: ./c/06/src/keywords_snippet.c --from 9 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 106 --to 109 --no-comment)
 
 ---
 
@@ -187,14 +187,14 @@
 
 ### 구조체 배열 초기화
 
-[//]: # (INCLUDE: ./c/06/src/keywords_snippet.c --from 16 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 113 --to 115 --no-comment)
 
 - *n*차원 배열처럼 중괄호로 둘러싸인 초기화자 목록 사용
   - 중괄호 내 초기화자들은 순서대로 각 요소별 멤버의 초기화자로 사용
   - `keytab[0].word`는 `"auto"`의 시작 주소, `keytab[0].count`는 `0`으로 초기화
 - 구조체 배열 초기화 시 괄호를 추가로 사용하면 가독성을 높임과 동시에 실수를 방지할 수 있음
 
-[//]: # (INCLUDE: ./c/06/src/keyword/key.c --from 5 --to 14 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/keyword/key.c --from 6 --to 15 --no-comment)
 
 ---
 
@@ -213,7 +213,7 @@ sizeof(type name)
   - 배열 크기가 변하더라도 컴파일러가 올바른 크기를 자동으로 계산함
 - 요소 수가 많은 배열의 크기는 실수 방지를 위해 `sizeof` 연산자를 활용해 계산한 값을 쓰는 것을 권장
 
-[//]: # (INCLUDE: ./c/06/src/keywords_snippet.c --from 22 --to 23 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 119 --to 120 --no-comment)
 
 - 두 번째 방법은 구조체 타입이 바뀌어도 수정하지 않아도 된다는 장점이 있음
 
@@ -229,6 +229,9 @@ sizeof(type name)
 |-- key.h
 `-- main.c
 ```
+
+[//]: # (INCLUDE: ./c/06/src/keyword/Makefile --reference)
+[//]: # (INCLUDE: ./c/06/src/keyword/getch.c --reference)
 
 ---
 
@@ -266,12 +269,12 @@ sizeof(type name)
 
 - `bsearch.c`
 
-[//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --to 11)
+[//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --to 4 --from 6 --to 7 --from 9 --to 13)
 ---
 
 ## Arrays of Structures (Cont'd - 9)
 
-[//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --from 13)
+[//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --from 15)
 
 ---
 
@@ -296,7 +299,7 @@ sizeof(type name)
 - **모든 멤버의 주소는 자신의 타입 크기로 나누어질 수 있는 주소를 가져야 함**
   - 만약 올바른 주소를 가질 수 없다면, 유효한 주소를 가질 수 있을 때까지 셀을 건너뜀(padding)
 
-[//]: # (INCLUDE: ./c/06/src/memory_alignment.c --from 2 --to 6 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 124 --to 128 --no-comment)
 
 ![center](img/02-memory-alignment.png)
 
@@ -308,7 +311,7 @@ sizeof(type name)
 
 - 아래 두 구조체는 같은 종류의 멤버를 구성하나, 순서에 따라 메모리 사용량에 차이가 발생할 수 있음
 
-[//]: # (INCLUDE: ./c/06/src/memory_alignment.c --from 10 --to 20 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 132 --to 142 --no-comment)
 
 ![center](img/03-memory-alignment.png)
 
@@ -322,11 +325,11 @@ sizeof(type name)
 
 - 복합 타입(a complicated type, e.g., a structure pointer) 반환 함수는 복합 타입 종류에 따라 가독성을 해치기도 함
 
-[//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --from 5 --to 6 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --from 6 --to 7 --no-comment)
 
 - 다음과 같은 형태를 사용하면 반환 타입과 이름을 확실히 구분할 수 있음
 
-[//]: # (INCLUDE: ./c/06/src/bsearch.h --from 2 --to 4 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 146 --to 148 --no-comment)
 
 ---
 
@@ -396,7 +399,7 @@ a pointer to the right child node
 
 - 자기 자신을 가리키는 포인터를 멤버로 구성한 구조체
 
-[//]: # (INCLUDE: ./c/06/src/word_freq/tree.h --from 4 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/word_freq/tree.h --from 5 --to 10 --no-comment)
 
 - 구조체 이름이 선언되는 순간, 컴파일러는 이를 이름만 가진 불완전 타입(incomplete type)으로 간주
   - 구조체 정의가 마무리되어야 완전 타입(complete type)으로 간주
@@ -411,7 +414,7 @@ a pointer to the right child node
 
 ### `alloc` 함수의 문제점
 
-[//]: # (INCLUDE: ./c/05/src/alloc/alloc.c --from 10 --to 28 --no-comment)
+[//]: # (INCLUDE: ./c/05/src/alloc/alloc.c --from 4 --to 22 --no-comment)
 
 ---
 
@@ -426,6 +429,8 @@ a pointer to the right child node
 
 - `alloc` 함수는 반환 타입이 `char *`로 고정임
 - 타입에 대한 고려는 되어있지 않음
+
+[//]: # (INCLUDE: ./c/05/src/alloc/alloc.c --from 26 --to 31 --no-comment)
 
 > What problems may occur when creation and destruction orders are mismatched?
 
@@ -463,7 +468,7 @@ void free(void *p);
 
 - 동적 저장공간 할당기 예시
 
-[//]: # (INCLUDE: ./c/06/src/heap_example.c)
+[//]: # (INCLUDE: ./c/06/src/02_heap_example.c)
 
 ---
 
@@ -480,6 +485,10 @@ void free(void *p);
 |-- tree.c
 `-- tree.h
 ```
+
+[//]: # (INCLUDE: ./c/06/src/word_freq/Makefile --reference)
+[//]: # (INCLUDE: ./c/06/src/word_freq/getch.c --reference)
+[//]: # (INCLUDE: ./c/06/src/word_freq/getword.c --reference)
 
 ---
 
@@ -540,7 +549,7 @@ void free(void *p);
   - 식별자 `s`가 내부 테이블에 존재할 경우 등록된 레코드를 가리키는 포인터 반환
   - 식별자 `s`가 내부 테이블에 존재하지 않을 경우 `NULL` 반환
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup_snippet.c)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 152 --to 153 --no-comment)
 
 ---
 
@@ -548,7 +557,7 @@ void free(void *p);
 
 ### 연결 리스트 (Linked List)
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.h --from 4 --to 8 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.h --from 5 --to 9 --no-comment)
 
 - 각 노드를 포인터를 사용해 연결된 **논리적인 선형 구조**를 갖는 자료 구조
 - 연결 리스트의 노드는 식별자와 대치 문자열의 정보, 다음 노드를 가리키는 포인터로 구성됨
@@ -560,14 +569,14 @@ void free(void *p);
 
 ### 해시 탐색 (Hash Search)
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 16 --to 17 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 19 --to 22 --no-comment)
 
 - 임의의 데이터를 **음수가 아닌 정수 타입** 값으로 변환하는 알고리즘
 - 매크로 처리기의 `install`, `lookup` 함수는 해시 탐색 알고리즘을 기반으로 구현
 - 입력되는 식별자(`char *s`)를 `0 ~ HASHSIZE - 1` 범위의 정수로 변환하여 **포인터 배열의 인덱스**로 사용
   - 식별자의 해시 결과값은 포인터 배열의 인덱스로 사용되며, 포인터 배열의 각 요소는 연결 리스트의 첫 노드를 가리킴
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 9 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 10 --to 10 --no-comment)
 
 ![center](img/06-linked-list.png)
 
@@ -577,7 +586,7 @@ void free(void *p);
 
 ### 매크로 처리기의 탐색 과정
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 22 --to 33 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 27 --to 38 --no-comment)
 
 - 해시 탐색 알고리즘의 특징(데이터의 해시 값으로 인덱스를 빠르게 계산할 수 있음)을 기반으로 한 빠른 탐색 수행
 
@@ -587,7 +596,7 @@ void free(void *p);
 
 ### 매크로 처리기의 등록 과정
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 41 --to 54 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 48 --to 61 --no-comment)
 
 - `lookup` 함수를 사용해 등록하고자 하는 식별자(`char *name`)를 갖는 노드가 존재하는지 확인:
   - 존재할 경우 해당 노드의 `defn` 멤버(기존의 대치 문자열) 소멸
@@ -603,12 +612,16 @@ void free(void *p);
 
 ```text
 .
-|-- itoa.c
+|-- itoa.c    # NB: Reuse previously implemented file
 |-- main.c
-|-- strdup.c
+|-- strdup.c  # NB: Reuse previously implemented file
 |-- table.c
 `-- table.h
 ```
+
+[//]: # (INCLUDE: ./c/06/src/table_lookup/Makefile --reference)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/itoa.c --reference)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/strdup.c --reference)
 
 ---
 
@@ -624,45 +637,23 @@ void free(void *p);
 
 - `table.c`
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --to 20)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --to 8 --from 10 --to 10 --from 12 --to 17 --from 19 --to 22 --from 24 --to 24)
 
 ---
 
 ## Table Lookup (Cont'd - 8)
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 22 --to 33)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 27 --to 38)
 
 ---
 
 ## Table Lookup (Cont'd - 9)
 
-[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 35)
+[//]: # (INCLUDE: ./c/06/src/table_lookup/table.c --from 41 --to 46 --from 48 --to 61 --from 63)
 
 ---
 
 ## Table Lookup (Cont'd - 10)
-
-- `itoa.c`
-
-[//]: # (INCLUDE: ./c/06/src/table_lookup/itoa.c --to 10)
-
----
-
-## Table Lookup (Cont'd - 11)
-
-[//]: # (INCLUDE: ./c/06/src/table_lookup/itoa.c --from 12)
-
----
-
-## Table Lookup (Cont'd - 12)
-
-- `strdup.c`
-
-[//]: # (INCLUDE: ./c/06/src/table_lookup/strdup.c)
-
----
-
-## Table Lookup (Cont'd - 13)
 
 - `main.c`
 
@@ -670,7 +661,7 @@ void free(void *p);
 
 ---
 
-## Table Lookup (Cont'd - 14)
+## Table Lookup (Cont'd - 11)
 
 [//]: # (INCLUDE: ./c/06/src/table_lookup/main.c --from 16)
 
@@ -678,26 +669,26 @@ void free(void *p);
 
 ## Typedef
 
-[//]: # (INCLUDE: ./c/06/src/typedef.c --from 8 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 163 --to 167 --no-comment)
 
 - **이미 존재하는 타입**에 새로운 이름 생성
   - **새로운 타입을 만드는 것이 아님에 유의**
 - `typedef` 키워드를 사용해 새로 선언한 이름은 타입처럼 사용 가능:
 
-[//]: # (INCLUDE: ./c/06/src/typedef.c --from 16 --to 21 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 171 --to 176 --no-comment)
 
 ---
 
 ## Typedef (Cont'd - 1)
 
-[//]: # (INCLUDE: ./c/06/src/typedef.c --from 34 --to 36 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 189 --to 191 --no-comment)
 
 - `typedef`는 `extern`, `static` 같은 저장 클래스 지정자(storage class specifiers)의 한 유형
   - 새로 정의할 이름은 `typedef` 바로 뒤가 아닌 변수 이름이 오는 자리에 위치
 - `typedef`로 새로 생성한 이름은 다른 이름과 구분하기 위해 **대문자로 시작하는 이름**을 사용하거나 접미사 `_t` 사용
 - 복잡한 타입에 `typedef`를 활용한 예:
 
-[//]: # (INCLUDE: ./c/06/src/typedef.c --from 44 --to 55 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 201 --to 212 --no-comment)
 
 ---
 
@@ -706,9 +697,9 @@ void free(void *p);
 - `#define` 전처리 지시문과 동작 형태가 유사한 것처럼 보임
 - `#define` 전처리 지시문보다 더 다양한 형태로 사용될 수 있음 (e.g., 함수 포인터, 기계 의존적인 타입 관리, etc.)
 
-[//]: # (INCLUDE: ./c/06/src/typedef.c --from 78 --to 81 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 233 --to 236 --no-comment)
 
-[//]: # (INCLUDE: ./c/06/src/typedef.c --from 88 --to 95 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 244 --to 251 --no-comment)
 
 ---
 
@@ -726,7 +717,7 @@ void free(void *p);
 
 ## Unions (Cont'd - 1)
 
-[//]: # (INCLUDE: ./c/06/src/union.c --from 6 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/03_union.c --from 6 --to 15 --no-comment)
 
 ![center](img/07-union.png)
 
@@ -736,7 +727,7 @@ void free(void *p);
 
 - 공용체 기반의 간단한 컴파일러의 식별자 관리 프로그램
 
-[//]: # (INCLUDE: ./c/06/src/manage_identifiers.c --to 16)
+[//]: # (INCLUDE: ./c/06/src/04_manage_identifiers.c --to 16)
 
 - 타입 수와 관계없이 **하나의 공유된 객체**에 데이터를 관리
 - 공용체 사용 시 현재 공용체에 저장된 값의 타입이 무엇인지 잘 추적해야 함
@@ -746,7 +737,7 @@ void free(void *p);
 
 ## Unions (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/06/src/manage_identifiers.c --from 18)
+[//]: # (INCLUDE: ./c/06/src/04_manage_identifiers.c --from 18)
 
 - 구조체 배열의 `utype`의 값에 따라 객체의 메모리를 올바른 타입으로 처리함
 
@@ -754,15 +745,15 @@ void free(void *p);
 
 ## Bit-Fields
 
-[//]: # (INCLUDE: ./c/06/src/bit_field.c --from 2 --to 5 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 256 --to 258 --no-comment)
 
 - 여러 개의 상태 정보를 표현해야 할 때, 하나의 객체에 비트 단위로 데이터를 조작하면 메모리를 절약할 수 있음
   - e.g., `int` 타입 객체는 4 bytes를 사용하므로 32개의 상태 표현이 가능해짐
 - 비트 연산을 사용해 세 가지의 상태를 표현한 예시:
 
-[//]: # (INCLUDE: ./c/06/src/bit_field.c --from 9 --to 11 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 262 --to 264 --no-comment)
 
-[//]: # (INCLUDE: ./c/06/src/bit_field.c --from 17 --to 24 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/_snippet.c --from 270 --to 277 --no-comment)
 
 ---
 
@@ -775,7 +766,7 @@ void free(void *p);
 - 콜론 옆 숫자는 비트 폭(width)을 의미하며, 부호 비트 혼선 방지를 위해 **무부호 타입 사용**이 관례
 - 비트 단위로 할당되므로 멤버의 주소 추출(`&`)이나 비트 필드 배열 선언은 문법적으로 불가능
 
-[//]: # (INCLUDE: ./c/06/src/manage_identifiers_advanced.c --from 5 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/05_manage_identifiers_advanced.c --from 6 --to 19 --no-comment)
 
 ---
 
@@ -783,7 +774,7 @@ void free(void *p);
 
 - 비트 필드의 이름이 생략될 경우, 비트를 폭만큼 건너뜀(padding)
 
-[//]: # (INCLUDE: ./c/06/src/bit_field1.c --from 4 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/06_bit_field1.c --from 4 --to 15 --no-comment)
 
 ![center](img/08-bit-field.png)
 
@@ -793,7 +784,7 @@ void free(void *p);
 
 - 비트 폭이 0인 경우, 비트를 다음 메모리의 경계까지 강제로 정렬함(alignment)
 
-[//]: # (INCLUDE: ./c/06/src/bit_field2.c --from 4 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/07_bit_field2.c --from 4 --to 15 --no-comment)
 
 ![center](img/09-bit-field.png)
 
@@ -803,7 +794,7 @@ void free(void *p);
 
 - 비트 필드는 부호 타입도 사용 가능하나, 비트 필드 조작 결과가 음수가 될 수 있다는 점을 유념해야 함
 
-[//]: # (INCLUDE: ./c/06/src/bit_field3.c --from 6 --to 12 --no-comment)
+[//]: # (INCLUDE: ./c/06/src/08_bit_field3.c --from 6 --to 12 --no-comment)
 
 - 비트 필드는 엔디안 방식(endianness)에 따라 값을 넣는 방향이 결정됨
   - 대부분의 기계는 리틀 엔디안(하위 바이트가 메모리의 낮은 주소에 저장)
@@ -825,13 +816,13 @@ void free(void *p);
 
 ## Appendix C. Example Program Using `qsort` and `bsearch`
 
-[//]: # (INCLUDE: ./c/06/src/bsearch.c --to 9)
+[//]: # (INCLUDE: ./c/06/src/09_bsearch.c --to 9)
 
 ---
 
 ## Appendix C. Example Program Using `qsort` and `bsearch` (Cont'd)
 
-[//]: # (INCLUDE: ./c/06/src/bsearch.c --from 11)
+[//]: # (INCLUDE: ./c/06/src/09_bsearch.c --from 11)
 
 ---
 
@@ -850,13 +841,13 @@ void free(void *p);
 
 ## Appendix D. `volatile` (Cont'd)
 
-[//]: # (INCLUDE: ./c/06/src/volatile_example.c --to 10)
+[//]: # (INCLUDE: ./c/06/src/10_volatile_example.c --to 10)
 
 ---
 
 ## Appendix D. `volatile` (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/06/src/volatile_example.c --from 12)
+[//]: # (INCLUDE: ./c/06/src/10_volatile_example.c --from 12)
 
 - `g_done`은 `handle_sigint` 시그널 핸들러에 의해 수정되는 전역 변수
 - `volatile` 없이는 컴파일러가 `g_done`을 레지스터에 캐시
@@ -871,7 +862,7 @@ void free(void *p);
   - 인덱스: **닫힌 구간** `[low, high]`, `high = n - 1`, 반복 조건 `low <= high`
   - 포인터: **반열린 구간** `[low, high)`, `high = &tab[n]`, 반복 조건 `low < high`
 
-[//]: # (INCLUDE: ./c/03/src/binsearch.c)
+[//]: # (INCLUDE: ./c/03/src/00_binsearch.c)
 
 ---
 
@@ -898,7 +889,7 @@ void free(void *p);
   - `mid` 제외 시 한 칸 건너뜀(`high = mid - 1`)
   - 반복 조건은 `low <= high`
 - 포인터 버전: 반열린 구간 `[low, high)`
-  - `high = &tab[n]`: 마지막 원소의 **다음(past-the-end)**, 역참조하지 않는 경계 표식
+  - `high = &tab[n]`: 마지막 원소의 다음(past-the-end), 역참조하지 않는 경계 표식
   - `high`가 배타적(exclusive)이므로 `high = mid`만으로 `mid`가 제외됨
   - 반복 조건은 `low < high`
 - `&tab[n]`(반열린)을 택하는 이유:
@@ -914,7 +905,7 @@ void free(void *p);
 
 - `v = {10, 20, 30}`, `n = 3`, `x = 5`(모든 값보다 작음)로 추적한다고 가정
 
-[//]: # (INCLUDE: ./c/06/src/wrong_binsearch.c)
+[//]: # (INCLUDE: ./c/06/src/11_wrong_binsearch.c)
 
 ---
 
@@ -944,7 +935,7 @@ void free(void *p);
   0   2   1     x < v[mid]   high = mid - 1 = 0
   0   0   0     x < v[mid]   high = mid - 1 = -1
 
-  low <= high is false   ->   return -1
+  low <= high is false    →   return -1
 ```
 
 - 닫힌 `[low, high]` + `low <= high` + `high = mid - 1` (정상)
@@ -956,7 +947,7 @@ void free(void *p);
   0   3   1     x < v[mid]   high = mid = 1
   0   1   0     x < v[mid]   high = mid = 0
 
-  low < high is false    ->   return NULL
+  low < high is false    →   return NULL
 ```
 
 - 반열린 `[low, high)` + `low < high` + `high = mid` (정상)

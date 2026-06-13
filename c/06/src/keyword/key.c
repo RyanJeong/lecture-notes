@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 struct key keytab[] = {
     { "auto", 0 },     { "break", 0 },    { "case", 0 },     { "char", 0 },
     { "const", 0 },    { "continue", 0 }, { "default", 0 },  { "do", 0 },
@@ -12,5 +13,6 @@ struct key keytab[] = {
     { "struct", 0 },   { "switch", 0 },   { "typedef", 0 },  { "union", 0 },
     { "unsigned", 0 }, { "void", 0 },     { "volatile", 0 }, { "while", 0 }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 const int NKEYS = sizeof keytab / sizeof(struct key);

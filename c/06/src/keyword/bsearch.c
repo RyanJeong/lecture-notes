@@ -2,8 +2,10 @@
 
 #include "key.h"
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 /* binsearch: find word in tab[0]...tab[n-1] */
 struct key *binsearch(char *word, struct key tab[], int n)
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 {
     int cond;
     struct key *low = &tab[0];
