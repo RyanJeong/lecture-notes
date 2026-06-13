@@ -13,7 +13,7 @@
 
 - 함수(functions) 중심이며, 데이터(수동적 객체, passive objects)와 함수가 **분리**된 채 절차에 따라 프로그램 동작
 
-[//]: # (INCLUDE: ./cpp/00/src/procedural_vs_oop.cc --from 4 --to 8 --no-comment)
+[//]: # (INCLUDE: ./cpp/00/src/procedural_vs_oop.cc --from 2 --to 6 --no-comment)
 
 ### Object-Oriented Programming
 
@@ -39,10 +39,10 @@
   > Object-oriented programming (**OOP**) is a programming paradigm that organizes software design around **objects that combine state and behavior**, and employs techniques such as **data abstraction**, **encapsulation**, **messaging**, **modularity**, **polymorphism**, and **inheritance**.
 
 - [Bjarne Stroustrup](https://www.stroustrup.com/) - "C with Classes"
-  - C에서 확장된 언어로, C++의 전신임
+  - C에서 확장된 언어(C++의 전신)
 
 | ![h:250 center](img/01-oop.png) | ![h:250 center](img/02-oop.png) |
-|---------------------------------|---------------------------------|
+| ------------------------------- | ------------------------------- |
 
 ---
 
@@ -84,7 +84,7 @@
 ## 교재
 
 | ![center h:200](img/07-textbook.png) | ![center h:200](img/08-textbook.png) | ![center h:200](img/09-textbook.png) |
-|--------------------------------------|--------------------------------------|--------------------------------------|
+| ------------------------------------ | ------------------------------------ | ------------------------------------ |
 
 ### Main Textbook
 
@@ -107,12 +107,12 @@
 
 ## 평가
 
-|구분|배점|비고|
-|:---:|:---:|:---|
-|중간고사|30%|필기시험(주관식/객관식)|
-|기말고사|30%|필기시험(주관식/객관식)|
-|과제|30%|레포트 1회, 프로그래밍 2회|
-|출석|10%|4분의 1 이상 결석 시 F|
-|합계|100%||
+| 구분 | 배점 | 비고 |
+| :--: | :--: | :--: |
+| 중간고사 | 30% | 필기시험(주관식/객관식) |
+| 기말고사 | 30% | 필기시험(주관식/객관식) |
+| 과제 | 30% | 레포트 1회, 프로그래밍 2회 |
+| 출석 | 10% | 4분의 1 이상 결석 시 F |
+| 합계 | 100% | |
 
 - 지각 또는 결석 사유를 증빙할 공식 자료 제출 시 출결 정정 가능
