@@ -1,5 +1,3 @@
-#include <iostream>
-
 int main() {
   int a = 10;
 
@@ -13,5 +11,6 @@ int main() {
 
   // Pointer can be initialized to nullptr, but reference cannot.
   int* null_ptr = nullptr;  // Valid: `null_ptr` does not point to any object.
+
   return 0;
 }

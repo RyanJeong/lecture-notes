@@ -9,7 +9,7 @@ int main() {
   for (int i = 0; i < rows; ++i)
     matrix[i] = data + (i * cols);  // Point to start of each row
 
-  // Do something with the matrix at here
+  // Do something with the matrix here
   for (int i = 0; i < rows; ++i)
     for (int j = 0; j < cols; ++j) matrix[i][j] = i * cols + j;
 

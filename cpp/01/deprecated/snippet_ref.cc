@@ -26,7 +26,7 @@ void NoRefCases() {
   int& ref_arr[3] = {a, b, c};  // Abandoned: array of references
   // `a`, `b`, and `c` are not guaranteed to be contiguous in memory.
   // What happens if we use the following command?
-  (ref_arr + 2);  // Can you sure that (ref_arr + 2) always points to `c`?
+  (ref_arr + 2);  // Can you be sure that (ref_arr + 2) always points to `c`?
 
   int& ref = a;
   int&* p_ref = &ref;  // Abandoned: pointer to reference

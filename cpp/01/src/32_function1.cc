@@ -1,3 +1,4 @@
+#if 0 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <iostream>
 
 // Modifies a copy of the argument (call by value).
@@ -17,3 +18,4 @@ int main() {
   std::cout << "After ModifyByAddress: num = " << num << std::endl;
   return 0;
 }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

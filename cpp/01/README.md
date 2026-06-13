@@ -11,11 +11,11 @@
 
 ### C
 
-[//]: # (INCLUDE: ./c/01/01_1.c)
+[//]: # (INCLUDE: ./c/01/src/00_hello_world.c)
 
 ### C++
 
-[//]: # (INCLUDE: ./cpp/01/hello_world.cc)
+[//]: # (INCLUDE: ./cpp/01/src/00_hello_world.cc)
 
 ---
 
@@ -23,17 +23,17 @@
 
 ### Coding Conventions
 
-| Item | C (K&R style) | C++ ([Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)) |
-| ---- | ------------- | ---------------------------- |
-| Indentation         | 4 spaces      | 2 spaces |
-| Function brace style| Opening brace on a new line | Opening brace on the same line as function signature |
-| Function names      | `snake_case`  | `PascalCase` for **all functions** (free functions + methods) |
-| Variable names      | `snake_case`  | `snake_case` (same as C) |
-| Pointer style       | `int *ptr;`   | `int* ptr;` |
-| Header files        | `<stdio.h>`   | `<iostream>`, `<string>` (no `.h` extension) |
-| Comment style       | `/* block */` | `// line` (preferred), `/* block */` |
-| `main()` args       | `int main(void)` | `int main()` recommended |
-| Null pointer        | `NULL`        | `nullptr` recommended |
+| Item                  | C (K&R style)               | C++ ([Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)) |
+| --------------------- | --------------------------- | --------------------------------------------------------------------------------- |
+| Indentation           | 4 spaces                    | 2 spaces                                                                          |
+| Function brace style  | Opening brace on a new line | Opening brace on the same line as function signature                              |
+| Function names        | `snake_case`                | `PascalCase` for **all functions** (free functions + methods)                     |
+| Variable names        | `snake_case`                | `snake_case` (same as C)                                                          |
+| Pointer style         | `int *ptr;`                 | `int* ptr;`                                                                       |
+| Header files          | `<stdio.h>`                 | `<iostream>`, `<string>` (no `.h` extension)                                      |
+| Comment style         | `/* block */`               | `// line` (preferred), `/* block */`                                              |
+| `main()` args         | `int main(void)`            | `int main()` recommended                                                          |
+| Null pointer          | `NULL`                      | `nullptr` recommended                                                             |
 
 ---
 
@@ -46,7 +46,7 @@
   - 변수 선언과 변수 사용 위치가 가까워 코드 가독성 증가
   - 불필요한 객체 생애주기 감소
 
-[//]: # (INCLUDE: ./cpp/01/dcl.cc)
+[//]: # (INCLUDE: ./cpp/01/src/01_dcl.cc)
 
 ---
 
@@ -58,7 +58,7 @@
   - C99부터 `<stdbool.h>` 도입
 - C++는 `bool` 타입 키워드 `true`, `false`를 사용해 참과 거짓 표현
 
-[//]: # (INCLUDE: ./cpp/01/bool.cc)
+[//]: # (INCLUDE: ./cpp/01/src/02_bool.cc)
 
 ---
 
@@ -69,11 +69,11 @@
 - C는 선언 시 `struct` 키워드 필수
 - C++는 선언 시 `struct` 키워드 생략 가능
 
-[//]: # (INCLUDE: ./cpp/01/struct.cc)
+[//]: # (INCLUDE: ./cpp/01/src/03_struct.cc)
 
 ---
 
-## 이름 공간 (Namespace)
+## 이름 공간(Namespace)
 
 - 식별자(identifier)의 소속(scope)을 구분하기 위한 도구
 - 식별자 중복으로 인한 컴파일 오류 예방 가능
@@ -83,38 +83,38 @@
 
 - 두 개의 다른 이름 공간(`foo`, `bar`)을 사용해 `Qux()` 정의
 
-[//]: # (INCLUDE: ./cpp/01/namespace.cc)
+[//]: # (INCLUDE: ./cpp/01/src/04_namespace.cc)
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 1)
+## 이름 공간(Namespace) (Cont'd - 1)
 
-### 범위 지정 연산자 (`::`, Scope Resolution Operator)
+### 범위 지정 연산자(`::`, Scope Resolution Operator)
 
 - 이름 공간에 감춰진 식별자를 지정해 사용할 수 있음
 
-[//]: # (INCLUDE: ./cpp/01/header1.hpp)
+[//]: # (INCLUDE: ./cpp/01/src/header1.hpp)
 
-[//]: # (INCLUDE: ./cpp/01/header2.hpp)
+[//]: # (INCLUDE: ./cpp/01/src/header2.hpp)
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 2)
+## 이름 공간(Namespace) (Cont'd - 2)
 
 ### 범위 지정 연산자를 생략할 수 있는 경우
 
-[//]: # (INCLUDE: ./cpp/01/sro1.cc)
+[//]: # (INCLUDE: ./cpp/01/src/07_sro1.cc)
 
 - `Func()`의 `Foo()`는 `header1` 이름 공간에 속함
   - `Foo()`는 곧 `header1::Foo()`를 의미
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 3)
+## 이름 공간(Namespace) (Cont'd - 3)
 
 ### 범위 지정 연산자를 생략할 수 없는 경우
 
-[//]: # (INCLUDE: ./cpp/01/sro2.cc)
+[//]: # (INCLUDE: ./cpp/01/src/08_sro2.cc)
 
 - `header1` 이름 공간 안에서는 `header2`의 식별자가 직접 보이지 않음
   - `header2::Foo()`, `header2::Bar()`는 감춰진 상태
@@ -122,50 +122,50 @@
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 4)
+## 이름 공간(Namespace) (Cont'd - 4)
 
 ### `using` 선언과 `using` 지시어
 
 - `using` 선언(using-declaration)은 특정 식별자만 선택적으로 지정하여 사용할 수 있도록 함
 
-[//]: # (INCLUDE: ./cpp/01/using1.cc)
+[//]: # (INCLUDE: ./cpp/01/src/09_using1.cc)
 
 - `using` 지시어(using-directive)는 해당 이름 공간의 모든 식별자를 지정하여 사용할 수 있도록 함
 
-[//]: # (INCLUDE: ./cpp/01/using2.cc)
+[//]: # (INCLUDE: ./cpp/01/src/10_using2.cc)
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 5)
+## 이름 공간(Namespace) (Cont'd - 5)
 
 ### `using` 지시어 사용을 피해야 하는 이유
 
 - `using` 지시어를 사용하면 **이름 공간을 사용하는 장점이 사라짐**
   - 식별자 충돌 가능성 증가
 
-### 이름 없는 이름 공간 (Anonymous Namespace, Unnamed Namespace)
+### 이름 없는 이름 공간(Anonymous Namespace, Unnamed Namespace)
 
 - C의 `static` 키워드와 같은 역할
   - 내부 연결성(internal linkage) 부여
   - 동일 번역 단위(translation unit)에서만 접근 가능
 
-[//]: # (INCLUDE: ./cpp/01/anony_ns.cc)
+[//]: # (INCLUDE: ./cpp/01/src/11_anony_ns.cc)
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 6)
+## 이름 공간(Namespace) (Cont'd - 6)
 
 ### 이름 없는 이름 공간을 사용한 헤더 파일
 
-[//]: # (INCLUDE: ./cpp/01/anony_ns_error.hpp)
+[//]: # (INCLUDE: ./cpp/01/src/anony_ns_error.hpp)
 
-[//]: # (INCLUDE: ./cpp/01/anony_ns_foo.cc)
+[//]: # (INCLUDE: ./cpp/01/src/13_anony_ns_foo.cc)
 
-[//]: # (INCLUDE: ./cpp/01/anony_ns_bar.cc)
+[//]: # (INCLUDE: ./cpp/01/src/14_anony_ns_bar.cc)
 
 ---
 
-## 이름 공간 (Namespace) (Cont'd - 7)
+## 이름 공간(Namespace) (Cont'd - 7)
 
 ### 문제가 발생하는 이유
 
@@ -188,7 +188,7 @@
 
 - C++의 표준 헤더는 `.h` 확장자를 사용하지 않음
 
-[//]: # (INCLUDE: ./cpp/01/hello_world.cc --to 2 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/00_hello_world.cc --from 2 --to 3 --no-comment)
 
 ### C++에서의 C 표준 헤더
 
@@ -205,9 +205,9 @@
 
 ### C++에서의 C 표준 헤더 사용 예제 - Trigonometric Functions
 
-![h:200 center](image.png)
+![h:200 center](img/00-tri.png)
 
-[//]: # (INCLUDE: ./cpp/01/trigonometric.cc)
+[//]: # (INCLUDE: ./cpp/01/src/15_trigonometric.cc)
 
 ---
 
@@ -215,7 +215,7 @@
 
 ### 기본 데이터 입출력
 
-[//]: # (INCLUDE: ./cpp/01/io1.cc)
+[//]: # (INCLUDE: ./cpp/01/src/16_io1.cc)
 
 ---
 
@@ -223,35 +223,35 @@
 
 ### C 문자열 입출력
 
-[//]: # (INCLUDE: ./cpp/01/io2.cc)
+[//]: # (INCLUDE: ./cpp/01/src/17_io2.cc)
 
 ---
 
 ## Input / Output (Cont'd - 2)
 
-### 데이터 형식화 (Formatting Data)
+### 데이터 형식화(Formatting Data)
 
 - [조정자(Manipulators)](https://en.cppreference.com/w/cpp/io/manip.html)를 사용해 입출력 형식 제어
 
-### 임시 조정자 (Temporary Manipulators)
+### 임시 조정자(Temporary Manipulators)
 
-[//]: # (INCLUDE: ./cpp/01/temp_man.cc)
+[//]: # (INCLUDE: ./cpp/01/src/18_temp_man.cc)
 
 ---
 
 ## Input / Output (Cont'd - 3)
 
-### 지속 입력 조정자 (Persistent Input Manipulators)
+### 지속 입력 조정자(Persistent Input Manipulators)
 
-[//]: # (INCLUDE: ./cpp/01/in_man.cc)
+[//]: # (INCLUDE: ./cpp/01/src/19_in_man.cc)
 
 ---
 
 ## Input / Output (Cont'd - 4)
 
-### 지속 출력 조정자 (Persistent Output Manipulators)
+### 지속 출력 조정자(Persistent Output Manipulators)
 
-[//]: # (INCLUDE: ./cpp/01/out_man.cc)
+[//]: # (INCLUDE: ./cpp/01/src/20_out_man.cc)
 
 ---
 
@@ -259,7 +259,7 @@
 
 ### 출력 정렬 조정자
 
-[//]: # (INCLUDE: ./cpp/01/sort_man.cc)
+[//]: # (INCLUDE: ./cpp/01/src/21_sort_man.cc)
 
 ---
 
@@ -267,26 +267,26 @@
 
 ### 조정자 활용 구구단 출력 프로그램
 
-[//]: # (INCLUDE: ./cpp/01/mul.cc)
+[//]: # (INCLUDE: ./cpp/01/src/22_mul.cc)
 
 ---
 
-## 동적 할당 (Dynamic Memory Allocation)
+## 동적 할당(Dynamic Memory Allocation)
 
 ### 단일 객체 동적 할당과 해제 - `new`, `delete`
 
-[//]: # (INCLUDE: ./cpp/01/new1.cc)
+[//]: # (INCLUDE: ./cpp/01/src/23_new1.cc)
 
 ---
 
-## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 2)
+## 동적 할당(Dynamic Memory Allocation) (Cont'd - 1)
 
 ### 배열 객체 동적 할당과 해제 - `new[]`, `delete[]`
 
 - 단일 객체 동적 생성은 `new`, 배열 객체 동적 생성은 `new[]` 사용
 - 단일 객체 동적 해제는 `delete`, 배열 객체 동적 해제는 `delete[]` 사용
 
-[//]: # (INCLUDE: ./cpp/01/new2.cc)
+[//]: # (INCLUDE: ./cpp/01/src/24_new2.cc)
 
 ```text
 // new int
@@ -300,95 +300,95 @@
 
 ---
 
-## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 3)
+## 동적 할당(Dynamic Memory Allocation) (Cont'd - 2)
 
 ### 1차원 배열 동적 할당
 
-[//]: # (INCLUDE: ./cpp/01/new3.cc)
+[//]: # (INCLUDE: ./cpp/01/src/25_new3.cc)
 
 ---
 
-## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 4)
+## 동적 할당(Dynamic Memory Allocation) (Cont'd - 3)
 
 ### 2차원 배열 동적 할당
 
-[//]: # (INCLUDE: ./cpp/01/new4.cc)
+[//]: # (INCLUDE: ./cpp/01/src/26_new4.cc)
 
 ---
 
-## 동적 할당 (Dynamic Memory Allocation) (Cont'd - 5)
+## 동적 할당(Dynamic Memory Allocation) (Cont'd - 4)
 
 ### 개선된 2차원 배열 동적 할당
 
-[//]: # (INCLUDE: ./cpp/01/new5.cc)
+[//]: # (INCLUDE: ./cpp/01/src/27_new5.cc)
 
 ---
 
-## 레퍼런스 (Reference)
+## 레퍼런스(Reference)
 
 - 기존 객체에 대한 별칭(alias)을 만드는 메커니즘
 - 레퍼런스는 선언 시 **반드시 객체에 연결(binding)되어야 함**
 - `&` 기호를 사용해 선언
 
-[//]: # (INCLUDE: ./cpp/01/ref.cc)
+[//]: # (INCLUDE: ./cpp/01/src/28_ref.cc)
 
 - `ref`는 `a`와 동일한 역할 수행
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 1)
+## 레퍼런스(Reference) (Cont'd - 1)
 
 ### 컴파일러의 레퍼런스 처리 절차
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 3 --to 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 3 --to 5 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 9 --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 13 --to 16 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 16 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 24 --to 26 --no-comment)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 2)
+## 레퍼런스(Reference) (Cont'd - 2)
 
 ### 레퍼런스 특징 1 - 레퍼런스는 반드시 대상이 있어야 함
 
-[//]: # (INCLUDE: ./cpp/01/ref1.cc)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 34 --to 45 --no-comment)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 3)
+## 레퍼런스(Reference) (Cont'd - 3)
 
 ### 레퍼런스 특징 2 - 레퍼런스는 변경할 수 없음
 
-[//]: # (INCLUDE: ./cpp/01/ref2.cc)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 57 --to 69 --no-comment)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 4)
+## 레퍼런스(Reference) (Cont'd - 4)
 
 ### 레퍼런스 특징 3 - 레퍼런스 자체는 별도의 메모리 공간을 가지지 않음
 
-[//]: # (INCLUDE: ./cpp/01/ref3.cc)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 79 --to 93 --no-comment)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 5)
+## 레퍼런스(Reference) (Cont'd - 5)
 
-### C 함수 호출 방식 (Function Call Mechanism)
+### C 함수 호출 방식(Function Call Mechanism)
 
-[//]: # (INCLUDE: ./cpp/01/function1.cc)
+[//]: # (INCLUDE: ./cpp/01/src/32_function1.cc)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 6)
+## 레퍼런스(Reference) (Cont'd - 6)
 
 ### C++에 추가된 함수 호출 방식
 
-[//]: # (INCLUDE: ./cpp/01/function2.cc)
+[//]: # (INCLUDE: ./cpp/01/src/33_function2.cc)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 7)
+## 레퍼런스(Reference) (Cont'd - 7)
 
 ### 레퍼런스와 상수 레퍼런스
 
@@ -410,51 +410,51 @@
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 8)
+## 레퍼런스(Reference) (Cont'd - 8)
 
-### C++ Standard (ISO/IEC 14882)
+### C++ Standard(ISO/IEC 14882)
 
   > There shall be no references to references, no arrays of references, and no pointers to references.
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 25 --to 29 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 107 --to 111 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 31 --to 33 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 115 --to 117 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 35 --to 39 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 121 --to 125 --no-comment)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 9)
+## 레퍼런스(Reference) (Cont'd - 9)
 
-### 배열 레퍼런스 (References To Arrays)
+### 배열 레퍼런스(References to Arrays)
 
 - 이미 실체화된 배열을 가리키는 레퍼런스
 - **레퍼런스 지시자와 배열 이름을 괄호로 함께 묶어주어야 함**
   - 레퍼런스 선언자(`&`, reference declaration)는 배열 크기 지시자(`[]`, array size specifier)보다 우선순위가 낮음
 
-[//]: # (INCLUDE: ./cpp/01/ref_arr.cc)
+[//]: # (INCLUDE: ./cpp/01/src/34_ref_arr.cc)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 10)
+## 레퍼런스(Reference) (Cont'd - 10)
 
 ### Dangling Reference
 
 - 레퍼런스가 유효하지 않은 메모리 주소를 대상으로 하는 경우 발생
 - 대표적인 경우는 함수 지역 객체를 레퍼런스로 반환하는 경우
 
-[//]: # (INCLUDE: ./cpp/01/dangling.cc)
+[//]: # (INCLUDE: ./cpp/01/src/35_dangling.cc)
 
 ---
 
-## 레퍼런스 (Reference) (Cont'd - 11)
+## 레퍼런스(Reference) (Cont'd - 11)
 
 ### Dangling Reference 예방법
 
 - 레퍼런스 반환 시 함수가 종료되어도 소멸되지 않는 객체를 반환하도록 수정
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 43 --to 43 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 133 --to 133 --no-comment)
 
 - 레퍼런스 반환 시 정적 또는 전역 객체를 반환하도록 수정
 
-[//]: # (INCLUDE: ./cpp/01/snippet_ref.cc --from 46 --to 49 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 138 --to 141 --no-comment)

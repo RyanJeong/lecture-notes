@@ -6,7 +6,7 @@ int main() {
   // Allocate each row
   for (int i = 0; i < rows; ++i) matrix[i] = new int[cols];
 
-  // Do something with the matrix at here
+  // Do something with the matrix here
   for (int i = 0; i < rows; ++i)
     for (int j = 0; j < cols; ++j) matrix[i][j] = i * cols + j;
 
