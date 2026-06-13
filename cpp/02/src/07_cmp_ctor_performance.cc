@@ -13,6 +13,7 @@ class Point {
   int x_, y_;
 };
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 class Point;
 class Student {
  private:
@@ -29,3 +30,4 @@ class Student {
     age_ = age;               // Assign to undefined value
   }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

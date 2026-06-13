@@ -14,22 +14,22 @@
   - e.g., **개**: 동물 분류 **타입**, **내 반려견**: 실체이므로 **인스턴스**
 - 하나의 타입으로부터 여러 개의 객체 생성 가능한 일대다(one-to-many) 관계
 
-![center](Figure_7_1.png)
+![center](img/00-Figure_7_1.png)
 
 ---
 
-## 추상화 (Abstraction)
+## 추상화(Abstraction)
 
 - 현실 세계 객체를 최대한 유사하게 프로그래밍 세계에 표현
 - 추상화를 통한 객체의 속성(attribute)과 행위(behavior) 추출
   - **내 반려견**의 속성: **품종**, **나이**, **체중**
   - **내 반려견**의 행위: **짖기**, **뛰기**, **먹기**
 
-![center](Figure_A.png)
+![center](img/01-Figure_A.png)
 
 ---
 
-## 클래스 (Class)
+## 클래스(Class)
 
 - 현실 세계 객체를 추상화한 속성과 행위를 프로그래밍 언어로 표현
 - C++에서 제공하는 **사용자 정의 타입**
@@ -38,7 +38,7 @@
 - 속성: 데이터 멤버(data members)로 표현
 - 행위: 멤버 함수(member functions)로 표현
 
-![center](Figure_7_2.png)
+![center](img/02-Figure_7_2.png)
 
 ---
 
@@ -47,42 +47,42 @@
 - 헤더(header), 본문(body), 세미콜론(`;`) 세 부분 구분
 - 헤더: `class CLASS_NAME` 형태, 클래스 타입 선언 시 사용
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle.hpp --from 4 --to 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/cls_circle.hpp --from 5 --to 6 --no-comment)
 
 - 클래스 정의 시 클래스 헤더 뒤 본문(block)에 데이터 멤버와 멤버 함수 작성
 - 세미콜론: 클래스 정의를 마치는 구분자(delimiter)
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle.hpp --from 7 --to 16 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/cls_circle.hpp --from 10 --to 19 --no-comment)
 
 ---
 
-## 접근 지정자 (Access Specifiers)
+## 접근 지정자(Access Specifiers)
 
-![center h:170](Figure_7_4.png)
+![center h:170](img/03-Figure_7_4.png)
 
 - 접근 지정자(access modifiers)라고도 불림
 - 데이터 멤버와 멤버 함수에 대한 접근 권한 설정
   - 클래스의 기본 멤버 접근 지정자: `private`
   - `private` 접근 지정자 멤버: 인스턴스 내부에서만 접근 가능
 
-| Modifier   |Access from the same class|Access from the subclass|Access from anywhere|
-|------------|--------------------------|------------------------|--------------------|
-|`private`   | Yes                      | **No**                 | **No**             |
-|`protected` | Yes                      | Yes                    | **No**             |
-|`public`    | Yes                      | Yes                    | Yes                |
+| Modifier    | Access from the same class | Access from the subclass | Access from anywhere |
+| ----------- | -------------------------- | ------------------------ | -------------------- |
+| `private`   | Yes                        | **No**                   | **No**               |
+| `protected` | Yes                        | Yes                      | **No**               |
+| `public`    | Yes                        | Yes                      | Yes                  |
 
 ---
 
-## 멤버 함수 (Method) 정의
+## 멤버 함수(Method) 정의
 
 - 클래스 정의 시 멤버 함수를 같이 정의
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle_impl.cc --from 1 --to 8 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/00_cls_circle_impl.cc --from 2 --to 9 --no-comment)
 
 - `::` 연산자를 사용해 클래스 외부에서 정의
   - **클래스 내 선언된 멤버 함수와 멤버 변수: 해당 클래스의 이름영역 안에 속함**
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle.cc --from 3 --to 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/01_cls_circle.cc --from 4 --to 4 --no-comment)
 
 ---
 
@@ -92,39 +92,39 @@
 - 멤버 사용: 멤버 선택 연산자(`.`, member selection operator) 사용(e.g., `circle.get_radius()`)
 - 객체: `private` 멤버에 직접 접근 불가하나 멤버 함수를 통한 간접 접근 가능
 
-[//]: # (INCLUDE: ./cpp/02/cls_example.cc)
+[//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc)
 
 ---
 
-## [접근자 (Accessor)와 변경자 (Mutator)](https://google.github.io/styleguide/cppguide.html#Function_Names)
+## [접근자(Accessor)와 변경자(Mutator)](https://google.github.io/styleguide/cppguide.html#Function_Names)
 
 > Accessors and mutators (get and set functions) may be named **like variables**.
 
-### 접근자 멤버 함수 (Accessor, Getter)
+### 접근자 멤버 함수(Accessor, Getter)
 
 - 호스트 객체(host object)의 데이터 멤버 값을 읽어오는 멤버 함수
 - `const` 한정자를 사용한 멤버 함수의 데이터 멤버 변경 방지 명시
   - `const` 한정자를 사용하는 멤버 함수 내에서 데이터 멤버 수정 시 컴파일 에러 발생
 
-[//]: # (INCLUDE: ./cpp/02/cls_example.cc --from 11 --to 11 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc --from 12 --to 12 --no-comment)
 
-### 변경자 멤버 함수 (Mutator, Setter)
+### 변경자 멤버 함수(Mutator, Setter)
 
 - 호스트 객체의 데이터 멤버 값을 수정하는 멤버 함수
   - 데이터 멤버 외에 다른 부수효과(side effects) 발생 금지
 
-[//]: # (INCLUDE: ./cpp/02/cls_example.cc --from 12 --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc --from 15 --to 15 --no-comment)
 
 ---
 
-## [인라인 (`inline`)](https://en.cppreference.com/w/cpp/language/inline)
+## [인라인(`inline`)](https://en.cppreference.com/w/cpp/language/inline)
 
 - 함수 또는 메서드를 직접 호출하는 대신 해당 코드를 호출 지점에 복사
 - 함수 호출 오버헤드 절감을 통한 성능 향상
 
-[//]: # (INCLUDE: ./cpp/02/inline1.cc)
+[//]: # (INCLUDE: ./cpp/02/src/03_inline1.cc)
 
-[//]: # (INCLUDE: ./cpp/02/inline2.cc)
+[//]: # (INCLUDE: ./cpp/02/src/04_inline2.cc)
 
 - 명시적(explicit) 인라인 함수는 **반드시 인라인화되지 않음**
   - `inline` 키워드: 함수의 인라인화를 **제안**하는 것이며, 컴파일러가 인라인화를 무시할 수 있음
@@ -132,25 +132,25 @@
 
 ---
 
-## 암묵적 (Implicit) 인라인 함수
+## 암묵적(Implicit) 인라인 함수
 
 - 클래스 내부에 정의된 모든 멤버 함수: **암묵적인** 인라인 함수
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle_impl.cc --from 1 --to 8 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/00_cls_circle_impl.cc --from 2 --to 9 --no-comment)
 
 - 컴파일 전 클래스 멤버 함수는 앞에 `inline` 키워드가 자동 붙음
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle_impl.cc --from 16 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/00_cls_circle_impl.cc --from 19 --to 20 --no-comment)
 
 ---
 
 ## [구조체 vs 클래스](https://google.github.io/styleguide/cppguide.html#Structs_vs._Classes)
 
-[//]: # (INCLUDE: ./cpp/02/cls_person.cc)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 2 --to 9 --no-comment)
 
 - 위 코드를 구조체로 변경하면 아래와 같음
 
-[//]: # (INCLUDE: ./cpp/02/struct_person.cc)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 13 --to 20 --no-comment)
 
 ---
 
@@ -165,15 +165,15 @@
 
 ---
 
-## 함수 오버로딩 (Function Overloading)
+## 함수 오버로딩(Function Overloading)
 
 - 함수의 이름이 같더라도 **함수 매개변수의 형태가 다르면** 서로 다른 함수로 간주해 이름이 같은 함수 여러 개 사용 가능
 
-[//]: # (INCLUDE: ./cpp/02/overloading.cc)
+[//]: # (INCLUDE: ./cpp/02/src/05_overloading.cc)
 
 ---
 
-## 함수 오버로딩 (Function Overloading) (Cont'd - 1)
+## 함수 오버로딩(Function Overloading) (Cont'd - 1)
 
 - **함수 매개변수 형태가 동일하면** 이름 충돌 발생(컴파일 오류)
 
@@ -182,7 +182,7 @@ int GetRadius() { return 10; }
 double GetRadius() { return 20.0; }
 ```
 
-### [함수 오버로딩 해석 (Function Overload Resolution)](https://en.cppreference.com/w/cpp/language/overload_resolution)
+### [함수 오버로딩 해석(Function Overload Resolution)](https://en.cppreference.com/w/cpp/language/overload_resolution)
 
 - 전달인자의 형태와 함수 매개변수의 형태가 서로 일치하지 않으면, 아래 순서에 따른 매개변수 형태 변환 시도하여 가장 적합한 함수를 찾아 호출
   - **변환 과정을 통해 후보 함수가 2개 이상 발견될 경우 모호성 문제가 발생하여 컴파일 오류 발생**
@@ -190,24 +190,25 @@ double GetRadius() { return 20.0; }
 #### [Ranking of Implicit Conversion Sequences](https://en.cppreference.com/w/cpp/language/overload_resolution#Ranking_of_implicit_conversion_sequences)
 
 1. Exact match (no conversion required)
-2. Promotion: integer promotion (e.g., `bool`, `char`, `short` → `int`), floating-point promotion (e.g., `float` → `double`)
+2. Promotion: integer promotion (e.g., `bool`, `char`, `short` → `int`),
+floating-point promotion (e.g., `float` → `double`)
 3. Conversion: integral conversion, floating-point conversion, floating-integral conversion, ...
 
 ---
 
-## 함수 오버로딩 (Function Overloading) (Cont'd - 2)
+## 함수 오버로딩(Function Overloading) (Cont'd - 2)
 
 - 함수 오버로딩을 올바르게 사용한 경우
 
-[//]: # (INCLUDE: ./cpp/02/overloading_example.cc)
+[//]: # (INCLUDE: ./cpp/02/src/06_overloading_example.cc)
 
 ---
 
-## 함수 오버로딩 (Function Overloading) (Cont'd - 3)
+## 함수 오버로딩(Function Overloading) (Cont'd - 3)
 
 - 함수 오버로딩 해석 중 모호성 문제가 발생하는 경우
 
-[//]: # (INCLUDE: ./cpp/02/overloading_example_fail.cc --from 2 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 24 --to 37 --no-comment)
 
 ```shell
 error C2668: 'Print': ambiguous call to overloaded function
@@ -218,9 +219,9 @@ message : while trying to match the argument list '(long)'
 
 ---
 
-## 생성자 (Constructor)와 소멸자 (Destructor)
+## 생성자(Constructor)와 소멸자(Destructor)
 
-![center](Figure_7_6.png)
+![center](img/04-Figure_7_6.png)
 
 - 생성자: 객체 생성 시 자동 호출되는 특별한 멤버 함수
 - 소멸자: 객체 소멸 시 자동 호출되는 특별한 멤버 함수
@@ -237,7 +238,7 @@ message : while trying to match the argument list '(long)'
 
 ### 생성자 종류
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle_proto.hpp --from 5 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 41 --to 46 --no-comment)
 
 - 기본 생성자와 복사 생성자는 오버로딩 불가하나, 매개변수 생성자는 필요에 따라 오버로딩하여 여러 개 사용 가능
 
@@ -245,11 +246,11 @@ message : while trying to match the argument list '(long)'
 
 ## 생성자 (Cont'd - 1)
 
-### 초기화 목록 (Initialization List)
+### 초기화 목록(Initialization List)
 
 - 생성자 호출 시 데이터 멤버의 초기화 값 지정 가능
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle_proto.hpp --from 14 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 50 --to 58 --no-comment)
 
 - 초기화 목록에 선언된 데이터 멤버: 초기화 값으로 직접 초기화됨
   - `radius_(radius)` 부분: `double radius_ = radius`로 평가됨
@@ -263,7 +264,7 @@ message : while trying to match the argument list '(long)'
 
 ### 초기화 목록 vs 생성자 본문의 성능 차이
 
-[//]: # (INCLUDE: ./cpp/02/cmp_ctor_performance.cc --from 16 --to 31 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/07_cmp_ctor_performance.cc --from 17 --to 32 --no-comment)
 
 - 클래스 타입 데이터 멤버의 경우 **성능 차이**가 명확함
 
@@ -279,7 +280,7 @@ message : while trying to match the argument list '(long)'
 
 ### 소멸자 종류
 
-[//]: # (INCLUDE: ./cpp/02/cls_circle_proto.hpp --from 26 --to 33 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 62 --to 69 --no-comment)
 
 - 생성자와 다르게 소멸자는 유일하며, 오버로딩 불가
 
@@ -287,14 +288,12 @@ message : while trying to match the argument list '(long)'
 
 ## 클래스 필수 멤버 함수
 
-![h:250 center](Figure_7_8.png)
+![h:250 center](img/05-Figure_7_8.png)
 
 - 클래스는 기본 생성자나 매개변수 생성자 중 적어도 하나 정의해야 함
   - 미정의 시 본문이 비어있는 자동 생성 기본 생성자(synthesized default constructor) 생성
-
 - 클래스는 복사 생성자를 정의해야 함
   - 미정의 시 객체의 데이터 멤버를 단순 복사하는 자동 생성 복사 생성자(synthesized copy constructor) 생성
-
 - 클래스는 소멸자를 정의해야 함
   - 미정의 시 본문이 비어있는 자동 생성 소멸자(synthesized destructor) 생성
 
@@ -304,13 +303,13 @@ message : while trying to match the argument list '(long)'
 
 ### 생성자와 소멸자를 사용하는 인스턴스
 
-[//]: # (INCLUDE: ./cpp/02/cls_necessary_methods.cc --to 20)
+[//]: # (INCLUDE: ./cpp/02/src/08_cls_necessary_methods.cc --to 20)
 
 ---
 
 ## 클래스 필수 멤버 함수 (Cont'd - 2)
 
-[//]: # (INCLUDE: ./cpp/02/cls_necessary_methods.cc --from 22)
+[//]: # (INCLUDE: ./cpp/02/src/08_cls_necessary_methods.cc --from 22)
 
 ---
 
@@ -318,24 +317,24 @@ message : while trying to match the argument list '(long)'
 
 ### 인스턴스 동적 할당
 
-[//]: # (INCLUDE: ./cpp/02/cls_necessary_methods_dynamic.cc --to 20)
+[//]: # (INCLUDE: ./cpp/02/src/09_cls_necessary_methods_dynamic.cc --to 20)
 
 ---
 
 ## 클래스 필수 멤버 함수 (Cont'd - 4)
 
-[//]: # (INCLUDE: ./cpp/02/cls_necessary_methods_dynamic.cc --from 22)
+[//]: # (INCLUDE: ./cpp/02/src/09_cls_necessary_methods_dynamic.cc --from 22)
 
 - **C 스타일**: 동적 할당 시 생성자가 호출되지 않고, 동적 해제 시 소멸자가 호출되지 않음
 - **C++ 스타일**: 동적 할당 시 생성자가 호출되며, 동적 해제 시 소멸자가 호출됨
 
 ---
 
-## 인스턴스 데이터 멤버 (Instance Data Members)
+## 인스턴스 데이터 멤버(Instance Data Members)
 
 - 객체의 속성을 표현
 
-![center](Figure_7_9.png)
+![center](img/06-Figure_7_9.png)
 
 - 객체들 간 데이터 멤버: 독립적임
   - 서로 다른 메모리 영역에 할당
@@ -345,11 +344,11 @@ message : while trying to match the argument list '(long)'
 
 ---
 
-## 인스턴스 멤버 함수 (Instance Member Functions)
+## 인스턴스 멤버 함수(Instance Member Functions)
 
 - 객체의 행위를 표현
 
-![center](Figure_7_10.png)
+![center](img/07-Figure_7_10.png)
 
 - 멤버 함수: 하나의 메모리 공간에 위치([Code segment](https://en.wikipedia.org/wiki/Code_segment))
 - 여러 접근 지정자를 사용할 수 있음
@@ -360,7 +359,7 @@ message : while trying to match the argument list '(long)'
 
 ## 인스턴스 멤버 함수 선택자
 
-![center](Figure_7_11.png)
+![center](img/08-Figure_7_11.png)
 
 - 객체로부터 멤버 함수를 선택할 경우 `.` 연산자 사용
 - 객체를 가리키는 포인터로부터 멤버 함수를 선택할 경우 `->` 연산자 사용
@@ -374,32 +373,32 @@ message : while trying to match the argument list '(long)'
 - `this` 포인터는 멤버 함수를 호출한 객체(호스트 객체)의 주소를 가리킴
 - 멤버 함수 내부에서는 `this`를 통해 해당 객체의 멤버 변수와 멤버 함수에 접근 가능
 
-[//]: # (INCLUDE: ./cpp/02/this.cc --from 27 --to 27 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc --from 12 --to 12 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/02/this.cc --from 30 --to 31 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc --from 20 --to 21 --no-comment)
 
 - 모든 멤버 함수는 컴파일 단계에서 아래와 같이 `this` 포인터 매개변수가  추가됨:
 
-[//]: # (INCLUDE: ./cpp/02/this.cc --from 35 --to 35 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 73 --to 73 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/02/this.cc --from 38 --to 40 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 78 --to 80 --no-comment)
 
 ---
 
-## 분할 컴파일 (Separate Compilation)
+## 분할 컴파일(Separate Compilation)
 
 - 클래스 정의: 헤더 파일(선언부, interface)에 작성
   - 클래스 멤버 함수: 선언형태
   - 간단한 수준의 멤버 함수: 선언이 아닌 정의를 하기도 함(e.g., 변경자, 접근자)
 - 클래스 멤버 함수의 정의: 소스코드 파일(구현부, implementation)에 작성
 
-![center](Figure_7_14.png)
+![center](img/09-Figure_7_14.png)
 
 ---
 
 ## 분할 컴파일 과정
 
-![center](Figure_7_15.png)
+![center](img/10-Figure_7_15.png)
 
 ---
 
@@ -455,11 +454,11 @@ g++ -o application *.cc
 
 ### C 스타일 헤더 가드
 
-[//]: # (INCLUDE: ./cpp/02/cstyle.h)
+[//]: # (INCLUDE: ./cpp/02/src/cstyle.h)
 
 ### C++ 스타일 헤더 가드
 
-[//]: # (INCLUDE: ./cpp/02/cppstyle.hpp)
+[//]: # (INCLUDE: ./cpp/02/src/cppstyle.hpp)
 
 - **비표준**이므로 일부 환경에서는 지원되지 않을 수 있음
 - **모던 C++을 지원하는 대부분의 컴파일러에서 해당 기능을 사용할 수 있음**
@@ -469,9 +468,11 @@ g++ -o application *.cc
 
 ## 분할 컴파일 실습
 
+[//]: # (INCLUDE: ./cpp/02/src/rectangle/Makefile --reference)
+
 - `rectangle.hpp`
 
-[//]: # (INCLUDE: ./cpp/02/rectangle/rectangle.hpp)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle/rectangle.hpp)
 
 - `default`: 컴파일러가 자동 생성하는 기본 구현을 **명시적으로** 사용(특수 멤버 함수에만 적용 가능)
 - `delete`: 특정 함수의 사용 금지(모든 함수 적용 가능)
@@ -482,7 +483,7 @@ g++ -o application *.cc
 
 - `rectangle.cc`
 
-[//]: # (INCLUDE: ./cpp/02/rectangle/rectangle.cc)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle/rectangle.cc)
 
 ---
 
@@ -490,13 +491,13 @@ g++ -o application *.cc
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/02/rectangle/main.cc)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle/main.cc)
 
 ---
 
-## 정적 멤버 (Static Members)
+## 정적 멤버(Static Members)
 
-![center](Figure_7_13.png)
+![center](img/11-Figure_7_13.png)
 
 - 인스턴스 멤버(데이터 멤버, 멤버 함수): **인스턴스 영역(instance territory)에 속함**
 - 정적 멤버(정적 데이터 멤버, 정적 멤버 함수) **정적 영역(static memory)에 속함**
@@ -504,7 +505,7 @@ g++ -o application *.cc
 
 ---
 
-## 정적 데이터 멤버 (Static Data Members)
+## 정적 데이터 멤버(Static Data Members)
 
 - **모든 인스턴스가 공유할 수 있는 데이터 멤버**
 - `.bss` 또는 `.data` 영역에 할당되며, **생성자로 초기화 불가**
@@ -512,16 +513,16 @@ g++ -o application *.cc
 - 선언된 `static` 객체들: 범위 지정 연산자를 사용해 전역 공간에서 명시적 정의 필요
   - 클래스 정적 멤버는 선언만 된 상태이며, 전역 공간에 클래스 정적 멤버를 정의해야 실체화(instantiation)가 됨
 
-[//]: # (INCLUDE: ./cpp/02/static.cc --from 1 --to 8  --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 85 --to 92 --no-comment)
 
 ---
 
-## 정적 멤버 함수 (Static Member Functions)
+## 정적 멤버 함수(Static Member Functions)
 
 - `static` 키워드를 사용한 클래스 내부에 선언 혹은 정의
   - 선언 시 멤버 함수와 마찬가지로 클래스 외부에서 범위 지정 연산자를 사용하여 정의
 
-[//]: # (INCLUDE: ./cpp/02/static.cc --from 11 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/10_static.cc --from 2 --to 8 --no-comment)
 
 ---
 
@@ -529,9 +530,9 @@ g++ -o application *.cc
 
 - 정적 멤버 함수: 두 가지 형태로 호출 가능
 
-[//]: # (INCLUDE: ./cpp/02/static.cc --from 22 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/10_static.cc --from 15 --to 15 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/02/static.cc --from 26 --to 27 --no-comment)
+[//]: # (INCLUDE: ./cpp/02/src/10_static.cc --from 23 --to 24 --no-comment)
 
 ### 정적 멤버 함수 사용 시 주의사항
 
@@ -547,9 +548,11 @@ g++ -o application *.cc
 
 ## 정적 멤버가 추가된 클래스 예제
 
+[//]: # (INCLUDE: ./cpp/02/src/rectangle_static/Makefile --reference)
+
 - `rectangle.hpp`
 
-[//]: # (INCLUDE: ./cpp/02/rectangle_static/rectangle.hpp)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle_static/rectangle.hpp)
 
 ---
 
@@ -557,13 +560,13 @@ g++ -o application *.cc
 
 - `rectangle.cc`
 
-[//]: # (INCLUDE: ./cpp/02/rectangle_static/rectangle.cc --to 19)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle_static/rectangle.cc --to 19)
 
 ---
 
 ## 정적 멤버가 추가된 클래스 예제 (Cont'd - 2)
 
-[//]: # (INCLUDE: ./cpp/02/rectangle_static/rectangle.cc --from 21)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle_static/rectangle.cc --from 21)
 
 ---
 
@@ -571,4 +574,4 @@ g++ -o application *.cc
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/02/rectangle_static/main.cc)
+[//]: # (INCLUDE: ./cpp/02/src/rectangle_static/main.cc)

@@ -1,9 +1,12 @@
 #ifndef CPP_02_CLS_CIRCLE_HPP_
 #define CPP_02_CLS_CIRCLE_HPP_
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 // Forward declaration of the Circle class
 class Circle;
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 // Definition of the Circle class
 class Circle {
  private:
@@ -13,6 +16,7 @@ class Circle {
 
  public:
   void set_radius(double radius);  // member functions or methods
-};  // A semicolon is needed at the end of class definition
+};     // A semicolon is needed at the end of class definition
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 #endif  // CPP_02_CLS_CIRCLE_HPP_
