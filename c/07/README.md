@@ -14,7 +14,7 @@
 
 ![center h:250](img/00-stdio.png)
 
-[//]: # (INCLUDE: ./c/07/src/stdio.h)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 2 --to 9 --no-comment)
 
 ---
 
@@ -49,7 +49,7 @@ prog >outfile
 
 - `otherprog.c`
 
-[//]: # (INCLUDE: ./c/07/src/otherprog.c)
+[//]: # (INCLUDE: ./c/07/src/00_otherprog.c)
 
 ---
 
@@ -57,7 +57,7 @@ prog >outfile
 
 - `prog.c`
 
-[//]: # (INCLUDE: ./c/07/src/prog.c)
+[//]: # (INCLUDE: ./c/07/src/01_prog.c)
 
 ---
 
@@ -92,7 +92,7 @@ cat out
 - `printf` 함수는 주어진 인자들을 변환한 후 표준 출력으로 출력하는 함수
 - 출력된 문자 수를 정수 값으로 반환
 
-[//]: # (INCLUDE: ./c/07/src/printf_intro.c)
+[//]: # (INCLUDE: ./c/07/src/02_printf.c)
 
 ---
 
@@ -147,7 +147,7 @@ cat out
 
 ### 정수 타입 변환 지정자 예시 1
 
-[//]: # (INCLUDE: ./c/07/src/printf_int1.c --from 6 --to 24 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 17 --to 35 --no-comment)
 
 ---
 
@@ -155,7 +155,7 @@ cat out
 
 ### 정수 타입 변환 지정자 예시 2
 
-[//]: # (INCLUDE: ./c/07/src/printf_int2.c --from 6 --to 19 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 42 --to 55 --no-comment)
 
 ---
 
@@ -169,7 +169,7 @@ cat out
   - e.g., `1.234E+00`의 유효 숫자는 4개(`1`, `2`, `3`, `4`)
 - 변환 문자 `g`, `G`는 뒤따르는 0과 불필요한 소수점은 무시됨
 
-[//]: # (INCLUDE: ./c/07/src/printf_floating1.c --from 6 --to 16 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 62 --to 72 --no-comment)
 
 ---
 
@@ -184,7 +184,7 @@ else
     %g (%G) → use fixed-point format %f
 ```
 
-[//]: # (INCLUDE: ./c/07/src/printf_floating2.c --from 6 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 79 --to 91 --no-comment)
 
 ---
 
@@ -192,7 +192,7 @@ else
 
 ### 문자열 및 기타 변환 지정자 예시
 
-[//]: # (INCLUDE: ./c/07/src/printf.c --from 6 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 98 --to 110 --no-comment)
 
 ---
 
@@ -200,7 +200,7 @@ else
 
 ### `printf` 함수 사용 시 주의점
 
-[//]: # (INCLUDE: ./c/07/src/printf_warning.c --from 6 --to 9 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 117 --to 120 --no-comment)
 
 - `printf` 함수의 첫 인자(형식 문자열)는 뒤따르는 전달인자의 수, 그리고 각 전달인자의 타입을 결정함
 - 형식 문자열에서 요구하는 전달인자의 수 또는 타입이 일치하지 않을 경우 **잘못된 결과**가 출력될 수 있음
@@ -215,7 +215,7 @@ else
 - `sprintf`의 출력은 `char` 타입 배열(`string`)로 전달됨
 - `string`은 출력 결과를 저장하기 위해 **충분한 공간**이 있어야 함
 
-[//]: # (INCLUDE: ./c/07/src/sprintf.c)
+[//]: # (INCLUDE: ./c/07/src/03_sprintf.c)
 
 ---
 
@@ -246,13 +246,13 @@ else
 
 - `printf` 함수의 축약 형태인 `minprintf` 함수를 구현하면서 가변 전달인자 함수 동작 원리 학습
 
-[//]: # (INCLUDE: ./c/07/src/minprintf.c --to 18)
+[//]: # (INCLUDE: ./c/07/src/04_minprintf.c --to 18)
 
 ---
 
 ## Variable-Length Argument Lists (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/07/src/minprintf.c --from 19)
+[//]: # (INCLUDE: ./c/07/src/04_minprintf.c --from 19)
 
 ---
 
@@ -268,7 +268,7 @@ else
 - 읽어온 데이터를 전달인자에 성공적으로 전달한 개수를 정수 값으로 반환
 - 표준 입력에 더 이상 읽어올 데이터가 없다면 `EOF` 반환
 
-[//]: # (INCLUDE: ./c/07/src/scanf.c)
+[//]: # (INCLUDE: ./c/07/src/05_scanf.c)
 
 ---
 
@@ -306,7 +306,7 @@ else
 
 ### 정수 타입 변환 지정자 예시
 
-[//]: # (INCLUDE: ./c/07/src/scanf_int.c --from 6 --to 23 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 127 --to 144 --no-comment)
 
 ---
 
@@ -314,7 +314,7 @@ else
 
 ### 부동소수점 변환 지정자 예시
 
-[//]: # (INCLUDE: ./c/07/src/scanf_float.c --from 6 --to 18 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 151 --to 163 --no-comment)
 
 ---
 
@@ -324,7 +324,7 @@ else
 
 > A directive composed of white-space character(s) is executed by reading input up to the first non-white-space character (which remains unread), or until no more characters can be read.
 
-[//]: # (INCLUDE: ./c/07/src/scanf_white.c --from 6 --to 13 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 170 --to 177 --no-comment)
 
 - 표준 입력에 포함된 공백 문자를 적절히 처리하지 못하면 전달인자에 잘못된 값이 전달될 수 있음
 
@@ -334,7 +334,7 @@ else
 
 ### 표준 입력에 포함된 공백 처리 방법 1
 
-[//]: # (INCLUDE: ./c/07/src/scanf_white1.c --from 6 --to 13 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 184 --to 191 --no-comment)
 
 - **형식 문자열 내 공백을 활용해 불필요한 공백을 소비하는 방법**
 - 표준 입력에 포함된 공백의 개수와 관계없이 사용 가능
@@ -345,7 +345,7 @@ else
 
 ### 표준 입력에 포함된 공백 처리 방법 2
 
-[//]: # (INCLUDE: ./c/07/src/scanf_white2.c --from 6 --to 14 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 198 --to 206 --no-comment)
 
 - 표준 입력에 포함된 공백의 수만큼 `getchar` 함수를 통해 공백을 소비하는 방법
 
@@ -355,11 +355,11 @@ else
 
 ### 형식 문자열 내 일반 문자 사용 예
 
-[//]: # (INCLUDE: ./c/07/src/scanf_ord.c --from 6 --to 10 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 213 --to 217 --no-comment)
 
 - 형식 문자열 내의 일반 문자가 입력 버퍼의 문자와 **일치**하면, 해당 문자를 버퍼에서 제거(소비)하고 다음 입력을 계속 진행함
 
-[//]: # (INCLUDE: ./c/07/src/scanf_ord.c --from 14 --to 16 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 221 --to 223 --no-comment)
 
 - 입력 버퍼에 형식 문자열과 다른 문자가 나타나면, 즉시 읽기 동작을 중단
   - 매칭되지 않은 나머지 변수들은 할당되지 않은 상태
@@ -370,7 +370,7 @@ else
 
 ### 변환 지정자의 활용 1 - 억제 문자와 폭
 
-[//]: # (INCLUDE: ./c/07/src/scanf_sup_width.c --from 6 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 230 --to 239 --no-comment)
 
 ---
 
@@ -385,7 +385,7 @@ else
   1. `l`: 입력 스트림으로부터 읽어온 결과를 `double` 타입으로 변환
   2. `L`: 입력 스트림으로부터 읽어온 결과를 `long double` 타입으로 변환
 
-[//]: # (INCLUDE: ./c/07/src/scanf_len.c --from 6 --to 16 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 246 --to 256 --no-comment)
 
 ---
 
@@ -395,7 +395,7 @@ else
 
 - 읽어온 데이터 중 전달인자에 성공적으로 전달하지 못한 데이터는 표준 입력에 그대로 보존됨
 
-[//]: # (INCLUDE: ./c/07/src/scanf_wrong_input.c --from 6 --to 17 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 263 --to 274 --no-comment)
 
 ---
 
@@ -403,9 +403,9 @@ else
 
 ### `scanf` 반환값에 따른 처리
 
-[//]: # (INCLUDE: ./c/07/src/scanf_return.c --from 6 --to 10 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 281 --to 285 --no-comment)
 
-[//]: # (INCLUDE: ./c/07/src/scanf_return.c --from 17 --to 22 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 289 --to 293 --no-comment)
 
 ---
 
@@ -416,7 +416,7 @@ else
 - `scanf`의 입력은 표준 입력(키보드)으로부터 전달됨
 - `sscanf`의 입력은 `char` 타입 배열(`string`)로부터 전달됨
 
-[//]: # (INCLUDE: ./c/07/src/sscanf.c)
+[//]: # (INCLUDE: ./c/07/src/06_sscanf.c)
 
 ---
 
@@ -424,7 +424,7 @@ else
 
 - `sscanf` 함수 활용 - 형식 검사
 
-[//]: # (INCLUDE: ./c/07/src/sscanf_format.c)
+[//]: # (INCLUDE: ./c/07/src/07_sscanf_format.c)
 
 ---
 
@@ -549,13 +549,13 @@ FILE *fp;
 
 - 파일 입출력을 사용한 `cat`
 
-[//]: # (INCLUDE: ./c/07/src/cat.c --to 10)
+[//]: # (INCLUDE: ./c/07/src/08_cat.c --to 10)
 
 ---
 
 ## File Access (Cont'd - 7)
 
-[//]: # (INCLUDE: ./c/07/src/cat.c --from 12)
+[//]: # (INCLUDE: ./c/07/src/08_cat.c --from 12)
 
 ---
 
@@ -588,19 +588,19 @@ FILE *fp;
   - `cat` 첫 버전은 **일반 출력과 오류 출력 둘 다 표준 출력 스트림으로 전달**
   - `stderr` 스트림은 표준 출력의 재지정(`>` 또는 `|`)에 영향받지 않으므로 **일반 출력과 오류 출력을 구분**할 수 있음
 
-[//]: # (INCLUDE: ./c/07/src/advanced_cat.c --to 11)
+[//]: # (INCLUDE: ./c/07/src/09_advanced_cat.c --to 11)
 
 ---
 
 ## Error Handling — Stderr and Exit (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/07/src/advanced_cat.c --from 13 --to 33)
+[//]: # (INCLUDE: ./c/07/src/09_advanced_cat.c --from 13 --to 33)
 
 ---
 
 ## Error Handling — Stderr and Exit (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/07/src/advanced_cat.c --from 34)
+[//]: # (INCLUDE: ./c/07/src/09_advanced_cat.c --from 34)
 
 ---
 
@@ -608,7 +608,7 @@ FILE *fp;
 
 ### `char *fgets(char *line, int maxline, FILE *fp)`
 
-[//]: # (INCLUDE: ./c/07/src/line_io.c --from 4 --to 15 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/10_line_io.c --from 4 --to 15 --no-comment)
 
 - 스트림이 참조하는 파일로부터 최대 `maxline - 1`개의 문자를 `'\n'` 문자도 포함하여 읽어옴
 - 읽은 결과는 `line`에 저장되며, 끝에 `'\0'`이 붙음
@@ -620,7 +620,7 @@ FILE *fp;
 
 ### `int fputs(const char *line, FILE *fp)`
 
-[//]: # (INCLUDE: ./c/07/src/line_io.c --from 19 --to 26 --no-comment)
+[//]: # (INCLUDE: ./c/07/src/10_line_io.c --from 19 --to 26 --no-comment)
 
 - 스트림이 참조하는 파일로 문자열 `line`을 내보내며, `'\n'` 문자는 자동으로 추가되지 않음
   - `line` 내 `'\n'` 문자가 포함되어 있지 않다면 `fputs` 함수가 자동으로 개행하지 않음
@@ -647,7 +647,7 @@ FILE *fp;
 
 - `getline` 함수 재구현: `fgets` 함수를 활용한 안전한 `getline` 함수
 
-[//]: # (INCLUDE: ./c/07/src/getline.c)
+[//]: # (INCLUDE: ./c/07/src/11_getline.c)
 
 - `fgets` 함수를 사용해 표준 입력으로부터 문자열을 읽고, `strlen` 함수를 사용해 길이를 반환하는 함수
 - 파일 끝(EOF)에서 읽거나 오류 발생 시 0 반환
@@ -710,7 +710,7 @@ tolower(c)    return c converted to lower case
 - 문자열 `s`에 담긴 명령(e.g., `mkdir`, `ls`, etc.)을 운영체제 쉘에서 실행한 후, 현재 프로그램 실행 재개
 - 명령 내용은 운영체제에 따라 다름
 
-[//]: # (INCLUDE: ./c/07/src/system.c)
+[//]: # (INCLUDE: ./c/07/src/12_system.c)
 
 ---
 
@@ -773,4 +773,4 @@ void srand(unsigned int seed)
 
 - 난수 생성 예
 
-[//]: # (INCLUDE: ./c/07/src/rand.c)
+[//]: # (INCLUDE: ./c/07/src/13_rand.c)
