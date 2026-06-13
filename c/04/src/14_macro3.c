@@ -1,6 +1,8 @@
 #include <stdio.h>
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #define dprint(x) printf("Integer variable " #x " is %d\n", (x))
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #define fprint(x) printf("Floating point variable " #x " is %f\n", (x))
 
 int main(void)
