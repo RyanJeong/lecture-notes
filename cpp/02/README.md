@@ -80,7 +80,7 @@
 [//]: # (INCLUDE: ./cpp/02/src/00_cls_circle_impl.cc --from 2 --to 9 --no-comment)
 
 - `::` 연산자를 사용해 클래스 외부에서 정의
-  - **클래스 내 선언된 멤버 함수와 멤버 변수: 해당 클래스의 이름영역 안에 속함**
+  - **클래스 내 선언된 멤버 함수와 멤버 변수: 해당 클래스의 이름 공간 안에 속함**
 
 [//]: # (INCLUDE: ./cpp/02/src/01_cls_circle.cc --from 4 --to 4 --no-comment)
 
@@ -104,7 +104,7 @@
 
 - 호스트 객체(host object)의 데이터 멤버 값을 읽어오는 멤버 함수
 - `const` 한정자를 사용한 멤버 함수의 데이터 멤버 변경 방지 명시
-  - `const` 한정자를 사용하는 멤버 함수 내에서 데이터 멤버 수정 시 컴파일 에러 발생
+  - `const` 한정자를 사용하는 멤버 함수 내에서 데이터 멤버 수정 시 컴파일 오류 발생
 
 [//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc --from 12 --to 12 --no-comment)
 
@@ -189,7 +189,7 @@ double GetRadius() { return 20.0; }
 
 #### [Ranking of Implicit Conversion Sequences](https://en.cppreference.com/w/cpp/language/overload_resolution#Ranking_of_implicit_conversion_sequences)
 
-1. Exact match (no conversion required)
+1. Exact match: no conversion required
 2. Promotion: integer promotion (e.g., `bool`, `char`, `short` → `int`),
 floating-point promotion (e.g., `float` → `double`)
 3. Conversion: integral conversion, floating-point conversion, floating-integral conversion, ...
@@ -377,7 +377,7 @@ message : while trying to match the argument list '(long)'
 
 [//]: # (INCLUDE: ./cpp/02/src/02_cls_example.cc --from 20 --to 21 --no-comment)
 
-- 모든 멤버 함수는 컴파일 단계에서 아래와 같이 `this` 포인터 매개변수가  추가됨:
+- 모든 멤버 함수는 컴파일 단계에서 아래와 같이 `this` 포인터 매개변수가 추가됨:
 
 [//]: # (INCLUDE: ./cpp/02/src/_snippet.cc --from 73 --to 73 --no-comment)
 
