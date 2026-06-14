@@ -1,3 +1,4 @@
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <iostream>
 
 int main() {
@@ -20,12 +21,17 @@ int main() {
   std::cin >> number;
   return 0;
 }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 void Foo() {
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   int number;
   std::cout << "Enter a number:";
   std::cin >> number;
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 }

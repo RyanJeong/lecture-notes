@@ -9,7 +9,7 @@
 
 ## 소스 (Source)와 싱크 (Sink)
 
-![center](Figure_16_1.png)
+![center](img/00-Figure_16_1.png)
 
 - 소스는 데이터를 생성하고 싱크는 데이터를 처리함
 - 소스와 싱크는 세 종류로 구분:
@@ -21,7 +21,7 @@
 
 ## 스트림 (Streams)
 
-![center](Figure_16_2.png)
+![center](img/01-Figure_16_2.png)
 
 - 프로그램은 소스 또는 싱크에 직접 연결하지 않고, **중재자(mediator)를 통해 데이터를 주고받음**
 - **입출력 스트림은 소스, 싱크와 프로그램 간 데이터 흐름을 관리하는 중재자 역할 수행**
@@ -34,7 +34,7 @@
 
 ## 스트림의 역할
 
-![center](Figure_16_3.png)
+![center](img/02-Figure_16_3.png)
 
 - 소스로부터 생성된 데이터(e.g., 키보드 입력)는 프로그램에 바로 전달되지 않고, 입력 스트림 버퍼에 우선 보관됨
 - 프로그램이 내보내는 데이터는 싱크(e.g., 모니터 출력)로 바로 전달되지 않고, 출력 스트림 버퍼에 우선 보관됨
@@ -43,7 +43,7 @@
 
 ## 스트림의 역할 (Cont'd)
 
-![center](Figure_16_4.png)
+![center](img/03-Figure_16_4.png)
 
 - 프로그램의 추출 연산자(`>>`)는 입력 스트림 버퍼의 내용을 파싱하여, **요구하는 타입으로 변환**한 뒤 변수에 저장
   - 소스가 키보드이고, `double` 타입 변수 `d`에 실수 타입 값을 입력해야 하는 상황
@@ -57,7 +57,7 @@
 
 ## 스트림 클래스 (Stream Classes)
 
-![center](Figure_16_5.png)
+![center](img/04-Figure_16_5.png)
 
 ---
 
@@ -112,7 +112,7 @@
 
 ### 스트림 상태 (Stream State)
 
-![center](Figure_16_8.png)
+![center](img/05-Figure_16_8.png)
 
 - `std::ios` 클래스는 상태 관련 데이터 멤버 및 멤버 함수를 가지며, 모든 스트림 클래스 객체는 상태 멤버를 갖고 있음
   - 모든 스트림 클래스는 `std::ios` 클래스 멤버를 상속함
@@ -124,12 +124,12 @@
 
 ### 스트림 상태 데이터 멤버
 
-| Constants          | Input Stream                  | Output Stream              |
-|--------------------|-------------------------------|----------------------------|
-| `std::ios::eofbit` | No more characters to extract.| Not applicable.            |
-| `std::ios::failbit`| An invalid read operation.    | An invalid write operation.|
-| `std::ios::badbit` | Stream integrity is lost.     | Stream integrity is lost.  |
-| `std::ios::goodbit`| Everything is fine.           | Everything is fine.        |
+| Constants           | Input Stream                   | Output Stream               |
+| ------------------- | ------------------------------ | --------------------------- |
+| `std::ios::eofbit`  | No more characters to extract. | Not applicable.             |
+| `std::ios::failbit` | An invalid read operation.     | An invalid write operation. |
+| `std::ios::badbit`  | Stream integrity is lost.      | Stream integrity is lost.   |
+| `std::ios::goodbit` | Everything is fine.            | Everything is fine.         |
 
 - `eofbit`와 `failbit`의 관계
   - 스트림의 끝(`EOF`)에서 읽기를 시도하면 작업은 **실패**하여 `eofbit`와 `failbit` 둘 다 설정됨
@@ -147,13 +147,13 @@
 
 ### 스트림 상태 멤버 함수
 
-| Functions        | Return values                                                |
-|------------------|--------------------------------------------------------------|
-| `bool eof()`     | `true` if `eofbit` is set; `false` otherwise                 |
-| `bool fail()`    | `true` if `failbit` or `badbit` is set; `false` otherwise    |
-| `bool bad()`     | `true` if `badbit` is set; `false` otherwise                 |
-| `bool good()`    | `true` if the stream is in good condition; `false` otherwise |
-| `void clear()`   | It cleans all three bits (sets to zero)                      |
+| Functions                  | Return values                                                       |
+| -------------------------- | ------------------------------------------------------------------- |
+| `bool eof()`               | `true` if `eofbit` is set; `false` otherwise                        |
+| `bool fail()`              | `true` if `failbit` or `badbit` is set; `false` otherwise           |
+| `bool bad()`               | `true` if `badbit` is set; `false` otherwise                        |
+| `bool good()`              | `true` if the stream is in good condition; `false` otherwise        |
+| `void clear()`             | It cleans all three bits (sets to zero)                             |
 | `explicit operator bool()` | `true` if the stream is usable (i.e., `!fail()`); `false` otherwise |
 
 ---
@@ -162,7 +162,7 @@
 
 - 스트림 상태 멤버 함수를 활용한 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/stream1.cc)
+[//]: # (INCLUDE: ./cpp/10/src/00_stream1.cc)
 
 ---
 
@@ -170,7 +170,7 @@
 
 - 스트림 복구 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/stream2.cc)
+[//]: # (INCLUDE: ./cpp/10/src/01_stream2.cc)
 
 ---
 
@@ -178,7 +178,7 @@
 
 ### `std::cin`
 
-![center](Figure_16_6.png)
+![center](img/06-Figure_16_6.png)
 
 - `std::istream`타입 전역 객체이며, 프로그램 실행 시 콘솔 입력(키보드)과 연결됨
 - 프로그램 종료 시 런타임 시스템에 의해 키보드와의 연결이 자동으로 끊어진 뒤 소멸됨
@@ -190,7 +190,7 @@
 
 ### `std::cout`, `std::cerr`, `std::clog`
 
-![center](Figure_16_7.png)
+![center](img/07-Figure_16_7.png)
 
 - `std::ostream`타입 전역 객체이며, 프로그램 실행 시 콘솔 출력(모니터)과 연결됨
 - 프로그램 종료 시 런타임 시스템에 의해 모니터와의 연결이 자동으로 끊어진 뒤 소멸됨
@@ -207,11 +207,11 @@
   - `std::cin` 입력 시 `std::cout` 버퍼의 모든 데이터를 플러시(flush)하도록 동작이 연결되어 있음
   - 입출력이 빈번히 사용되는 상황에서 동기화된 콘솔 객체는 **잦은 플러시로 인한 성능 저하**가 발생할 수 있음
 
-[//]: # (INCLUDE: ./cpp/10/console1.cc --from 28 --to 30 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/02_console1.cc --from 33 --to 35 --no-comment)
 
 - `std::cout` 객체와 `std::cin` 객체 동기화는 다음과 같이 끊을 수 있음:
 
-[//]: # (INCLUDE: ./cpp/10/console1.cc --from 25 --to 26 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/02_console1.cc --from 28 --to 29 --no-comment)
 
 ---
 
@@ -219,7 +219,7 @@
 
 - 콘솔 스트림 객체의 동기화를 해제하는 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/console1.cc --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/02_console1.cc --from 2 --to 23 --no-comment)
 
 ---
 
@@ -237,7 +237,8 @@
 
 - `std::cerr`는 프로그램에서 발생한 오류 메시지를 **즉시 출력**하는 용도로 사용
   - 스트림 버퍼에 데이터를 보관하지 않고 즉시 싱크로 내보냄
-- `std::clog`는 프로그램의 디버깅 또는 로깅 메시지를 출력하는 용도로 사용하며, 표준 출력처럼 버퍼가 플러시 조건을 만족하면 싱크로 내보냄
+- `std::clog`는 프로그램의 디버깅 또는 로깅 메시지를 출력하는 용도로 사용
+- 플러시 조건을 만족하면 버퍼는 데이터를 싱크로 내보냄
 
 ---
 
@@ -250,7 +251,7 @@
   - 콘솔 스트림은 프로그램 종료 시 시스템에 의해 자동 닫힘
 - 출력 스트림 버퍼가 가득 찬 경우
 
-[//]: # (INCLUDE: ./cpp/10/console2.cc --from 4 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/03_console2.cc)
 
 ---
 
@@ -258,7 +259,7 @@
 
 ### 콘솔 스트림 멤버 함수: `get`, `put`
 
-[//]: # (INCLUDE: ./cpp/10/console3.cc)
+[//]: # (INCLUDE: ./cpp/10/src/04_console3.cc)
 
 ---
 
@@ -266,7 +267,7 @@
 
 ### 콘솔 스트림 멤버 함수: `ignore`
 
-[//]: # (INCLUDE: ./cpp/10/console4.cc)
+[//]: # (INCLUDE: ./cpp/10/src/05_console4.cc)
 
 ---
 
@@ -274,13 +275,13 @@
 
 ### 콘솔 스트림 멤버 함수: `getline`
 
-[//]: # (INCLUDE: ./cpp/10/console5.cc)
+[//]: # (INCLUDE: ./cpp/10/src/06_console5.cc)
 
 ---
 
 ## 파일 스트림 (File Streams)
 
-![h:350 center](Figure_16_9.png)
+![h:350 center](img/08-Figure_16_9.png)
 
 - 콘솔 스트림에서의 데이터 멤버와 멤버 함수를 모두 사용할 수 있음
   - `std::ifstream` 클래스는 `std::istream` 클래스로부터 상속
@@ -296,13 +297,13 @@
 - `<fstream>` 헤더 파일을 포함하면 파일 스트림 객체를 사용할 수 있음
 - 생성된 객체는 **소스, 싱크와 연결된 상태가 아니므로** 연결 작업을 수행해야 사용할 수 있음
 
-[//]: # (INCLUDE: ./cpp/10/file1.cc --from 1 --to 1 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/07_file1.cc --from 2 --to 2 --no-comment)
 
 ### 파일 스트림 객체 생성 후 소스, 싱크 연결
 
 - `open` 멤버 함수의 인자로 파일의 경로를 전달하면 파일을 객체의 소스 또는 싱크로 사용할 수 있음
 
-[//]: # (INCLUDE: ./cpp/10/file1.cc --from 4 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/07_file1.cc --from 7 --to 13 --no-comment)
 
 ---
 
@@ -314,13 +315,13 @@
   - 반환값은 `bool` 타입으로, 연결에 성공한 경우 `true`, 실패한 경우 `false` 반환
   - `open` 멤버 함수의 매개변수로 넘겨준 경로에 파일이 존재하지 않거나, 권한이 없을 경우 실패할 수 있음
 
-[//]: # (INCLUDE: ./cpp/10/file1.cc --from 12 --to 14 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/07_file1.cc --from 17 --to 19 --no-comment)
 
 ### 파일 스트림 객체 연결 해제 후 소멸
 
 - 더 이상 스트림 객체를 사용하지 않는다면 `close` 멤버 함수를 통해 객체와 연결된 파일을 해제할 수 있음
 
-[//]: # (INCLUDE: ./cpp/10/file1.cc --from 16 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/07_file1.cc --from 23 --to 25 --no-comment)
 
 ---
 
@@ -328,7 +329,7 @@
 
 - 파일 스트림 객체를 통해 파일을 싱크로 사용한 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/outfile.cc)
+[//]: # (INCLUDE: ./cpp/10/src/08_outfile.cc)
 
 ---
 
@@ -336,7 +337,7 @@
 
 - 파일 스트림 객체를 통해 파일을 소스로 사용한 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/infile.cc)
+[//]: # (INCLUDE: ./cpp/10/src/09_infile.cc)
 
 ---
 
@@ -347,14 +348,14 @@
 - `std::ios` 클래스에 정의되어 있음
 - **파일 시스템의 실제 파일을 열 때 사용**하며, 콘솔 스트림 또는 문자열 스트림에서는 사용하지 않음
 
-| Constant          | Explanation                                                    |
-|-------------------|----------------------------------------------------------------|
-| `std::ios::app`   | Seek to the end of stream **before each write** (append).      |
-| `std::ios::binary`| Open in binary mode (**default is text**).                     |
-| `std::ios::in`    | Open for reading (**default mode of `std::ifstream` object**). |
-| `std::ios::out`   | Open for writing (**default mode of `std::ofstream` object**). |
-| `std::ios::trunc` | **Discard the contents** of the stream when opening (truncate).|
-| `std::ios::ate`   | Seek to the end of stream **immediately after open** (at end). |
+| Constant           | Explanation                                                     |
+| ------------------ | --------------------------------------------------------------- |
+| `std::ios::app`    | Seek to the end of stream **before each write** (append).       |
+| `std::ios::binary` | Open in binary mode (**default is text**).                      |
+| `std::ios::in`     | Open for reading (**default mode of `std::ifstream` object**).  |
+| `std::ios::out`    | Open for writing (**default mode of `std::ofstream` object**).  |
+| `std::ios::trunc`  | **Discard the contents** of the stream when opening (truncate). |
+| `std::ios::ate`    | Seek to the end of stream **immediately after open** (at end).  |
 
 ---
 
@@ -362,7 +363,7 @@
 
 ### 파일 스트림 객체의 열기 모드
 
-![center](Figure_Openmode.png)
+![center](img/09-Figure_Openmode.png)
 
 - `std::ifstream` 객체는 `std::ios::in` 모드가 기본 설정됨
   - 읽기 모드이며, **파일이 존재하지 않으면 파일 열기에 실패함**
@@ -383,7 +384,7 @@
 
 - 파일 스트림 객체 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/file2.cc)
+[//]: # (INCLUDE: ./cpp/10/src/10_file2.cc)
 
 ---
 
@@ -393,13 +394,13 @@
 
 - 다음 함수들은 콘솔 클래스에 선언되어 있으며, 파일 스트림 객체에서 유용하게 사용할 수 있음
 
-| Function                 | Explanation                                                  |
-|------------------------------|------------------------------------------------------------------|
-| `std::streamsize gcount() const`         | Counts characters extracted in the last input                  |
-| `std::istream& unget()`           | Puts back the last character extracted from the stream         |
-| `std::istream& putback(char c)`   | Same as `unget` but requires a specific character to be put back |
-| `int peek()`                 | Looks at the next character without extracting it              |
-| `std::istream& ignore(int n = 1, int d = eof)` | Ignores `n` characters or up to a specified delimiter `d`      |
+| Function                                           | Explanation                                                        |
+| -------------------------------------------------- | ------------------------------------------------------------------ |
+| `std::streamsize gcount() const`                   | Counts characters extracted in the last input                      |
+| `std::istream& unget()`                            | Puts back the last character extracted from the stream             |
+| `std::istream& putback(char c)`                    | Same as `unget` but requires a specific character to be put back   |
+| `int peek()`                                       | Looks at the next character without extracting it                  |
+| `std::istream& ignore(int n = 1, int d = eof)`     | Ignores `n` characters or up to a specified delimiter `d`          |
 
 ---
 
@@ -407,13 +408,13 @@
 
 - 파일 스트림 멤버 함수 사용 예제: `unget`을 사용해 타입에 따른 값 읽어오기
 
-[//]: # (INCLUDE: ./cpp/10/file3.cc --to 17)
+[//]: # (INCLUDE: ./cpp/10/src/11_file3.cc --to 17)
 
 ---
 
 ## 파일 스트림 (File Streams) (Cont'd - 10)
 
-[//]: # (INCLUDE: ./cpp/10/file3.cc --from 18)
+[//]: # (INCLUDE: ./cpp/10/src/11_file3.cc --from 18)
 
 ---
 
@@ -438,13 +439,13 @@
 
 ### 임의 접근을 위한 멤버 함수와 위치 조정 변수
 
-![h:50 center](Figure_Direction_Values.png)
+![h:50 center](img/10-Figure_Direction_Values.png)
 
-| Input functions                   | Output functions                 |
-|---------------------------------------|---------------------------------------|
-| `std::streampos tellg()`                         | `std::streampos tellp()`                         |
-| `std::istream& seekg(std::streampos pos)`             | `std::ostream& seekp(std::streampos pos)`             |
-| `std::istream& seekg(std::streamoff off, std::ios::seekdir dir)` | `std::ostream& seekp(std::streamoff off, std::ios::seekdir dir)` |
+| Input functions                                                  | Output functions                                                  |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `std::streampos tellg()`                                         | `std::streampos tellp()`                                          |
+| `std::istream& seekg(std::streampos pos)`                        | `std::ostream& seekp(std::streampos pos)`                         |
+| `std::istream& seekg(std::streamoff off, std::ios::seekdir dir)` | `std::ostream& seekp(std::streamoff off, std::ios::seekdir dir)`  |
 
 - 접두사 `g`는 입력(입력 스트림 버퍼)의 `get`, 접두사 `p`는 출력(출력 스트림 버퍼)의 `put`을 의미
 - `seekg` 함수는 위치 조정 변수(`std::ios_base::seekdir`)를 사용해 스트림 버퍼 내 조정자 위치를 변경할 수 있음
@@ -459,7 +460,7 @@
 
 - 파일 입력 스트림 조정자 변수 설정 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/file4.cc)
+[//]: # (INCLUDE: ./cpp/10/src/12_file4.cc)
 
 ---
 
@@ -467,7 +468,7 @@
 
 - 파일 입력 스트림 조정자 변수 확인 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/file5.cc)
+[//]: # (INCLUDE: ./cpp/10/src/13_file5.cc)
 
 ---
 
@@ -475,7 +476,7 @@
 
 - 파일 출력 스트림 조정자 변수 설정 예제 코드: 파일 내 빈칸을 개행문자로 치환
 
-[//]: # (INCLUDE: ./cpp/10/file6.cc)
+[//]: # (INCLUDE: ./cpp/10/src/14_file6.cc)
 
 ---
 
@@ -483,7 +484,7 @@
 
 - 파일 출력 스트림 조정자 변수 확인 예제 코드: 파일 크기 계산
 
-[//]: # (INCLUDE: ./cpp/10/file7.cc)
+[//]: # (INCLUDE: ./cpp/10/src/15_file7.cc)
 
 ```text
 There       // 5 + 1('\n')
@@ -500,7 +501,7 @@ life.       // 5           => File size: 41
 
 ## 이진 입출력 (Binary Input/Output)
 
-![center](Figure_16_11.png)
+![center](img/11-Figure_16_11.png)
 
 - 파일 입출력 시 텍스트와 이진 데이터를 입출력할 수 있음
 - 이진 입출력은 텍스트 형태가 아닌 **바이너리로 표현되는 데이터**를 대상으로 입출력
@@ -514,7 +515,7 @@ life.       // 5           => File size: 41
 
 - 간단한 이진 입출력 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/binary1.cc)
+[//]: # (INCLUDE: ./cpp/10/src/16_binary1.cc)
 
 ---
 
@@ -522,13 +523,13 @@ life.       // 5           => File size: 41
 
 - 이진 입출력을 사용한 클래스 객체 입출력
 
-[//]: # (INCLUDE: ./cpp/10/binary2.cc --to 15)
+[//]: # (INCLUDE: ./cpp/10/src/17_binary2.cc --to 15)
 
 ---
 
 ## 이진 입출력 (Binary Input/Output) (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/10/binary2.cc --from 16)
+[//]: # (INCLUDE: ./cpp/10/src/17_binary2.cc --from 16)
 
 ---
 
@@ -536,13 +537,13 @@ life.       // 5           => File size: 41
 
 - 이진 입출력을 사용한 임의 접근 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/binary3.cc --to 15)
+[//]: # (INCLUDE: ./cpp/10/src/18_binary3.cc --to 15)
 
 ---
 
 ## 이진 입출력 (Binary Input/Output) (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/10/binary3.cc --from 16)
+[//]: # (INCLUDE: ./cpp/10/src/18_binary3.cc --from 16)
 
 ---
 
@@ -555,7 +556,7 @@ life.       // 5           => File size: 41
   - e.g., 객체를 이진 쓰기(write) 시, 포인터의 주소값(예: `0x7FFF1234`)만 파일에 저장됨
 - 직렬화는 이진 쓰기 이전에 포인터가 가리키는 실제 데이터를 파일에 저장하는 과정
 
-[//]: # (INCLUDE: ./cpp/10/serialization.cc --from 9 --to 16 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/19_serialization.cc --from 9 --to 16 --no-comment)
 
 ---
 
@@ -563,19 +564,19 @@ life.       // 5           => File size: 41
 
 - 이진 입출력 직렬화 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/serialization.cc --to 18)
+[//]: # (INCLUDE: ./cpp/10/src/19_serialization.cc --to 7 --from 9 --to 16)
 
 ---
 
 ## 이진 입출력 (Binary Input/Output) (Cont'd - 8)
 
-[//]: # (INCLUDE: ./cpp/10/serialization.cc --from 19)
+[//]: # (INCLUDE: ./cpp/10/src/19_serialization.cc --from 19)
 
 ---
 
 ## 문자열 스트림 (String Streams)
 
-![center](Figure_16_13.png)
+![center](img/12-Figure_16_13.png)
 
 - `<sstream>` 헤더 파일 사용
 - C++ 문자열을 소스 또는 싱크로 활용
@@ -589,9 +590,9 @@ life.       // 5           => File size: 41
 - 파일 스트림과 달리 소스 또는 싱크와의 연결이 필요하지 않음
 - 문자열 스트림 클래스의 `str` 함수를 사용해 현재 스트림 객체의 데이터를 설정하거나 읽어올 수 있음:
 
-[//]: # (INCLUDE: ./cpp/10/string.cc --from 5 --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/20_string.cc --from 6 --to 14 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/10/string.cc --from 15 --to 20 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/20_string.cc --from 18 --to 23 --no-comment)
 
 ---
 
@@ -599,7 +600,7 @@ life.       // 5           => File size: 41
 
 - 문자열 스트림 객체 사용 예제 코드
 
-[//]: # (INCLUDE: ./cpp/10/string1.cc)
+[//]: # (INCLUDE: ./cpp/10/src/21_string1.cc)
 
 ---
 
@@ -609,9 +610,9 @@ life.       // 5           => File size: 41
   - `std::ios` 클래스에 정의되어 있음
 - 삽입 연산자와 추출 연산자에 조정자를 같이 **연쇄적으로 사용**해 데이터를 형식화할 수 있음
 
-[//]: # (INCLUDE: ./cpp/10/manip.cc --from 2 --to 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/22_manip.cc --from 2 --to 5 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/10/manip.cc --from 12 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/10/src/22_manip.cc --from 13 --to 16 --no-comment)
 
 ---
 
@@ -619,7 +620,7 @@ life.       // 5           => File size: 41
 
 - 매개변수 없는 조정자 예: 텍스트 출력 색상을 변경하는 조정자([control sequence introducer](https://en.wikipedia.org/wiki/ANSI_escape_code#Control_Sequence_Introducer_commands), `\033 n m`)
 
-[//]: # (INCLUDE: ./cpp/10/manip1.cc)
+[//]: # (INCLUDE: ./cpp/10/src/23_manip1.cc)
 
 ---
 
@@ -627,4 +628,4 @@ life.       // 5           => File size: 41
 
 - 매개변수 있는 조정자 예: 간단한 로깅 클래스
 
-[//]: # (INCLUDE: ./cpp/10/manip2.cc)
+[//]: # (INCLUDE: ./cpp/10/src/24_manip2.cc)

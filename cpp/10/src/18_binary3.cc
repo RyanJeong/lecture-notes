@@ -19,7 +19,7 @@ int main() {
   Foo objs_out[] = {{527, 3.14}, {920, 1.414}, {777, 1.732}};
   std::ofstream out_file(filename, std::ios::binary);
   if (out_file.is_open()) {
-    for (int i = 0; i < sizeof objs_out / sizeof(Foo); ++i)
+    for (size_t i = 0; i < sizeof objs_out / sizeof(Foo); ++i)
       out_file.write(reinterpret_cast<char*>(&objs_out[i]), sizeof(Foo));
     out_file.close();
   }

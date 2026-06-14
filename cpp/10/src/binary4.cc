@@ -54,7 +54,7 @@ int main() {
     std::cerr << "Failed to open file for writing: " << filename << std::endl;
     return 1;
   }
-  for (int i = 0; i < sizeof objects / sizeof(Foo); ++i)
+  for (size_t i = 0; i < sizeof objects / sizeof(Foo); ++i)
     objects[i].Serialize(out_file);
   out_file.close();
 
@@ -63,7 +63,7 @@ int main() {
     std::cerr << "Failed to open file for reading: " << filename << std::endl;
     return 1;
   }
-  for (int i = 0; i < sizeof objects / sizeof(Foo); ++i) {
+  for (size_t i = 0; i < sizeof objects / sizeof(Foo); ++i) {
     Foo object;
     object.Deserialize(in_file);
     object.print();
