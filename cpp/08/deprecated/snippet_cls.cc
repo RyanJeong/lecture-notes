@@ -28,7 +28,6 @@ MyClass::MyClass() {
 MyClass::MyClass() {
   // ...constructor body...
   throw std::runtime_error("Error in constructor");  // Exception thrown
-
   // The following line is NOT executed because of the exception; therefore, no
   // destructor registration happens.
   __runtime_register_destructor(this, &MyClass::~MyClass);

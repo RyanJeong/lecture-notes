@@ -18,7 +18,7 @@
     - `catch` 절 안에는 발생한 예외를 처리할 수 있는 문장들을 작성
   - **`try` 절 내부에서 발생한 예외는 처리될 수 있음**
 
-![center](Figure_14_1.png)
+![center](img/00-Figure_14_1.png)
 
 ---
 
@@ -31,7 +31,7 @@
 - 검색 과정에서 **예외 타입과 일치하거나 호환되는 매개변수를 가진 `catch` 블록**을 찾아 제어를 넘김
   - 예외 발생 지점 이후의 문장은 실행될 수 없음
 
-[//]: # (INCLUDE: ./cpp/08/error_handling1.cc --from 5 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 6 --to 16 --no-comment)
 
 ---
 
@@ -44,7 +44,7 @@
   - `catch` 블록의 매개변수로 전달되는 것은 **예외 객체**임
 - 예외의 타입은 `expression` 평가 결과의 타입이 됨
 
-[//]: # (INCLUDE: ./cpp/08/error_handling1.cc --from 17 --to 31 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 20 --to 34 --no-comment)
 
 ---
 
@@ -55,7 +55,7 @@
 - 이미 발생한 예외를 **재전달**하는 연산자이며, `throw`는 **`catch` 블록 내에서만** 사용 가능
   - `throw expression`은 예외를 발생시키고자 하는 모든 곳에서 사용 가능
 
-[//]: # (INCLUDE: ./cpp/08/error_handling2.cc)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 38 --to 47 --no-comment)
 
 ---
 
@@ -63,13 +63,13 @@
 
 ### Try-Catch 세 가지 형태 - 1. Try-Catch 블록이 호출된 함수 안에 존재
 
-![center](Figure_14_3.png)
+![center](img/01-Figure_14_3.png)
 
 ---
 
 ## Try-Catch Block (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/08/try-catch1.cc)
+[//]: # (INCLUDE: ./cpp/08/src/00_try-catch1.cc)
 
 ---
 
@@ -77,7 +77,7 @@
 
 ### Try-Catch 세 가지 형태 - 2. 호출된 함수의 `try` 블록 내에서 호출한 함수에서 예외 발생
 
-![center](Figure_14_4.png)
+![center](img/02-Figure_14_4.png)
 
 - 예외가 발생하는 부분과 예외를 처리하는 부분이 분리된 형태
   - 주로 외부 함수를 사용해야 하는 경우
@@ -86,7 +86,7 @@
 
 ## Try-Catch Block (Cont'd - 7)
 
-[//]: # (INCLUDE: ./cpp/08/try-catch2.cc)
+[//]: # (INCLUDE: ./cpp/08/src/01_try-catch2.cc)
 
 ---
 
@@ -94,7 +94,7 @@
 
 ### Try-Catch 세 가지 형태 - 3. 호출된, 그리고 호출할 함수 양쪽에 존재하는 Try-Catch 블록
 
-![center](Figure_14_5.png)
+![center](img/03-Figure_14_5.png)
 
 ---
 
@@ -105,19 +105,19 @@
 - 2번 형태는 호출한 함수에서 예외 발생 시 즉시 함수 호출 측으로 예외를 전달
 - 3번 형태는 호출한 함수에서 발생한 예외를 호출한 함수의 `catch` 절에서 **전처리** 후 함수 호출 측으로 예외 재전달
 
-[//]: # (INCLUDE: ./cpp/08/try-catch3.cc --to 15)
+[//]: # (INCLUDE: ./cpp/08/src/02_try-catch3.cc --to 15)
 
 ---
 
 ## Try-Catch Block (Cont'd - 10)
 
-[//]: # (INCLUDE: ./cpp/08/try-catch3.cc --from 17)
+[//]: # (INCLUDE: ./cpp/08/src/02_try-catch3.cc --from 17)
 
 ---
 
 ## `throw` 문장의 위치
 
-![center](Figure_14_6.png)
+![center](img/04-Figure_14_6.png)
 
 ### 직접적 감지 (Direct Enclosure)
 
@@ -137,13 +137,13 @@
 - 헤더 파일은 해당 함수의 **예외 발생 가능성**을 명시함
   - `noexcept`는 예외 지정자(exception specifier)로, 예외를 던지지 않음을 컴파일러에게 알림
 
-![center](Figure_14_operator_new.png)
+![center](img/05-Figure_14_operator_new.png)
 
 ---
 
 ## 다중 `catch` 절
 
-![center](Figure_14_7.png)
+![center](img/06-Figure_14_7.png)
 
 - 예외를 `catch` 절에서 받으려면 `throw` 문의 표현식 타입과 `catch` 블록 매개변수 타입이 일치해야 함
 - 줄임표(ellipsis, `...`)를 사용하면 **모든 종류의 예외를 처리할 수 있는 `catch` 블록을 사용할 수 있음**
@@ -154,13 +154,13 @@
 
 - 줄임표를 사용해 모든 타입 예외를 포착하는 예시
 
-[//]: # (INCLUDE: ./cpp/08/try-catch4.cc)
+[//]: # (INCLUDE: ./cpp/08/src/03_try-catch4.cc)
 
 ---
 
 ## 예외 전파 (Exception Propagation)
 
-![center](Figure_14_8.png)
+![center](img/07-Figure_14_8.png)
 
 - 예외 발생은 반드시 try-catch 블록에서 발생하진 않음
   - **예외는 발생시키고자 하는 모든 곳에서 던질 수 있음**
@@ -174,7 +174,7 @@
 
 - 전파되는 예외가 처리되지 못한 예시
 
-[//]: # (INCLUDE: ./cpp/08/try-catch5.cc)
+[//]: # (INCLUDE: ./cpp/08/src/04_try-catch5.cc)
 
 ---
 
@@ -183,7 +183,13 @@
 - 예외 발생 지점에서 해당 예외를 처리하지 않고 다른 지점에서 처리하는 예외 전파 응용 형태
   - 대표적인 활용 예시는 예외 처리 전 **전처리**가 요구되는 경우
 
-[//]: # (INCLUDE: ./cpp/08/throwing.cc --from 4 --to 20 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/05_throwing.cc --to 16)
+
+---
+
+## 예외 전달 (Rethrowing An Exception) (Cont'd)
+
+[//]: # (INCLUDE: ./cpp/08/src/05_throwing.cc --from 18)
 
 ---
 
@@ -193,14 +199,14 @@
 
 ### Any Exception
 
-[//]: # (INCLUDE: ./cpp/08/exception.hpp --from 3 --to 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/exception.hpp --from 4 --to 4 --no-comment)
 
 - 일반적인 함수 헤더는 예외 사양을 표현하지 않은 상태이며, 예외 발생 여부는 불확실함
 - 이러한 함수는 예외를 발생할 수도, 안 할 수도 있음
 
 ### Pre-defined Exceptions
 
-[//]: # (INCLUDE: ./cpp/08/exception.hpp --from 5 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/exception.hpp --from 8 --to 10 --no-comment)
 
 - 함수의 발생 가능한 예외의 타입을 열거하여 표현
 
@@ -210,12 +216,12 @@
 
 ### No Exception
 
-[//]: # (INCLUDE: ./cpp/08/exception.hpp --from 9 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/exception.hpp --from 14 --to 15 --no-comment)
 
 - 함수가 예외를 반환하지 않음을 표현하며, 컴파일러가 예외 처리 코드 생성을 최적화할 수 있음
   - 예외 발생 시 즉시 `std::terminate()` 호출로 빠르게 종료하므로 실행 속도 측면에서 이점이 있음
 
-[//]: # (INCLUDE: ./cpp/08/noexcept.cc)
+[//]: # (INCLUDE: ./cpp/08/src/06_noexcept.cc)
 
 ---
 
@@ -230,12 +236,12 @@
 
 - 런타임 시스템은 프로그램 실행 시 네 개의 프로그램 메모리 영역을 사용함
 
-| Memory Area                      | Purpose                              | Features                                                                 |
-| -------------------------------- | ------------------------------------ | ------------------------------------------------------------------------ |
-| **Code Memory (Program Memory)** | Stores executable instructions       | Contains compiled machine code executed by the CPU                       |
-| **Static Memory**                | Stores global and static variables   | Lifetime spans the entire program execution                              |
+| Memory Area                      | Purpose                              | Features                                                                     |
+| -------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
+| **Code Memory (Program Memory)** | Stores executable instructions       | Contains compiled machine code executed by the CPU                           |
+| **Static Memory**                | Stores global and static variables   | Lifetime spans the entire program execution                                  |
 | **Stack Memory**                 | Stores function call data            | Managed as LIFO; **holds parameters, local variables, and return addresses** |
-| **Heap Memory**                  | Stores dynamically allocated objects | Lifetime controlled manually by allocation and deallocation              |
+| **Heap Memory**                  | Stores dynamically allocated objects | Lifetime controlled manually by allocation and deallocation                  |
 
 ---
 
@@ -246,7 +252,7 @@
 - 각 함수 호출마다 하나의 스택 프레임이 함수 호출 스택에 추가됨
 - 스택 프레임은 매개변수 값, 지역변수 값, 상위 호출 함수의 복귀 주소를 저장하는 단위
 
-![center](Figure_14_9.png)
+![center](img/08-Figure_14_9.png)
 
 ---
 
@@ -254,7 +260,7 @@
 
 ### 스택 풀기 과정
 
-![center](Figure_14_10.png)
+![center](img/09-Figure_14_10.png)
 
 ---
 
@@ -285,9 +291,9 @@
 - 런타임 시스템은 내부적으로 `cleanup_stack`이라는 자료구조를 유지함
   - 각 함수 호출 시 해당 지역 객체의 소멸자 호출 정보는 `__runtime_register_destructor` 함수를 통해 기록됨
 
-[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 4 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 54 --to 60 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 12 --to 19 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 64 --to 71 --no-comment)
 
 ---
 
@@ -295,14 +301,13 @@
 
 ### 컴파일러에 의해 `__runtime_register_destructor` 함수 호출이 추가된 생성자
 
-[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 21 --to 26 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 75 --to 79 --no-comment)
 
 - 생성자가 정상 종료되면 컴파일러에 의해 추가된 `__runtime_register_destructor` 함수가 호출됨
-  - 현재 생성자가 생성하는 객체의 소멸자를 `cleanup_stack`에 등록
-  - 해당 객체의 소멸 시점에 `cleanup_stack`을 통해 소멸자가 호출됨
-- 만약 생성자 내부에 예외가 발생하면 `__runtime_register_destructor` 함수 호출이 생략되어 불완전 객체가 생성됨
+  - 소멸자가 `cleanup_stack`에 등록되어, 객체 소멸 시 이를 참조해 자동 호출됨을 보장
+- 생성자 내부에서 예외가 발생하면 `__runtime_register_destructor` 함수 호출이 생략되어 **불완전 객체**가 생성됨
 
-[//]: # (INCLUDE: ./cpp/08/snippet_cls.cc --from 29 --to 34 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 83 --to 89 --no-comment)
 
 ---
 
@@ -310,7 +315,7 @@
 
 ### 스택 메모리 멤버를 사용하는 객체의 생성자 완료
 
-![center](Figure_14_11.png)
+![center](img/10-Figure_14_11.png)
 
 ---
 
@@ -318,7 +323,7 @@
 
 ### 스택 메모리 멤버를 사용하는 객체의 생성자 미완료
 
-![center](Figure_14_12.png)
+![center](img/11-Figure_14_12.png)
 
 - **스택 풀기**를 통해 멤버 자동 정리
 
@@ -328,7 +333,7 @@
 
 ### 힙 메모리 멤버를 사용하는 객체의 생성자 완료
 
-![center](Figure_14_13.png)
+![center](img/12-Figure_14_13.png)
 
 ---
 
@@ -336,7 +341,7 @@
 
 ### 힙 메모리 멤버를 사용하는 객체의 생성자 미완료
 
-![center](Figure_14_14.png)
+![center](img/13-Figure_14_14.png)
 
 - **스택 풀기**에서는 스택 메모리만 정리되며, **힙 메모리** 누수가 발생
 
@@ -346,7 +351,7 @@
 
 ### 힙 메모리 멤버를 사용하는 객체의 생성자 미완료 보완: 스마트 포인터
 
-![center](Figure_14_15.png)
+![center](img/14-Figure_14_15.png)
 
 ---
 
@@ -354,7 +359,7 @@
 
 ### Function-try 블록
 
-![center](Figure_14_16.png)
+![center](img/15-Figure_14_16.png)
 
 - Try-catch 블록의 `try` 절을 함수의 블록으로 사용하는 형태
 - 생성자에 function-try 블록 사용 시 **초기화 목록 단계에서 발생한 예외를 처리할 수 있음**
@@ -366,7 +371,7 @@
 
 ### Function-try 블록: 예외 완전 처리
 
-[//]: # (INCLUDE: ./cpp/08/snippet_function_try.cc --from 12 --to 32 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 93 --to 113 --no-comment)
 
 ---
 
@@ -374,13 +379,13 @@
 
 ### Function-try 블록: 예외 재전달
 
-[//]: # (INCLUDE: ./cpp/08/snippet_function_try.cc --from 34 --to 54 --no-comment)
+[//]: # (INCLUDE: ./cpp/08/src/_snippet.cc --from 117 --to 137 --no-comment)
 
 ---
 
 ## 표준 예외 클래스
 
-![center](Figure_14_17.png)
+![center](img/16-Figure_14_17.png)
 
 - 모든 표준 예외 클래스는 `std::exception`을 직접 또는 간접적으로 상속함
 - 예외 타입에 따라 서로 다른 표준 예외 클래스 제공
@@ -391,7 +396,7 @@
 
 ### `std::exception` 클래스의 `public` 인터페이스
 
-[//]: # (INCLUDE: ./cpp/08/std_exception.hpp)
+[//]: # (INCLUDE: ./cpp/08/src/std_exception.hpp)
 
 - 주요 멤버 함수로는 `what()`이 있음
   - 예외 정보를 반환하는 가상 함수
@@ -403,7 +408,7 @@
 
 ### 사용자 정의 예외 클래스
 
-[//]: # (INCLUDE: ./cpp/08/my_exception.hpp)
+[//]: # (INCLUDE: ./cpp/08/src/my_exception.hpp)
 
 ---
 
@@ -411,4 +416,4 @@
 
 ### 사용자 정의 예외 클래스 사용 예
 
-[//]: # (INCLUDE: ./cpp/08/my_exception.cc)
+[//]: # (INCLUDE: ./cpp/08/src/07_my_exception.cc)

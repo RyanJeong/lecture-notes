@@ -4,17 +4,13 @@
 void ProcessData(int size) {
   const int expected_size = 10;
 
-  int* data = nullptr;
+  int* data = new int[size];  // Allocate an array of integers
   try {
-    data = new int[size];
-
     if (size != expected_size) throw std::invalid_argument("Size mismatch");
-
     std::cout << "Processing " << size << " elements" << std::endl;
   } catch (const std::invalid_argument& e) {
     delete[] data;  // Cleanup before rethrowing
-
-    throw;  // Re-throw to caller
+    throw;          // Re-throw to caller
   }
   delete[] data;  // Normal cleanup
 }
