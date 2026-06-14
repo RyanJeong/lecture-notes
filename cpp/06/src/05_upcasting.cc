@@ -9,6 +9,7 @@ int main() {
   //                              cast operator needed
   Derived derived;
   Base* p_base = &derived;  // Polymorphism is the use of upcasting
+  (void) p_base;
 
   return 0;
 }

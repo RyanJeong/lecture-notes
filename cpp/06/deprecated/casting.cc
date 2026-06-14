@@ -32,8 +32,8 @@ void ConstCastDemo(const int& x, const int& y) {
   const int x = 10;
   int y = 20;
 
-  // int& x1 = x;  // Error: cannot bind non-const lvalue ref. to const
-  const int& x2 = x;               // OK
+  int& x1 = x;        // Error: cannot bind non-const lvalue ref. to const
+  const int& x2 = x;  // OK
   int& x3 = const_cast<int&>(x2);  // OK, but be careful!
   x3 = 100;                        // Undefined behavior
 

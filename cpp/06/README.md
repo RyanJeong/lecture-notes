@@ -9,7 +9,7 @@
 
 ## 현실 세계에서의 다형성 예: Plug-Compatible Objects
 
-![center](Figure_12_1.png)
+![center](img/00-Figure_12_1.png)
 
 - 전자기기(e.g., 램프, 텔레비전)는 **전력**을 공급받기 위해 **표준 플러그**를 **표준 소켓**에 꽂아야 함
   - *At time t1*: 램프를 소켓에 연결
@@ -72,7 +72,7 @@
 
 ## 다형성 (Cont'd - 2)
 
-![center h:400](image.png)
+![center h:400](img/01-image.png)
 
 - **기반 클래스 타입 포인터는 기반 클래스를 상속한 모든 클래스 타입 객체(호환 객체)를 가리킬 수 있음**
   - 상속 계층에 속한 객체는 **기반 클래스 영역**을 포함함
@@ -85,7 +85,7 @@
 
 ### 정적 다형성 - 일반 함수 오버라이딩 (Non-virtual Function Override)
 
-[//]: # (INCLUDE: ./cpp/06/static_polymorphism.cc)
+[//]: # (INCLUDE: ./cpp/06/src/00_static_polymorphism.cc)
 
 ---
 
@@ -115,7 +115,7 @@ Base::Print
 
 ### 동적 다형성 - 가상 함수 오버라이딩 (Virtual Function Override)
 
-[//]: # (INCLUDE: ./cpp/06/dynamic_polymorphism.cc)
+[//]: # (INCLUDE: ./cpp/06/src/01_dynamic_polymorphism.cc)
 
 ---
 
@@ -156,7 +156,7 @@ Derived::Print
   - **각 클래스는 자신만의 고유한 가상 테이블을 가지며**, 같은 클래스의 모든 객체들이 이 하나의 테이블을 공유함
   - **런타임 시점**에 객체의 실제 형에 따라 호출될 함수를 결정할 수 있음
 
-![center](Figure_12_2.png)
+![center](img/02-Figure_12_2.png)
 
 ---
 
@@ -171,7 +171,7 @@ Derived::Print
     - C++ 다형성의 핵심 메커니즘
 - 객체에 가상 포인터가 추가된다면 **실체화된 객체의 가장 낮은 메모리 번지에 위치**하게 됨
 
-![center](Figure_12_Vptr.png)
+![center](img/03-Figure_12_Vptr.png)
 
 ---
 
@@ -179,7 +179,7 @@ Derived::Print
 
 ### 가상 함수 사용 방법
 
-[//]: # (INCLUDE: ./cpp/06/dynamic_polymorphism.cc --from 3 --to 11 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/01_dynamic_polymorphism.cc --from 5 --to 13 --no-comment)
 
 - `virtual` 키워드를 사용한 멤버 함수는 가상 함수가 됨
   - 상속 계층에서 오버라이딩(override)될 수 있음
@@ -195,7 +195,7 @@ Derived::Print
 
 ### `virtual` 키워드를 사용한 멤버 함수 오버라이딩
 
-[//]: # (INCLUDE: ./cpp/06/snippet_virtual_function.cc --from 2 --to 19 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/_snippet.cc --from 4 --to 19 --no-comment)
 
 - **`virtual` 키워드를 사용하는 것 보다는 `override` 키워드를 사용할 것을 적극 권장**
 
@@ -209,13 +209,13 @@ Derived::Print
 - 가상 테이블은 컴파일 시 생성되고, 가상 포인터는 런타임 시(객체 생성 시) 설정됨
 - 다형성 조건을 만족한 상태에서 가상 함수 호출 시, 가상 포인터가 가리키는 가상 테이블에서 실제 함수 주소를 찾아 실행함
 
-[//]: # (INCLUDE: ./cpp/06/snippet_poly_11.cc)
+[//]: # (INCLUDE: ./cpp/06/src/_snippet.cc --from 23 --to 36 --no-comment)
 
 ---
 
 ## 다형성 (Cont'd - 12)
 
-![center](Figure_12_Vtable_Vptr.png)
+![center](img/04-Figure_12_Vtable_Vptr.png)
 
 - 가상 테이블 구조와 구현은 컴파일러와 플랫폼에 따라 세부적인 차이가 있지만, 기본 원리는 동일함:
   1. 컴파일 시점에 가상 함수를 포함하는 **각 클래스마다 하나의 가상 테이블(`vtable`)이 생성**된다.
@@ -252,7 +252,7 @@ Derived::Print
 
 ### 다형성을 사용하지 않는 상황에서의 소멸
 
-![center](Figure_12_3.png)
+![center](img/05-Figure_12_3.png)
 
 - 각 클래스 타입 객체가 스택 영역에 할당되었다가 소멸될 경우 소멸자에 의해 올바르게 자원 반환
   - 런타임 시스템은 객체가 소멸되어야 할 경우 자동으로 해당 객체 타입의 소멸자를 자동 호출함
@@ -266,15 +266,15 @@ Derived::Print
 
 ### 다형성을 사용하는 상황에서 일반 소멸자를 사용하는 경우
 
-![center](Figure_12_4.png)
+![center](img/06-Figure_12_4.png)
 
 ---
 
 ## 다형성 (Cont'd - 16)
 
-[//]: # (INCLUDE: ./cpp/06/snippet_poly_16.cc --from 3 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/02_polymorphism.cc --from 4 --to 18 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/06/snippet_poly_16.cc --from 20 --to 23 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/02_polymorphism.cc --from 23 --to 26 --no-comment)
 
 ---
 
@@ -282,7 +282,7 @@ Derived::Print
 
 ### 다형성을 사용하는 상황에서 가상 소멸자를 사용하는 경우
 
-![center](Figure_12_5.png)
+![center](img/07-Figure_12_5.png)
 
 - **가상 소멸자는 가상 테이블에 등록되어 동적 바인딩됨**
   - `delete` 시 가상 포인터를 통해 파생 클래스 소멸자 호출
@@ -292,9 +292,9 @@ Derived::Print
 
 ## 다형성 (Cont'd - 18)
 
-[//]: # (INCLUDE: ./cpp/06/snippet_poly_18.cc --from 3 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/02_polymorphism.cc --from 4 --to 18 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/06/snippet_poly_18.cc --from 20 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/02_polymorphism.cc --from 23 --to 25 --no-comment)
 
 ---
 
@@ -302,9 +302,11 @@ Derived::Print
 
 ### 다형성을 사용하는 상황에서 가상 소멸자를 사용한 예시
 
+[//]: # (INCLUDE: ./cpp/06/src/poly/Makefile --reference)
+
 - `person.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/poly/person.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/poly/person.hpp)
 
 ---
 
@@ -312,7 +314,7 @@ Derived::Print
 
 - `person.cc`
 
-[//]: # (INCLUDE: ./cpp/06/poly/person.cc)
+[//]: # (INCLUDE: ./cpp/06/src/poly/person.cc)
 
 ---
 
@@ -320,7 +322,7 @@ Derived::Print
 
 - `student.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/poly/student.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/poly/student.hpp)
 
 ---
 
@@ -328,7 +330,7 @@ Derived::Print
 
 - `student.cc`
 
-[//]: # (INCLUDE: ./cpp/06/poly/student.cc)
+[//]: # (INCLUDE: ./cpp/06/src/poly/student.cc)
 
 ---
 
@@ -336,7 +338,7 @@ Derived::Print
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/06/poly/main.cc)
+[//]: # (INCLUDE: ./cpp/06/src/poly/main.cc)
 
 ---
 
@@ -348,23 +350,19 @@ Derived::Print
 - C++은 `<typeinfo>` 헤더를 통해 **런타임 타입 정보(RTTI)를 얻을 수 있는 기능을 제공**함
   - `typeid` 연산자: 표현식의 타입 정보를 반환하는 연산자, 평가 결과는 `type_info` 타입
 
-[//]: # (INCLUDE: ./cpp/06/rtti.cc --to 13)
+[//]: # (INCLUDE: ./cpp/06/src/04_rtti.cc --to 13)
 
 ---
 
 ## 런타임 타입 정보 (RTTI, Run-Time Type Information) (Cont'd)
 
-[//]: # (INCLUDE: ./cpp/06/rtti.cc --from 15)
+[//]: # (INCLUDE: ./cpp/06/src/04_rtti.cc --from 15)
 
 ---
 
 ## 타입 변환 (Type Casting)
 
-- C++에서의 타입 변환 방법은 4가지(강한 타입 변환 규칙, explicit casting rules):
-  1. `static_cast`
-  2. `reinterpret_cast`
-  3. `const_cast`
-  4. `dynamic_cast`
+- C++에서의 타입 변환 방법은 4가지(강한 타입 변환 규칙, explicit casting rules)
 
 ### `static_cast`
 
@@ -373,7 +371,7 @@ Derived::Print
 - 완전히 무관한 타입 간의 변환(e.g., `int*` → `float*`)은 컴파일 오류
 - **객체의 값이 변경됨**(메모리에 있는 객체의 비트 패턴이 수정됨)
 
-[//]: # (INCLUDE: ./cpp/06/casting.cc --from 3 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/_snippet.cc --from 41 --to 48 --no-comment)
 
 ---
 
@@ -385,7 +383,7 @@ Derived::Print
 - **객체의 값을 변경하지 않고** 해당 객체의 평가 방법만 변경하며, 주로 제네릭 포인터(`void*`)의 평가 방법을 지정할 때 활용
   - 인접한 메모리 영역을 침범할 수 있음
 
-[//]: # (INCLUDE: ./cpp/06/casting.cc --from 14 --to 28 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/_snippet.cc --from 54 --to 68 --no-comment)
 
 ---
 
@@ -395,9 +393,10 @@ Derived::Print
 
 - 컴파일 시점에 수행되는 타입 변환
 - 객체의 상수성(`const`)이나 휘발성(`volatile`)을 제거한 타입으로 변환
-- 원본 객체가 상수성이나 휘발성을 갖고 있을 때, `const_cast`로 해당 특성을 제거한 후 **해당 객체를 수정하면** **정의되지 않은 동작**임
+- 원본 객체가 상수성이나 휘발성을 갖고 있을 때, `const_cast`로 해당 특성을 제거한 후 **해당 객체를 수정하지 말 것**
+  - **정의되지 않은 동작**
 
-[//]: # (INCLUDE: ./cpp/06/casting.cc --from 32 --to 43 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/_snippet.cc --from 79 --to 90 --no-comment)
 
 ---
 
@@ -428,7 +427,7 @@ Derived::Print
 
 ### 암묵적 업 캐스팅 - 다형성
 
-[//]: # (INCLUDE: ./cpp/06/upcasting.cc)
+[//]: # (INCLUDE: ./cpp/06/src/05_upcasting.cc)
 
 ---
 
@@ -436,7 +435,7 @@ Derived::Print
 
 ### `dynamic_cast`를 사용한 명시적 다운 캐스팅 - 올바른 변환
 
-[//]: # (INCLUDE: ./cpp/06/downcasting.cc)
+[//]: # (INCLUDE: ./cpp/06/src/06_downcasting.cc)
 
 ---
 
@@ -444,25 +443,23 @@ Derived::Print
 
 ### `dynamic_cast`를 사용한 명시적 다운 캐스팅 - 잘못된 변환
 
-[//]: # (INCLUDE: ./cpp/06/downcasting_failure.cc)
+[//]: # (INCLUDE: ./cpp/06/src/07_downcasting_failure.cc)
 
 ---
 
 ## 추상 클래스 (Abstract Classes)
 
-- 하나 이상의 순수 가상 함수를 포함하는 클래스
-- 추상 클래스는 이를 상속 받는 모든 클래스에게 **특정 멤버 함수의 구현을 강제할 수 있음**
+ 추상 클래스는 이를 상속받는 모든 클래스에게 **특정 멤버 함수의 구현을 강제할 수 있음**
 
 ### 순수 가상 함수 (Pure Virtual Functions)
 
 - 구현이 없는 특별한 가상 함수로, 파생 클래스가 반드시 구현(오버라이딩)해야 하는 함수
 - 순수 가상 함수가 하나라도 포함된 클래스는 **추상 클래스**가 됨
-- 추상 클래스 객체는 **직접 생성(인스턴스화) 할 수 없음**
+ 컴파일 타임에 파생 클래스 포인터(또는 참조)를 기반 클래스 포인터(또는 참조)로 변환
   - 추상 클래스를 상속한 파생 클래스는 **상속된 순수 가상 함수를 모두 구현**해야 파생 클래스 객체 실체화가 가능함
-  - 구현하지 않은 순수 가상 함수가 하나라도 존재할 경우, 해당 파생 클래스도 추상 클래스가 됨
 - 메서드에 순수 가상 지정자(pure virtual specifier) 구문을 사용하면 해당 메서드는 순수 가상 함수가 됨
 
-[//]: # (INCLUDE: ./cpp/06/pure_virtual.cc)
+[//]: # (INCLUDE: ./cpp/06/src/08_pure_virtual.cc)
 
 ---
 
@@ -478,7 +475,7 @@ Derived::Print
   - 컴파일 시점에 타입 호환성이 검증되어 런타임 오류 가능성을 최소화함
   - 기반 클래스 포인터를 통해 다양한 파생 클래스 객체들을 **일관된 방식**으로 안전하게 조작할 수 있음
 
-![center](Figure_12_7.png)
+![center](img/08-Figure_12_7.png)
 
 ---
 
@@ -486,7 +483,7 @@ Derived::Print
 
 ### 클래스 다이어그램에서의 인터페이스 표현 방법
 
-![center](image-2.png)
+![center](img/09-image-2.png)
 
 - 점선 + 속이 빈 화살촉(realization 관계)
   - The `Square` class **implements** the `Shape` interface.
@@ -499,9 +496,11 @@ Derived::Print
 
 ### 인터페이스 예시
 
+[//]: # (INCLUDE: ./cpp/06/src/interface/Makefile --reference)
+
 - `shape.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/interface/shape.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/interface/shape.hpp)
 
 ---
 
@@ -509,7 +508,7 @@ Derived::Print
 
 - `square.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/interface/square.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/interface/square.hpp)
 
 ---
 
@@ -517,7 +516,7 @@ Derived::Print
 
 - `square.cc`
 
-[//]: # (INCLUDE: ./cpp/06/interface/square.cc)
+[//]: # (INCLUDE: ./cpp/06/src/interface/square.cc)
 
 ---
 
@@ -525,7 +524,7 @@ Derived::Print
 
 - `rectangle.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/interface/rectangle.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/interface/rectangle.hpp)
 
 ---
 
@@ -533,7 +532,7 @@ Derived::Print
 
 - `rectangle.cc`
 
-[//]: # (INCLUDE: ./cpp/06/interface/rectangle.cc)
+[//]: # (INCLUDE: ./cpp/06/src/interface/rectangle.cc)
 
 ---
 
@@ -541,7 +540,7 @@ Derived::Print
 
 - `triangle.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/interface/triangle.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/interface/triangle.hpp)
 
 ---
 
@@ -549,13 +548,13 @@ Derived::Print
 
 - `triangle.cc`
 
-[//]: # (INCLUDE: ./cpp/06/interface/triangle.cc --to 20)
+[//]: # (INCLUDE: ./cpp/06/src/interface/triangle.cc --to 20)
 
 ---
 
 ## 인터페이스 (Interfaces) (Cont'd - 9)
 
-[//]: # (INCLUDE: ./cpp/06/interface/triangle.cc --from 22)
+[//]: # (INCLUDE: ./cpp/06/src/interface/triangle.cc --from 22)
 
 ---
 
@@ -563,7 +562,7 @@ Derived::Print
 
 - `circle.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/interface/circle.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/interface/circle.hpp)
 
 ---
 
@@ -571,7 +570,7 @@ Derived::Print
 
 - `circle.cc`
 
-[//]: # (INCLUDE: ./cpp/06/interface/circle.cc)
+[//]: # (INCLUDE: ./cpp/06/src/interface/circle.cc)
 
 ---
 
@@ -579,7 +578,7 @@ Derived::Print
 
 - `ellipse.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/interface/ellipse.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/interface/ellipse.hpp)
 
 ---
 
@@ -587,7 +586,7 @@ Derived::Print
 
 - `ellipse.cc`
 
-[//]: # (INCLUDE: ./cpp/06/interface/ellipse.cc)
+[//]: # (INCLUDE: ./cpp/06/src/interface/ellipse.cc)
 
 ---
 
@@ -595,19 +594,19 @@ Derived::Print
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/06/interface/main.cc --to 18)
+[//]: # (INCLUDE: ./cpp/06/src/interface/main.cc --to 18)
 
 ---
 
 ## 인터페이스 (Interfaces) (Cont'd - 15)
 
-[//]: # (INCLUDE: ./cpp/06/interface/main.cc --from 20)
+[//]: # (INCLUDE: ./cpp/06/src/interface/main.cc --from 20)
 
 ---
 
 ## 다중 상속 (Multiple Inheritance)
 
-![center](Figure_12_8.png)
+![center](img/10-Figure_12_8.png)
 
 - 상속 형태가 다이아몬드 상속(diamond inheritance)일 경우 **기반 클래스 내용이 중복 상속될 수 있음**
   - 모호성(ambiguity)과 중복 데이터 문제가 발생함
@@ -622,7 +621,7 @@ Derived::Print
 
 ### 가상 기반 (Virtual Base)
 
-![center](Figure_12_9.png)
+![center](img/11-Figure_12_9.png)
 
 - `virtual` 키워드를 사용해 상속하면 클래스 객체 생성 과정이 변경됨:
   1. 가상 기반 클래스의 멤버를 먼저 생성한다(단 한 번만).
@@ -644,7 +643,7 @@ Derived::Print
 
 ### 1-1. `Base` 클래스
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/09_virtual_base.cc --from 2 --to 8 --no-comment)
 
 - `Base` 클래스는 가상 함수를 가지므로 `vptr`이 객체의 시작 부분에 위치
   - `vptr`은 `vtable` (0x2000)을 가리키며, `vtable`에는 `Base::FuncBase()`의 구현이 저장됨
@@ -670,7 +669,7 @@ Derived::Print
 
 ### 2-1. `Derived1` 클래스
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 9 --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/09_virtual_base.cc --from 12 --to 16 --no-comment)
 
 - `virtual` 키워드로 `Base`를 상속하면 **두 개의 포인터**가 생성됨:
   - `vptr_Derived1`: `Derived1` 자신의 가상 함수 테이블을 가리킴
@@ -702,7 +701,7 @@ Derived::Print
 ```
 
 - `Derived1` 객체에서 `value` 접근 과정:
-  1. `Derived1`은 가상 기반과 가상 함수를 사용하므로, `this` 포인터(`vptr`)의 다음 요소(`vbptr`)를 역참조해 가상 기반 테이블(`vbtable`)에 접근한다.
+  1. `Derived1`은 가상 기반과 가상 함수를 사용하므로, `this` 포인터(`vptr`)의 다음 요소(`vbptr`)를 간접 참조해 가상 기반 테이블(`vbtable`)에 접근한다.
   2. `this` 포인터에 가상 기반 테이블의 오프셋(+4)을 더한다.
   3. `Base`는 가상 함수를 사용하므로, `this + 4` (`Base`의 `vptr`)의 다음 요소에 접근한다.
 
@@ -712,7 +711,7 @@ Derived::Print
 
 ### 3-1. `Derived2` 클래스
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 15 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/09_virtual_base.cc --from 20 --to 23 --no-comment)
 
 - `Derived1`과 동일한 구조를 가짐
 - `Derived2`는 `FuncBase()`를 **오버라이딩하지 않았으므로** `vtable`에는 `Base`의 **원래 구현 주소**가 저장됨
@@ -740,7 +739,7 @@ Derived::Print
 ```
 
 - `Derived2` 객체에서 `value` 접근 과정:
-  1. `Derived2`는 가상 기반과 가상 함수를 사용하므로, `this` 포인터(`vptr`)의 다음 요소(`vbptr`)를 역참조해 가상 기반 테이블(`vbtable`)에 접근한다.
+  1. `Derived2`는 가상 기반과 가상 함수를 사용하므로, `this` 포인터(`vptr`)의 다음 요소(`vbptr`)를 간접 참조해 가상 기반 테이블(`vbtable`)에 접근한다.
   2. `this` 포인터에 가상 기반 테이블의 오프셋(+4)을 더한다.
   3. `Base`는 가상 함수를 사용하므로, `this + 4` (`Base`의 `vptr`)의 다음 요소에 접근한다.
 
@@ -750,7 +749,7 @@ Derived::Print
 
 ### 4-1. `MostDerived` 클래스
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 20 --to 25 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/09_virtual_base.cc --from 27 --to 32 --no-comment)
 
 - `Derived1`과 `Derived2`가 모두 `Base`를 가상 상속했으므로, `Base` 서브객체는 `MostDerived` 내에 **단 한 번** 존재
   - `Base` 서브객체는 객체의 가장 끝 부분(0x1308)에 배치됨
@@ -800,17 +799,19 @@ Derived::Print
 
 ### `MostDerived` 객체 바인딩 과정
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base.cc --from 94 --to 114 --no-comment)
+[//]: # (INCLUDE: ./cpp/06/src/09_virtual_base.cc --from 74 --to 94 --no-comment)
 
 ---
 
 ## 다중 상속 (Multiple Inheritance) (Cont'd - 11)
 
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/Makefile --reference)
+
 ### 가상 기반 예시
 
 - `person.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/person.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/person.hpp)
 
 ---
 
@@ -818,7 +819,7 @@ Derived::Print
 
 - `person.cc`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/person.cc)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/person.cc)
 
 ---
 
@@ -826,7 +827,7 @@ Derived::Print
 
 - `student.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/student.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/student.hpp)
 
 ---
 
@@ -834,7 +835,7 @@ Derived::Print
 
 - `student.cc`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/student.cc)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/student.cc)
 
 ---
 
@@ -842,7 +843,7 @@ Derived::Print
 
 - `professor.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/professor.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/professor.hpp)
 
 ---
 
@@ -850,7 +851,7 @@ Derived::Print
 
 - `professor.cc`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/professor.cc)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/professor.cc)
 
 ---
 
@@ -858,7 +859,7 @@ Derived::Print
 
 - `ta.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/ta.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/ta.hpp)
 
 ---
 
@@ -866,7 +867,7 @@ Derived::Print
 
 - `ta.cc`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/ta.cc)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/ta.cc)
 
 ---
 
@@ -874,7 +875,7 @@ Derived::Print
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/06/virtual_base/main.cc)
+[//]: # (INCLUDE: ./cpp/06/src/virtual_base/main.cc)
 
 ---
 
@@ -885,15 +886,17 @@ Derived::Print
 - **추상 클래스 또는 인터페이스를 사용해 이를 상속하는 클래스에 속성을 주입하는 패턴**
 - 속성 주입 목적의 인터페이스를 상속한 클래스는 **주입받은 속성을 구현해야만 실체화**할 수 있음
 
-![center](Figure_12_10.png)
+![center](img/12-Figure_12_10.png)
 
 ---
 
 ## 다중 상속 (Multiple Inheritance) (Cont'd - 21)
 
+[//]: # (INCLUDE: ./cpp/06/src/mixin/Makefile --reference)
+
 - `stdtype.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/stdtype.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/stdtype.hpp)
 
 ---
 
@@ -901,7 +904,7 @@ Derived::Print
 
 - `prftype.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/prftype.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/prftype.hpp)
 
 ---
 
@@ -909,7 +912,7 @@ Derived::Print
 
 - `person.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/person.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/person.hpp)
 
 ---
 
@@ -917,7 +920,7 @@ Derived::Print
 
 - `person.cc`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/person.cc)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/person.cc)
 
 ---
 
@@ -925,7 +928,7 @@ Derived::Print
 
 - `student.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/student.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/student.hpp)
 
 ---
 
@@ -933,7 +936,7 @@ Derived::Print
 
 - `student.cc`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/student.cc)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/student.cc)
 
 ---
 
@@ -941,7 +944,7 @@ Derived::Print
 
 - `professor.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/professor.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/professor.hpp)
 
 ---
 
@@ -949,7 +952,7 @@ Derived::Print
 
 - `professor.cc`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/professor.cc)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/professor.cc)
 
 ---
 
@@ -957,7 +960,7 @@ Derived::Print
 
 - `ta.hpp`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/ta.hpp)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/ta.hpp)
 
 ---
 
@@ -965,7 +968,7 @@ Derived::Print
 
 - `ta.cc`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/ta.cc)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/ta.cc)
 
 ---
 
@@ -973,4 +976,4 @@ Derived::Print
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/06/mixin/main.cc)
+[//]: # (INCLUDE: ./cpp/06/src/mixin/main.cc)

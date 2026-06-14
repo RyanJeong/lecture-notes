@@ -1,3 +1,4 @@
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 class Base {
  protected:
   int value = 0;
@@ -5,24 +6,31 @@ class Base {
  public:
   virtual void FuncBase() { ; /* Implement something... */ }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 class Derived1 : virtual public Base {
  public:
   void FuncBase() override { ; /* Implement something... */ }
   virtual void FuncDerived1() { ; /* Implement something... */ }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 class Derived2 : virtual public Base {
  public:
   virtual void FuncDerived2() { ; /* Implement something... */ }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 class MostDerived : public Derived1, public Derived2 {
  public:
   void FuncBase() override { ; /* Implement something... */ }
   void FuncDerived1() override { ; /* Implement something... */ }
   virtual void FuncMostDerived() { ; /* Implement something... */ }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 void Test() {
   MostDerived obj_most_derived;  // obj_most_derived at 0x1300
@@ -61,36 +69,8 @@ void Test() {
   // p_most_derived=0x1300, vptr[0x1300]->0x2500, vtable[0x2504]->0x3600
 }
 
-#ifdef CPP_06_NOBUILD
-void TestEssential() {
-  MostDerived obj_most_derived;  // obj_most_derived at 0x1300
-
-  Base* p_base = &obj_most_derived;
-  p_base->FuncBase();
-  // p_base=0x1308(Base), vptr[0x1308]->0x2000, vtable[0x2000]->0x3400
-
-  Derived1* p_derived1 = &obj_most_derived;
-  p_derived1->FuncBase();
-  // p_derived1=0x1300, vptr[0x1300]->0x2500, vtable[0x2500]->0x3400
-  p_derived1->value = 42;
-  // p_derived1=0x1300, vbptr[0x1302]->0x2700, vbtable[0x2700]=+8,
-  // access Base::value at 0x130A
-
-  Derived2* p_derived2 = &obj_most_derived;
-  p_derived2->FuncBase();
-  // p_derived2=0x1304, vptr[0x1304]->0x2600, vtable[0x2600]->0x3700(thunk)
-  // thunk: this-=4(0x1300), call 0x3400
-  p_derived2->value = 42;
-  // p_derived2=0x1304, vbptr[0x1306]->0x2800, vbtable[0x2800]=+4,
-  // access Base::value at 0x130A
-
-  MostDerived* p_most_derived = &obj_most_derived;
-  p_most_derived->FuncMostDerived();
-  // p_most_derived=0x1300, vptr[0x1300]->0x2500, vtable[0x2504]->0x3600
-}
-#endif  // CPP_06_NOBUILD
-
 void TestValid() {
+#if 1                        /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   MostDerived most_derived;  // most_derived at 0x1300
 
   Base* p_base = &most_derived;  // point to `Base` subobject
@@ -112,4 +92,5 @@ void TestValid() {
   MostDerived* p_most_derived = &most_derived;  // point to `MostDerived` object
   p_most_derived->FuncMostDerived();
   // p_most_derived=0x1300, vptr[0x1300]->0x2500, vtable[0x2504]->0x3600
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 }

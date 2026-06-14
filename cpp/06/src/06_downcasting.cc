@@ -10,10 +10,12 @@ int main() {
   Base* p_base = &derived;
   Derived* derived_ptr = dynamic_cast<Derived*>(p_base);
   // -> Succeeded in downcasting to Derived*
+  (void) derived_ptr;
 
   Base& ref_base = derived;
   Derived& ref_derived = dynamic_cast<Derived&>(ref_base);
   // -> Succeeded in downcasting to Derived&
+  (void) ref_derived;
 
   return 0;
 }
