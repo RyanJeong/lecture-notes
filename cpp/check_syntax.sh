@@ -53,6 +53,11 @@ error_exit() {
 
 check_files() {
   local scan_dir="$1"
+  local -a include_args=()
+
+  while IFS= read -r -d '' include_dir; do
+    include_args+=("-I${include_dir}")
+  done < <(find "${scan_dir}" -type d -print0 | sort -z)
 
   while IFS= read -r -d '' file; do
     local basename
@@ -64,9 +69,9 @@ check_files() {
     fi
 
     info "Check: ${file}"
-    if ! g++ "${file}" ${GCC_FLAGS} >/dev/null 2>&1; then
+    if ! g++ "${file}" ${GCC_FLAGS} "${include_args[@]}" >/dev/null 2>&1; then
       printf '%s\n' "${file}" >>"${ERROR_FILE}"
-      g++ "${file}" ${GCC_FLAGS} >>"${ERROR_FILE}" 2>&1 || true
+      g++ "${file}" ${GCC_FLAGS} "${include_args[@]}" >>"${ERROR_FILE}" 2>&1 || true
       printf '%s\n' "========================================" >>"${ERROR_FILE}"
       ERROR_COUNT=$((ERROR_COUNT + 1))
     fi
@@ -137,6 +142,7 @@ main() {
   if [ -s "${ERROR_FILE}" ]; then
     warn "${ERROR_COUNT} error(s) found. See: ${ERROR_FILE}"
     cat "${ERROR_FILE}"
+    exit 1
   else
     info "All files passed syntax check."
   fi

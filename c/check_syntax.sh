@@ -53,6 +53,11 @@ error_exit() {
 
 check_files() {
   local scan_dir="$1"
+  local -a include_args=()
+
+  while IFS= read -r -d '' include_dir; do
+    include_args+=("-I${include_dir}")
+  done < <(find "${scan_dir}" -type d -print0 | sort -z)
 
   while IFS= read -r -d '' file; do
     local basename
@@ -64,9 +69,9 @@ check_files() {
     fi
 
     info "Check: ${file}"
-    if ! gcc "${file}" ${GCC_FLAGS} >/dev/null 2>&1; then
+    if ! gcc "${file}" ${GCC_FLAGS} "${include_args[@]}" >/dev/null 2>&1; then
       printf '%s\n' "${file}" >>"${ERROR_FILE}"
-      gcc "${file}" ${GCC_FLAGS} >>"${ERROR_FILE}" 2>&1 || true
+      gcc "${file}" ${GCC_FLAGS} "${include_args[@]}" >>"${ERROR_FILE}" 2>&1 || true
       printf '%s\n' "========================================" >>"${ERROR_FILE}"
       ERROR_COUNT=$((ERROR_COUNT + 1))
     fi
