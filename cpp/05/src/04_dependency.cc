@@ -1,3 +1,4 @@
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <iostream>
 #include <string>
 
@@ -17,6 +18,7 @@ class MessageSender {
               << std::endl;
   }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 int main() {
   User user("Ben");

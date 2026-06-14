@@ -15,13 +15,13 @@
   - 소유(aggregation), 구성(composition)은 연관의 특별한 형태
   - 소유와 구성은 연관의 부분 집합(subset)
 
-![center](Figure_11_1.png)
+![center](img/00-Figure_11_1.png)
 
 ---
 
 ## [UML (Unified Modeling Language)](https://en.wikipedia.org/wiki/Unified_Modeling_Language)
 
-![center](Figure_UML_Diagrams.png)
+![center](img/01-Figure_UML_Diagrams.png)
 
 - 소프트웨어 시스템의 구조와 동작을 시각적으로 표현하기 위한 표준화된 모델링 언어
 - 정의된 문법(syntax)과 의미론(semantics)을 갖춘 언어
@@ -51,7 +51,7 @@ Car -- Person : < owns
 @enduml
 ```
 
-![center](image.png)
+![center](img/02-image.png)
 
 ---
 
@@ -66,18 +66,18 @@ Car -- Person : < owns
     - A circle is a shape.
     - A student is a person.
 
-![center](Figure_11_2.png)
+![center](img/03-Figure_11_2.png)
 
 ---
 
 ## 상속 (Inheritance)
 
-![center](Figure_11_3.png)
+![center](img/04-Figure_11_3.png)
 
 - 두 클래스는 *is-a* 관계로 표현됨
   - A horse *is an* animal.
   - `Animal` 은 기반 클래스(일반적인 의미)
-  - `Horse` 는 기반 클래스로부터 구체화된 파생 클래스(구체적인 의미)
+  - `Horse`는 기반 클래스로부터 구체화된 파생 클래스(구체적인 의미)
 - 파생 클래스(derived class)는 기반 클래스(base class)로부터 구체화한 결과물
 - 클래스 다이어그램에서 상속 표현 시 두 클래스 사이에 실선으로 된 화살표를 사용
   - 파생 클래스(`Horse`)가 기반 클래스(`Animal`)를 가리킴
@@ -97,7 +97,7 @@ Car -- Person : < owns
 - 상속은 세 가지 형태로 할 수 있음
   - 접근 지정자는 생략될 수 있으며, 생략 시 `private` 상속(the default inheritance)
 
-![center](Figure_11_4.png)
+![center](img/05-Figure_11_4.png)
 
 - 기본 상속 형태는 `private`이지만, 일반적으로 사용하는 상속은 `public` 상속
 
@@ -107,7 +107,7 @@ Car -- Person : < owns
 
 ### 상속 관계 예
 
-![center](Figure_11_5.png)
+![center](img/06-Figure_11_5.png)
 
 - A student *is a* person.
   - `Person` 클래스는 기반 클래스, `Student` 클래스는 파생 클래스
@@ -122,13 +122,13 @@ Car -- Person : < owns
 
 - `inheritance.cc`
 
-[//]: # (INCLUDE: ./cpp/05/inheritance.cc --to 18)
+[//]: # (INCLUDE: ./cpp/05/src/00_inheritance.cc --to 18)
 
 ---
 
 ## 상속 (Inheritance) (Cont'd - 4)
 
-[//]: # (INCLUDE: ./cpp/05/inheritance.cc --from 20)
+[//]: # (INCLUDE: ./cpp/05/src/00_inheritance.cc --from 20)
 
 ---
 
@@ -158,7 +158,7 @@ Car -- Person : < owns
 
 ### `Person` 클래스와 `Student` 클래스의 클래스 다이어그램
 
-![center](Figure_11_6.png)
+![center](img/07-Figure_11_6.png)
 
 - **생성자, 소멸자는 상속하지 않으므로 클래스 다이어그램에 표현하지 않음**
 
@@ -170,10 +170,10 @@ Car -- Person : < owns
 
 > A private member in the base class becomes an inaccessible (hidden) member in the derived class.
 
-![center](Figure_11_7.png)
+![center](img/08-Figure_11_7.png)
 
 - 기반 클래스 객체는 데이터 멤버 `identity` 를 가짐
-- 파생 클래스 객체는 데이터 멤버 `gpa` 와 **상속 받은 기반 클래스 멤버인 `identity`를 가짐**
+- 파생 클래스 객체는 데이터 멤버 `gpa` 와 **상속한 기반 클래스 멤버인 `identity`를 가짐**
 - `identity`는 `private` 멤버이므로, 기반 클래스 범위(base class scope)에서만 접근 가능
 - **파생 클래스 객체는 파생 클래스 범위(derived class scope)를 가짐**
   - 파생 클래스 메서드는 `identity`에 접근 불가
@@ -186,7 +186,7 @@ Car -- Person : < owns
 
 > A public member in the base class becomes a public member in the derived class.
 
-![center](Figure_11_8.png)
+![center](img/09-Figure_11_8.png)
 
 - 파생 클래스 객체는 기반 클래스의 `public` 메서드들을 사용할 수 있음
   - 파생 클래스 객체가 파생 클래스의 `public` 메서드를 호출하면 파생 클래스 범위가 됨
@@ -201,7 +201,7 @@ Car -- Person : < owns
 
 - **상속 관계에 있는** 기반 클래스와 파생 클래스의 함수 시그니처(매개변수 형태)가 서로 같은 경우
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 5 --to 21 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/01_override.cc --from 5 --to 21 --no-comment)
 
 ---
 
@@ -209,7 +209,7 @@ Car -- Person : < owns
 
 ### 클래스 범위 (Class Scope)
 
-![center](Figure_11_9.png)
+![center](img/10-Figure_11_9.png)
 
 - 기반 클래스와 파생 클래스는 각각 독립적인 멤버와 범위를 가짐
   - 파생 클래스는 기반 클래스의 범위를 기반으로 확장됨
@@ -229,7 +229,7 @@ Car -- Person : < owns
   3. 여전히 호출 가능한 함수가 없다면 기반 클래스에 도달할 때까지 2번 과정을 반복한다.
   4. 기반 클래스에도 호출하고자 하는 함수가 없다면 컴파일 오류가 발생한다.
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 48 --to 54 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/01_override.cc --from 26 --to 30 --no-comment)
 
 ---
 
@@ -241,17 +241,17 @@ Car -- Person : < owns
 
 ### 작업 위임의 예: 함수 오버라이드와 작업 위임을 사용해 공통된 이름의 멤버 함수 사용
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 58 --to 64 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/02_delegate.cc --from 5 --to 11 --no-comment)
 
 ---
 
 ## 상속 (Inheritance) (Cont'd - 13)
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 66 --to 78 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/02_delegate.cc --from 15 --to 27 --no-comment)
 
-- 공통된 이름의 멤버 함수 `set`, `Print`는 호스트 객체에 따라 올바른 멤버 함수가 선택됨
+- 공통된 이름의 멤버 함수 `set`, `Print`은 호스트 객체에 따라 올바른 멤버 함수가 선택됨
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 81 --to 84 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/02_delegate.cc --from 32 --to 36 --no-comment)
 
 ---
 
@@ -269,7 +269,7 @@ Car -- Person : < owns
   5. 대입 연산자(연산자 오버로딩 학습 시 소개)
 
 - 따라서 파생 클래스의 생성자는 기반 클래스의 데이터 멤버 초기화 불가
-  - 일반적으로 클래스는 데이터 멤버를 `private` 으로 지정(캡슐화)
+  - 일반적으로 클래스는 데이터 멤버를 `private`으로 지정(캡슐화)
   - 기반 클래스의 데이터 멤버는 **기반 클래스 범위에서만 접근 가능**
 - 마찬가지로 파생 클래스의 소멸자는 기반 클래스의 데이터 멤버 소멸 불가
 
@@ -279,7 +279,7 @@ Car -- Person : < owns
 
 ### 상속에서의 생성과 소멸
 
-![center](Figure_11_10.png)
+![center](img/11-Figure_11_10.png)
 
 - 파생 클래스의 생성자는 기반 클래스의 생성자를 먼저 호출한 뒤 파생 클래스 데이터 멤버를 초기화
   - 파생 클래스의 생성자에서 기반 클래스의 생성자를 명시적으로 호출해야 함
@@ -295,7 +295,7 @@ Car -- Person : < owns
 
 ### 기반 클래스 타입 객체와 파생 클래스 타입 객체의 초기화 과정
 
-![center](Figure_11_11.png)
+![center](img/12-Figure_11_11.png)
 
 ---
 
@@ -303,9 +303,11 @@ Car -- Person : < owns
 
 ### 상속에서의 생성과 소멸 예시
 
+[//]: # (INCLUDE: ./cpp/05/src/inheritance/Makefile --reference)
+
 - `person.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/inheritance/person.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/inheritance/person.hpp)
 
 ---
 
@@ -313,7 +315,7 @@ Car -- Person : < owns
 
 - `student.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/inheritance/student.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/inheritance/student.hpp)
 
 ---
 
@@ -321,7 +323,7 @@ Car -- Person : < owns
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/05/inheritance/main.cc)
+[//]: # (INCLUDE: ./cpp/05/src/inheritance/main.cc)
 
 ---
 
@@ -329,7 +331,7 @@ Car -- Person : < owns
 
 ### Protected 멤버
 
-![center](Figure_11_13.png)
+![center](img/13-Figure_11_13.png)
 
 - 파생 클래스의 멤버 함수는 기반 클래스의 `private` 멤버에 접근 불가
 - `protected` 멤버는 상속된 모든 클래스에서 접근 가능
@@ -348,11 +350,11 @@ Car -- Person : < owns
 
 - `final` 키워드를 사용한 클래스는 다른 클래스가 상속할 수 없음
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 90 --to 92 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/_snippet.cc --from 2 --to 4 --no-comment)
 
 - 파생 클래스에 `final` 키워드를 적용해 해당 파생 클래스가 더 이상 상속되지 못하도록 막을 수 있음
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 94 --to 97 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/_snippet.cc --from 8 --to 11 --no-comment)
 
 ---
 
@@ -383,7 +385,7 @@ Car -- Person : < owns
 
 ### 상속 트리
 
-![center](Figure_11_15.png)
+![center](img/14-Figure_11_15.png)
 
 - 하나의 기반 클래스로부터 여러 개의 파생 클래스가 생성될 수 있음
   - A student *is a* person.
@@ -395,7 +397,7 @@ Car -- Person : < owns
 
 ### 상속의 세 가지 유형
 
-![center](Figure_11_16.png)
+![center](img/15-Figure_11_16.png)
 
 - 대부분 `public` 상속(*is-a* 관계)을 사용하지만, 다른 유형으로도 상속 가능
 
@@ -412,7 +414,7 @@ Car -- Person : < owns
 - 기반 클래스의 `public` 멤버는 파생 클래스 외부에서 차단되며, 내부와 하위 클래스에서는 `protected`로 접근 가능
   - 외부 인터페이스가 제한되므로 실제로는 거의 사용되지 않음
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 101 --to 112 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/_snippet.cc --from 17 --to 28 --no-comment)
 
 ---
 
@@ -425,13 +427,13 @@ Car -- Person : < owns
 - 외부와 하위 클래스에서 접근할 수 없으며, 주로 구현 재사용 목적으로 제한적으로 사용됨
   - 이러한 상속 관계를 *is-implemented-using* 관계라고 함
 
-[//]: # (INCLUDE: ./cpp/05/snippet_inheritance.cc --from 117 --to 129 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/_snippet.cc --from 32 --to 44 --no-comment)
 
 ---
 
 ## 연관 (Association)
 
-![center](Figure_11_17.png)
+![center](img/16-Figure_11_17.png)
 
 - 연관 관계는 두 클래스를 *is-related-to* 관계로 표현
   - A person *lives at* an address and the address *is occupied by* a person.
@@ -452,15 +454,15 @@ Car -- Person : < owns
 
 - 클래스 다이어그램 표현 시 연관 관계에 참여하는 객체의 수를 표현
 
-|Key|Interpretation|
-|-|-|
-|`n`|Exactly *n* objects|
-|`*`|Any number of objects including none|
-|`0..1`|Zero or one object|
-|`n..m`|A range from *n* to *m* objects|
-|`n, m`|*n* or *m* objects|
+| Key    | Interpretation                       |
+| ------ | ------------------------------------ |
+| `n`    | Exactly *n* objects                  |
+| `*`    | Any number of objects including none |
+| `0..1` | Zero or one object                   |
+| `n..m` | A range from *n* to *m* objects      |
+| `n, m` | *n* or *m* objects                   |
 
-![center](Figure_11_18.png)
+![center](img/17-Figure_11_18.png)
 
 ---
 
@@ -468,7 +470,7 @@ Car -- Person : < owns
 
 - A student can *take between 0 and 5* courses.
 
-[//]: # (INCLUDE: ./cpp/05/snippet_association.cc --from 2 --to 21 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/03_association.cc)
 
 ---
 
@@ -476,7 +478,7 @@ Car -- Person : < owns
 
 - A course can *be taken by between 0 and 40* students.
 
-[//]: # (INCLUDE: ./cpp/05/snippet_association.cc --from 25 --to 45 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/_snippet.cc --from 48 --to 68 --no-comment)
 
 ---
 
@@ -484,7 +486,7 @@ Car -- Person : < owns
 
 > An aggregation is a special kind of association in which the relationship involves ownership.
 
-![center](Figure_11_19.png)
+![center](img/18-Figure_11_19.png)
 
 - 소유 관계는 두 클래스를 *has-a* 관계로 표현
   - A person *has a* birth date.
@@ -515,9 +517,11 @@ Car -- Person : < owns
 
 ### 소유 관계 예시
 
+[//]: # (INCLUDE: ./cpp/05/src/aggregation/Makefile --reference)
+
 - `date.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/aggregation/date.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/aggregation/date.hpp)
 
 ---
 
@@ -525,7 +529,7 @@ Car -- Person : < owns
 
 - `date.cc`
 
-[//]: # (INCLUDE: ./cpp/05/aggregation/date.cc)
+[//]: # (INCLUDE: ./cpp/05/src/aggregation/date.cc)
 
 ---
 
@@ -533,7 +537,7 @@ Car -- Person : < owns
 
 - `person.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/aggregation/person.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/aggregation/person.hpp)
 
 ---
 
@@ -541,7 +545,7 @@ Car -- Person : < owns
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/05/aggregation/main.cc)
+[//]: # (INCLUDE: ./cpp/05/src/aggregation/main.cc)
 
 ---
 
@@ -549,7 +553,7 @@ Car -- Person : < owns
 
 > A composition is a special kind of aggregation in which the lifetime of the containee depends on the lifetime of the container.
 
-![center](Figure_11_20.png)
+![center](img/19-Figure_11_20.png)
 
 - 구성 관계는 두 클래스를 *consists-of* 관계로 표현
   - An employee *consists of* a name.
@@ -581,9 +585,11 @@ Car -- Person : < owns
 
 ### 구성 관계 예시
 
+[//]: # (INCLUDE: ./cpp/05/src/composition/Makefile --reference)
+
 - `name.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/composition/name.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/composition/name.hpp)
 
 ---
 
@@ -591,7 +597,7 @@ Car -- Person : < owns
 
 - `name.cc`
 
-[//]: # (INCLUDE: ./cpp/05/composition/name.cc)
+[//]: # (INCLUDE: ./cpp/05/src/composition/name.cc)
 
 ---
 
@@ -599,7 +605,7 @@ Car -- Person : < owns
 
 - `employee.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/composition/employee.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/composition/employee.hpp)
 
 ---
 
@@ -607,7 +613,7 @@ Car -- Person : < owns
 
 - `employee.cc`
 
-[//]: # (INCLUDE: ./cpp/05/composition/employee.cc)
+[//]: # (INCLUDE: ./cpp/05/src/composition/employee.cc)
 
 ---
 
@@ -615,13 +621,13 @@ Car -- Person : < owns
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/05/composition/main.cc)
+[//]: # (INCLUDE: ./cpp/05/src/composition/main.cc)
 
 ---
 
 ## 의존 (Dependency)
 
-![center](Figure_11_21.png)
+![center](img/20-Figure_11_21.png)
 
 - 의존 관계는 두 클래스를 *uses-a* 관계로 표현
 - 상속 혹은 연관(연관의 특별한 형태인 소유와 구성을 포함)보다 약한 관계
@@ -638,18 +644,18 @@ Car -- Person : < owns
 
 ### 의존 관계 예시: `MessageSender` *uses a* `User`
 
-[//]: # (INCLUDE: ./cpp/05/dependency.cc --to 19 --no-comment)
+[//]: # (INCLUDE: ./cpp/05/src/04_dependency.cc --from 2 --to 20 --no-comment)
 
 ---
 
 ## 클래스 다이어그램에서의 관계 표기법 정리
 
 | 관계 유형 | 표기법 | 의미 | 예시 |
-|---------|-------|------|------|
+| --- | --- | --- | --- |
 | 상속(Inheritance) | 속이 빈 삼각형 화살촉(`─▷`) | *is-a* 관계 | Student *is a* Person. |
-| 연관(Association) | 실선(`──`)| 일반적인 관계 | Student *studies* Course. |
-| 소유(Aggregation) | 빈 마름모가 있는 실선(`◇─>`)| *has-a* 관계 | University *has* Departments. |
-| 구성(Composition) | 채워진 마름모가 있는 실선(`◆─>`)| *consists-of* 관계 | Employee *consists of* a Name. |
+| 연관(Association) | 실선(`──`) | 일반적인 관계 | Student *studies* Course. |
+| 소유(Aggregation) | 빈 마름모가 있는 실선(`◇─>`) | *has-a* 관계 | University *has* Departments. |
+| 구성(Composition) | 채워진 마름모가 있는 실선(`◆─>`) | *consists-of* 관계 | Employee *consists of* a Name. |
 | 의존(Dependency) | 점선 화살표(`-→`) | *uses-a* 관계 | Function uses Parameters. |
 
 ---
@@ -658,7 +664,7 @@ Car -- Person : < owns
 
 - UML 다이어그램 중 객체 간의 상호작용을 설명하는 다이어그램
 
-![center](Figure_11_22.png)
+![center](img/21-Figure_11_22.png)
 
 1. `main()` 함수에서 `first` 객체와 `second` 객체가 순차적으로 생성된다.
 2. `main()` 함수에서 `second` 객체의 멤버 함수 `funny()`를 호출한다. 이때 `first` 객체를 전달인자로 넘겨준다.
@@ -671,7 +677,7 @@ Car -- Person : < owns
 
 ### 판매된 제품 목록에 대한 청구서를 생성하는 프로그램
 
-![center](Figure_11_23.png)
+![center](img/22-Figure_11_23.png)
 
 - `Invoice`와 `Product`는 의존 관계
   - An invoice *uses a* product.
@@ -682,15 +688,17 @@ Car -- Person : < owns
 
 ## 복합 관계 (Cont'd - 1)
 
-![center](Figure_11_24.png)
+![center](img/23-Figure_11_24.png)
 
 ---
 
 ## 복합 관계 (Cont'd - 2)
 
+[//]: # (INCLUDE: ./cpp/05/src/complex/Makefile --reference)
+
 - `product.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/complex/product.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/complex/product.hpp)
 
 ---
 
@@ -698,7 +706,7 @@ Car -- Person : < owns
 
 - `invoice.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/complex/invoice.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/complex/invoice.hpp)
 
 ---
 
@@ -706,7 +714,7 @@ Car -- Person : < owns
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/05/complex/main.cc)
+[//]: # (INCLUDE: ./cpp/05/src/complex/main.cc)
 
 ---
 
@@ -714,21 +722,23 @@ Car -- Person : < owns
 
 ### 수강 신청 관리 프로그램
 
-![center](Figure_11_27.png)
+![center](img/24-Figure_11_27.png)
 
 ---
 
 ## 복합 관계 (Cont'd - 6)
 
-![h:540 center](Figure_11_28.png)
+![h:540 center](img/25-Figure_11_28.png)
 
 ---
 
 ## 복합 관계 (Cont'd - 7)
 
+[//]: # (INCLUDE: ./cpp/05/src/registrar/Makefile --reference)
+
 - `course_roster.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/course_roster.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/course_roster.hpp)
 
 ---
 
@@ -736,7 +746,7 @@ Car -- Person : < owns
 
 - `course_roster.cc`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/course_roster.cc)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/course_roster.cc)
 
 ---
 
@@ -744,7 +754,7 @@ Car -- Person : < owns
 
 - `course.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/course.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/course.hpp)
 
 ---
 
@@ -752,7 +762,7 @@ Car -- Person : < owns
 
 - `course.cc`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/course.cc)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/course.cc)
 
 ---
 
@@ -760,7 +770,7 @@ Car -- Person : < owns
 
 - `student_schedule.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/student_schedule.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/student_schedule.hpp)
 
 ---
 
@@ -768,7 +778,7 @@ Car -- Person : < owns
 
 - `student_schedule.cc`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/student_schedule.cc)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/student_schedule.cc)
 
 ---
 
@@ -776,7 +786,7 @@ Car -- Person : < owns
 
 - `student.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/student.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/student.hpp)
 
 ---
 
@@ -784,7 +794,7 @@ Car -- Person : < owns
 
 - `student.cc`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/student.cc)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/student.cc)
 
 ---
 
@@ -792,7 +802,7 @@ Car -- Person : < owns
 
 - `registrar.hpp`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/registrar.hpp)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/registrar.hpp)
 
 ---
 
@@ -800,4 +810,4 @@ Car -- Person : < owns
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/05/registrar/main.cc)
+[//]: # (INCLUDE: ./cpp/05/src/registrar/main.cc)
