@@ -123,49 +123,49 @@ Bar::baz(a, b);
 | `auto` | 오토 | 없음 | `auto`가, `auto`를, `auto`와, `auto`로 |
 | `nullptr` | 널포인터 | 없음 | `nullptr`가, `nullptr`를, `nullptr`와, `nullptr`로 |
 | `NULL` | 널 | ㄹ | `NULL`은, `NULL`를, `NULL`와, `NULL`로 |
-| `true` / `false` | 트루 / 폴스 | 없음 / ㅅ | `true`가 / `false`는 |
-| `class` | 클래스 | ㅅ | `class`는, `class`를, `class`와 |
-| `struct` | 스트럭트 | ㅅ | `struct`는, `struct`를 |
+| `true` / `false` | 트루 / 폴스 | 없음 / 없음 | `true`가, `true`를 / `false`가, `false`를, `false`는 |
+| `class` | 클래스 | 없음 | `class`는, `class`를, `class`와 |
+| `struct` | 스트럭트 | 없음 | `struct`는, `struct`를 |
 | `public` | 퍼블릭 | ㄱ | `public`은, `public`을, `public`과, `public`으로 |
 | `private` | 프라이빗 | ㅅ | `private`은, `private`을, `private`과 |
 | `protected` | 프로텍티드 | 없음 | `protected`가, `protected`를, `protected`와, `protected`로 |
 | `virtual` | 버추얼 | ㄹ | `virtual`은, `virtual`를, `virtual`와, `virtual`로 |
 | `override` | 오버라이드 | 없음 | `override`가, `override`를, `override`와 |
-| `const` | 콘스트 | ㅅ | `const`는, `const`를, `const`와 |
+| `const` | 콘스트 | 없음 | `const`는, `const`를, `const`와 |
 | `static` | 스태틱 | ㄱ | `static`은, `static`을, `static`과, `static`으로 |
 | `inline` | 인라인 | ㄴ | `inline`은, `inline`을, `inline`과, `inline`으로 |
-| `explicit` | 익스플리싯 | ㅅ | `explicit`는, `explicit`을 |
+| `explicit` | 익스플리싯 | ㅅ | `explicit`은, `explicit`을 |
 | `friend` | 프렌드 | 없음 | `friend`가, `friend`를, `friend`와, `friend`로 |
-| `template` | 템플릿 | ㅅ | `template`는, `template`를 |
+| `template` | 템플릿 | ㅅ | `template`은, `template`을 |
 | `typename` | 타입네임 | ㅁ | `typename`은, `typename`을 |
-| `namespace` | 네임스페이스 | ㅅ | `namespace`는, `namespace`를 |
+| `namespace` | 네임스페이스 | 없음 | `namespace`는, `namespace`를 |
 | `using` | 유징 | ㅇ | `using`은, `using`을, `using`과 |
 | `new` | 뉴 | 없음 | `new`가, `new`를, `new`와, `new`로 |
-| `delete` | 딜리트 | ㅅ | `delete`는, `delete`를 |
+| `delete` | 딜리트 | 없음 | `delete`는, `delete`를 |
 | `throw` | 쓰로 | 없음 | `throw`가, `throw`를, `throw`와, `throw`로 |
 | `catch` | 캐치 | 없음 | `catch`가, `catch`를, `catch`와 |
 | `try` | 트라이 | 없음 | `try`가, `try`를, `try`와 |
-| `noexcept` | 노익셉트 | ㅅ | `noexcept`는, `noexcept`를 |
-| `this` | 디스 | ㅅ | `this`는, `this`를, `this`를 통해 |
+| `noexcept` | 노익셈트 | 없음 | `noexcept`는, `noexcept`를 |
+| `this` | 디스 | 없음 | `this`는, `this`를, `this`를 통해 |
 | `operator` | 오퍼레이터 | 없음 | `operator`가, `operator`를, `operator`와 |
 | `return` | 리턴 | ㄴ | `return`은, `return`을, `return`과, `return`으로 |
 | `for` | 포 | 없음 | `for`가, `for`를, `for`와, `for`로 |
-| `if` / `else` | 이프 / 엘스 | 없음 / ㅅ | `if`가 / `else`는 |
+| `if` / `else` | 이프 / 엘스 | 없음 / 없음 | `if`가 / `else`가, `else`를 |
 | `while` | 와일 | ㄹ | `while`은, `while`를, `while`와, `while`로 |
 | `switch` | 스위치 | 없음 | `switch`가, `switch`를, `switch`와 |
-| `case` | 케이스 | ㅅ | `case`는, `case`를 |
-| `default` | 디폴트 | ㅅ | `default`는, `default`를 |
-| `dynamic_cast` | 다이나믹캐스트 | ㅅ | `dynamic_cast`는, `dynamic_cast`를 |
-| `static_cast` | 스태틱캐스트 | ㅅ | `static_cast`는, `static_cast`를 |
-| `reinterpret_cast` | 리인터프리트캐스트 | ㅅ | `reinterpret_cast`는, `reinterpret_cast`를 |
-| `const_cast` | 콘스트캐스트 | ㅅ | `const_cast`는, `const_cast`를 |
+| `case` | 케이스 | 없음 | `case`는, `case`를 |
+| `default` | 디폴트 | 없음 | `default`는, `default`를 |
+| `dynamic_cast` | 다이나믹캐스트 | 없음 | `dynamic_cast`는, `dynamic_cast`를 |
+| `static_cast` | 스태틱캐스트 | 없음 | `static_cast`는, `static_cast`를 |
+| `reinterpret_cast` | 리인터프리트캐스트 | 없음 | `reinterpret_cast`는, `reinterpret_cast`를 |
+| `const_cast` | 콘스트캐스트 | 없음 | `const_cast`는, `const_cast`를 |
 | `ptr` | 포인터 | 없음 | `ptr`가, `ptr`를, `ptr`와, `ptr`로 |
-| `ref` | 레퍼런스 | ㅅ | `ref`는, `ref`를 |
-| `cur` | 커렌트 | ㅅ | `cur`는, `cur`를 |
-| `del` | 딜리트 | ㅅ | `del`는, `del`를 → **주의**: "딜"로 읽으면 ㄹ받침 → `del`은, `del`를 |
+| `ref` | 레퍼런스 | 없음 | `ref`는, `ref`를 |
+| `cur` | 커런트 | 없음 | `cur`는, `cur`를 |
+| `del` | 딜리트 | 없음 | `del`는, `del`를 → **주의**: "딜"로 읽으면 ㄹ받침 → `del`은, `del`를 |
 | `add` | 애드 | 없음 | `add`가, `add`를, `add`와, `add`로 |
 | `begin` | 비긴 | ㄴ | `begin`은, `begin`을, `begin`과, `begin`으로 |
-| `next` | 넥스트 | ㅅ | `next`는, `next`를 |
+| `next` | 넥스트 | 없음 | `next`는, `next`를 |
 | `prev` | 프레브 | 없음 | `prev`가, `prev`를, `prev`와, `prev`로 |
 | `head` | 헤드 | 없음 | `head`가, `head`를, `head`와, `head`로 |
 | `other` | 아더 | 없음 | `other`가, `other`를, `other`와, `other`로 |
@@ -183,10 +183,10 @@ Bar::baz(a, b);
 - ㄹ받침 목적격: `NULL`을 (X) → `NULL`를 (O)
 - ㄹ받침 도구격: `NULL`으로 (X) → `NULL`로 (O)
 - `ptr`은 전체 단어 "pointer(포인터)" 발음 기준 → 받침 없음 → `ptr`는, `ptr`를, `ptr`와, `ptr`로
-- `del`은 전체 단어 "delete(딜리트)" 발음 기준 → 끝 받침 ㅅ → `del`는, `del`를  
+- `del`은 전체 단어 "delete(딜리트)" 발음 기준 → 끝 받침 없음 → `del`는, `del`를
   또는 약어 그 자체 "del(딜)" 로 읽을 경우 → ㄹ받침 → `del`은, `del`를
   **→ 프로젝트 내에서 한 가지로 통일 필요**
-- `cur`은 "current(커렌트)" 발음 기준 → 끝 받침 ㅅ → `cur`는, `cur`를
+- `cur`은 "current(커런트)" 발음 기준 → 끝 받침 없음 → `cur`는, `cur`를
 
 ---
 
