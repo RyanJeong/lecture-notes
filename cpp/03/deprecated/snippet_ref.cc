@@ -1,6 +1,7 @@
 void Foo1() {
   int score = 92;        // Declaring and initializing score
   int& r_score = score;  // Declaring r_score and binding it to score
+  (void) r_score;
 }
 
 void Foo2() {
@@ -21,4 +22,6 @@ void Foo4() {
   int temp = 100;
   int& ref1 = temp;       // lvalue reference to temp
   const int& ref2 = 200;  // rvalue reference to a literal
+  (void) ref1;
+  (void) ref2;
 }

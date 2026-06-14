@@ -4,4 +4,5 @@ void Foo1() {
   // error: ISO C++ forbids variable length array 'arr' [-Wvla]
   int size = 10;
   double arr[size];  // The size must be a compile-time constant
+  (void) arr;
 }

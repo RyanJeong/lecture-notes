@@ -11,9 +11,9 @@
 
 - 이미 존재하는 객체에 새로운 별명 부여
 
-![center](Figure_9_1.png)
+![center](img/00-Figure_9_1.png)
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ref.cc --from 2 --to 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 3 --to 4 --no-comment)
 
 - 레퍼런스는 복합 타입(compound type)
   - `score` 타입은 `int`
@@ -26,9 +26,9 @@
 
 - 레퍼런스 대상은 상수 관계(constant relation)
 
-![center](Figure_9_2.png)
+![center](img/01-Figure_9_2.png)
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ref.cc --from 7 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 12 --to 15 --no-comment)
 
 ---
 
@@ -36,12 +36,12 @@
 
 - 한 객체에 여러 개의 레퍼런스 지정 가능(참조 다중성, multiplicity)
 
-![center](Figure_9_3.png)
+![center](img/02-Figure_9_3.png)
 
 - 반대로 한 레퍼런스는 반드시 하나의 대상만 참조 가능
   - 레퍼런스 선언에 사용된 대상과 상수 관계 형성
 
-![center](Figure_9_4.png)
+![center](img/03-Figure_9_4.png)
 
 ---
 
@@ -50,12 +50,12 @@
 - 일반 레퍼런스는 *lvalue* 레퍼런스
   - *rvalue* 레퍼런스 불가
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ref.cc --from 15 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 21 --to 21 --no-comment)
 
 - *rvalue* 레퍼런스는 `const` 한정자 필요
   - `const T&` 형태는 *lvalue*, *rvalue* 둘 다 레퍼런스 가능
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ref.cc --from 21 --to 23 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 27 --to 29 --no-comment)
 
 ---
 
@@ -63,18 +63,18 @@
 
 ### 레퍼런스에서의 `const` 한정자 적용법
 
-![center](Figure_9_5.png)
+![center](img/04-Figure_9_5.png)
 
 ---
 
 ## 레퍼런스 (Cont'd - 5)
 
-|Case|Data Variable          |Reference Variable         |Status|
-|----|-----------------------|---------------------------|------|
-|1   |`int name = 100;`      |`int& r_name = name;`      |Ok    |
-|2   |`const int name = 100;`|`int& r_name = name;`      |Error |
-|3   |`int name = 100;`      |`const int& r_name = name;`|Ok    |
-|4   |`const int name = 100;`|`const int& r_name = name;`|Ok    |
+| Case | Data Variable           | Reference Variable          | Status |
+| ---- | ----------------------- | --------------------------- | ------ |
+| 1    | `int name = 100;`       | `int& r_name = name;`       | Ok     |
+| 2    | `const int name = 100;` | `int& r_name = name;`       | Error  |
+| 3    | `int name = 100;`       | `const int& r_name = name;` | Ok     |
+| 4    | `const int name = 100;` | `const int& r_name = name;` | Ok     |
 
 - `Case 2`: 오류
   - 레퍼런스는 상수성이 없어 수정 가능한 상태이지만, 레퍼런스의 대상은 읽기 전용임(논리적 모순, 컴파일 오류)
@@ -83,7 +83,7 @@
 
 ## Call By Reference
 
-![center](Figure_9_6.png)
+![center](img/05-Figure_9_6.png)
 
 - 매개변수 작성 요령
 
@@ -99,7 +99,7 @@
 - 레퍼런스 반환 대상은 함수가 종료되어도 유효해야 함
 - Dangling reference가 발생하지 않도록 주의
 
-[//]: # (INCLUDE: ./cpp/03/ret_by_ref.cc)
+[//]: # (INCLUDE: ./cpp/03/src/00_ret_by_ref.cc)
 
 ---
 
@@ -125,7 +125,7 @@
 
 ### 메모리의 주소
 
-![center](Figure_9_7.png)
+![center](img/06-Figure_9_7.png)
 
 - 컴퓨터 메모리는 바이트의 연속
   - 컴퓨터의 메모리(RAM) 용량이 1 KB라면, 메모리는 $2^{10}$ 바이트로 구성됨
@@ -138,7 +138,7 @@
 
 ### 객체의 주소
 
-![center](Figure_9_8.png)
+![center](img/07-Figure_9_8.png)
 
 - 프로그램에서 실체화되는 각 객체들은 타입에 따라 필요한 만큼의 바이트를 차지
   - e.g., `char` 타입 객체는 1 바이트, `int` 타입 객체는 일반적으로 4 바이트
@@ -151,7 +151,7 @@
 
 ### 포인터 타입과 포인터 변수
 
-![center](Figure_9_9.png)
+![center](img/08-Figure_9_9.png)
 
 ---
 
@@ -163,13 +163,13 @@
   - 산술 리터럴은 주소를 갖지 않는 *rvalue*
   - 단, 문자열 리터럴은 읽기 전용 영역에 할당되므로 포인터로 가리킬 수 있음
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ptr.cc --from 3 --to 4 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 38 --to 39 --no-comment)
 
 - C++는 타입 안전성(type safety) 언어
   - C++ 포인터 변수는 **다른 타입 객체를 가리킬 수 없음**
   - C 포인터 변수는 다른 타입 객체를 가리킬 수 있음
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ptr.cc --from 11 --to 14 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 45 --to 48 --no-comment)
 
 ---
 
@@ -179,12 +179,12 @@
 
 - 주소 연산자(`&`, address-of)
   - 객체의 주소 반환, 결합 방향은 오른쪽에서 왼쪽(←)
-- 역참조 연산자(`*`, indirection)
+- 간접 참조 연산자(`*`, indirection)
   - 포인터 변수가 가리키는 주소의 객체 참조, 결합 방향은 오른쪽에서 왼쪽(←)
 
-![center](Figure_9_10.png)
+![center](img/09-Figure_9_10.png)
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ptr.cc --from 20 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 54 --to 56 --no-comment)
 
 ---
 
@@ -192,12 +192,12 @@
 
 ### 문맥에 따른 `&` (Ampersand) 기호와 `*` (Asterisk) 기호의 쓰임
 
-|Symbol|Type Definition|Unary Operator|Binary Operator|
-|------|---------------|--------------|---------------|
-|`&`   | `T&`          | `&var`       | `var1 & var2` |
-|`*`   | `T*`          | `*var`       | `var1 * var2` |
+| Symbol | Type Definition | Unary Operator | Binary Operator |
+| ------ | --------------- | -------------- | --------------- |
+| `&`    | `T&`            | `&var`         | `var1 & var2`   |
+| `*`    | `T*`            | `*var`         | `var1 * var2`   |
 
-[//]: # (INCLUDE: ./cpp/03/ptr1.cc)
+[//]: # (INCLUDE: ./cpp/03/src/01_ptr1.cc)
 
 ---
 
@@ -205,18 +205,18 @@
 
 ### 포인터에서의 `const` 한정자 적용법
 
-![center](Figure_9_11.png)
+![center](img/10-Figure_9_11.png)
 
 ---
 
 ## 포인터 (Cont'd - 8)
 
-|Case|Data Variable          |Pointer Variable            |Status|
-|----|-----------------------|----------------------------|------|
-|1   |`int name = 100;`      |`int* p_name = &name;`      |Ok    |
-|2   |`const int name = 100;`|`int* p_name = &name;`      |Error |
-|3   |`int name = 100;`      |`const int* p_name = &name;`|Ok    |
-|4   |`const int name = 100;`|`const int* p_name = &name;`|Ok    |
+| Case | Data Variable           | Pointer Variable             | Status |
+| ---- | ----------------------- | ---------------------------- | ------ |
+| 1    | `int name = 100;`       | `int* p_name = &name;`       | Ok     |
+| 2    | `const int name = 100;` | `int* p_name = &name;`       | Error  |
+| 3    | `int name = 100;`       | `const int* p_name = &name;` | Ok     |
+| 4    | `const int name = 100;` | `const int* p_name = &name;` | Ok     |
 
 - `Case 2`: 오류
   - 포인터를 통해 객체를 수정할 수 있어야 하지만, 가리키는 객체는 읽기 전용(논리적 모순, 컴파일 오류)
@@ -227,7 +227,7 @@
 
 ### 상수 포인터와 포인터 상수 구분
 
-![center](Figure_9_12.png)
+![center](img/11-Figure_9_12.png)
 
 - `const int* p_name = &name;`: 데이터가 상수(포인터 값 수정 가능)
 - `int* const p_name = &name;`: 포인터 자체가 상수(데이터 수정 가능)
@@ -242,38 +242,38 @@
 - 포인터 변수를 가리키는 복합 타입
 - 포인터 변수 또한 객체이므로, 이를 가리키는 포인터 변수 또한 사용 가능
 
-![center](Figure_9_13.png)
+![center](img/12-Figure_9_13.png)
 
 ---
 
 ## 포인터 (Cont'd - 11)
 
-### 널 포인터 (Pointer To Nowhere)
+### 널 포인터 (Pointer to Nowhere)
 
-- `nullptr`을 가리키는 포인터
-- `nullptr`을 가리키는 포인터 변수는 **아무런 곳을 가리키지 않음을 의미**
-  - `nullptr` (`0x00`)은 일반 프로그램이 접근할 수 없는 주소
-  - 만약 `nullptr` 주소로 역참조할 경우 오류에 의해 프로그램이 중단됨
-- `nullptr`은 boolean 문맥에서 `false`로 평가되므로, 조건문에서 포인터 유효성 검사에 활용될 수 있음
+- `nullptr`를 가리키는 포인터
+- `nullptr`를 가리키는 포인터 변수는 **아무런 곳을 가리키지 않음을 의미**
+  - `nullptr` (`0x00`)는 일반 프로그램이 접근할 수 없는 주소
+  - 만약 `nullptr` 주소로 간접 참조할 경우 오류에 의해 프로그램이 중단됨
+- `nullptr`는 boolean 문맥에서 `false`로 평가되므로, 조건문에서 포인터 유효성 검사에 활용될 수 있음
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ptr.cc --from 26 --to 36 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 66 --to 76 --no-comment)
 
 ---
 
 ## 포인터 (Cont'd - 12)
 
-### 제네릭 포인터 (Pointer To `void`)
+### 제네릭 포인터 (Pointer to `void`)
 
 - 모든 객체를 가리킬 수 있는 포인터 변수
-- **역참조는 불가**
+- **간접 참조는 불가**
 
-[//]: # (INCLUDE: ./cpp/03/snippet_ptr.cc --from 40 --to 45 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 85 --to 90 --no-comment)
 
 ---
 
 ## Call By Address
 
-![center](Figure_9_14.png)
+![center](img/13-Figure_9_14.png)
 
 ---
 
@@ -282,7 +282,7 @@
 - 포인터 값이 가리키는 대상은 함수가 종료되어도 유효해야 함
 - Dangling pointer가 발생하지 않도록 주의
 
-[//]: # (INCLUDE: ./cpp/03/ret_by_ptr.cc)
+[//]: # (INCLUDE: ./cpp/03/src/02_ret_by_ptr.cc)
 
 ---
 
@@ -292,7 +292,7 @@
   - `T`타입 길이가 $n$인 배열을 선언하면 메모리 상에 `T` 타입 객체가 $n$개 **연속 할당됨**
   - e.g., `int`타입 객체는 4 바이트를 사용하며, $n$이 5일 경우 총 20 바이트 사용
 
-![center](Figure_9_15.png)
+![center](img/14-Figure_9_15.png)
 
 ---
 
@@ -300,7 +300,7 @@
 
 ### 주소 연산: `+`, `-`
 
-![center](Figure_9_16.png)
+![center](img/15-Figure_9_16.png)
 
 ---
 
@@ -308,7 +308,7 @@
 
 ### 주소 연산: `++`, `--`
 
-![center](Figure_9_17.png)
+![center](img/16-Figure_9_17.png)
 
 ---
 
@@ -316,7 +316,7 @@
 
 ### 주소 연산: `+=`, `-=`
 
-![center](Figure_9_18.png)
+![center](img/17-Figure_9_18.png)
 
 ---
 
@@ -324,7 +324,7 @@
 
 ### 두 포인터 간 뺄셈
 
-![center](Figure_9_19.png)
+![center](img/18-Figure_9_19.png)
 
 - 두 포인터 값의 상대적인 위치 비교에 사용하며, **두 포인터는 반드시 동일한 배열의 요소를 가리켜야 함**
 
@@ -334,7 +334,7 @@
 
 ### 두 포인터 간 비교
 
-![center](Figure_9_20.png)
+![center](img/19-Figure_9_20.png)
 
 - 두 포인터 값의 상대적인 위치 비교에 사용하며, **두 포인터는 반드시 동일한 배열의 요소를 가리켜야 함**
 
@@ -342,7 +342,7 @@
 
 ## 함수로의 배열 전달
 
-[//]: # (INCLUDE: ./cpp/03/pass_arr.cc)
+[//]: # (INCLUDE: ./cpp/03/src/03_pass_arr.cc)
 
 ---
 
@@ -351,13 +351,13 @@
 - 배열 객체의 시작 주소를 반환하는 함수
 - **Dangling pointer**가 발생하지 않도록 유의할 것
 
-[//]: # (INCLUDE: ./cpp/03/ret_arr.cc)
+[//]: # (INCLUDE: ./cpp/03/src/04_ret_arr.cc)
 
 ---
 
 ## 메모리 관리 (Memory Management)
 
-![center](Figure_9_22.png)
+![center](img/20-Figure_9_22.png)
 
 ---
 
@@ -384,7 +384,7 @@
 
 ### 스택 영역 (Stack Memory)
 
-![center](Figure_9_23.png)
+![center](img/21-Figure_9_23.png)
 
 ---
 
@@ -405,7 +405,7 @@
   - 단일 객체(scalar object)는 타입으로부터 크기 결정
   - 배열 객체(array object)는 타입과 상수 길이를 통해 크기 결정
 
-[//]: # (INCLUDE: ./cpp/03/snippet_arr.cc --from 2 --to 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 100 --to 104 --no-comment)
 
 ---
 
@@ -417,23 +417,23 @@
 - **동적 할당된 객체는 이름 없는 객체**
   - 동적 할당된 이름 없는 객체는 **스택 영역 객체**의 도움(e.g., 포인터)을 받아 간접적으로 사용
 
-![center](Figure_9_24.png)
+![center](img/22-Figure_9_24.png)
 
 ---
 
 ## 동적 할당 연산자 (`new`, `delete`)
 
-![center h:240](Figure_9_25.png)
+![center h:240](img/23-Figure_9_25.png)
 
 - C++의 기본 연산자(built-in operators)
 - 단항 연산자이며, 결합 방향은 오른쪽에서 왼쪽(←)
 
-|Name           |Operator  |Expression    |
-|---------------|----------|--------------|
-|Allocate Object|`new`     |`new T`       |
-|Allocate Array |`new[]`   |`new T[SIZE]` |
-|Delete Object  |`delete`  |`delete ptr`  |
-|Delete Array   |`delete[]`|`delete[] ptr`|
+| Name            | Operator    | Expression     |
+| --------------- | ----------- | -------------- |
+| Allocate Object | `new`       | `new T`        |
+| Allocate Array  | `new[]`     | `new T[SIZE]`  |
+| Delete Object   | `delete`    | `delete ptr`   |
+| Delete Array    | `delete[]`  | `delete[] ptr` |
 
 ---
 
@@ -446,7 +446,7 @@
 - 단일 객체는 `new`, 배열 객체는 `new[]` 사용
 - 메모리 누수가 발생하지 않도록 사용에 유의할 것
 
-[//]: # (INCLUDE: ./cpp/03/snippet_new_del.cc --from 3 --to 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 110 --to 113 --no-comment)
 
 ---
 
@@ -459,11 +459,11 @@
 - 단일 객체는 `delete`, 배열 객체는 `delete[]` 사용
 - 아래 경우들은 정의되지 않은 동작(undefined behavior):
 
-[//]: # (INCLUDE: ./cpp/03/snippet_new_del.cc --from 13 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 119 --to 121 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/03/snippet_new_del.cc --from 21 --to 23 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 127 --to 129 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/03/snippet_new_del.cc --from 29 --to 30 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/_snippet.cc --from 135 --to 136 --no-comment)
 
 ---
 
@@ -471,7 +471,7 @@
 
 ### 1차원 배열 동적 할당
 
-![center](Figure_9_26.png)
+![center](img/24-Figure_9_26.png)
 
 ---
 
@@ -479,7 +479,7 @@
 
 ### 1차원 배열 동적 할당 예제
 
-[//]: # (INCLUDE: ./cpp/03/dynamic1.cc)
+[//]: # (INCLUDE: ./cpp/03/src/05_dynamic.cc)
 
 ---
 
@@ -487,7 +487,7 @@
 
 ### 2차원 배열 동적 할당 - 행의 크기가 고정, 열의 크기가 가변일 때
 
-![center](Figure_9_27.png)
+![center](img/25-Figure_9_27.png)
 
 ---
 
@@ -495,7 +495,7 @@
 
 ### 2차원 배열 동적 할당 예제 - 행의 크기가 고정, 열의 크기가 가변일 때
 
-[//]: # (INCLUDE: ./cpp/03/snippet_new_del.cc --from 34 --to 50 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/06_new_del.cc --from 2 --to 18 --no-comment)
 
 ---
 
@@ -503,7 +503,7 @@
 
 ### 2차원 배열 동적 할당 - 행의 크기, 열의 크기가 가변일 때
 
-![center](Figure_9_28.png)
+![center](img/26-Figure_9_28.png)
 
 ---
 
@@ -511,7 +511,7 @@
 
 ### 2차원 배열 동적 할당 예제 - 행의 크기, 열의 크기가 가변일 때
 
-[//]: # (INCLUDE: ./cpp/03/snippet_new_del.cc --from 52 --to 70 --no-comment)
+[//]: # (INCLUDE: ./cpp/03/src/06_new_del.cc --from 22 --to 40 --no-comment)
 
 ---
 
@@ -522,10 +522,10 @@
   - 래기드 배열의 한 형태:
   - $x + y$ 형태의 이항식을 $n$ 제곱하여 전개하였을 때의 계수(coefficients)를 표현한 것
 
-![center h:450](Figure_A_Pascal_Triangle.png)
+![center h:450](img/27-Figure_A_Pascal_Triangle.png)
 
 ---
 
 ## 동적 할당 연산자 (`new`, `delete`) (Cont'd - 10)
 
-[//]: # (INCLUDE: ./cpp/03/pascal.cc)
+[//]: # (INCLUDE: ./cpp/03/src/07_pascal.cc)

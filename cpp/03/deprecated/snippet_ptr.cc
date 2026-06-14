@@ -20,6 +20,7 @@ void Foo3() {
   int num = 100;
   int* p = &num;    // address-of operator (&)
   int result = *p;  // indirection operator (*)
+  (void) result;
 }
 
 void Foo4() {
@@ -43,4 +44,5 @@ void Foo5() {
   p = &x;  // Assigning the address of `x` to the void pointer
   double y = 3.14;
   p = &y;  // Assigning the address of `y` to the void pointer
+  (void) p;
 }
