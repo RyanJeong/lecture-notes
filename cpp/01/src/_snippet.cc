@@ -29,7 +29,7 @@ void OptStep2() {
   (void) x; /* Avoid unused variable warning. */
 }
 
-void snippet1(void) {
+void Snippet1(void) {
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   int a = 10;
 
@@ -52,7 +52,7 @@ void snippet1(void) {
 
 #include <iostream>
 
-void snippet2(void) {
+void Snippet2(void) {
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   int a = 10;
   int b = 20;
@@ -74,7 +74,7 @@ void snippet2(void) {
   (void) b;    // Avoid unused variable warning.
 }
 
-void snippet3(void) {
+void Snippet3(void) {
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   int a = 10;
   int& ref = a;  // `ref` is a reference to `a`.
