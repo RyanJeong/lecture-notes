@@ -11,10 +11,12 @@ class LargeData {
     if (data_) delete[] data_;
   }
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   LargeData(const LargeData& other) : data_(new int[1'000'000'000]) {
     std::copy(other.data_, other.data_ + 1'000'000'000, data_);
     std::cout << "Copy constructor called" << std::endl;
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 };
 
 int main() {

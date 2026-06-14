@@ -34,7 +34,7 @@
 
 ### 이동 생성자 구현
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 15 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/01_move_ctor2.cc --from 16 --to 19 --no-comment)
 
 - 매개변수 `other`는 소유권을 **넘겨주는** 객체이며, 생성자를 호출한 호스트 객체가 소유권을 **넘겨받음**
   - 객체의 소유권만 전달한 것이지, **객체가 소멸된 것은 아님**
@@ -42,7 +42,7 @@
 
 ### 이동 생성자 호출
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 27 --to 27 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/01_move_ctor2.cc --from 30 --to 30 --no-comment)
 
 ---
 
@@ -50,13 +50,13 @@
 
 - 복사 생성자로 새로운 객체를 생성하는 예제
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor1.cc --to 19)
+[//]: # (INCLUDE: ./cpp/11/src/00_move_ctor1.cc --to 13 --from 15 --to 18 --from 20 --to 20)
 
 ---
 
 ## 이동 생성자 (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor1.cc --from 20)
+[//]: # (INCLUDE: ./cpp/11/src/00_move_ctor1.cc --from 22)
 
 ---
 
@@ -64,13 +64,13 @@
 
 - **이동 생성자**로 새로운 객체를 생성하는 예제
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --to 20)
+[//]: # (INCLUDE: ./cpp/11/src/01_move_ctor2.cc --to 14 --from 16 --to 19 --from 21 --to 21)
 
 ---
 
 ## 이동 생성자 (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 21)
+[//]: # (INCLUDE: ./cpp/11/src/01_move_ctor2.cc --from 23 --to 28 --from 30 --to 30 --from 32)
 
 ---
 
@@ -78,9 +78,9 @@
 
 ### 좌측값 참조 (`&`, *lvalue* Reference)와 우측값 참조 (`&&`, *rvalue* Reference)
 
-[//]: # (INCLUDE: ./cpp/11/reference.cc --from 2 --to 4 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/02_reference.cc --from 3 --to 5 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/11/reference.cc --from 6 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/02_reference.cc --from 11 --to 12 --no-comment)
 
 - *lvalue reference*는 실체화된 객체의 별명
 - *rvalue reference*는 **임시 객체 또는 리터럴**의 별명
@@ -97,13 +97,13 @@
 - 복사 생성자는 예외가 발생해도 안전함
   - 원본 객체는 생성자 안에서 **읽기 전용**이며, 예외가 발생하더라도 원본 객체는 아무런 영향을 받지 않고 보존됨
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor1.cc --from 14 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/00_move_ctor1.cc --from 15 --to 18 --no-comment)
 
 - **이동 생성자는 예외를 발생시키지 않아야 함**
   - 원본 객체의 자원 소유권을 이전하는 과정에서 **원본 객체의 상태가 변함**
   - 예외가 발생하면 원본 객체를 초기 상태로 되돌리지 못할 수 있음
 
-[//]: # (INCLUDE: ./cpp/11/move_ctor2.cc --from 15 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/01_move_ctor2.cc --from 16 --to 19 --no-comment)
 
 ---
 
@@ -111,11 +111,11 @@
 
 ### [`std::move`](https://en.cppreference.com/w/cpp/utility/move.html)
 
-![w:501 center](image.png)
+![w:501 center](img/00-image.png)
 
 - `<utility>` 헤더에 정의되어 있는 함수로, **인자가 이동될 수 있도록 *rvalue* 참조로 타입 변환**
 
-[//]: # (INCLUDE: ./cpp/11/move.cc --from 6 --to 14 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/03_move.cc --from 7 --to 15 --no-comment)
 
 - 별도 규정이 없다면, 이동(move)된 표준 라이브러리 객체는 **유효하지만 지정되지 않은(valid but unspecified) 상태**가 됨
   - 객체 내부 값은 알 수 없지만, 클래스 불변식(class invariant)은 유지됨
@@ -127,7 +127,7 @@
 
 ## C++ 값 범주 (Value Categories)
 
-![center](image-1.png)
+![center](img/01-image-1.png)
 
 ### 기본 범주 (Primary Categories): *lvalue*, *prvalue*, *xvalue*
 
@@ -143,7 +143,7 @@
   - 주소 연산자(`&`)를 통해 메모리 주소를 취할 수 있음
   - e.g., 변수 이름, *lvalue reference*를 반환하는 함수 호출, 문자열 리터럴
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 5 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 6 --to 8 --no-comment)
 
 ---
 
@@ -155,9 +155,9 @@
   - 초기화하는 값 또는 임시적인 계산 결과
   - e.g., 문자열을 제외한 리터럴(`10`, `nullptr`, `true`), 반환 타입이 참조가 아닌 함수 호출
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 10 --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 15 --to 17 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 15 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 22 --to 22 --no-comment)
 
 ### *xvalue* (eXpiring Value)
 
@@ -185,11 +185,11 @@
 
 ### *xvalue*가 *glvalue*로서 동작하는 경우
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 21 --to 26 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 32 --to 37 --no-comment)
 
 ### *xvalue*가 *rvalue*로서 동작하는 경우
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 30 --to 32 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 43 --to 45 --no-comment)
 
 ---
 
@@ -199,7 +199,7 @@
 
 > 이름이 있는 *rvalue reference*(named rvalue reference)는 *lvalue*로 평가된다.
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 37 --to 45 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 52 --to 60 --no-comment)
 
 - 컴파일 오류 없이 **조용히 복사 생성자를 호출**하여 성능 저하를 야기하는 형태
 - **식별자가 있는 객체는 함부로 자원을 뺏기지 않도록 *lvalue*로 보호됨**
@@ -211,11 +211,11 @@
 
 - 이름이 있는 *rvalue reference*는 `std::move`를 사용해 값 범주를 *lvalue*에서 *xvalue*로 바꾸어 **이동 가능성**을 명시해야 함
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 47 --to 54 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 64 --to 71 --no-comment)
 
 ### 이름이 있는 우측값 참조를 *lvalue*로 간주하는 이유
 
-[//]: # (INCLUDE: ./cpp/11/value_categories.cc --from 64 --to 70 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/04_value_categories.cc --from 82 --to 88 --no-comment)
 
 ---
 
@@ -223,11 +223,11 @@
 
 ### 참조 바인딩 규칙 (Reference Binding)
 
-|Reference Type|Binds to *lvalue*|Binds to *xvalue*|Binds to *prvalue*|Notes|
-|---|---|---|---|---|
-|`T&`|Allowed|Error|Error|Modifiable *lvalues* only|
-|`const T&`|Allowed|Allowed|Allowed|Universal; extends lifetime of temporary objects for *prvalues*|
-|`T&&`|Error|Allowed|Allowed|Accepts only **move candidates** (*rvalues*)|
+| Reference Type | Binds to *lvalue* | Binds to *xvalue* | Binds to *prvalue* | Notes                                                           |
+| -------------- | ----------------- | ----------------- | ------------------ | --------------------------------------------------------------- |
+| `T&`           | Allowed           | Error             | Error              | Modifiable *lvalues* only                                       |
+| `const T&`     | Allowed           | Allowed           | Allowed            | Universal; extends lifetime of temporary objects for *prvalues* |
+| `T&&`          | Error             | Allowed           | Allowed            | Accepts only **move candidates** (*rvalues*)                    |
 
 ---
 
@@ -248,9 +248,11 @@
 
 ## 이동 대입 연산자 (Cont'd - 1)
 
+[//]: # (INCLUDE: ./cpp/11/src/move/Makefile --reference)
+
 - `my_class.hpp`
 
-[//]: # (INCLUDE: ./cpp/11/move/my_class.hpp)
+[//]: # (INCLUDE: ./cpp/11/src/move/my_class.hpp)
 
 ---
 
@@ -258,13 +260,13 @@
 
 - `my_class.cc`
 
-[//]: # (INCLUDE: ./cpp/11/move/my_class.cc --to 20)
+[//]: # (INCLUDE: ./cpp/11/src/move/my_class.cc --to 20)
 
 ---
 
 ## 이동 대입 연산자 (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/11/move/my_class.cc --from 21)
+[//]: # (INCLUDE: ./cpp/11/src/move/my_class.cc --from 21)
 
 ---
 
@@ -272,7 +274,7 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/11/move/main.cc)
+[//]: # (INCLUDE: ./cpp/11/src/move/main.cc)
 
 ---
 
@@ -302,9 +304,11 @@
 
 ## 이동 대입 연산자 (Cont'd - 6)
 
+[//]: # (INCLUDE: ./cpp/11/src/copy_and_swap/Makefile --reference)
+
 - `my_class.hpp`
 
-[//]: # (INCLUDE: ./cpp/11/copy_and_swap/my_class.hpp)
+[//]: # (INCLUDE: ./cpp/11/src/copy_and_swap/my_class.hpp)
 
 ---
 
@@ -312,13 +316,13 @@
 
 - `my_class.cc`
 
-[//]: # (INCLUDE: ./cpp/11/copy_and_swap/my_class.cc --to 21)
+[//]: # (INCLUDE: ./cpp/11/src/copy_and_swap/my_class.cc --to 21)
 
 ---
 
 ## 이동 대입 연산자 (Cont'd - 8)
 
-[//]: # (INCLUDE: ./cpp/11/copy_and_swap/my_class.cc --from 22)
+[//]: # (INCLUDE: ./cpp/11/src/copy_and_swap/my_class.cc --from 22)
 
 ---
 
@@ -326,7 +330,7 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/11/copy_and_swap/main.cc)
+[//]: # (INCLUDE: ./cpp/11/src/copy_and_swap/main.cc)
 
 ---
 
@@ -334,7 +338,7 @@
 
 - 함수로 값을 전달할 때 **불필요한 임시 객체가 생성**되어 비효율적인 동작을 하는 경우들이 존재함
 
-[//]: # (INCLUDE: ./cpp/11/my_string.cc --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/05_my_string.cc --from 2 --to 19 --no-comment)
 
 - **완벽한 전달**을 사용하면 불필요한 임시 객체 생성을 억제해 효율적인 동작이 가능함
 
@@ -344,9 +348,9 @@
 
 - 템플릿 타입 추론 과정에서 `T&&`로 선언된 매개변수가 갖는 특별한 성질
 
-[//]: # (INCLUDE: ./cpp/11/forwarding_reference.cc --from 2 --to 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/06_forwarding_reference.cc --from 2 --to 6 --no-comment)
 
-- 전달 참조는 ***lvalue*와 *rvalue*를 모두 수용 가능**
+- 전달 참조는 *lvalue*와 *rvalue* 모두 수용 가능
   - 인자가 *lvalue*면 `T`는 `T&`로 추론됨
   - 인자가 *rvalue*면 `T`는 비참조형 `T`로 추론됨(최종 `T&&`)
 - 전달 참조는 **원본 인자의 값 범주(value category) 정보를 손실 없이 보존**
@@ -357,12 +361,12 @@
 
 - 컴파일러가 이중 참조(`&&`, 참조에 대한 참조)를 처리할 때 단일 참조로 단순화하는 규칙
 
-|First Reference|Second Reference|Collapsed Result|Note|
-|---|---|---|---|
-|`T&` |`&` |`T&`|*lvalue* dominates|
-|`T&` |`&&`|`T&`|*lvalue* dominates|
-|`T&&`|`&` |`T&`|*lvalue* dominates|
-|`T&&`|`&&`|`T&&`|Only *rvalue* + *rvalue* = *rvalue*|
+| First Reference | Second Reference | Collapsed Result | Note                                |
+| --------------- | ---------------- | ---------------- | ----------------------------------- |
+| `T&`            | `&`              | `T&`             | *lvalue* dominates                  |
+| `T&`            | `&&`             | `T&`             | *lvalue* dominates                  |
+| `T&&`           | `&`              | `T&`             | *lvalue* dominates                  |
+| `T&&`           | `&&`             | `T&&`            | Only *rvalue* + *rvalue* = *rvalue* |
 
 - Boolean analogy: `&`를 1(True), `&&`를 0(False)으로 가정할 때, 논리 OR 연산 결과와 동일
 
@@ -372,9 +376,9 @@
 
 - 전달 참조와 참조 붕괴 규칙, `std::forward` (`<utility>` 헤더 파일 필요)를 사용하여 구현한 함수
 
-![w:524 center](image-4.png)
+![w:524 center](img/02-image-4.png)
 
-![w:524 center](image-5.png)
+![w:524 center](img/03-image-5.png)
 
 - **인자의 값 범주와 타입을 훼손 없이 원본 그대로 전달함**
 - **임시 객체 생성 억제** 효과가 있음
@@ -385,7 +389,7 @@
   - 조건을 만족하지 않는다면 임시 객체가 생성되어 최적화가 불가함
 
 | Aspect | `std::move` | Perfect Forwarding |
-|--------|-----------|-------------------|
+| --- | --- | --- |
 | **Conversion** | *lvalue* → *xvalue* | **Category Preservation** |
 | **Selectivity** | Explicit Choice | Automatic Processing |
 | **Purpose** | Explicit Move Intent | Prevent Attribute Loss |
@@ -396,19 +400,19 @@
 
 ### 완벽한 전달 장점 1 - 인자의 값 범주와 속성을 유지하여 전달
 
-[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/07_perfect_forwarding.cc --from 2 --to 16 --no-comment)
 
 ---
 
 ## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 2)
 
-[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --from 18 --to 19 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/07_perfect_forwarding.cc --from 21 --to 22 --no-comment)
 
 - 변수 `a`는 이름 있는 *lvalue*이고, `T`는 `int&`로 추론됨
 - 매개변수 `arg`는 이름 있는 `int&`타입 변수이므로 *lvalue*로 간주됨
 - `std::forward<T>(arg)`는 참조 붕괴 규칙에 의해 `int&`가 됨
 
-[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --from 21 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/07_perfect_forwarding.cc --from 26 --to 27 --no-comment)
 
 - 변수 `b`는 이름 있는 `const` *lvalue*이고, `T`는 `const int&`로 추론됨
 - 매개변수 `arg`는 이름 있는 `const int&`타입 변수이므로 *lvalue*로 간주됨
@@ -418,7 +422,7 @@
 
 ## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/11/perfect_forwarding.cc --from 24 --to 24 --no-comment)
+[//]: # (INCLUDE: ./cpp/11/src/07_perfect_forwarding.cc --from 31 --to 31 --no-comment)
 
 - 리터럴 `30`은 **이름 없는 임시 객체** *prvalue*이고, `T`는 `int`로 추론됨
 - 매개변수 `arg`는 이름 있는 `int&&`타입 변수이지만, **이름을 가진 모든 변수는 *lvalue*로 간주됨**
@@ -432,13 +436,13 @@
 
 ### 완벽한 전달 장점 2 - 불필요한 임시 객체 생성 억제
 
-[//]: # (INCLUDE: ./cpp/11/my_string_perfect_forwarding.cc --to 20)
+[//]: # (INCLUDE: ./cpp/11/src/08_my_string_perfect_forwarding.cc --to 20)
 
 ---
 
 ## [완벽한 전달 (Perfect Forwarding)](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2951.html) (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/11/my_string_perfect_forwarding.cc --from 21)
+[//]: # (INCLUDE: ./cpp/11/src/08_my_string_perfect_forwarding.cc --from 21)
 
 - `"Alice"`는 문자열 리터럴이며, 메모리 주소를 갖고 있는 *lvalue*
 - `SetName`의 인자로 전달하면 `T`는 `const char*&`로 추론됨

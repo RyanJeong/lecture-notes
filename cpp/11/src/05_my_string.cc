@@ -1,3 +1,4 @@
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <iostream>
 #include <string>
 #include <utility>  // for std::move
@@ -16,6 +17,7 @@ class User {
   // 2. Copy the temporary into the member variable (more inefficient)
   void SetName2(const std::string& name) { name_ = name; }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 int main() {
   User u, v;
