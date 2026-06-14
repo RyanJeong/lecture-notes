@@ -35,7 +35,9 @@ void Snippet1(void) {
 
   // Reference MUST be initialized at declaration.
   int& ref = a;  // Valid: `ref` is initialized to refer to `a`.
-  // int& ref2;  // Error: References must be initialized.
+#if 0            /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
+  int& ref2;     // Error: References must be initialized.
+#endif           /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
   // Pointer can be declared without initialization.
   int* ptr;  // Valid: `ptr` is declared but not initialized.

@@ -352,7 +352,7 @@
 
 ### 레퍼런스 특징 1 - 레퍼런스는 반드시 대상이 있어야 함
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 34 --to 45 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 34 --to 37 --from 39 --to 39 --from 41 --to 47 --no-comment)
 
 ---
 
@@ -360,7 +360,7 @@
 
 ### 레퍼런스 특징 2 - 레퍼런스는 변경할 수 없음
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 57 --to 69 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 59 --to 71 --no-comment)
 
 ---
 
@@ -368,7 +368,7 @@
 
 ### 레퍼런스 특징 3 - 레퍼런스 자체는 별도의 메모리 공간을 가지지 않음
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 79 --to 93 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 81 --to 95 --no-comment)
 
 ---
 
@@ -416,11 +416,11 @@
 
   > There shall be no references to references, no arrays of references, and no pointers to references.
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 107 --to 111 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 109 --to 113 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 115 --to 117 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 117 --to 119 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 121 --to 125 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 123 --to 127 --no-comment)
 
 ---
 
@@ -453,8 +453,8 @@
 
 - 레퍼런스 반환 시 함수가 종료되어도 소멸되지 않는 객체를 반환하도록 수정
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 133 --to 133 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 135 --to 135 --no-comment)
 
 - 레퍼런스 반환 시 정적 또는 전역 객체를 반환하도록 수정
 
-[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 138 --to 141 --no-comment)
+[//]: # (INCLUDE: ./cpp/01/src/_snippet.cc --from 140 --to 143 --no-comment)
