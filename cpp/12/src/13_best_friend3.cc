@@ -24,8 +24,10 @@ int main() {
   std::shared_ptr<Person> bob = std::make_shared<Person>("Bob");
 
   // 2. Alice sends best friend request to Bob and vice versa
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   alice->BecomesBestFriendOf(bob);
   bob->BecomesBestFriendOf(alice);
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   std::cout << "Alice's strong count: " << alice.use_count() << std::endl;
   std::cout << "Bob's strong count: " << bob.use_count() << std::endl;
 

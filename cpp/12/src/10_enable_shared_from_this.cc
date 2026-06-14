@@ -1,3 +1,4 @@
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <iostream>
 #include <memory>  // for std::shared_ptr, std::make_shared,
                    //     std::enable_shared_from_this
@@ -10,6 +11,7 @@ class Foo : public std::enable_shared_from_this<Foo> {
 
   std::shared_ptr<Foo> GetSharedPtr() { return shared_from_this(); }
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 int main() {
   std::shared_ptr<Foo> pa1 = std::make_shared<Foo>();

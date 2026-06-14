@@ -1,4 +1,4 @@
-#ifdef CPP_12_NOBUILD
+#if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 class Fraction;  // Forward declaration for the type you want to use
 
 class SmartPtr {
@@ -18,4 +18,4 @@ int main() {
   sp->Print();  // `sp` is a stack instance; it's dtor will auto-invoke!
   return 0;
 }
-#endif  // CPP_12_NOBUILD
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

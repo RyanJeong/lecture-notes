@@ -9,7 +9,7 @@
 
 ## 포인터 래퍼 클래스
 
-[//]: # (INCLUDE: ./cpp/12/pointer_class.cc --from 2 --to 20 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/00_pointer_class.cc --from 2 --to 20 --no-comment)
 
 - 동적 메모리 관리를 자동화하기 위한 포인터 래퍼(wrapper) 클래스
 - 메모리 누수와 수동 메모리 관리 문제 해결
@@ -20,7 +20,7 @@
 ## 표준 라이브러리 스마트 포인터
 
 | Feature | `std::unique_ptr` | `std::shared_ptr` | `std::weak_ptr` |
-|---------|-------------------|-------------------|-----------------|
+| ------- | ----------------- | ----------------- | --------------- |
 | **Ownership** | Exclusive | Shared | None |
 | **Copy** | Not allowed | Allowed | Allowed |
 | **Move** | Allowed | Allowed | Allowed |
@@ -40,7 +40,7 @@
     - 스택 기반 LIFO 소멸로 자동 호출되는 소멸자 메커니즘을 활용
   - **명시적인 메모리 해제 코드 불필요**
 
-[//]: # (INCLUDE: ./cpp/12/raii.cc)
+[//]: # (INCLUDE: ./cpp/12/src/01_raii.cc)
 
 ---
 
@@ -50,7 +50,7 @@
 
 - `data_buffer.hpp`
 
-[//]: # (INCLUDE: ./cpp/12/data_buffer.hpp)
+[//]: # (INCLUDE: ./cpp/12/src/data_buffer.hpp)
 
 ---
 
@@ -58,7 +58,7 @@
 
 - 메모리 누수가 발생하는 예제
 
-[//]: # (INCLUDE: ./cpp/12/raii1.cc)
+[//]: # (INCLUDE: ./cpp/12/src/02_raii1.cc)
 
 ---
 
@@ -66,7 +66,7 @@
 
 - RAII 원칙을 적용한 예외 안전한 예제
 
-[//]: # (INCLUDE: ./cpp/12/raii2.cc)
+[//]: # (INCLUDE: ./cpp/12/src/03_raii2.cc)
 
 ---
 
@@ -74,7 +74,7 @@
 
 - `file_handle.hpp`
 
-[//]: # (INCLUDE: ./cpp/12/file_handle.hpp)
+[//]: # (INCLUDE: ./cpp/12/src/file_handle.hpp)
 
 ---
 
@@ -82,7 +82,7 @@
 
 - RAII 원칙을 적용한 파일 관리 예제
 
-[//]: # (INCLUDE: ./cpp/12/raii3.cc)
+[//]: # (INCLUDE: ./cpp/12/src/04_raii3.cc)
 
 ---
 
@@ -97,7 +97,7 @@
   - 스마트 포인터 객체가 유효 범위를 벗어나면 자동으로 소멸자 호출(**RAII 원칙**)
   - 스마트 포인터 소멸자는 동적 할당된 피관리 객체를 동적 해제(`delete`)
 
-[//]: # (INCLUDE: ./cpp/12/raii2.cc --from 7 --to 14 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/03_raii2.cc --from 8 --to 15 --no-comment)
 
 ---
 
@@ -108,7 +108,7 @@
 - 스마트 포인터 객체의 **피관리 객체 주소를** 반환하는 메서드로, 반환된 원시 포인터는 스마트 포인터의 소유권과 무관하게 동작
 - 기존의 C API나 라이브러리와의 호환성을 위해 필요
 
-[//]: # (INCLUDE: ./cpp/12/unique_ptr_get.cc --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/05_unique_ptr_get.cc --from 2 --to 18 --no-comment)
 
 ---
 
@@ -120,7 +120,7 @@
 - 스마트 포인터는 **RAII 원칙**에 따라 메모리 관리를 자동으로 수행
 - 직접 스마트 포인터 피관리 객체의 주소를 통해 메모리를 관리하는 것은 부적절함
 
-[//]: # (INCLUDE: ./cpp/12/unique_ptr_get.cc --from 19 --to 26 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/05_unique_ptr_get.cc --from 22 --to 29 --no-comment)
 
 ---
 
@@ -132,7 +132,7 @@
 - 피관리 객체 생성과 `std::unique_ptr` 래핑을 한 번에 처리하는 함수
   - 예외 안전성을 보장함
 
-[//]: # (INCLUDE: ./cpp/12/make_unique.cc --from 15 --to 27 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/06_make_unique.cc --from 16 --to 28 --no-comment)
 
 ---
 
@@ -146,7 +146,7 @@
     - `std::shared_ptr`: **참조 개수가 0이 될 때만 피관리 객체 메모리 해제**
 - 복사, 대입, 및 이동 가능
 
-[//]: # (INCLUDE: ./cpp/12/shared_ptr.cc)
+[//]: # (INCLUDE: ./cpp/12/src/07_shared_ptr.cc)
 
 ---
 
@@ -159,7 +159,7 @@
   - 첫 번째 포인터: 피관리 객체를 가리킴
   - 두 번째 포인터: 제어 블록(참조 개수, 커스텀 삭제자 등)을 가리킴
 
-![h:300 center](Picture1.png)
+![h:300 center](img/00-Picture1.png)
 
 ---
 
@@ -169,7 +169,7 @@
 
 - 현재 피관리 객체를 참조하고 있는 `std::shared_ptr`의 총 개수 반환
 
-[//]: # (INCLUDE: ./cpp/12/shared_ptr_reference_counting.cc)
+[//]: # (INCLUDE: ./cpp/12/src/08_shared_ptr_reference_counting.cc)
 
 ---
 
@@ -182,7 +182,7 @@
   - `new` + `std::shared_ptr` 생성자 호출보다 간결함(동적 할당을 **한 번만 수행**)
   - 예외 안전성을 보장함
 
-[//]: # (INCLUDE: ./cpp/12/shared_ptr_make_shared.cc --from 20 --to 29 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/09_shared_ptr_make_shared.cc --from 23 --to 32 --no-comment)
 
 ---
 
@@ -193,7 +193,7 @@
 - 원시 포인터를 사용해 `std::shared_ptr`을 생성할 경우 **이중 해제(double free)를 유발함**
   - 서로 다른 제어 블록(control block)을 생성하면서 참조 개수(strong count)가 분산됨
 
-[//]: # (INCLUDE: ./cpp/12/shared_ptr_make_shared.cc --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/09_shared_ptr_make_shared.cc --from 2 --to 18 --no-comment)
 
 ---
 
@@ -208,7 +208,7 @@
 - 이 상황에서는 `std::enable_shared_from_this`를 상속하여 `shared_from_this` 함수를 호출해야 함
   - 기존 제어 블록을 공유하는 `std::shared_ptr` 인스턴스를 반환
 
-[//]: # (INCLUDE: ./cpp/12/enable_shared_from_this.cc --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/10_enable_shared_from_this.cc --from 2 --to 13 --no-comment)
 
 ---
 
@@ -216,13 +216,13 @@
 
 - 클래스 내부에서 자신의 `std::shared_ptr` 생성을 `this` 포인터로 수행할 경우 문제가 발생하는 예제
 
-[//]: # (INCLUDE: ./cpp/12/best_friend1.cc --to 21)
+[//]: # (INCLUDE: ./cpp/12/src/11_best_friend1.cc --to 21)
 
 ---
 
 ## `std::shared_ptr` (Cont'd - 7)
 
-[//]: # (INCLUDE: ./cpp/12/best_friend1.cc --from 22)
+[//]: # (INCLUDE: ./cpp/12/src/11_best_friend1.cc --from 22)
 
 ---
 
@@ -230,17 +230,17 @@
 
 - 클래스 내부에서 자신의 `std::shared_ptr` 생성을 `shared_from_this` 함수로 수행할 경우
 
-[//]: # (INCLUDE: ./cpp/12/best_friend2.cc --to 20)
+[//]: # (INCLUDE: ./cpp/12/src/12_best_friend2.cc --to 20)
 
 ---
 
 ## `std::shared_ptr` (Cont'd - 9)
 
-[//]: # (INCLUDE: ./cpp/12/best_friend2.cc --from 21)
+[//]: # (INCLUDE: ./cpp/12/src/12_best_friend2.cc --from 21)
 
 > 만약 이 예제 코드를 아래와 같이 수정하면 어떻게 될까?
 
-[//]: # (INCLUDE: ./cpp/12/best_friend3.cc --from 27 --to 28 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/13_best_friend3.cc --from 28 --to 29 --no-comment)
 
 - **순환 참조(circular reference)로 인한 메모리 누수 발생**
 
@@ -254,7 +254,7 @@
 - `std::weak_ptr`은 객체로의 직접 참조가 불가능하므로 `lock` 메서드를 사용해야 함
   - `lock` 메서드는 관찰 대상이 유효하다면 `std::shared_ptr` 값을, 이미 소멸되었다면 `nullptr`을 반환
 
-[//]: # (INCLUDE: ./cpp/12/weak_ptr1.cc)
+[//]: # (INCLUDE: ./cpp/12/src/14_weak_ptr1.cc)
 
 ---
 
@@ -262,7 +262,7 @@
 
 - `std::weak_ptr`을 사용해 `std::shared_ptr` 객체 유효성을 안전하게 확인하는 예제
 
-[//]: # (INCLUDE: ./cpp/12/weak_ptr2.cc)
+[//]: # (INCLUDE: ./cpp/12/src/15_weak_ptr2.cc)
 
 ---
 
@@ -270,13 +270,13 @@
 
 - `std::shared_ptr`에서 발생한 순환 참조를 `std::weak_ptr`을 사용하여 해결
 
-[//]: # (INCLUDE: ./cpp/12/best_friend4.cc --to 20)
+[//]: # (INCLUDE: ./cpp/12/src/16_best_friend4.cc --to 20)
 
 ---
 
 ## `std::weak_ptr` (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/12/best_friend4.cc --from 21)
+[//]: # (INCLUDE: ./cpp/12/src/16_best_friend4.cc --from 21)
 
 ---
 
@@ -312,7 +312,7 @@
   - **제어 블록은 유지됨**
   - 만약 제어 블록이 피관리 객체와 함께 소멸된다면, **`std::weak_ptr`의 `lock` 메서드 호출 시 문제가 발생함:**
     - `std::weak_ptr::lock` 메서드는 **제어 블록**을 참조해 객체의 strong count가 0인지 아닌지를 확인
-    - 만약 객체 소멸 시점에 제어 블록이 동시에 소멸된다면, `lock` 메서드는 **이미 해제된 제어 블록을 역참조함**
+    - 만약 객체 소멸 시점에 제어 블록이 동시에 소멸된다면, `lock` 메서드는 **이미 해제된 제어 블록을 간접 참조함**
       - Segmentation fault 발생 가능
   - 따라서 제어 블록은 weak count가 0이 될 때까지 유지되어야 함
 - 제어 블록 소멸: **strong count가 0**이고 **weak count도 0**일 때 제어 블록의 메모리가 해제됨
@@ -344,7 +344,7 @@
 
 ## 제어 블록의 기타 데이터 (Other Data) (Cont'd)
 
-[//]: # (INCLUDE: ./cpp/12/type_erasure.cc)
+[//]: # (INCLUDE: ./cpp/12/src/17_type_erasure.cc)
 
 ---
 
@@ -354,7 +354,7 @@
 - 다른 지역으로 소유권을 이동해야 할 경우 `std::move` 함수를 사용할 수 있음
 - 이동 후의 스마트 포인터는 `nullptr`을 갖게 됨
 
-[//]: # (INCLUDE: ./cpp/12/move.cc --from 2 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/18_move.cc --from 2 --to 18 --no-comment)
 
 ---
 
@@ -362,28 +362,28 @@
 
 - 스마트 포인터 이동 기반의 빌더 패턴
 
-[//]: # (INCLUDE: ./cpp/12/builder.cc --to 21)
+[//]: # (INCLUDE: ./cpp/12/src/19_builder.cc --to 20)
 
 ---
 
 ## 스마트 포인터에서의 이동 (Cont'd - 2)
 
-[//]: # (INCLUDE: ./cpp/12/builder.cc --from 22 --to 31)
+[//]: # (INCLUDE: ./cpp/12/src/19_builder.cc --from 22 --to 30)
 
 ---
 
 ## 스마트 포인터에서의 이동 (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/12/builder.cc --from 32 --to 43)
+[//]: # (INCLUDE: ./cpp/12/src/19_builder.cc --from 32 --to 42)
 
 ---
 
 ## 스마트 포인터에서의 이동 (Cont'd - 4)
 
-[//]: # (INCLUDE: ./cpp/12/builder.cc --from 44 --to 57)
+[//]: # (INCLUDE: ./cpp/12/src/19_builder.cc --from 44 --to 56)
 
 ---
 
 ## 스마트 포인터에서의 이동 (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/12/builder.cc --from 58)
+[//]: # (INCLUDE: ./cpp/12/src/19_builder.cc --from 58)

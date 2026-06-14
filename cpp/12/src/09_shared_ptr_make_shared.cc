@@ -1,3 +1,4 @@
+#if 1              /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <memory>  // for std::shared_ptr
 
 class Foo {
@@ -15,8 +16,10 @@ int main() {
   // CRITICAL: Independent ownership leads to Double Free (Undefined Behavior).
   return 0;
 }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 void SharedPtrMakeSharedExample() {
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   {
     // Traditional way to create a shared_ptr
     std::shared_ptr<Foo> ptr1(new Foo());
@@ -27,4 +30,5 @@ void SharedPtrMakeSharedExample() {
     std::shared_ptr<Foo> ptr1 = std::make_shared<Foo>();
     std::shared_ptr<Foo> ptr2 = ptr1;
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 }

@@ -1,3 +1,4 @@
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <iostream>
 #include <memory>  // for smart pointers
 
@@ -15,7 +16,9 @@ int main() {
   UseRawPointer(ptr.get());
   return 0;
 }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 void BadPracticeOfGetMethod() {
   std::unique_ptr<MyObject> ptr(new MyObject());
   MyObject* raw_ptr = ptr.get();  // Improperly manage memory using the raw ptr
@@ -24,3 +27,4 @@ void BadPracticeOfGetMethod() {
   // At the end of scope, unique_ptr will try to delete the object again.
   // -> This leads to undefined behavior (double deletion)
 }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

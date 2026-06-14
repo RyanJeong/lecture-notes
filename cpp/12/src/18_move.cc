@@ -1,4 +1,4 @@
-#ifdef CPP_12_NOBUILD
+#if 0               /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 #include <memory>   // for std::unique_ptr, std::make_unique
 #include <utility>  // for std::move
 
@@ -16,6 +16,4 @@ int main() {
   // `my_resource` is now nullptr
   return 0;
 }
-#else
-int main() { return 0; }
-#endif  // CPP_12_NOBUILD
+#endif              /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
