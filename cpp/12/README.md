@@ -132,7 +132,7 @@
 - 피관리 객체 생성과 `std::unique_ptr` 래핑을 한 번에 처리하는 함수
   - 예외 안전성을 보장함
 
-[//]: # (INCLUDE: ./cpp/12/src/06_make_unique.cc --from 16 --to 28 --no-comment)
+[//]: # (INCLUDE: ./cpp/12/src/06_make_unique.cc --from 16 --to 25 --no-comment)
 
 ---
 
