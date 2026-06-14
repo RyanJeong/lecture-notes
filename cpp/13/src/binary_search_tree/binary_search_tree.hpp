@@ -24,6 +24,7 @@ class BinarySearchTree {
   }
 
   // --- Internal recursive helpers
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   Node* Insert(const T& value, Node* ptr) {
     if (!ptr)  // Base case: create new node
       ptr = MakeNode(value);
@@ -33,7 +34,9 @@ class BinarySearchTree {
       ptr->right = Insert(value, ptr->right);
     return ptr;
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   void Destroy(Node* ptr) noexcept {
     if (!ptr) return;
 
@@ -41,6 +44,7 @@ class BinarySearchTree {
     Destroy(ptr->right);  // Destroy the right subtree.
     delete ptr;           // Delete a data item in the root.
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
   bool Search(const T& value, Node* ptr) const noexcept {
     if (!ptr) return false;
@@ -51,6 +55,7 @@ class BinarySearchTree {
       return Search(value, (value < ptr->data ? ptr->left : ptr->right));
   }
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   void PreOrder(Node* ptr) const noexcept {
     if (!ptr) return;
 
@@ -58,7 +63,9 @@ class BinarySearchTree {
     PreOrder(ptr->left);
     PreOrder(ptr->right);
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   void InOrder(Node* ptr) const noexcept {
     if (!ptr) return;
 
@@ -66,7 +73,9 @@ class BinarySearchTree {
     std::cout << ptr->data << std::endl;
     InOrder(ptr->right);
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   void PostOrder(Node* ptr) const noexcept {
     if (!ptr) return;
 
@@ -74,6 +83,7 @@ class BinarySearchTree {
     PostOrder(ptr->right);
     std::cout << ptr->data << std::endl;
   }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   // --- End of internal recursive helpers
 
   Node* root_;

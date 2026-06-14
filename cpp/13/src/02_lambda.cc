@@ -4,5 +4,6 @@ int main() {
 
   // Lambda function call
   int result = add(3, 5);  // result = 8
+  (void) result;
   return 0;
 }

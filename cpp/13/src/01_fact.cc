@@ -1,6 +1,7 @@
 #include <chrono>  // for measuring execution time
 #include <iostream>
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 int64_t Factorial(int64_t n) { return n == 1 ? 1 : n * Factorial(n - 1); }
 // If user calls the function Factorial(5):
 // #5 | Factorial(1) |
@@ -10,7 +11,9 @@ int64_t Factorial(int64_t n) { return n == 1 ? 1 : n * Factorial(n - 1); }
 // #1 | Factorial(5) |
 // ---+--------------+
 //    |   <STACK>    |
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 int64_t FactorialTail(int64_t n, int64_t acc = 1) {
   return n == 1 ? acc : FactorialTail(n - 1, acc * n);
 }
@@ -28,7 +31,9 @@ int64_t FactorialTail(int64_t n, int64_t acc = 1) {
 // #1 | FactorialTail(1, 120) |
 // ---+-----------------------+
 //    |      <STACK>          |
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 int64_t memoization[20 + 1] = {0};
 
 int64_t FactorialMemo(int64_t n) {
@@ -36,12 +41,15 @@ int64_t FactorialMemo(int64_t n) {
   memoization[n] = n == 1 ? 1 : n * FactorialMemo(n - 1);
   return memoization[n];
 }
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 int main() {
   // Benchmarking Factorial vs FactorialTail
   {
     auto start = std::chrono::high_resolution_clock::now();
+#if 1               /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     Factorial(20);  // took about 250 ns
+#endif              /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     auto end = std::chrono::high_resolution_clock::now();
     auto duration =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
@@ -51,7 +59,9 @@ int main() {
 
   {
     auto start = std::chrono::high_resolution_clock::now();
+#if 1                   /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     FactorialTail(20);  // took about 83 ns
+#endif                  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     auto end = std::chrono::high_resolution_clock::now();
     auto duration =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
@@ -61,7 +71,9 @@ int main() {
 
   {
     auto start = std::chrono::high_resolution_clock::now();
+#if 1                   /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     FactorialMemo(20);  // took about 209 ns
+#endif                  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     auto end = std::chrono::high_resolution_clock::now();
     auto duration =
         std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);

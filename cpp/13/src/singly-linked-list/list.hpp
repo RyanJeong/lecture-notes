@@ -6,10 +6,12 @@
 
 template <typename T>
 class List {
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   struct Node {
     T data;      // store a value
     Node* next;  // pointer to the next node
   };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
   Node* MakeNode(const T& value) {
     Node* node = new Node;
@@ -37,7 +39,9 @@ class List {
     if (pos < 0 || pos > count_)
       throw ListException("The pos is out of range.", "List::Insert");
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     Node* add = MakeNode(value);
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     ++count_;
     if (!pos) {
       add->next = begin_;
@@ -59,7 +63,9 @@ class List {
     if (!pos) {
       Node* del = begin_;
       begin_ = del->next;
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
       delete del;
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
       return;
     }
 

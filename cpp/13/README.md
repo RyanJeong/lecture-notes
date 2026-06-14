@@ -11,7 +11,7 @@
 
 - 함수가 자기 자신을 호출하여 문제를 해결하는 방법
 
-![h:400 center](Figure_Recursion.png)
+![h:400 center](img/00-Figure_Recursion.png)
 
 ---
 
@@ -55,18 +55,18 @@
 
 ### 재귀로 구현한 피보나치 수열 (Fibonacci Number) 문제
 
-![h:150 center](Figure_Fibonacci.png)
+![h:150 center](img/01-Figure_Fibonacci.png)
 
 - 기반 조건: `fib(0) = 0, fib(1) = 1`
 - 일반 조건: `fib(n) = fib(n - 1) + fib(n - 2)`
 
-[//]: # (INCLUDE: ./cpp/13/fib1.cc --from 3 --to 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/00_fib1.cc --from 4 --to 7 --no-comment)
 
 ---
 
 ## 재귀 (Recursion) (Cont'd - 4)
 
-![center](Figure_17_5.png)
+![center](img/02-Figure_17_5.png)
 
 ---
 
@@ -74,7 +74,7 @@
 
 ### 재귀의 한계점
 
-[//]: # (INCLUDE: ./cpp/13/fact.cc --from 4 --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/01_fact.cc --from 5 --to 13 --no-comment)
 
 - 일반 재귀는 함수가 호출될 때마다 스택 영역에 함수 스택 프레임이 추가 할당됨
   - 일반 재귀로 작성한 팩토리얼 계산 함수를 호출 시 총 *n*개의 스택 프레임이 할당됨
@@ -88,7 +88,7 @@
 
 ### 재귀 최적화: 꼬리 재귀 (Tail Recursion)
 
-[//]: # (INCLUDE: ./cpp/13/fact.cc --from 14 --to 30 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/01_fact.cc --from 17 --to 33 --no-comment)
 
 - 꼬리 재귀는 **함수가 호출될 때마다 스택 영역의 이전 함수 스택 프레임을 재사용**
   - e.g., 꼬리 재귀로 작성한 팩토리얼 계산 함수 호출 시 하나의 스택 프레임만 할당됨
@@ -105,7 +105,7 @@
   - 꼬리 재귀 최적화(TCO, Tail Call Optimization) 필수 구현 조건
 - 재귀 깊이에 관계 없이 고정 크기 메모리를 사용하므로 **스택 오버플로우** 위험이 거의 없음
 
-![h:250 center](Figure_Tail_Recursion.png)
+![h:250 center](img/03-Figure_Tail_Recursion.png)
 
 ---
 
@@ -122,7 +122,7 @@
   - **꼬리 재귀는 누적된 결과를 인자로 계속 전달하며 변화함**
   - 함수 인자가 계속 달라짐에 따라, 이전에 저장해 둔 값을 다시 찾을 확률이 거의 없음
 
-[//]: # (INCLUDE: ./cpp/13/fact.cc --from 32 --to 38 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/01_fact.cc --from 37 --to 43 --no-comment)
 
 ---
 
@@ -132,17 +132,17 @@
 
 #### 일반 재귀
 
-[//]: # (INCLUDE: ./cpp/13/fact.cc --from 44 --to 44 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/01_fact.cc --from 51 --to 51 --no-comment)
 
 #### 꼬리 재귀
 
-[//]: # (INCLUDE: ./cpp/13/fact.cc --from 54 --to 54 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/01_fact.cc --from 63 --to 63 --no-comment)
 
 - 일반 재귀보다 메모리를 적게 사용하면서 더 빠르게 동작함
 
 #### 일반 재귀 + 메모이제이션
 
-[//]: # (INCLUDE: ./cpp/13/fact.cc --from 64 --to 64 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/01_fact.cc --from 75 --to 75 --no-comment)
 
 - 일반 재귀보다 메모리를 많이 사용하면서 더 빠르게 동작함
 
@@ -155,7 +155,7 @@
 
 ### 람다 함수의 기본 구조
 
-[//]: # (INCLUDE: ./cpp/13/lambda.hpp --from 4 --to 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/lambda.hpp --from 4 --to 6 --no-comment)
 
 - `[capture_list]`: 람다 함수 외부의 변수를 람다 함수 내부에서 사용하기 위한 **캡쳐 리스트**
 - `(parameters)`: 람다 함수가 받는 매개변수
@@ -171,7 +171,7 @@
 - 람다 함수가 외부 변수에 접근하는 방식을 지정
 
 | Capture Syntax | Description |
-|---------|------|
+| --- | --- |
 | `[]` | No external variable captured |
 | `[&]` | All external variables captured by **reference** (by reference) |
 | `[=]` | All external variables captured by **value** (by value) |
@@ -187,7 +187,7 @@
 - `auto` 키워드는 컴파일러가 **변수의 타입을 자동으로 추론**하도록 지시
 - 람다 함수는 고유한 타입을 가지므로, 변수에 저장할 때 `auto`를 사용하는 것이 편리
 
-[//]: # (INCLUDE: ./cpp/13/lambda.cc)
+[//]: # (INCLUDE: ./cpp/13/src/02_lambda.cc)
 
 - `auto` 사용 시 이점:
   - **람다 함수의 복잡한 타입을 명시할 필요가 없음**
@@ -204,7 +204,7 @@
 - `std::function`은 다양한 호출 객체를 담기 위해 타입 정보를 제거함(type erasure)
   - 가상 호출 매커니즘과 유사한 간접 호출(indirect call)이 발생하고 인라인 최적화가 제한됨
 
-[//]: # (INCLUDE: ./cpp/13/lambda_rec.cc)
+[//]: # (INCLUDE: ./cpp/13/src/03_lambda_rec.cc)
 
 - `std::function<int64_t(int64_t)>`: 함수 타입을 명시적으로 정의(`<R(Args...)>`)
 - `[&fib]`: 람다 함수 `fib` 자신을 참조로 캡쳐하여 재귀 호출 가능
@@ -251,7 +251,7 @@
 
 ### 선형 집합 (Linear Collection)
 
-![center](Figure_18_1.png)
+![center](img/04-Figure_18_1.png)
 
 - 데이터가 메모리 상에서 선형적으로 연결된 구조(e.g., 단일 링크드 리스트, 스택, 큐, etc.)
 
@@ -261,7 +261,7 @@
 
 ### 비선형 집합 (Non-linear Collection)
 
-![center](Figure_18_2.png)
+![center](img/05-Figure_18_2.png)
 
 - 데이터가 메모리 상에서 계층적 또는 복잡한 관계로 표현된 구조(e.g., 이진 탐색 트리, etc.)
 
@@ -273,7 +273,7 @@
 - 노드는 선형 순서 상 **다음 노드만 가리킬 수 있음**
   - 전방 탐색만 가능한 형태이며, 후방 탐색은 불가능
 
-![center](Figure_18_3.png)
+![center](img/06-Figure_18_3.png)
 
 - 단일 링크드 리스트를 표현하기 위해 두 가지(types) 사용
   - 단일 링크드 리스트 내 각 노드를 표현하는 `Node` 구조체 타입
@@ -285,9 +285,9 @@
 
 ### `Node` 구조체
 
-![center](Figure_18_4.png)
+![center](img/07-Figure_18_4.png)
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 9 --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 10 --to 13 --no-comment)
 
 ---
 
@@ -297,7 +297,7 @@
 
 - 새로 삽입될 노드는 동적 할당하며, 이 노드의 주소는 `Node` 타입 포인터 `add`가 가리킴
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 40 --to 40 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 43 --to 43 --no-comment)
 
 - 삽입 연산 시 세 가지 경우가 있음:
   1. 단일 링크드 리스트의 맨 앞에 새 노드를 삽입하는 경우
@@ -312,7 +312,7 @@
   1. `add`가 가리키는 노드의 `next` 포인터를 `List` 타입 객체의 `begin`으로 설정한다.
   2. `List` 타입 객체의 `begin` 포인터를 `add`로 설정한다.
 
-![center](Figure_18_6.png)
+![center](img/08-Figure_18_6.png)
 
 ---
 
@@ -323,13 +323,13 @@
   2. `add`가 가리키는 노드의 `next` 포인터를 `cur`가 가리키는 노드의 `next`로 설정한다.
   3. `cur`가 가리키는 노드의 `next` 포인터를 `add`로 설정한다.
 
-![h:400 center](Figure_18_7.png)
+![h:400 center](img/09-Figure_18_7.png)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 5)
 
-![center](Figure_18_7_Continued.png)
+![center](img/10-Figure_18_7_Continued.png)
 
 ---
 
@@ -349,7 +349,7 @@
 
 - 삭제할 노드는 `Node` 타입 포인터 `del`이 가리킨 뒤, 동적 해제함
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 62 --to 62 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 67 --to 67 --no-comment)
 
 - 삭제 연산 시 세 가지 경우가 있음:
   1. 단일 링크드 리스트의 맨 앞 노드를 삭제하는 경우
@@ -365,7 +365,7 @@
   2. `List` 타입 객체의 `begin` 포인터를 `begin`이 가리키는 노드의 `next`로 설정한다.
   3. `del` 포인터가 가리키는 동적 객체를 제거한다.
 
-![center](Figure_18_8.png)
+![center](img/11-Figure_18_8.png)
 
 ---
 
@@ -377,13 +377,13 @@
   3. `cur`가 가리키는 노드의 `next` 포인터를 `del`이 가리키는 노드의 `next`로 설정한다.
   4. `del` 포인터가 가리키는 동적 객체를 제거한다.
 
-![center](Figure_18_9.png)
+![center](img/12-Figure_18_9.png)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 10)
 
-![center](Figure_18_9_Continued.png)
+![center](img/13-Figure_18_9_Continued.png)
 
 ---
 
@@ -402,19 +402,22 @@
 
 ### 소멸자
 
-- `Node` 타입 포인터 `del`를 `List` 타입 객체의 `begin`으로 설정한 뒤, `begin`이 `nullptr`가 될 때까지 아래 과정 반복:
+- `Node` 타입 포인터 `del`를 `List` 타입 객체의 `begin`으로 설정
+- `begin`이 `nullptr`가 될 때까지 아래 과정 반복:
   1. `begin` 포인터를 `del` 포인터가 가리키는 노드의 `next`로 설정한다.
   2. `del` 포인터가 가리키는 동적 객체를 제거한다.
 
-![h:370 center](Figure_18_5.png)
+![h:340 center](img/14-Figure_18_5.png)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 13)
 
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/Makefile --reference)
+
 - `list_exception.hpp`
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list_exception.hpp)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list_exception.hpp)
 
 ---
 
@@ -422,31 +425,31 @@
 
 - `list.hpp`
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --to 13)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --to 8 --from 10 --to 13)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 15)
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 14 --to 35)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 16 --to 36)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 16)
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 36 --to 53)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 38 --to 41 --from 43 --to 43 --from 45 --to 56)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 17)
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 54 --to 72)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 58 --to 65 --from 67 --to 67 --from 69 --to 77)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 18)
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/list.hpp --from 73)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/list.hpp --from 79)
 
 ---
 
@@ -454,19 +457,19 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/main.cc --to 20)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/main.cc --to 20)
 
 ---
 
 ## 단일 링크드 리스트 (Singly Linked List) (Cont'd - 20)
 
-[//]: # (INCLUDE: ./cpp/13/singly-linked-list/main.cc --from 21)
+[//]: # (INCLUDE: ./cpp/13/src/singly-linked-list/main.cc --from 21)
 
 ---
 
 ## 스택 (Stack)
 
-![center](Figure_18_10.png)
+![center](img/15-Figure_18_10.png)
 
 - 선형 집합으로 표현한 자료구조
 - LIFO(last in, first out) 구조를 유지하기 위해 제약된 연산만 허용
@@ -478,7 +481,7 @@
 
 ### 스택 연산
 
-![center](Figure_18_11.png)
+![center](img/16-Figure_18_11.png)
 
 ---
 
@@ -486,7 +489,7 @@
 
 ### 단일 링크드 리스트 기반 스택 구현
 
-![center](Figure_18_12.png)
+![center](img/17-Figure_18_12.png)
 
 - 스택 클래스는 단일 링크드 리스트를 **구성관계**로 구현할 수 있음
   - `List` 타입 객체의 `begin` 포인터가 `Stack` 타입 객체의 `top` 위치로 사용됨
@@ -497,9 +500,11 @@
 
 ## 스택 (Stack) (Cont'd - 3)
 
+[//]: # (INCLUDE: ./cpp/13/src/stack/Makefile --reference)
+
 - `stack.hpp`
 
-[//]: # (INCLUDE: ./cpp/13/stack/stack.hpp)
+[//]: # (INCLUDE: ./cpp/13/src/stack/stack.hpp)
 
 ---
 
@@ -507,13 +512,13 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/13/stack/main.cc)
+[//]: # (INCLUDE: ./cpp/13/src/stack/main.cc)
 
 ---
 
 ## 큐 (Queue)
 
-![center](Figure_18_14.png)
+![center](img/18-Figure_18_14.png)
 
 - 선형 집합으로 표현한 자료구조
 - FIFO(first in, first out) 구조를 유지하기 위해 제약된 연산만 허용
@@ -525,7 +530,7 @@
 
 ### 단일 링크드 리스트 기반 큐 구현
 
-![center](Figure_18_15.png)
+![center](img/19-Figure_18_15.png)
 
 - 큐 클래스는 단일 링크드 리스트를 **구성관계**로 구현할 수 있음
   - `List` 타입 객체의 `begin` 포인터가 `Queue` 타입 객체의 `front` 위치로 사용됨
@@ -536,9 +541,11 @@
 
 ## 큐 (Queue) (Cont'd - 2)
 
+[//]: # (INCLUDE: ./cpp/13/src/queue/Makefile --reference)
+
 - `queue.hpp`
 
-[//]: # (INCLUDE: ./cpp/13/queue/queue.hpp)
+[//]: # (INCLUDE: ./cpp/13/src/queue/queue.hpp)
 
 ---
 
@@ -546,19 +553,19 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/13/queue/main.cc --to 19)
+[//]: # (INCLUDE: ./cpp/13/src/queue/main.cc --to 19)
 
 ---
 
 ## 큐 (Queue) (Cont'd - 4)
 
-[//]: # (INCLUDE: ./cpp/13/queue/main.cc --from 20)
+[//]: # (INCLUDE: ./cpp/13/src/queue/main.cc --from 20)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree)
 
-![center](Figure_18_16.png)
+![center](img/20-Figure_18_16.png)
 
 - 비선형 집합으로 표현한 자료구조
 - 이진 트리(binary tree) 구조를 사용해 **탐색**을 효율적으로 수행
@@ -570,7 +577,7 @@
 
 ### 이진 탐색 트리에서의 순회 (Traversals)
 
-![center](Figure_Binary_Search_Tree.png)
+![center](img/21-Figure_Binary_Search_Tree.png)
 
 - 이진 트리에서의 각 노드를 탐색하는 방법
 - 각 노드는 **한 번만** 처리됨
@@ -587,7 +594,7 @@
 
 - Pre-order: 루트 노드 → 왼쪽 서브트리 → 오른쪽 서브트리
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 54 --to 60 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 59 --to 65 --no-comment)
 
 ---
 
@@ -597,7 +604,7 @@
 
 - In-order: 왼쪽 서브트리 → 루트 노드 → 오른쪽 서브트리
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 62 --to 68 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 69 --to 75 --no-comment)
 
 ---
 
@@ -607,7 +614,7 @@
 
 - Post-order: 왼쪽 서브트리 → 오른쪽 서브트리 → 루트 노드
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 70 --to 76 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 79 --to 85 --no-comment)
 
 ---
 
@@ -620,7 +627,7 @@
   2. 삽입할 값이 루트 노드의 값보다 작다면 왼쪽 서브트리로 이동한다.
   3. 삽입할 값이 루트 노드의 값보다 크다면 오른쪽 서브트리로 이동한다.
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 27 --to 35 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 28 --to 36 --no-comment)
 
 ---
 
@@ -633,15 +640,17 @@
   2. 오른쪽 서브트리를 소멸한다.
   3. 루트 노드를 소멸한다.
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 37 --to 43 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 40 --to 46 --no-comment)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 7)
 
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/Makefile --reference)
+
 - `binary_search_tree_exception.hpp`
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree_exception.hpp)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree_exception.hpp)
 
 ---
 
@@ -649,37 +658,37 @@
 
 - `binary_search_tree.hpp`
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --to 14)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --to 13)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 9)
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 15 --to 36)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 15 --to 26 --from 28 --to 36)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 10)
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 37 --to 53)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 40 --to 46 --from 48 --to 56)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 11)
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 54 --to 69)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 59 --to 65 --from 67 --to 67 --from 69 --to 75)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 12)
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 70 --to 90)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 79 --to 85 --from 87 --to 99)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 13)
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/binary_search_tree.hpp --from 91)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/binary_search_tree.hpp --from 101)
 
 ---
 
@@ -687,13 +696,13 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/main.cc --to 19)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/main.cc --to 19)
 
 ---
 
 ## 이진 탐색 트리 (Binary Search Tree) (Cont'd - 15)
 
-[//]: # (INCLUDE: ./cpp/13/binary_search_tree/main.cc --from 20)
+[//]: # (INCLUDE: ./cpp/13/src/binary_search_tree/main.cc --from 20)
 
 ---
 
@@ -706,7 +715,7 @@
   - 따라서 `template <typename T>` 또는 `auto`를 사용해야 함
 - 람다는 시그니처(반환 타입과 인자)가 같아도, **작성된 위치가 다르면 서로 다른 타입**
 
-[//]: # (INCLUDE: ./cpp/13/appendix_lambda.cc --from 18 --to 21 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/04_appendix_lambda.cc --from 21 --to 24 --no-comment)
 
 ---
 
@@ -718,7 +727,7 @@
 - `std::function`은 타입 소거(type erasure) 메커니즘을 통해 **시그니처가 같은 모든 람다를 하나의 타입으로 포장**
   - 서로 다른 람다들도 같은 `std::function` 타입으로 저장 가능
 
-[//]: # (INCLUDE: ./cpp/13/appendix_lambda.cc --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/04_appendix_lambda.cc --from 2 --to 16 --no-comment)
 
 ---
 
@@ -730,7 +739,7 @@
   - 템플릿으로 멤버를 만들면 클래스 전체가 템플릿화되어야 함
   - `std::function`을 사용하면 구체적인 타입을 멤버로 선언 가능
 
-[//]: # (INCLUDE: ./cpp/13/appendix_lambda.cc --from 24 --to 34 --no-comment)
+[//]: # (INCLUDE: ./cpp/13/src/04_appendix_lambda.cc --from 32 --to 42 --no-comment)
 
 ---
 
@@ -741,9 +750,9 @@
 - `template <typename T>`를 사용하면 **구현 코드가 반드시 헤더 파일**에 있어야 함
 - `std::function`은 구체적인 타입이므로 코드를 헤더 파일과 소스 파일로 나누어 관리할 수 있음
 
-[//]: # (INCLUDE: ./cpp/13/event_handler.hpp)
+[//]: # (INCLUDE: ./cpp/13/src/event_handler.hpp)
 
-[//]: # (INCLUDE: ./cpp/13/event_handler.cc)
+[//]: # (INCLUDE: ./cpp/13/src/05_event_handler.cc)
 
 ---
 
@@ -766,7 +775,7 @@
 - `std::function`은 **() 연산자로 호출할 수 있는 모든 것(callable)을 담을 수 있음**
 
 | Category | Description | Example |
-|----------|-------------|----------|
+| --- | --- | --- |
 | Function Pointer | Global function, static function | `void Foo(int a) { ... }` |
 | Lambda Function | Lambda with or without capture | `[x](int a) { return x + a; }` |
 | Function Object (Functor) | Class/struct with `operator()` | `class Functor { int operator()(int a) { ... } };` |
@@ -779,10 +788,10 @@
 
 ### `std::function`과 다양한 Callable 타입
 
-[//]: # (INCLUDE: ./cpp/13/callable.cc --to 18)
+[//]: # (INCLUDE: ./cpp/13/src/06_callable.cc --to 18)
 
 ---
 
 ## Appendix. 람다 함수와 `std::function` (Cont'd - 7)
 
-[//]: # (INCLUDE: ./cpp/13/callable.cc --from 19)
+[//]: # (INCLUDE: ./cpp/13/src/06_callable.cc --from 19)
