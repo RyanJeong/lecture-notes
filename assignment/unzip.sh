@@ -2,12 +2,14 @@
 
 backup_dir=$(dirname $0)/backup
 mkdir -p "$backup_dir"
-exit
 find . -name "*.zip" | while IFS= read -r zip_file; do
   echo "Processing: $zip_file"
 
+  # Original filename: 객체지향프로그래밍(2025년도, 2학기, 564016, 01)-과제 3-586204.zip
+  # base_name: 객체지향프로그래밍(2025년도, 2학기, 564016, 01)-과제 3-586204
   base_name=$(basename "$zip_file" .zip)
-  target_dir=$(echo "$base_name" | grep -oE '[0-9]+' | paste -sd '_')
+  # Remove commas, replace spaces with underscores, keep only alphanumeric and underscores
+  target_dir=$(echo "$base_name" | sed 's/,//g' | sed 's/ /_/g' | sed 's/[^0-9a-zA-Z_]//g')
   mkdir -p "$target_dir"
   unzip -q "$zip_file" -d "$target_dir"
 
@@ -37,22 +39,33 @@ find . -name "*.zip" | while IFS= read -r zip_file; do
 
   # 4. print not c or cpp extension files
   result="results.txt"
-  > "$PWD"/"$result"
-  find . -type f ! \( -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.cxx" -name "*.h" -name "*.hpp" \) \
-      | while IFS= read -r file; do
-    if [[ "$file" == "./${result}" ]]; then
-      continue
-    fi
-
-    # .zip file
-    if [[ "$file" == *.zip ]]; then
-      if ! unzip "$file" -d "${file%/*}" >/dev/null; then
-        echo ">>>> ${file}" >> "$PWD"/"$result"
+  >"$PWD"/"$result"
+  find . -type f ! \( -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.cxx" -name "*.h" -name "*.hpp" \) |
+    while IFS= read -r file; do
+      if [[ "$file" == "./${result}" ]]; then
+        continue
       fi
-    else
-      echo ">>>> ${file}" >> "$PWD"/"$result"
-    fi
-  done
+
+      # .zip file (case-insensitive)
+      if [[ "${file,,}" == *.zip ]]; then
+        # Rename to lowercase for unzip
+        dir_path="${file%/*}"
+        file_name="${file##*/}"
+        lower_file="${dir_path}/${file_name,,}"
+        if [[ "$file" != "$lower_file" ]]; then
+          mv "$file" "$lower_file"
+          file="$lower_file"
+        fi
+        # Try to extract, ignore exit code (exit 1 might still be success with warnings)
+        unzip "$file" -d "${file%/*}" >/dev/null 2>&1
+        # Only log if nothing was extracted
+        if ! ls -A "${file%/*}" | grep -v "$(basename "$file")" >/dev/null 2>&1; then
+          echo ">>>> ${file}" >>"$PWD"/"$result"
+        fi
+      else
+        echo ">>>> ${file}" >>"$PWD"/"$result"
+      fi
+    done
   sudo chown -R "$USER":"$USER" ./
   sudo chmod -R u+rwX ./
   popd >/dev/null

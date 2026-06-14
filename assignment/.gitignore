@@ -1,3 +1,8 @@
 *.zip
 *_*_*_*_*_*
 dju-asmt
+
+# Lecture code: TCPL
+*565006*
+# Lecture code: OOP
+*564016*

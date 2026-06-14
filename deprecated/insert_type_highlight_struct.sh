@@ -40,4 +40,3 @@ sed -i "${INSERT_AT}i\\
 " "$TARGET_FILE"
 
 echo "The struct/union/enum highlighting block has been inserted successfully."
-
