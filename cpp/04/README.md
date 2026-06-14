@@ -12,13 +12,13 @@
 - `char`타입 배열을 사용해 문자열 기록
   - `char`타입 배열 마지막 요소에는 문자열 끝을 표현하는 널 문자(null character, `\0`) 저장
 
-![center](Figure_10_1.png)
+![center](img/00-Figure_10_1.png)
 
 - 문자열 선언 시 축약 표현(shorthand) 사용 가능
 
-![center](Figure_10_2.png)
+![center](img/01-Figure_10_2.png)
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 3 --to 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 3 --to 3 --no-comment)
 
 ---
 
@@ -31,9 +31,9 @@
   - 힙 영역처럼 이름 없는 객체 허용
 - 포인터를 통해 문자열 리터럴에 접근 가능
 
-![center](Figure_10_5.png)
+![center](img/02-Figure_10_5.png)
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 10 --to 11 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 11 --to 12 --no-comment)
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### C-문자열 한계 1 - 메모리 관리
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 15 --to 20 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 18 --to 23 --no-comment)
 
 ---
 
@@ -49,9 +49,9 @@
 
 ### C-문자열 한계 2 - 문자열 길이 계산
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 23 --to 34 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 28 --to 39 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 37 --to 38 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 46 --to 47 --no-comment)
 
 ---
 
@@ -59,9 +59,9 @@
 
 ### C-문자열 한계 3 - 문자열 조작
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 42 --to 46 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 56 --to 60 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 50 --to 62 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 68 --to 80 --no-comment)
 
 ---
 
@@ -73,7 +73,7 @@
 - 문자열 크기(size)와 용량(capacity) 개념 사용
 - 문자열 인스턴스는 힙 영역에 문자열 저장
 
-![center](Figure_10_7.png)
+![center](img/03-Figure_10_7.png)
 
 ---
 
@@ -86,7 +86,7 @@
 - 크기(size)
   - 문자열 객체의 문자열 길이(현재 저장된 문자 수)
 - 용량(capacity)
-  - 문자열 객체가 **현재 사용중인 메모리 재할당 없이 저장할 수 있는** 최대 문자 수
+  - 문자열 객체가 **현재 사용 중인 메모리 재할당 없이 저장할 수 있는** 최대 문자 수
 
 #### 크기와 용량을 구분한 이유
 
@@ -104,17 +104,17 @@
 
 - 문자열 객체의 크기가 3, 용량이 6인 경우
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 68 --to 69 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 92 --to 93 --no-comment)
 
 - 해당 문자열 객체에 길이가 2인 문자열을 연결하는 경우:
   - 힙 영역 재할당 없이 문자열 연결
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 71 --to 72 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 97 --to 98 --no-comment)
 
 - 해당 문자열 객체에 길이가 2인 문자열을 다시 한 번 연결하는 경우:
   - 힙 영역 재할당 후 문자열 연결
 
-[//]: # (INCLUDE: ./cpp/04/snippet_cstr.cc --from 74 --to 75 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 102 --to 103 --no-comment)
 
 ---
 
@@ -122,15 +122,17 @@
 
 ### 간단한 C++ 문자열 클래스 구현
 
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/Makefile --reference)
+
 - `mystring.hpp`
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.hpp --to 15)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.hpp --to 15)
 
 ---
 
 ## C++ 문자열 (Cont'd - 4)
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.hpp --from 17)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.hpp --from 17)
 
 ---
 
@@ -138,31 +140,31 @@
 
 - `mystring.cc`
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.cc --to 14)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.cc --to 14)
 
 ---
 
 ## C++ 문자열 (Cont'd - 6)
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.cc --from 16 --to 36)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.cc --from 16 --to 36)
 
 ---
 
 ## C++ 문자열 (Cont'd - 7)
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.cc --from 38 --to 59)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.cc --from 38 --to 59)
 
 ---
 
 ## C++ 문자열 (Cont'd - 8)
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.cc --from 61 --to 81)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.cc --from 61 --to 81)
 
 ---
 
 ## C++ 문자열 (Cont'd - 9)
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/mystring.cc --from 83)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/mystring.cc --from 83)
 
 ---
 
@@ -170,13 +172,13 @@
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/main.cc --to 15)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/main.cc --to 15)
 
 ---
 
 ## C++ 문자열 (Cont'd - 11)
 
-[//]: # (INCLUDE: ./cpp/04/mystring1/main.cc --from 17)
+[//]: # (INCLUDE: ./cpp/04/src/mystring1/main.cc --from 17)
 
 ---
 
@@ -184,7 +186,7 @@
 
 ### 얕은 복사
 
-[//]: # (INCLUDE: ./cpp/04/snippet_shallow.cc --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 111 --to 125 --no-comment)
 
 - 기본 복사 생성자(synthesized copy constructor)는 얕은 복사(shallow copy) 수행
   - 새로 생성되는 객체의 데이터 멤버 값은 복사할 객체의 데이터 멤버 값으로 설정됨
@@ -200,7 +202,7 @@
   - **메모리 누수(memory leak)**: 소멸자가 한 번만 호출되면 참조를 잃어버린 메모리가 발생
   - **의도치 않은 데이터 변경**: 한 객체의 변경이 다른 객체에도 영향을 줌
 
-[//]: # (INCLUDE: ./cpp/04/snippet_shallow.cc --from 20 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 130 --to 135 --no-comment)
 
 ```shell
 free(): double free detected in tcache 2
@@ -213,13 +215,13 @@ Aborted
 
 ### 깊은 복사
 
-[//]: # (INCLUDE: ./cpp/04/snippet_deep.cc --to 20 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 143 --to 160 --no-comment)
 
 ---
 
 ## 얕은 복사 (Shallow Copy) vs 깊은 복사 (Deep Copy) (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/04/snippet_deep.cc --from 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 165 --to 171 --no-comment)
 
 - 인스턴스 복사 시 동적 할당된 데이터 멤버를 갖는 인스턴스는 **명시적으로 깊은 복사를 해야 함**
 - 깊은 복사가 필요한 경우:
@@ -231,7 +233,7 @@ Aborted
 
 ## 참조 반환 멤버 함수
 
-[//]: # (INCLUDE: ./cpp/04/snippet.cc --from 2 --to 18 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 180 --to 196 --no-comment)
 
 - 참조 반환의 이점:
   1. 값 반환이 아니므로 **불필요한 메모리 관련 비용 및 연산을 아낄 수 있다**.
@@ -243,7 +245,7 @@ Aborted
 
 - 암묵적 변환(implicit conversion)을 불허하고자 할 때 사용
 
-[//]: # (INCLUDE: ./cpp/04/snippet.cc --from 22 --to 36 --no-comment)
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 200 --to 214 --no-comment)
 
 - **모호한 표현을 사용하지 못하도록 강제함**으로써 코드 가독성을 높일 수 있음
 - `MyString` 클래스의 `explicit` 키워드를 제거하면 `MyString str = 10` 표현이 가능해짐
@@ -257,7 +259,7 @@ Aborted
 
 - Testing functions related to size and capacity
 
-[//]: # (INCLUDE: ./cpp/04/str1.cc)
+[//]: # (INCLUDE: ./cpp/04/src/00_str1.cc)
 
 ---
 
@@ -265,7 +267,7 @@ Aborted
 
 - Using input/output operators
 
-[//]: # (INCLUDE: ./cpp/04/str2.cc)
+[//]: # (INCLUDE: ./cpp/04/src/01_str2.cc)
 
 ---
 
@@ -273,7 +275,7 @@ Aborted
 
 - Using [`getline`](https://en.cppreference.com/w/cpp/string/basic_string/getline) for input
 
-[//]: # (INCLUDE: ./cpp/04/str3.cc)
+[//]: # (INCLUDE: ./cpp/04/src/02_str3.cc)
 
 ---
 
@@ -281,15 +283,15 @@ Aborted
 
 - Retrieving and changing characters
 
-[//]: # (INCLUDE: ./cpp/04/str4.cc)
+[//]: # (INCLUDE: ./cpp/04/src/03_str4.cc)
 
 ---
 
 ## 표준 C++ 문자열 (Cont'd - 4)
 
-- Retrieving two substrings ([`substr`](https://en.cppreference.com/w/cpp/string/basic_string/substr))
+- Retrieving two substrings([`substr`](https://en.cppreference.com/w/cpp/string/basic_string/substr))
 
-[//]: # (INCLUDE: ./cpp/04/str5.cc)
+[//]: # (INCLUDE: ./cpp/04/src/04_str5.cc)
 
 ---
 
@@ -304,8 +306,8 @@ Aborted
   - 특수한 상수 값으로 문자열 내에서 위치를 찾지 못했음을 나타냄
   - `size_t` 타입의 최대값(`-1`을 `size_t`로 변환한 값)
   - 검색 실패 여부 확인에 필수적으로 사용됨
-  
-[//]: # (INCLUDE: ./cpp/04/snippet_str.cc --from 5 --to 10 --no-comment)
+
+[//]: # (INCLUDE: ./cpp/04/src/_snippet.cc --from 219 --to 224 --no-comment)
 
 ---
 
@@ -313,23 +315,23 @@ Aborted
 
 ### Forward and Backward Search for a Given Character
 
-![center](Figure_10_8.png)
+![center](img/04-Figure_10_8.png)
 
 ---
 
 ## 표준 C++ 문자열 (Cont'd - 7)
 
-- Forward search ([`find`](https://en.cppreference.com/w/cpp/string/basic_string/find))
+- Forward search([`find`](https://en.cppreference.com/w/cpp/string/basic_string/find))
 
-[//]: # (INCLUDE: ./cpp/04/str_find.cc)
+[//]: # (INCLUDE: ./cpp/04/src/05_str_find.cc)
 
 ---
 
 ## 표준 C++ 문자열 (Cont'd - 8)
 
-- Backward search ([`rfind`](https://en.cppreference.com/w/cpp/string/basic_string/rfind))
+- Backward search([`rfind`](https://en.cppreference.com/w/cpp/string/basic_string/rfind))
 
-[//]: # (INCLUDE: ./cpp/04/str_rfind.cc)
+[//]: # (INCLUDE: ./cpp/04/src/06_str_rfind.cc)
 
 ---
 
@@ -337,7 +339,7 @@ Aborted
 
 ### 문자 집합 (Character Set)에 속한 문자 검색
 
-![center](Figure_10_9.png)
+![center](img/05-Figure_10_9.png)
 
 ---
 
@@ -345,7 +347,7 @@ Aborted
 
 - 정방향 포함 문자 검색([`find_first_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_first_of)), 역방향 포함 문자 검색([`find_last_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_last_of))
 
-[//]: # (INCLUDE: ./cpp/04/str_find_of.cc)
+[//]: # (INCLUDE: ./cpp/04/src/07_str_find_of.cc)
 
 ---
 
@@ -353,7 +355,7 @@ Aborted
 
 - 정방향 불포함 문자 검색([`find_first_not_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_first_not_of)), 역방향 불포함 문자 검색([`find_last_not_of`](https://en.cppreference.com/w/cpp/string/basic_string/find_last_not_of))
 
-[//]: # (INCLUDE: ./cpp/04/str_find_not_of.cc)
+[//]: # (INCLUDE: ./cpp/04/src/08_str_find_not_of.cc)
 
 ---
 
@@ -361,7 +363,7 @@ Aborted
 
 - Using `find` and `rfind` to check if a string contains a substring
 
-[//]: # (INCLUDE: ./cpp/04/str_find_example.cc)
+[//]: # (INCLUDE: ./cpp/04/src/09_str_find_example.cc)
 
 ---
 
@@ -378,7 +380,7 @@ Aborted
   2. `find_first_of`: 구분자의 위치를 찾음(토큰 종료점)
   3. `substr`: 시작점과 종료점 사이의 부분 문자열(토큰)을 추출
 
-![center](Figure_10_10.png)
+![center](img/06-Figure_10_10.png)
 
 ---
 
@@ -386,7 +388,7 @@ Aborted
 
 - Retrieving words from a line of text
 
-[//]: # (INCLUDE: ./cpp/04/token.cc)
+[//]: # (INCLUDE: ./cpp/04/src/10_token.cc)
 
 ---
 
@@ -394,15 +396,15 @@ Aborted
 
 ### Comparing Two Strings
 
-![center](Figure_10_11.png)
+![center](img/07-Figure_10_11.png)
 
 ---
 
 ## 표준 C++ 문자열 (Cont'd - 16)
 
-- Integral comparison of strings ([`compare`](https://en.cppreference.com/w/cpp/string/basic_string/compare))
+- Integral comparison of strings([`compare`](https://en.cppreference.com/w/cpp/string/basic_string/compare))
 
-[//]: # (INCLUDE: ./cpp/04/str_cmp1.cc)
+[//]: # (INCLUDE: ./cpp/04/src/11_str_cmp1.cc)
 
 ---
 
@@ -410,7 +412,7 @@ Aborted
 
 - Using logical operators to compare strings
 
-[//]: # (INCLUDE: ./cpp/04/str_cmp2.cc)
+[//]: # (INCLUDE: ./cpp/04/src/12_str_cmp2.cc)
 
 ---
 
@@ -418,7 +420,7 @@ Aborted
 
 ### C++ String Modifying Member Functions - [`append`](https://en.cppreference.com/w/cpp/string/basic_string/append), [`insert`](https://en.cppreference.com/w/cpp/string/basic_string/insert), [`replace`](https://en.cppreference.com/w/cpp/string/basic_string/replace), [`assign`](https://en.cppreference.com/w/cpp/string/basic_string/assign)
 
-![center](Figure_10_12.png)
+![center](img/08-Figure_10_12.png)
 
 ---
 
@@ -426,7 +428,7 @@ Aborted
 
 - Modifying C++ string - 1
 
-[//]: # (INCLUDE: ./cpp/04/str_mod1.cc)
+[//]: # (INCLUDE: ./cpp/04/src/13_str_mod1.cc)
 
 ---
 
@@ -434,7 +436,7 @@ Aborted
 
 - Modifying C++ string - 2
 
-[//]: # (INCLUDE: ./cpp/04/str_mod2.cc)
+[//]: # (INCLUDE: ./cpp/04/src/14_str_mod2.cc)
 
 ---
 
@@ -442,15 +444,23 @@ Aborted
 
 - Modifying C++ string - 3
 
-[//]: # (INCLUDE: ./cpp/04/str_mod3.cc)
+[//]: # (INCLUDE: ./cpp/04/src/15_str_mod3.cc)
 
 ---
 
 ## 표준 C++ 문자열 (Cont'd - 22)
 
+- Modifying C++ string - 4
+
+[//]: # (INCLUDE: ./cpp/04/src/16_str_mod4.cc)
+
+---
+
+## 표준 C++ 문자열 (Cont'd - 23)
+
 - String to character array and C-string conversion
 
-[//]: # (INCLUDE: ./cpp/04/str_mod5.cc)
+[//]: # (INCLUDE: ./cpp/04/src/17_str_mod5.cc)
 
 - **용량 크기 1은 널 문자로 예약되어 있음**
   - `c_str()` 호출 시 `data_[size_] = '\0'` 수행 후 `data_` 반환
