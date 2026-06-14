@@ -73,7 +73,7 @@ class Circle {
 double Circle::get_radius(Circle* this) const { return this->radius_; }
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
-void snippet1(void) {
+void Snippet1(void) {
 #if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   Circle circle;
   Circle* this = &circle;
