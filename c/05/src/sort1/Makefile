@@ -1,0 +1,13 @@
+CC      = gcc
+CFLAGS  = -ansi -Wall -Wextra -Werror -Wno-trigraphs -trigraphs -fno-builtin
+TARGET  = $(notdir $(CURDIR))
+
+SRCS    = main.c alloc.c getline.c line.c qsort.c
+
+.PHONY: all clean
+
+all: $(SRCS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS)
+
+clean:
+	rm -f *.o $(TARGET)

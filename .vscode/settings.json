@@ -2,19 +2,55 @@
   "C_Cpp.default.compilerPath": "/usr/bin/g++",
   "emeraldwalk.runonsave": {
     "commands": [
-        {
-            "match": ".*/c/\\d{2}/README\\.md",
-            "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
-        },
-        // {
-        //     "match": ".*/cpp/\\d{2}/README\\.md",
-        //     "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf"
-        // }
+      {
+        "match": ".*/(c|cpp)/\\d{2}/README\\.md",
+        "cmd": "${workspaceFolder}/build.sh ${file} $(dirname ${file})/temp.md $(dirname ${file})/temp.pdf && cat ${file} | grep -P '\\)\\*\\*\\S'"
+      }
     ]
   },
-  "editor.rulers": [
-    80,
-    120
-  ],
-  "files.autoSave": "off"
+
+  "diffEditor.ignoreTrimWhitespace": false,
+  "chat.tools.terminal.autoApprove": {
+    "/^grep -nE \"자료형\\|데이터형\\|저장 부류\\|매개 변수\\|전달 인자\\|반환 값\\|정수형\\|실수형\\|문자형\\|포인터형\\|이여야\\|것입니다\\|하여야\\|하게 됩니다\\|통하여\" c/04/temp\\.md \\|\\| true && grep -nP \"\\\\\\)\\\\\\*\\\\\\*\\(\\?!\\$\\)\" c/04/temp\\.md \\|\\| true && grep -n \"DO NOT CONTAIN THIS LINE IN THE MARKDOWN\" c/04/temp\\.md \\|\\| true$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  },
+
+  // Munseong: disable autosave to avoid frequent rebuilds
+  "files.autoSave": "off",
+
+  "editor.rulers": [80, 120],
+  "files.associations": {
+    "*.ipp": "cpp",
+    "*.tcc": "cpp",
+    "CMakeLists.txt": "cmake",
+    "*.cmake": "cmake",
+    "*.mk": "makefile",
+    "Makefile": "makefile",
+    "*.jsonc": "jsonc",
+    "*.config": "json",
+    "Jenkinsfile": "groovy",
+    "*.xml": "xml",
+    "*.properties": "ini",
+    "*.gradle": "groovy",
+    "*.jsp": "html",
+    "*.tag": "html",
+    "*.htm": "html",
+    "*.html": "html",
+    "*.css": "css",
+    "*.js": "javascript",
+    "*.ts": "typescript",
+    "*.md": "markdown",
+    "*.mdx": "markdown",
+    "Dockerfile": "dockerfile",
+    "*.dockerfile": "dockerfile",
+    "*.myp": "python",
+    "SConstruct": "python",
+    "wscript": "python",
+    "*.tac": "python",
+    "iomanip": "cpp",
+    "random": "cpp",
+    "iostream": "cpp"
+  }
 }

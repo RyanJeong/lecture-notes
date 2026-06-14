@@ -1,0 +1,9 @@
+/* @theme notes */
+
+@import 'default';
+
+section {
+  width: 960px;
+  height: 720px;
+  font-size: 20px;
+}
