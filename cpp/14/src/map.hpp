@@ -1,5 +1,6 @@
 #pragma once
 
+#if 1  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN
 template <typename K, typename V>
 class map {
  private:
@@ -20,3 +21,4 @@ class map {
     return n->value;
   }
 };
+#endif  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN

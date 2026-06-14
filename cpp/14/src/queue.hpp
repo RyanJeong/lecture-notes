@@ -2,6 +2,7 @@
 
 #include <deque>  // for std::deque
 
+#if 1  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN
 template <typename T, typename Container = std::deque<T>>
 class queue {
  private:
@@ -13,3 +14,4 @@ class queue {
   T& front() { return c.front(); }
   T& back() { return c.back(); }
 };
+#endif  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN

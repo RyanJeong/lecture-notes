@@ -11,9 +11,8 @@ int main() {
     if (c == '(') {
       s.push(c);  // Push opening bracket
     } else if (c == ')') {
-      if (s.empty()) {  // No matching opening bracket
+      if (s.empty())  // No matching opening bracket
         break;
-      }
       s.pop();  // Pop matching opening bracket
     }
   }

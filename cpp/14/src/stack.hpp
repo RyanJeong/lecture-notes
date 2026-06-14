@@ -2,6 +2,7 @@
 
 #include <deque>  // for std::deque
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 template <typename T, typename Container = std::deque<T>>
 class stack {
  private:
@@ -14,3 +15,4 @@ class stack {
   bool empty() const { return c.empty(); }
   size_t size() const { return c.size(); }
 };
+#endif  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN

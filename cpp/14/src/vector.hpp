@@ -1,5 +1,6 @@
 #pragma once
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 // Basic vector structure (conceptual)
 template <typename T>
 class vector {
@@ -21,3 +22,4 @@ class vector {
     data[size_++] = val;
   }
 };
+#endif  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN

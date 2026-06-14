@@ -1,5 +1,6 @@
 #pragma once
 
+#if 1  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN
 // Basic list structure (conceptual)
 template <typename T>
 class list {
@@ -20,6 +21,6 @@ class list {
     pos.node->prev = newNode;
     size_++;
   }
-
   iterator begin() { return iterator(head); }
 };
+#endif  // DO NOT CONTAIN THIS LINE IN THE MARKDOWN

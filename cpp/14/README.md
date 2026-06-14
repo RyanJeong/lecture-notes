@@ -26,7 +26,7 @@
 
 ### STL의 4대 구성 요소
 
-![center](image.png)
+![center](img/00-image.png)
 
 - **Containers(컨테이너)**
   - 데이터를 저장하고 관리하는 객체(e.g., `vector`, `list`, `map`, `set`, `deque`)
@@ -42,10 +42,10 @@
 
 ## Iterators (반복자)
 
-![center](image-1.png)
+![center](img/01-image-1.png)
 
 - 반복자는 포인터의 개념을 일반화한 클래스 템플릿
-- 포인터처럼 `*` (역참조), `->` (멤버 접근), `++` (다음 요소로 이동) 연산 지원
+- 포인터처럼 `*` (간접 참조), `->` (멤버 접근), `++` (다음 요소로 이동) 연산 지원
 - **반복자는 알고리즘과 컨테이너 사이의 추상화 계층**
   - 알고리즘 함수들은 컨테이너를 직접 알지 못함
   - 오직 반복자를 통해서만 데이터에 접근
@@ -56,13 +56,13 @@
 
 ## Iterators (반복자) (Cont'd - 1)
 
-[//]: # (INCLUDE: ./cpp/14/iter.hpp --from 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/iter.hpp --from 4 --to 26 --no-comment)
 
 ---
 
 ## Iterators (반복자) (Cont'd - 2)
 
-![center](image-2.png)
+![center](img/02-image-2.png)
 
 - **Input Iterator(입력 반복자)**: 컨테이너에서 순방향으로 읽기만 가능
 - **Output Iterator(출력 반복자)**: 컨테이너에 순방향으로 쓰기만 가능
@@ -103,13 +103,13 @@
 
 - 메모리 상에 데이터가 **연속적으로** 배치되며, 내부적으로 동적 배열 구현
 
-![center](image-3.png)
+![center](img/03-image-3.png)
 
 ---
 
 ## Sequence Containers (시퀀스 컨테이너) (Cont'd - 1)
 
-[//]: # (INCLUDE: ./cpp/14/vector.hpp --from 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/vector.hpp --from 4 --to 24 --no-comment)
 
 ---
 
@@ -132,7 +132,7 @@
 
 ## Sequence Containers (시퀀스 컨테이너) (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/14/vector.cc)
+[//]: # (INCLUDE: ./cpp/14/src/00_vector.cc)
 
 ---
 
@@ -142,13 +142,13 @@
 
 - 여러 개의 고정 크기 메모리 블록(chunk)을 포인터 배열로 관리하며, 메모리가 연속적이지 않음
 
-![center](image-4.png)
+![center](img/04-image-4.png)
 
 ---
 
 ## Sequence Containers (시퀀스 컨테이너) (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/14/deque.hpp --from 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/deque.hpp --from 6 --to 25 --no-comment)
 
 ---
 
@@ -160,7 +160,7 @@
 - Random access iterator 제공
 - 벡터처럼 인덱스 접근 가능하나, 중간 삽입/삭제는 여전히 느림
 
-[//]: # (INCLUDE: ./cpp/14/deque.cc)
+[//]: # (INCLUDE: ./cpp/14/src/01_deque.cc)
 
 ---
 
@@ -170,13 +170,13 @@
 
 - 각 노드가 포인터로 앞뒤로 연결되며, 메모리가 불연속적으로 분산
 
-![center](image-5.png)
+![center](img/05-image-5.png)
 
 ---
 
 ## Sequence Containers (시퀀스 컨테이너) (Cont'd - 8)
 
-[//]: # (INCLUDE: ./cpp/14/list.hpp --from 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/list.hpp --from 4 --to 25 --no-comment)
 
 ---
 
@@ -198,13 +198,13 @@
 
 ## Sequence Containers (시퀀스 컨테이너) (Cont'd - 10)
 
-![center](image-6.png)
+![center](img/06-image-6.png)
 
 ---
 
 ## Sequence Containers (시퀀스 컨테이너) (Cont'd - 11)
 
-[//]: # (INCLUDE: ./cpp/14/list.cc)
+[//]: # (INCLUDE: ./cpp/14/src/02_list.cc)
 
 ---
 
@@ -242,7 +242,7 @@
   - `vector`, `list`로 변경 가능
 - 맨 위(top)에서만 추가/삭제
 
-[//]: # (INCLUDE: ./cpp/14/stack.hpp --from 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/stack.hpp --from 6 --to 17 --no-comment)
 
 ---
 
@@ -250,7 +250,7 @@
 
 - 스택을 활용한 괄호 쌍 검증
 
-[//]: # (INCLUDE: ./cpp/14/stack.cc)
+[//]: # (INCLUDE: ./cpp/14/src/03_stack.cc)
 
 ---
 
@@ -259,10 +259,10 @@
 ### `std::queue` - FIFO (First In First Out)
 
 - 기본 자료구조: `deque`
-  - `vector` (불가능, front 제거 기능 없음), `list`로 변경 가능
+  - `list`로 변경 가능(`vector`는 불가능, front 제거 기능 없음)
 - Front에서 삭제, back에서 추가
 
-[//]: # (INCLUDE: ./cpp/14/queue.hpp --from 5 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/queue.hpp --from 6 --to 16 --no-comment)
 
 ---
 
@@ -270,13 +270,13 @@
 
 - 큐를 활용한 미로 탈출
 
-[//]: # (INCLUDE: ./cpp/14/queue.cc --to 21)
+[//]: # (INCLUDE: ./cpp/14/src/04_queue.cc --to 21)
 
 ---
 
 ## Container Adapters (컨테이너 어댑터) (Cont'd - 4)
 
-[//]: # (INCLUDE: ./cpp/14/queue.cc --from 22)
+[//]: # (INCLUDE: ./cpp/14/src/04_queue.cc --from 22)
 
 ---
 
@@ -288,13 +288,13 @@
   - `deque`로 변경 가능
 - 우선순위가 높은 요소부터 꺼냄
 
-![h:360 center](image-7.png)
+![h:360 center](img/07-image-7.png)
 
 ---
 
 ## Container Adapters (컨테이너 어댑터) (Cont'd - 6)
 
-[//]: # (INCLUDE: ./cpp/14/priority_queue.hpp --from 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/priority_queue.hpp --from 8 --to 25 --no-comment)
 
 ---
 
@@ -302,7 +302,7 @@
 
 - Max-heap 예시
 
-[//]: # (INCLUDE: ./cpp/14/priority_queue-max-heap.cc)
+[//]: # (INCLUDE: ./cpp/14/src/05_priority_queue-max-heap.cc)
 
 ---
 
@@ -310,7 +310,7 @@
 
 - Min-heap 예시
 
-[//]: # (INCLUDE: ./cpp/14/priority_queue-min-heap.cc)
+[//]: # (INCLUDE: ./cpp/14/src/06_priority_queue-min-heap.cc)
 
 ---
 
@@ -347,19 +347,19 @@
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 1)
 
-![center](image-8.png)
+![center](img/08-image-8.png)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 2)
 
-![center](image-9.png)
+![center](img/09-image-9.png)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/14/map.hpp --from 3 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/map.hpp --from 4 --to 23 --no-comment)
 
 ---
 
@@ -367,7 +367,7 @@
 
 ### `operator[]`의 두 가지 의미
 
-[//]: # (INCLUDE: ./cpp/14/map_indexing.cc)
+[//]: # (INCLUDE: ./cpp/14/src/07_map_indexing.cc)
 
 ---
 
@@ -375,7 +375,7 @@
 
 - 사용자 정의형을 담는 `std::map` 객체
 
-[//]: # (INCLUDE: ./cpp/14/map.cc)
+[//]: # (INCLUDE: ./cpp/14/src/08_map.cc)
 
 ---
 
@@ -383,7 +383,7 @@
 
 - 단어 빈도수 분석
 
-[//]: # (INCLUDE: ./cpp/14/word_freq.cc)
+[//]: # (INCLUDE: ./cpp/14/src/09_word_freq.cc)
 
 ---
 
@@ -407,7 +407,7 @@
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 8)
 
-![h:500 center](image-10.png)
+![h:540 center](img/10-image-10.png)
 
 ---
 
@@ -415,31 +415,31 @@
 
 - 사용자 정의형을 담는 `std::unordered_map` 객체
 
-[//]: # (INCLUDE: ./cpp/14/unordered_map.cc --to 19)
+[//]: # (INCLUDE: ./cpp/14/src/10_unordered_map.cc --to 19)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 10)
 
-[//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 20 --to 27)
+[//]: # (INCLUDE: ./cpp/14/src/10_unordered_map.cc --from 20 --to 27)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 11)
 
-[//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 28 --to 43)
+[//]: # (INCLUDE: ./cpp/14/src/10_unordered_map.cc --from 28 --to 43)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 12)
 
-[//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 44 --to 63)
+[//]: # (INCLUDE: ./cpp/14/src/10_unordered_map.cc --from 44 --to 63)
 
 ---
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 13)
 
-[//]: # (INCLUDE: ./cpp/14/unordered_map.cc --from 64)
+[//]: # (INCLUDE: ./cpp/14/src/10_unordered_map.cc --from 64)
 
 ---
 
@@ -450,9 +450,9 @@
 - `<algorithm>` 헤더에 정의된 템플릿 함수이며, **컨테이너 멤버 함수가 아닌 전역 함수**
 - **반복자 범위**(`begin`, `end`)를 인자로 받아 동작하며, **컨테이너의 내부 구조에 무관하게 작동**
 
-[//]: # (INCLUDE: ./cpp/14/snippet_algo.hpp --from 7 --to 15 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/snippet_algo.hpp --from 7 --to 15 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/14/snippet_algo.hpp --from 18 --to 23 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/snippet_algo.hpp --from 20 --to 25 --no-comment)
 
 ---
 
@@ -504,23 +504,23 @@
 
 - 함수 포인터
 
-[//]: # (INCLUDE: ./cpp/14/algo.cc --from 6 --to 6 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/11_algo.cc --from 7 --to 7 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/14/algo.cc --from 9 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/11_algo.cc --from 12 --to 13 --no-comment)
 
 - STL 내장 함수 객체(comparator)(`<functional>` 헤더 파일 필요)
 
-[//]: # (INCLUDE: ./cpp/14/algo.cc --from 15 --to 16 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/11_algo.cc --from 20 --to 21 --no-comment)
 
 - Lambda 표현식(권장)
 
-[//]: # (INCLUDE: ./cpp/14/algo.cc --from 21 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/11_algo.cc --from 28 --to 29 --no-comment)
 
 ---
 
 ## Algorithms (알고리즘) (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/14/custom_sort.cc)
+[//]: # (INCLUDE: ./cpp/14/src/12_custom_sort.cc)
 
 ---
 
@@ -541,7 +541,7 @@
 
 ### How Push Works
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a1.cc)
+[//]: # (INCLUDE: ./cpp/14/src/13_appendix_a1.cc)
 
 ---
 
@@ -549,7 +549,7 @@
 
 ### How Emplace Works
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a2.cc)
+[//]: # (INCLUDE: ./cpp/14/src/14_appendix_a2.cc)
 
 ---
 
@@ -575,25 +575,25 @@
 
 ### Practical Example
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --to 16)
+[//]: # (INCLUDE: ./cpp/14/src/15_appendix_a3.cc --to 16)
 
 ---
 
 ## Appendix A. Push vs Emplace (Cont'd - 5)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --from 17 --to 30)
+[//]: # (INCLUDE: ./cpp/14/src/15_appendix_a3.cc --from 17 --to 30)
 
 ---
 
 ## Appendix A. Push vs Emplace (Cont'd - 6)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --from 31 --to 45)
+[//]: # (INCLUDE: ./cpp/14/src/15_appendix_a3.cc --from 31 --to 45)
 
 ---
 
 ## Appendix A. Push vs Emplace (Cont'd - 7)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_a3.cc --from 46)
+[//]: # (INCLUDE: ./cpp/14/src/15_appendix_a3.cc --from 46)
 
 ---
 
@@ -601,7 +601,7 @@
 
 ### 1. Iterate By Value (Copy)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 5 --to 17 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 6 --to 18 --no-comment)
 
 ---
 
@@ -609,7 +609,7 @@
 
 ### 2. Iterate By Reference (Mutable)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 21 --to 34 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 24 --to 37 --no-comment)
 
 ---
 
@@ -617,7 +617,7 @@
 
 ### 3. Iterate By Const Reference (Efficient, Read-Only)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 38 --to 51 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 43 --to 56 --no-comment)
 
 ---
 
@@ -625,7 +625,7 @@
 
 ### 4. Iterate With Type Deduction (`auto`)
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 58 --to 66 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 65 --to 73 --no-comment)
 
 ---
 
@@ -633,11 +633,11 @@
 
 ### Usage Patterns By Container - Vector
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 76 --to 85 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 85 --to 94 --no-comment)
 
 ### Usage Patterns By Container - List
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 88 --to 91 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 99 --to 102 --no-comment)
 
 ---
 
@@ -645,11 +645,11 @@
 
 ### Usage Patterns By Container - Map
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 94 --to 97 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 107 --to 110 --no-comment)
 
 ### Usage Patterns By Container - Set
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 100 --to 102 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 115 --to 117 --no-comment)
 
 ---
 
@@ -685,7 +685,7 @@ for (declaration : range)
 
 ### Performance Comparison
 
-[//]: # (INCLUDE: ./cpp/14/appendix_b.cc --from 106 --to 115 --no-comment)
+[//]: # (INCLUDE: ./cpp/14/src/16_appendix_b.cc --from 123 --to 132 --no-comment)
 
 | Situation | Recommended Syntax |
 | :--- | :--- |
