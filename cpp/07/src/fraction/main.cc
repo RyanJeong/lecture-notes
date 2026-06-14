@@ -84,6 +84,7 @@ int main() {
 
   // Type conversion
   std::cout << "\n--- Type Conversion ---" << std::endl;
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
   Fraction f13(3, 4);
   double d = static_cast<double>(f13);
   std::cout << "f13(3, 4) = " << f13 << ", as double = " << d << std::endl;
@@ -91,6 +92,7 @@ int main() {
   std::cout << "1 + f13 = " << (1 + f13) << std::endl;
   // The following expression explicitly calls the conversion operator double()
   std::cout << "1 + f13 = " << (1 + static_cast<double>(f13)) << std::endl;
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
   // Assignment operator
   std::cout << "\n--- Assignment Operator ---" << std::endl;
