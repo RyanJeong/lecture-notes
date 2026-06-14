@@ -9,6 +9,7 @@ void TemplateFunction(T value);
 template <>
 void TemplateFunction<int>(int value);
 
+#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 template <typename T>
 class MyClass {
   T value_;  // Internal value of the class
@@ -26,6 +27,7 @@ class MyClass {
   // Declare specialization as a friend
   friend void TemplateFunction<int>(int value);
 };
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 void FreeFunction() {
   MyClass<double> obj(3.14);

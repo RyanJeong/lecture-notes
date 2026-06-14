@@ -12,7 +12,7 @@ class Fun {
   void set(const T& data) { data_ = data; }
 };
 
-#ifdef CPP_NO_BUILD09
+#if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 template <typename T>
 class Fun {
   T data_;
@@ -31,4 +31,4 @@ template <typename T>
 void Fun<T>::set(const T& data) {
   data_ = data;
 }
-#endif  // CPP_NO_BUILD09
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */

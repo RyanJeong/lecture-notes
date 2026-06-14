@@ -12,7 +12,7 @@
 - 함수 내 일부 타입을 컴파일 시점에 확정하는 기법
   - 동일한 로직을 **중복 없이** 다양한 타입으로 구현할 수 있게 해주는 메커니즘
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 3 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 2 --to 6 --no-comment)
 
 - 템플릿 선언(template-declaration)은 두 부분으로 구성됨:
   - Template-head: `template <...>`
@@ -32,7 +32,7 @@
 
 ### Using One Function Template
 
-[//]: # (INCLUDE: ./cpp/09/template.cc)
+[//]: # (INCLUDE: ./cpp/09/src/00_template.cc)
 
 ---
 
@@ -40,11 +40,11 @@
 
 ### 함수 템플릿과 함수 오버로딩 간 비교
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 9 --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 10 --to 14 --no-comment)
 
 - 함수 템플릿은 **컴파일 시점에 호출 형태에 따라 제네릭 타입을 확정한 함수 코드가 생성됨**
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 15 --to 22 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 18 --to 25 --no-comment)
 
 - 함수 오버로딩은 컴파일 전에 **호출될 형태를 파악하여 필요한 만큼 코드로 직접 구현해야 함**
 
@@ -54,13 +54,13 @@
 
 ### Swapping Two Values
 
-[//]: # (INCLUDE: ./cpp/09/template_swap.cc)
+[//]: # (INCLUDE: ./cpp/09/src/01_template_swap.cc)
 
 ---
 
 ## 템플릿 인스턴스화 (Template Instantiation)
 
-![center](Figure_15_1.png)
+![center](img/00-Figure_15_1.png)
 
 - 함수 템플릿은 **템플릿 인스턴스화 없이는 사용할 수 없는 코드**
   - 컴파일 시점에 필요한 형태의 함수를 만들기 위해 존재하는 일종의 틀
@@ -82,7 +82,7 @@
   - **C++17 이하에서는 부동소수점 타입이 허용되지 않음에 유의**(C++20부터 허용)
     - 부동소수점 수는 정밀도 제약이 존재해 값이 다르게 표현될 수 있음
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 24 --to 34 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 29 --to 39 --no-comment)
 
 ---
 
@@ -90,7 +90,7 @@
 
 ### Non-Type Template Parameter: Printing an Array
 
-[//]: # (INCLUDE: ./cpp/09/printarray1.cc)
+[//]: # (INCLUDE: ./cpp/09/src/02_printarray1.cc)
 
 ---
 
@@ -98,7 +98,7 @@
 
 ### 템플릿 기본 매개변수 (Default Arguments for Template Parameters)
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 36 --to 42 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 43 --to 49 --no-comment)
 
 - 템플릿 매개변수에 기본 인자(값 또는 타입)를 설정할 수 있음
 - 템플릿 기본 매개변수는 오른쪽부터 채워져야 함
@@ -110,7 +110,7 @@
 
 ### Default Arguments for Template Parameters: Printing an Array
 
-[//]: # (INCLUDE: ./cpp/09/printarray2.cc)
+[//]: # (INCLUDE: ./cpp/09/src/03_printarray2.cc)
 
 ---
 
@@ -118,15 +118,15 @@
 
 ### 명시적 타입 결정
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 10 --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 10 --to 14 --no-comment)
 
 #### 템플릿 인자 추론 (Template Argument Deduction)의 모호성
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 45 --to 45 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 54 --to 54 --no-comment)
 
 #### 명시적 템플릿 인자 지정 (Explicit Template Argument Specification)
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 46 --to 46 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 55 --to 55 --no-comment)
 
 - `T`는 **`double`타입으로 결정**되어 함수 인스턴스가 생성되며, 인자 `15`는 암묵적으로 `double` 타입으로 간주
 
@@ -136,14 +136,14 @@
 
 ### 특수화 (Specialization)
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 10 --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 10 --to 14 --no-comment)
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 54 --to 54 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 61 --to 61 --no-comment)
 
 - `Smaller` 템플릿 함수는 **비교 연산자(e.g., less than, `<`)가 정의된 객체**만 처리 가능
   - **`const char*` 타입은 비교 연산자 사용 시 포인터 주소를 비교하므로 의도한 문자열 비교가 되지 않음**
 
-[//]: # (INCLUDE: ./cpp/09/snippet_template.hpp --from 57 --to 60 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 68 --to 71 --no-comment)
 
 - 특수화는 특정 타입에 대해 함수 템플릿의 기본 동작을 오버라이딩함
   - 템플릿 헤더에 `template <>`를 사용하면 명시적 템플릿 특수화 함수(explicit template specialization)가 됨
@@ -154,7 +154,7 @@
 
 ### 함수 템플릿 오버로딩
 
-[//]: # (INCLUDE: ./cpp/09/smaller.cc --to 21 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/04_smaller.cc --from 2 --to 22 --no-comment)
 
 ---
 
@@ -186,17 +186,17 @@ g++ main.cc foo.o -o run
 
 - `smaller.hpp`
 
-[//]: # (INCLUDE: ./cpp/09/smaller.hpp)
+[//]: # (INCLUDE: ./cpp/09/src/smaller.hpp)
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/09/smaller_main.cc)
+[//]: # (INCLUDE: ./cpp/09/src/05_smaller_main.cc)
 
 ---
 
 ## 클래스 템플릿 (Class Template)
 
-[//]: # (INCLUDE: ./cpp/09/class_template2/fun.hpp --from 16 --to 33 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/class_template2/fun.hpp --from 16 --to 33 --no-comment)
 
 - 템플릿 매개변수를 사용하는 클래스
 - 같은 논리의 클래스를 여러 타입을 사용하는 형태로 인스턴스화가 가능함
@@ -205,9 +205,11 @@ g++ main.cc foo.o -o run
 
 ## 클래스 템플릿 분할 컴파일 - 명시적 인스턴스화 (Explicit Instantiation)
 
+[//]: # (INCLUDE: ./cpp/09/src/class_template1/Makefile --reference)
+
 - `fun.hpp`
 
-[//]: # (INCLUDE: ./cpp/09/class_template1/fun.hpp)
+[//]: # (INCLUDE: ./cpp/09/src/class_template1/fun.hpp)
 
 ---
 
@@ -215,7 +217,7 @@ g++ main.cc foo.o -o run
 
 - `fun.cc`
 
-[//]: # (INCLUDE: ./cpp/09/class_template1/fun.cc)
+[//]: # (INCLUDE: ./cpp/09/src/class_template1/fun.cc)
 
 ---
 
@@ -223,15 +225,17 @@ g++ main.cc foo.o -o run
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/09/class_template1/main.cc)
+[//]: # (INCLUDE: ./cpp/09/src/class_template1/main.cc)
 
 ---
 
 ## 클래스 템플릿 분할 컴파일 - 하나의 헤더 파일 (Single Header File)
 
+[//]: # (INCLUDE: ./cpp/09/src/class_template2/Makefile --reference)
+
 - `fun.hpp`
 
-[//]: # (INCLUDE: ./cpp/09/class_template2/fun.hpp --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/class_template2/fun.hpp --to 13 --no-comment)
 
 ---
 
@@ -239,18 +243,18 @@ g++ main.cc foo.o -o run
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/09/class_template2/main.cc)
+[//]: # (INCLUDE: ./cpp/09/src/class_template2/main.cc)
 
 ---
 
 ## 클래스 템플릿 - 명시적 인스턴스화 vs 하나의 헤더 파일
 
-| Item | Explicit Instantiation | Single Header File |
-|------|----------------------|-------------------|
-| **File Separation** | Possible (Header + Implementation) | Not Possible (Header Only) |
-| **Implementation Privacy** | Hidden | Exposed |
-| **Maintenance** | Tedious (Explicit All Types) | Easy |
-| **Linking Error Risk** | High (Unsupported Types) | Low |
+| Item                       | Explicit Instantiation                 | Single Header File         |
+| -------------------------- | -------------------------------------- | -------------------------- |
+| **File Separation**        | Possible (Header + Implementation)     | Not Possible (Header Only) |
+| **Implementation Privacy** | Hidden                                 | Exposed                    |
+| **Maintenance**            | Tedious (Explicit All Types)           | Easy                       |
+| **Linking Error Risk**     | High (Unsupported Types)               | Low                        |
 
 - **권장 사항: 클래스 템플릿은 하나의 헤더 파일로 작성하는 것이 일반적**
   - 표준 라이브러리의 `vector`, `list` 등도 모두 헤더 파일에 구현되어 있음
@@ -268,15 +272,17 @@ g++ main.cc foo.o -o run
 - 동적 메모리할당으로 임의의 용량을 가진 스택 생성 가능
 - 예외 기반의 오류 처리로 안전한 스택 연산 제공
 
-![center](Figure_15_4.png)
+![center](img/01-Figure_15_4.png)
 
 ---
 
 ## 제네릭 스택 (Stack Implementation Using Class Template) (Cont'd - 1)
 
+[//]: # (INCLUDE: ./cpp/09/src/stack/Makefile --reference)
+
 - `stack_exception.hpp`
 
-[//]: # (INCLUDE: ./cpp/09/stack/stack_exception.hpp)
+[//]: # (INCLUDE: ./cpp/09/src/stack/stack_exception.hpp)
 
 ---
 
@@ -284,13 +290,13 @@ g++ main.cc foo.o -o run
 
 - `stack.hpp`
 
-[//]: # (INCLUDE: ./cpp/09/stack/stack.hpp --to 20)
+[//]: # (INCLUDE: ./cpp/09/src/stack/stack.hpp --to 20)
 
 ---
 
 ## 제네릭 스택 (Stack Implementation Using Class Template) (Cont'd - 3)
 
-[//]: # (INCLUDE: ./cpp/09/stack/stack.hpp --from 21)
+[//]: # (INCLUDE: ./cpp/09/src/stack/stack.hpp --from 21)
 
 ---
 
@@ -298,7 +304,7 @@ g++ main.cc foo.o -o run
 
 - `main.cc`
 
-[//]: # (INCLUDE: ./cpp/09/stack/main.cc)
+[//]: # (INCLUDE: ./cpp/09/src/stack/main.cc)
 
 ---
 
@@ -308,7 +314,7 @@ g++ main.cc foo.o -o run
 
 - 클래스 템플릿은 일반 함수, 함수 템플릿, 특수화된 함수 템플릿을 `friend`로 가질 수 있음
 
-[//]: # (INCLUDE: ./cpp/09/friend/friend.hpp --from 12 --to 28 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/friend/friend.hpp --from 13 --to 29 --no-comment)
 
 ---
 
@@ -320,13 +326,11 @@ g++ main.cc foo.o -o run
 - 별칭(`using`)을 사용해 코드의 길이를 줄이거나 더욱 명료한 표현을 통해 가독성을 높일 수 있음
 - 별칭은 단순한 이름 변경일 뿐 새로운 타입을 만드는 것이 아님
 
-[//]: # (INCLUDE: ./cpp/09/alias.cc --from 9 --to 10 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 78 --to 80 --no-comment)
 
 - 템플릿 별칭은 전역 혹은 클래스 범위에서 사용 가능하며, **지역에서 선언 불가**
 
-[//]: # (INCLUDE: ./cpp/09/alias.cc --from 3 --to 5 --no-comment)
-
-[//]: # (INCLUDE: ./cpp/09/alias.cc --from 12 --to 13 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 87 --to 92 --no-comment)
 
 ---
 
@@ -334,7 +338,7 @@ g++ main.cc foo.o -o run
 
 ### 상속 (Inheritance): 비-템플릿 기반 클래스를 상속하는 클래스 템플릿
 
-[//]: # (INCLUDE: ./cpp/09/inheritance1.cc)
+[//]: # (INCLUDE: ./cpp/09/src/06_inheritance1.cc)
 
 ---
 
@@ -342,7 +346,7 @@ g++ main.cc foo.o -o run
 
 ### 상속 (Inheritance): 템플릿 기반 클래스를 상속하는 클래스 템플릿
 
-[//]: # (INCLUDE: ./cpp/09/inheritance2.cc)
+[//]: # (INCLUDE: ./cpp/09/src/07_inheritance2.cc)
 
 ---
 
@@ -350,14 +354,16 @@ g++ main.cc foo.o -o run
 
 ### `std::basic_string` 클래스
 
-![w:730 center](image.png)
+![w:730 center](img/02-image.png)
 
 - `CharT`: 문자열을 구성하는 문자 타입
 - `Traits`: 문자열 특성 및 비교 정책
 - `Allocator`: 메모리 관리 정책
 - C++ 문자열 타입은 [`std::basic_string`](https://en.cppreference.com/w/cpp/string/basic_string.html) 템플릿 클래스를 `char` 타입으로 특수화한 것
 
-[//]: # (INCLUDE: ./cpp/09/snippet_string.hpp --from 7 --to 12 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 96 --to 98 --no-comment)
+
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 102 --to 104 --no-comment)
 
 ---
 
@@ -365,10 +371,10 @@ g++ main.cc foo.o -o run
 
 ### `std::basic_istream`, `std::basic_ostream` 클래스
 
-![w:590 center](image-1.png)
+![w:590 center](img/03-image-1.png)
 
-![w:590 center](image-2.png)
+![w:590 center](img/04-image-2.png)
 
-- C++ 표준 입출력 타입은 [`std::basic_istream`](https://en.cppreference.com/w/cpp/io/basic_istream.html), [`std::basic_ostream`](https://en.cppreference.com/w/cpp/io/basic_ostream.html) 템플릿 클래스를 `char` 타입으로 특수화한 것
+- C++ 입출력 타입은 [`std::basic_istream`](https://en.cppreference.com/w/cpp/io/basic_istream.html), [`std::basic_ostream`](https://en.cppreference.com/w/cpp/io/basic_ostream.html) 템플릿 클래스를 `char` 타입으로 특수화한 것
 
-[//]: # (INCLUDE: ./cpp/09/snippet_stream.hpp --from 4 --to 7 --no-comment)
+[//]: # (INCLUDE: ./cpp/09/src/_snippet.cc --from 108 --to 111 --no-comment)
