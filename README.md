@@ -72,62 +72,98 @@ CH="01"
 ## Appendix: Building JPlag for C/C++ Only (with Report Viewer) on Ubuntu 22.04
 
 This guide explains how to build and run JPlag for **C/C++ plagiarism detection only**, with the optional **web-based report viewer** enabled.
-Unnecessary languages such as Scala, Rust, Go, etc. are skipped by targeting only required modules. It also includes steps to install **Maven 3.9.6**, which is required for compatibility with `scala-maven-plugin:4.9.5`.
+
+Unnecessary languages such as Scala, Rust, Go, etc. are skipped by targeting only the required modules. It also covers the **JAVA_HOME / default-JDK setup** that JPlag's build relies on, plus a Maven version recent enough to run on JDK 25.
+
+> **Why JDK 25 matters:** JPlag 6.x compiles with `--release 25`. If Maven runs on an older JDK, the build fails on the very first module with `invalid target release: 25`. The steps below make sure Maven actually runs on JDK 25.
 
 ---
 
 ### Prerequisites
 
-| Component | Required Version | Notes                                   |
-| --------- | ---------------- | --------------------------------------- |
-| Java JDK  | 21               | Required for building and running JPlag |
-| Maven     | 3.8.1 or later   | Required for Scala plugin compatibility |
-| Node.js   | LTS              | Required for the report viewer          |
+| Component | Required Version | Notes                                                  |
+| --------- | ---------------- | ------------------------------------------------------ |
+| Java JDK  | 25               | Required for building **and** running JPlag 6.x        |
+| Maven     | 3.9.11           | Recent enough to run reliably on JDK 25                |
+| Node.js   | LTS (22.x)       | Required for the report viewer                         |
 
 ---
 
 ### 1. Install Required Packages
 
-#### Java 21 via Eclipse Temurin
+#### Java 25 via Eclipse Temurin
 
 ```bash
 sudo apt update
 sudo apt install -y wget apt-transport-https gnupg
 
 # Import Adoptium GPG key
-wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo gpg --dearmor -o /usr/share/keyrings/adoptium.gpg
+wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public \
+  | sudo gpg --dearmor -o /usr/share/keyrings/adoptium.gpg
 
 # Add Adoptium repository
-echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb jammy main" | sudo tee /etc/apt/sources.list.d/adoptium.list
+echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb jammy main" \
+  | sudo tee /etc/apt/sources.list.d/adoptium.list
 
-# Install Java 21
+# Install Java 25
 sudo apt update
-sudo apt install -y temurin-21-jdk
+sudo apt install -y temurin-25-jdk
 ```
 
-#### Install Maven 3.9.6 manually
+#### Make JDK 25 the active toolchain (required)
+
+Installing the package is **not** enough — if another JDK is already the system
+default, Maven will still use it. Point `JAVA_HOME` at Temurin 25, set it as the
+default, and persist it. The `find` below works on both `amd64` and `arm64`.
 
 ```bash
-# Remove old Maven
-sudo apt remove --purge maven -y
+# Resolve the Temurin 25 home (e.g. temurin-25-jdk-amd64 or temurin-25-jdk-arm64)
+export JAVA_HOME="$(find /usr/lib/jvm -maxdepth 1 -type d -name 'temurin-25-jdk*' | head -n1)"
 
-# Download and install Maven 3.9.6
-wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+# Make it the system default
+sudo update-alternatives --install /usr/bin/java  java  "$JAVA_HOME/bin/java"  2000
+sudo update-alternatives --install /usr/bin/javac javac "$JAVA_HOME/bin/javac" 2000
+sudo update-alternatives --set java  "$JAVA_HOME/bin/java"
+sudo update-alternatives --set javac "$JAVA_HOME/bin/javac"
+
+# Persist for future shells
+echo "export JAVA_HOME=$JAVA_HOME" >> ~/.bashrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify — both MUST report 25.x before building
+java -version
+javac -version
+```
+
+#### Install Maven 3.9.11 manually
+
+```bash
+# Remove the distro Maven (often too old / tied to the wrong JDK)
+sudo apt remove --purge maven -y || true
+
+# Download from the Apache archive (keeps every released version)
+wget https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz
 
 # Extract and move to /opt
-tar -xzf apache-maven-3.9.6-bin.tar.gz
-sudo mv apache-maven-3.9.6 /opt/maven
+tar -xzf apache-maven-3.9.11-bin.tar.gz
+sudo rm -rf /opt/maven
+sudo mv apache-maven-3.9.11 /opt/maven
+rm -f apache-maven-3.9.11-bin.tar.gz
 
 # Set environment variables
 echo 'export M2_HOME=/opt/maven' >> ~/.bashrc
 echo 'export PATH=$M2_HOME/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
+
+# Verify — should report 3.9.11 and "Java version: 25..."
+mvn -version
 ```
 
 #### Node.js (for report viewer)
 
 ```bash
-sudo apt remove -y nodejs npm
+sudo apt remove -y nodejs npm || true
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
@@ -137,7 +173,7 @@ sudo apt install -y nodejs
 ### 2. Clone the Repository
 
 ```bash
-cd $HOME
+cd "$HOME"
 git clone https://github.com/jplag/jplag.git
 cd jplag
 ```
@@ -146,9 +182,13 @@ cd jplag
 
 ### 3. Build Only Required Modules (C/C++ with Viewer)
 
+> Before building, confirm `mvn -version` lists **Java version: 25**. If it shows
+> an older version, revisit the "Make JDK 25 the active toolchain" step — otherwise
+> the build fails with `invalid target release: 25`.
+
 ```bash
 mvn -P with-report-viewer clean package assembly:single \
-  -pl cli,core,languages,language-api,language-antlr-utils \
+  -pl cli,core,language-api,language-antlr-utils,languages/c,languages/cpp \
   -am \
   -DskipTests
 ```
@@ -156,7 +196,7 @@ mvn -P with-report-viewer clean package assembly:single \
 | Option                  | Description                                               |
 | ----------------------- | --------------------------------------------------------- |
 | `-P with-report-viewer` | Enables the web-based report viewer                       |
-| `-pl`                   | Selects only required modules explicitly                  |
+| `-pl`                   | Selects only the required modules explicitly              |
 | `-am`                   | Also builds all required dependencies of selected modules |
 | `-DskipTests`           | Skips tests to speed up the build                         |
 
@@ -164,17 +204,31 @@ mvn -P with-report-viewer clean package assembly:single \
 
 ### 4. Run JPlag for C/C++
 
-After a successful build, the runnable JAR will be located at:
+After a successful build, the runnable JAR is located at:
 
 ```text
 cli/target/jplag-*-jar-with-dependencies.jar
 ```
 
-#### Example usage
+The language identifiers are **separate**: use `cpp` for C++ and `c` for C
+(the old combined `c/c++` / `c_cpp` value no longer exists).
+
+#### Example usage (C++)
 
 ```bash
 java -jar cli/target/jplag-*-jar-with-dependencies.jar \
-  -l c/c++ \
-  -s ./submissions \
-  -r ./report
+  -l cpp \
+  -r ./report \
+  ./submissions
+```
+
+For C, replace `-l cpp` with `-l c`. The submissions directory is passed as a
+positional argument; `-r` sets the result file (a `.jplag` archive).
+
+Run the JAR with `-h` to list all options, or with no arguments to open the
+bundled report viewer directly:
+
+```bash
+java -jar cli/target/jplag-*-jar-with-dependencies.jar -h
+java -jar cli/target/jplag-*-jar-with-dependencies.jar        # opens the viewer
 ```
