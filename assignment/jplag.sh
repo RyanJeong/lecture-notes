@@ -12,4 +12,4 @@ for dir_name in $(find . -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | grep -
   popd >/dev/null
 done
 
-echo "Run `viewer.sh <ASMT_DEST_DIR>` to check similarity results and decide whether to reject scoring due to high similarity."
+echo 'Run `viewer.sh <ASMT_DEST_DIR>` to check similarity results and decide whether to reject scoring due to high similarity.'
