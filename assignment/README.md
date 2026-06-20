@@ -10,7 +10,7 @@ A Document Summarizing the Grading Process for Assignments**
 
     **Each assignment directory should contain a `check.sh` script, in and out files (refer to `dju-asmt/asmt3-cpp` for details).**
 
-2. Run `unzip.sh` to prepare the assignments for grading. Then, review the results to ensure there are no missing or problematic submissions before starting the grading process (You can use `print_results.sh` during this task).
+2. Download zip files, locate them at here, and run `unzip.sh` to prepare the assignments for grading. Then, review the results to ensure there are no missing or problematic submissions before starting the grading process (You can use `print_results.sh` during this task).
 3. Run `jplag.sh` to analyze similarity between assignments.
 4. Run `viewer.sh <ASMT_DEST_DIR>` to check similarity results and decide whether to reject scoring due to high similarity.
 
@@ -19,7 +19,7 @@ A Document Summarizing the Grading Process for Assignments**
     ./viewer.sh ./2025_2_564016_01_2583782/
     ```
 
-5. Run `{c|cpp}_compile_all.sh <ASMT_DEST_DIR>` to build.
+5. [WIP] Run `{c|cpp}_compile_all.sh <ASMT_DEST_DIR>` to build.
 
     ```shell
     # e.g.,
@@ -36,7 +36,7 @@ A Document Summarizing the Grading Process for Assignments**
     done
     ```
 
-6. Run `evaluate_all.sh <ASMT_DEST_DIR> <DATASET_DIR>` to evaluate.
+6. [WIP] Run `evaluate_all.sh <ASMT_DEST_DIR> <DATASET_DIR>` to evaluate.
 
     ```shell
     # e.g.,
@@ -48,5 +48,4 @@ A Document Summarizing the Grading Process for Assignments**
 
 ## TODO
 
-- Implement `c_compile_all.sh`
-- Check `check.sh` scripts in C assignments
+- Replace `c_compile_all.sh`, `evaluate_all.sh` with C-assignment script style
