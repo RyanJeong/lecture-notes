@@ -1,0 +1,143 @@
+name: build
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+jobs:
+  # A course is any top-level directory owning a check_syntax.sh, so adding a
+  # new course needs no change to this workflow.
+  discover:
+    name: discover courses
+    runs-on: ubuntu-latest
+    outputs:
+      courses: ${{ steps.find.outputs.courses }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find course directories
+        id: find
+        run: |
+          courses=$(for f in */check_syntax.sh; do
+            [ -f "$f" ] || continue
+            dirname "$f"
+          done | jq -R -s -c 'split("\n")[:-1]')
+          [ "$courses" != "[]" ] || { echo "No course directories found"; exit 1; }
+          echo "courses=${courses}" >>"${GITHUB_OUTPUT}"
+          echo "Discovered: ${courses}"
+
+  build:
+    name: build (${{ matrix.lang }})
+    needs: discover
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: ${{ fromJSON(needs.discover.outputs.courses) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # poppler-utils : pdfinfo, pdftoppm  (check_and_release.sh)
+      # imagemagick   : convert, identify  (check_and_release.sh)
+      # fonts-noto-cjk: Korean glyphs; without them slides render as tofu
+      #                 boxes and the content-area measurement is meaningless.
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            poppler-utils \
+            imagemagick \
+            fonts-noto-cjk \
+            fonts-noto-cjk-extra
+
+      # marp-cli is installed globally because check_and_release.sh invokes
+      # `marp` directly; marp-core and markdown-it-shiki are installed locally
+      # because engine.js resolves them from the repository root.
+      - name: Install marp-cli
+        run: |
+          npm install -g @marp-team/marp-cli
+          npm install --no-audit --no-fund @marp-team/marp-core markdown-it-shiki
+          marp --version
+
+      - name: Resolve Chrome
+        run: |
+          chrome="$(command -v google-chrome || command -v chromium-browser || command -v chromium)"
+          [ -n "${chrome}" ] || { echo "No Chrome/Chromium found"; exit 1; }
+          echo "CHROME_PATH=${chrome}" >>"${GITHUB_ENV}"
+          echo "Using ${chrome}"
+
+      # Building only compiles the sources actually embedded whole in slides.
+      # This scans every file under <lang>/*/src/, so nothing goes unchecked.
+      - name: Syntax-check all sources
+        env:
+          LANG_DIR: ${{ matrix.lang }}
+        run: ./"${LANG_DIR}"/check_syntax.sh
+
+      - name: Build and check chapters
+        env:
+          LANG_DIR: ${{ matrix.lang }}
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+
+          failed=()
+          for dir in "${LANG_DIR}"/[0-9][0-9]; do
+            ch="$(basename "${dir}")"
+
+            echo "::group::build ${dir}"
+            if ./build.sh "${dir}/README.md" "${dir}/temp.md" "${dir}/temp.pdf"; then
+              echo "::endgroup::"
+            else
+              echo "::endgroup::"
+              echo "::error title=build failed::${dir}/README.md"
+              failed+=("build ${dir}")
+              continue
+            fi
+
+            echo "::group::check ${dir}"
+            if ./check_and_release.sh "${dir}/temp.pdf"; then
+              echo "::endgroup::"
+            else
+              echo "::endgroup::"
+              echo "::error title=check failed::${dir}/temp.pdf"
+              failed+=("check ${dir}")
+            fi
+          done
+
+          if [ "${#failed[@]}" -gt 0 ]; then
+            printf 'FAILED: %s\n' "${failed[@]}"
+            exit 1
+          fi
+          echo "All ${LANG_DIR} chapters built and checked."
+
+      - name: Upload slides
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slides-${{ matrix.lang }}
+          path: release/${{ matrix.lang }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload syntax-check errors
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: syntax-errors-${{ matrix.lang }}
+          path: |
+            c/error_file_lists.txt
+            cpp/error_file_lists.txt
+          if-no-files-found: ignore
+          retention-days: 7
