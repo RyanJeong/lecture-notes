@@ -44,6 +44,15 @@ if [ "$#" -eq 4 ] && [ "$4" = "loop" ]; then
   LOOP_MODE="true"
 fi
 
+# Determine which language's syntax checker to use from the source path.
+# Handles both relative (cpp/07/README.md) and absolute (/path/to/cpp/07/README.md)
+# forms, as the editor's Run-on-Save hook passes an absolute path.
+if [[ "${SRC_MD}" =~ (^|/)cpp/[0-9]{2}/ ]]; then
+  SYNTAX_LANG="cpp"
+else
+  SYNTAX_LANG="c"
+fi
+
 # Global temp dir for syntax checking; cleaned up on any exit.
 SYNTAX_TMP=""
 trap '[ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"' EXIT INT TERM
@@ -51,7 +60,7 @@ trap '[ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"' EXIT INT TERM
 process_file() {
   # Create a fresh temp directory for syntax checking (cleaned up by EXIT trap).
   [ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"
-  SYNTAX_TMP=$(mktemp -d "c/tmp_syntax_XXXXXX")
+  SYNTAX_TMP=$(mktemp -d "${SYNTAX_LANG}/tmp_syntax_XXXXXX")
   mkdir -p "${SYNTAX_TMP}/src"
 
   info "Processing ${SRC_MD}..."
@@ -62,9 +71,9 @@ process_file() {
   # Read the source markdown file line by line
   while IFS= read -r line; do
     # Check for Markdown placeholder: [//]: # (INCLUDE: filename)
-    if echo "$line" | grep -qE '^\[\/\/\]:\s*#\s*\(INCLUDE:'; then
+    if echo "$line" | grep -qE '^\[\/\/\]:[[:space:]]*#[[:space:]]*\(INCLUDE:'; then
       # Extract the full argument string inside the parentheses
-      args=$(echo "$line" | sed -E 's/^\[\/\/\]:\s*#\s*\((INCLUDE:.*)\).*/\1/')
+      args=$(echo "$line" | sed -E 's/^\[\/\/\]:[[:space:]]*#[[:space:]]*\((INCLUDE:.*)\).*/\1/')
       # Split the argument string into an array
       read -ra tokens <<<"$args"
 
@@ -141,7 +150,7 @@ process_file() {
       local rel_to_src
       rel_to_src="${filename#*src/}"
       if [ "${no_comment}" = "false" ] || [ "${reference}" = "true" ]; then
-        syntax_dest="${SYNTAX_TMP}/${rel_to_src}"
+        syntax_dest="${SYNTAX_TMP}/src/${rel_to_src}"
         mkdir -p "$(dirname "${syntax_dest}")"
       else
         syntax_dest="/dev/null"
@@ -229,7 +238,7 @@ process_file() {
   local syntax_tmp_name
   syntax_tmp_name="$(basename "${SYNTAX_TMP}")"
   info "Running syntax check on collected files..."
-  if ! c/check_syntax.sh "${syntax_tmp_name}"; then
+  if ! "${SYNTAX_LANG}/check_syntax.sh" "${syntax_tmp_name}"; then
     error "Syntax check failed. Fix the errors above before building."
     exit 1
   fi
