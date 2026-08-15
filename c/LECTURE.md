@@ -94,6 +94,11 @@ getchar();
   - backtick 닫힘 `` ` `` 뒤에 바로 `(` 가 오면 시각적으로 혼탁하므로 공백을 유지
   - 예: `` ### `++` (증가 연산자, Increment Operator) `` O
   - 예: `` ### `++`(증가 연산자, Increment Operator) `` X
+- 예외 4: **헤딩(`#`, `##`, `###` ...) 내 영문 대역** — 한글 용어 뒤에 영문 대역을 괄호로 병기할 때는 공백 유지
+  - 예: `### 파일 스코프 (File Scope)` O
+  - 예: `### 파일 스코프(File Scope)` — 불필요
+  - **본문(설명 문장)에는 적용되지 않음** — 본문에서는 반드시 붙여 씀
+    - 예: `가산기 (full adder)는` X → `가산기(full adder)는` O
 
 ### 2-3. 조사 앞 괄호 생략 시 문장 매끄러움
 
@@ -118,31 +123,34 @@ getchar();
 |---|---|---|---|---|---|---|
 | 없음 | 가 | 를 | 는 | 는 | 와 | 로 |
 | 있음 (ㄹ 제외) | 이 | 을 | 은 | 은 | 과 | 으로 |
-| ㄹ 받침 | 이 | 를 | 은 | 은 | 와 | 로 |
+| ㄹ 받침 | 이 | 을 | 은 | 은 | 과 | 로 |
+
+> ㄹ 받침은 **도구/방향격만** 예외(`으로`가 아닌 `로`)이며, 주격·목적격·접속격은 일반 받침과 동일하게 `이`/`을`/`과`를 사용합니다.
+> 예: `NULL`은, `NULL`을, `NULL`과, `NULL`로 (서울은, 서울을, 서울과, 서울로와 동일한 규칙)
 
 ### 3-2. 자주 등장하는 식별자·키워드 발음 및 조사
 
 | 식별자/키워드 | 한국어 발음 | 끝 받침 | 예시 |
 |---|---|---|---|
-| `int` | 인트 | ㅌ | `int`는, `int`를, `int`와, `int`로 |
+| `int` | 인트 | 없음 | `int`는, `int`를, `int`와, `int`로 |
 | `char` | 차 | 없음 | `char`가, `char`를, `char`와, `char`로 |
-| `float` | 플로트 | ㅌ | `float`는, `float`를 |
-| `double` | 더블 | ㄹ | `double`은, `double`를, `double`와, `double`로 |
+| `float` | 플로트 | 없음 | `float`는, `float`를 |
+| `double` | 더블 | ㄹ | `double`은, `double`을, `double`과, `double`로 |
 | `long` | 롱 | ㅇ | `long`은, `long`을, `long`과, `long`으로 |
 | `short` | 숏 | ㅅ | `short`은, `short`을 |
 | `void` | 보이드 | 없음 | `void`가, `void`를, `void`와, `void`로 |
 | `EOF` | 이오에프 | 없음 | `EOF`가, `EOF`를, `EOF`와, `EOF`로 |
-| `NULL` | 널 | ㄹ | `NULL`은, `NULL`을, `NULL`와(로), `NULL`로 |
+| `NULL` | 널 | ㄹ | `NULL`은, `NULL`을, `NULL`과, `NULL`로 |
 | `if` | 이프 | 없음 | `if`가, `if`를, `if`와, `if`로 |
-| `else` | 엘스 | ㅅ | `else`는, `else`를, `else`가 |
-| `while` | 와일 | ㄹ | `while`은, `while`를, `while`와, `while`로 |
+| `else` | 엘스 | 없음 | `else`는, `else`를, `else`가 |
+| `while` | 와일 | ㄹ | `while`은, `while`을, `while`과, `while`로 |
 | `for` | 포 | 없음 | `for`가, `for`를, `for`와, `for`로 |
 | `return` | 리턴 | ㄴ | `return`은, `return`을, `return`과, `return`으로 |
 | `static` | 스태틱 | ㄱ | `static`은, `static`을, `static`과, `static`으로 |
 | `extern` | 익스턴 | ㄴ | `extern`은, `extern`을, `extern`과, `extern`으로 |
 | `auto` | 오토 | 없음 | `auto`가, `auto`를, `auto`와, `auto`로 |
 | `register` | 레지스터 | 없음 | `register`가, `register`를 |
-| `const` | 콘스트 | ㅅ | `const`는, `const`를, `const`와 |
+| `const` | 콘스트 | 없음 | `const`는, `const`를, `const`와 |
 | `sizeof` | 사이즈오브 | 없음 | `sizeof`가, `sizeof`를 |
 | `printf` | 프린트에프 | 없음 | `printf`가, `printf`를, `printf`와, `printf`로 |
 | `scanf` | 스캔에프 | 없음 | `scanf`가, `scanf`를 |
@@ -150,25 +158,24 @@ getchar();
 | `putchar` | 풋챠 | 없음 | `putchar`가, `putchar`를 |
 | `malloc` | 말록 | ㄱ | `malloc`은, `malloc`을 |
 | `free` | 프리 | 없음 | `free`가, `free`를 |
-| `struct` | 스트럭트 | ㅅ | `struct`는, `struct`를 |
+| `struct` | 스트럭트 | 없음 | `struct`는, `struct`를 |
 | `typedef` | 타입데프 | 없음 | `typedef`가, `typedef`를, `typedef`와, `typedef`로 |
 | `enum` | 이넘 | ㅁ | `enum`은, `enum`을, `enum`과, `enum`으로 |
 | `goto` | 고투 | 없음 | `goto`가, `goto`를, `goto`와, `goto`로 |
 | `switch` | 스위치 | 없음 | `switch`가, `switch`를, `switch`와 |
-| `case` | 케이스 | ㅅ | `case`는, `case`를, `case`와 |
-| `default` | 디폴트 | ㅅ | `default`는, `default`를 |
+| `case` | 케이스 | 없음 | `case`는, `case`를, `case`와 |
+| `default` | 디폴트 | 없음 | `default`는, `default`를 |
 | `break` | 브레이크 | 없음 | `break`가, `break`를, `break`와 |
 | `continue` | 컨티뉴 | 없음 | `continue`가, `continue`를, `continue`와 |
 | `lvalue` | 엘벨류 | 없음 | *lvalue*가, *lvalue*를, *lvalue*와 |
 | `rvalue` | 알벨류 | 없음 | *rvalue*가, *rvalue*를, *rvalue*와 |
 | `NAME` (매크로) | 네임 | ㅁ | `NAME`은, `NAME`을, `NAME`과 |
-| `REPLACEMENT_TEXT` | 리플레이스먼트텍스트 | ㅅ | `REPLACEMENT_TEXT`는, `REPLACEMENT_TEXT`를 |
-| `EOF` | 이오에프 | 없음 | `EOF`가, `EOF`를 |
+| `REPLACEMENT_TEXT` | 리플레이스먼트텍스트 | 없음 | `REPLACEMENT_TEXT`는, `REPLACEMENT_TEXT`를 |
 | `i`, `j`, `k` | 아이, 제이, 케이 | 없음 | `i`가, `i`를, `i`와 |
 | `c` | 씨 | 없음 | `c`가, `c`를, `c`와 |
 | `n` | 엔 | ㄴ | `n`은, `n`을, `n`과, `n`으로 |
 | `p` | 피 | 없음 | `p`가, `p`를, `p`와, `p`로 |
-| `s`, `t` | 에스, 티 | ㅅ, 없음 | `s`는, `s`를 / `t`가, `t`를 |
+| `s`, `t` | 에스, 티 | 없음, 없음 | `s`는, `s`를 / `t`가, `t`를 |
 | `sp`, `val` | 에스피, 발 | 없음, ㄹ | `sp`가, `sp`를 / `val`은, `val`을 |
 | `line` | 라인 | ㄴ | `line`은, `line`을, `line`과, `line`으로 |
 | `string` | 스트링 | ㅇ | `string`은, `string`을, `string`과 |
@@ -182,10 +189,15 @@ getchar();
 ### 3-3. 자주 틀리는 패턴
 
 - `~은/는` vs `~이/가`: 주제·대조는 은/는, 주어는 이/가
-- `` `else`가 `` — "엘스" → 끝 받침 ㅅ → 주격은 `이`, 하지만 `else` 뒤에 주격조사가 오면 `else`가 아닌 `else`이 → 구어 발음 기준 관용적으로 `가` 허용 시 표기 일관성 유지 필요
-- `` `NULL`을 `` — "널"의 받침 ㄹ → 목적격: `를` 이 아닌 `을` ← 단, ㄹ 받침은 목적격 **`를`** 사용 → `NULL`을 → 잘못됨, `NULL`를 → OK
+- **받침 판정 기준은 발음의 마지막 음절**임 — `트`, `스`, `드`, `프` 등으로 끝나면 열린 음절이므로 **받침 없음**
+  - `int`(인트), `float`(플로트), `const`(콘스트), `struct`(스트럭트), `else`(엘스), `case`(케이스) → 모두 받침 없음 → `는`/`를`/`와`/`로`
+  - `short`(숏), `malloc`(말록), `enum`(이넘) → 받침 있음 → `은`/`을`/`과`/`으로`
+- **ㄹ 받침 목적격은 `을`** — `NULL`를 (X) → `NULL`을 (O), `double`를 (X) → `double`을 (O)
+- **ㄹ 받침 접속격은 `과`** — `NULL`와 (X) → `NULL`과 (O)
+- **ㄹ 받침 도구격만 `로`** — `NULL`으로 (X) → `NULL`로 (O)
 
-> **참고**: ㄹ받침 목적격은 `를`이 올바른 형태.
+> **참고**: ㄹ 받침에서 일반 받침과 달라지는 것은 도구/방향격(`으로` → `로`) 하나뿐입니다.
+> "서울은 / 서울을 / 서울과 / 서울로"를 기준 예시로 삼으십시오.
 
 ---
 
@@ -263,8 +275,10 @@ getchar();
 
 ### 4-8. Bold 파싱 오류 방지 — 문장 중간 `)**` 금지
 
-- `)**` 패턴이 **문장 중간**에 등장하면 마크다운 파서가 `**bold**` 구문을 올바르게 닫지 못해 렌더링 오류가 발생함
-- `)**` 패턴이 **문장(줄)의 마지막**에 등장하는 경우는 정상적으로 파싱되므로 허용
+- `)**` 뒤에 **문자(한글·영문)** 가 바로 이어지면 마크다운 파서가 `**bold**` 구문을 올바르게 닫지 못해 렌더링 오류가 발생함
+- 다음 두 경우는 정상적으로 파싱되므로 **허용**
+  - `)**` 가 **문장(줄)의 마지막**에 오는 경우
+  - `)**` 뒤에 **구두점**(`:`, `,`, `.`, `;` 등)이 오는 경우 — 예: `**Input Iterator(입력 반복자)**: 설명` (정상)
 
 ```
 /* 잘못된 예 — )** 뒤에 텍스트가 이어짐(문장 중간) */
@@ -277,7 +291,8 @@ getchar();
 - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용(언더플로우)**
 ```
 
-- 검토 시 파일 전체에서 `)**`를 검색하고, 뒤에 텍스트가 이어지는(문장 중간) 경우만 수정할 것
+- 검토 시 파일 전체에서 `)**`를 검색하고, **뒤에 문자가 바로 이어지는 경우만** 수정할 것
+  - 검색 예: `grep -nE '\)\*\*[^ :,.;)*]' <파일>`
 - 수정 방법: bold 닫힘(`**`)을 여는 괄호(`(`) 앞으로 이동하여 괄호를 bold 바깥에 배치
 
 ### 4-9. 레퍼런스 인용 형식
