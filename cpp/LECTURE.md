@@ -92,6 +92,11 @@ Bar::baz(a, b);
   - backtick 닫힘 `` ` `` 뒤에 바로 `(` 가 오면 시각적으로 혼탁하므로 공백을 유지
   - 예: `` ### `++` (증가 연산자, Increment Operator) `` O
   - 예: `` ### `++`(증가 연산자, Increment Operator) `` X
+- 예외 4: **헤딩(`#`, `##`, `###` ...) 내 영문 대역** — 한글 용어 뒤에 영문 대역을 괄호로 병기할 때는 공백 유지
+  - 예: `### 좌측값 참조 (Lvalue Reference)` O
+  - 예: `### 좌측값 참조(Lvalue Reference)` — 불필요
+  - **본문(설명 문장)에는 적용되지 않음** — 본문에서는 반드시 붙여 씀
+    - 예: `이동 생성자 (move constructor)는` X → `이동 생성자(move constructor)는` O
 
 ### 2-3. 조사 앞 괄호 생략 시 문장 매끄러움
 
@@ -110,26 +115,29 @@ Bar::baz(a, b);
 |---|---|---|---|---|---|---|
 | 없음 | 가 | 를 | 는 | 는 | 와 | 로 |
 | 있음 (ㄹ 제외) | 이 | 을 | 은 | 은 | 과 | 으로 |
-| ㄹ 받침 | 이 | 를 | 은 | 은 | 와 | 로 |
+| ㄹ 받침 | 이 | 을 | 은 | 은 | 과 | 로 |
+
+> ㄹ 받침은 **도구/방향격만** 예외(`으로`가 아닌 `로`)이며, 주격·목적격·접속격은 일반 받침과 동일하게 `이`/`을`/`과`를 사용합니다.
+> 예: `NULL`은, `NULL`을, `NULL`과, `NULL`로 (서울은, 서울을, 서울과, 서울로와 동일한 규칙)
 
 ### 3-2. 자주 등장하는 식별자·키워드 발음 및 조사
 
 | 식별자/키워드 | 한국어 발음 | 끝 받침 | 예시 |
 |---|---|---|---|
-| `int` | 인트 | ㅌ | `int`는, `int`를, `int`와, `int`로 |
-| `double` | 더블 | ㄹ | `double`은, `double`를, `double`와, `double`로 |
-| `bool` | 불 | ㄹ | `bool`은, `bool`를, `bool`와, `bool`로 |
+| `int` | 인트 | 없음 | `int`는, `int`를, `int`와, `int`로 |
+| `double` | 더블 | ㄹ | `double`은, `double`을, `double`과, `double`로 |
+| `bool` | 불 | ㄹ | `bool`은, `bool`을, `bool`과, `bool`로 |
 | `void` | 보이드 | 없음 | `void`가, `void`를, `void`와, `void`로 |
 | `auto` | 오토 | 없음 | `auto`가, `auto`를, `auto`와, `auto`로 |
 | `nullptr` | 널포인터 | 없음 | `nullptr`가, `nullptr`를, `nullptr`와, `nullptr`로 |
-| `NULL` | 널 | ㄹ | `NULL`은, `NULL`를, `NULL`와, `NULL`로 |
+| `NULL` | 널 | ㄹ | `NULL`은, `NULL`을, `NULL`과, `NULL`로 |
 | `true` / `false` | 트루 / 폴스 | 없음 / 없음 | `true`가, `true`를 / `false`가, `false`를, `false`는 |
 | `class` | 클래스 | 없음 | `class`는, `class`를, `class`와 |
 | `struct` | 스트럭트 | 없음 | `struct`는, `struct`를 |
 | `public` | 퍼블릭 | ㄱ | `public`은, `public`을, `public`과, `public`으로 |
 | `private` | 프라이빗 | ㅅ | `private`은, `private`을, `private`과 |
 | `protected` | 프로텍티드 | 없음 | `protected`가, `protected`를, `protected`와, `protected`로 |
-| `virtual` | 버추얼 | ㄹ | `virtual`은, `virtual`를, `virtual`와, `virtual`로 |
+| `virtual` | 버추얼 | ㄹ | `virtual`은, `virtual`을, `virtual`과, `virtual`로 |
 | `override` | 오버라이드 | 없음 | `override`가, `override`를, `override`와 |
 | `const` | 콘스트 | 없음 | `const`는, `const`를, `const`와 |
 | `static` | 스태틱 | ㄱ | `static`은, `static`을, `static`과, `static`으로 |
@@ -145,13 +153,13 @@ Bar::baz(a, b);
 | `throw` | 쓰로 | 없음 | `throw`가, `throw`를, `throw`와, `throw`로 |
 | `catch` | 캐치 | 없음 | `catch`가, `catch`를, `catch`와 |
 | `try` | 트라이 | 없음 | `try`가, `try`를, `try`와 |
-| `noexcept` | 노익셈트 | 없음 | `noexcept`는, `noexcept`를 |
+| `noexcept` | 노익셉트 | 없음 | `noexcept`는, `noexcept`를 |
 | `this` | 디스 | 없음 | `this`는, `this`를, `this`를 통해 |
 | `operator` | 오퍼레이터 | 없음 | `operator`가, `operator`를, `operator`와 |
 | `return` | 리턴 | ㄴ | `return`은, `return`을, `return`과, `return`으로 |
 | `for` | 포 | 없음 | `for`가, `for`를, `for`와, `for`로 |
 | `if` / `else` | 이프 / 엘스 | 없음 / 없음 | `if`가 / `else`가, `else`를 |
-| `while` | 와일 | ㄹ | `while`은, `while`를, `while`와, `while`로 |
+| `while` | 와일 | ㄹ | `while`은, `while`을, `while`과, `while`로 |
 | `switch` | 스위치 | 없음 | `switch`가, `switch`를, `switch`와 |
 | `case` | 케이스 | 없음 | `case`는, `case`를 |
 | `default` | 디폴트 | 없음 | `default`는, `default`를 |
@@ -162,7 +170,7 @@ Bar::baz(a, b);
 | `ptr` | 포인터 | 없음 | `ptr`가, `ptr`를, `ptr`와, `ptr`로 |
 | `ref` | 레퍼런스 | 없음 | `ref`는, `ref`를 |
 | `cur` | 커런트 | 없음 | `cur`는, `cur`를 |
-| `del` | 딜리트 | 없음 | `del`는, `del`를 → **주의**: "딜"로 읽으면 ㄹ받침 → `del`은, `del`를 |
+| `del` | 딜리트 | 없음 | `del`는, `del`를 → **주의**: "딜"로 읽으면 ㄹ받침 → `del`은, `del`을 |
 | `add` | 애드 | 없음 | `add`가, `add`를, `add`와, `add`로 |
 | `begin` | 비긴 | ㄴ | `begin`은, `begin`을, `begin`과, `begin`으로 |
 | `next` | 넥스트 | 없음 | `next`는, `next`를 |
@@ -171,7 +179,7 @@ Bar::baz(a, b);
 | `other` | 아더 | 없음 | `other`가, `other`를, `other`와, `other`로 |
 | `T` (템플릿 파라미터) | 티 | 없음 | `T`가, `T`를, `T`와, `T`로 |
 | `vptr` | 브이포인터 | 없음 | `vptr`가, `vptr`를 |
-| `vbtable` | 브이비테이블 | ㄹ | `vbtable`은, `vbtable`를 |
+| `vbtable` | 브이비테이블 | ㄹ | `vbtable`은, `vbtable`을 |
 | `lvalue` | 엘벨류 | 없음 | *lvalue*가, *lvalue*를, *lvalue*와 |
 | `rvalue` | 알벨류 | 없음 | *rvalue*가, *rvalue*를, *rvalue*와 |
 | `prvalue` | 피알벨류 | 없음 | *prvalue*가, *prvalue*를 |
@@ -180,11 +188,15 @@ Bar::baz(a, b);
 
 ### 3-3. 자주 틀리는 패턴
 
-- ㄹ받침 목적격: `NULL`을 (X) → `NULL`를 (O)
-- ㄹ받침 도구격: `NULL`으로 (X) → `NULL`로 (O)
+- **받침 판정 기준은 발음의 마지막 음절**임 — `트`, `스`, `드`, `프` 등으로 끝나면 열린 음절이므로 **받침 없음**
+  - `int`(인트), `const`(콘스트), `struct`(스트럭트), `case`(케이스), `delete`(딜리트) → 모두 받침 없음 → `는`/`를`/`와`/`로`
+  - `public`(퍼블릭), `template`(템플릿), `begin`(비긴) → 받침 있음 → `은`/`을`/`과`/`으로`
+- **ㄹ받침 목적격은 `을`**: `NULL`를 (X) → `NULL`을 (O), `bool`를 (X) → `bool`을 (O)
+- **ㄹ받침 접속격은 `과`**: `NULL`와 (X) → `NULL`과 (O)
+- **ㄹ받침 도구격만 `로`**: `NULL`으로 (X) → `NULL`로 (O)
 - `ptr`은 전체 단어 "pointer(포인터)" 발음 기준 → 받침 없음 → `ptr`는, `ptr`를, `ptr`와, `ptr`로
 - `del`은 전체 단어 "delete(딜리트)" 발음 기준 → 끝 받침 없음 → `del`는, `del`를
-  또는 약어 그 자체 "del(딜)" 로 읽을 경우 → ㄹ받침 → `del`은, `del`를
+  또는 약어 그 자체 "del(딜)" 로 읽을 경우 → ㄹ받침 → `del`은, `del`을
   **→ 프로젝트 내에서 한 가지로 통일 필요**
 - `cur`은 "current(커런트)" 발음 기준 → 끝 받침 없음 → `cur`는, `cur`를
 
@@ -268,8 +280,10 @@ Bar::baz(a, b);
 
 ### 4-7. Bold 파싱 오류 방지 — 문장 중간 `)**` 금지
 
-- `)**` 패턴이 **문장 중간**에 등장하면 마크다운 파서가 `**bold**` 구문을 올바르게 닫지 못해 렌더링 오류가 발생함
-- `)**` 패턴이 **문장(줄)의 마지막**에 등장하는 경우는 정상적으로 파싱되므로 허용
+- `)**` 뒤에 **문자(한글·영문)** 가 바로 이어지면 마크다운 파서가 `**bold**` 구문을 올바르게 닫지 못해 렌더링 오류가 발생함
+- 다음 두 경우는 정상적으로 파싱되므로 **허용**
+  - `)**` 가 **문장(줄)의 마지막**에 오는 경우
+  - `)**` 뒤에 **구두점**(`:`, `,`, `.`, `;` 등)이 오는 경우 — 예: `**Input Iterator(입력 반복자)**: 설명` (정상)
 
 ```
 /* 잘못된 예 — )** 뒤에 텍스트가 이어짐(문장 중간) */
@@ -282,7 +296,8 @@ Bar::baz(a, b);
 - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용(언더플로우)**
 ```
 
-- 검토 시 파일 전체에서 `)**`를 검색하고, 뒤에 텍스트가 이어지는(문장 중간) 경우만 수정할 것
+- 검토 시 파일 전체에서 `)**`를 검색하고, **뒤에 문자가 바로 이어지는 경우만** 수정할 것
+  - 검색 예: `grep -nE '\)\*\*[^ :,.;)*]' <파일>`
 - 수정 방법: bold 닫힘(`**`)을 여는 괄호(`(`) 앞으로 이동하여 괄호를 bold 바깥에 배치
 
 ### 4-8. 레퍼런스 인용 형식

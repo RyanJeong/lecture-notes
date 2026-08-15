@@ -1,57 +1,91 @@
 #!/usr/bin/env bash
 
+# ============================================================================
+# build.sh
+# ============================================================================
+# Usage:
+#   ./build.sh SOURCE_MARKDOWN TEMP_MARKDOWN OUTPUT [loop]
+#
+# Description:
+#   Build a PDF/PPTX slide deck from a chapter README.md, expanding external
+#   code placeholders, syntax-checking the included sources, and invoking
+#   marp-cli for the conversion.
+#
+#   The placeholder syntax is Markdown-compatible:
+#     [//]: # (INCLUDE: filename [--from N] [--to M] [--no-comment] [--reference])
+#
+# Arguments:
+#   SOURCE_MARKDOWN   Chapter source, laid out as <course>/<NN>/README.md
+#   TEMP_MARKDOWN     Generated markdown with code blocks expanded
+#   OUTPUT            Output file; the extension selects the marp format
+#   loop              Optional; reprocess every second until interrupted
+#
+# Options:
+#   -h, --help   Show this help message
+#
+# Examples:
+#   ./build.sh c/01/README.md c/01/temp.md c/01/temp.pdf
+#   ./build.sh c/01/README.md c/01/temp.md c/01/temp.pdf loop
+#
+# ============================================================================
+
 set -euo pipefail
 
-# Color functions (using printf)
-color_red() { printf "\033[31m%s\033[0m" "$1"; }
-color_green() { printf "\033[32m%s\033[0m" "$1"; }
-color_yellow() { printf "\033[33m%s\033[0m" "$1"; }
-color_blue() { printf "\033[34m%s\033[0m" "$1"; }
-color_magenta() { printf "\033[35m%s\033[0m" "$1"; }
-color_cyan() { printf "\033[36m%s\033[0m" "$1"; }
-color_bold() { printf "\033[1m%s\033[0m" "$1"; }
+color_red() { printf '\033[31m'; }
+color_green() { printf '\033[32m'; }
+color_yellow() { printf '\033[33m'; }
+color_cyan() { printf '\033[36m'; }
+color_reset() { printf '\033[0m'; }
 
-# Logging functions
-info() { printf "%s %s\n" "$(color_green "[$(basename "$0")][INFO]")" "$1"; }
-warn() { printf "%s %s\n" "$(color_yellow "[$(basename "$0")][WARN]")" "$1"; }
-error() { printf "%s %s\n" "$(color_red "[$(basename "$0")][ERROR]")" "$1"; }
-debug() { printf "%s %s\n" "$(color_cyan "[$(basename "$0")][DEBUG]")" "$1"; }
+info() { printf '%s\n' "$(color_green)[INFO]$(color_reset) ${1:-}"; }
+warn() { printf '%s\n' "$(color_yellow)[WARN]$(color_reset) ${1:-}"; }
+error() { printf '%s\n' "$(color_red)[ERROR]$(color_reset) ${1:-}" >&2; }
+debug() { printf '%s\n' "$(color_cyan)[DEBUG]$(color_reset) ${1:-}"; }
 
-# Change working directory to the directory of the script.
-cd "$(dirname "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_NAME="$(basename "$0")"
 
-# build.sh: Build PDF/PPTX from Markdown with external code inclusion.
-# USAGE: ./build.sh source_markdown temp_markdown output_pdf [loop]
-# If "loop" is passed as the fourth argument, the script runs continuously.
-# Otherwise, it processes the file once.
-# This script watches the source Markdown file for changes and replaces
-# placeholders with code blocks before invoking marp-cli for PDF/PPTX conversion.
-# The placeholder syntax used is Markdown-compatible:
-# [//]: # (INCLUDE: filename)
-
-if [ "$#" -lt 3 ]; then
-  info "Usage: $0 source_markdown temp_markdown output_pdf [loop]"
-  exit 1
-fi
-
-SRC_MD="$1" # Source Markdown file (with placeholders)
-TMP_MD="$2" # Temporary Markdown file with included code
-OUTPUT="$3" # Output file
+# Script-wide state shared with process_file(); assigned once in main().
+SRC_MD="" # Source Markdown file (with placeholders)
+TMP_MD="" # Temporary Markdown file with included code
+OUTPUT="" # Output file
 LOOP_MODE="false"
+SYNTAX_LANG="" # Course directory owning the syntax checker
+SYNTAX_TMP=""  # Temp dir for syntax checking; cleaned up on any exit
 
-# Check if a fourth argument "loop" is passed.
-if [ "$#" -eq 4 ] && [ "$4" = "loop" ]; then
-  LOOP_MODE="true"
-fi
+show_help() {
+  awk '/^# =====/{delim++; if(delim==3) exit; next} delim==2 && /^# /{sub(/^# /, ""); print}' "$0"
+}
 
-# Global temp dir for syntax checking; cleaned up on any exit.
-SYNTAX_TMP=""
-trap '[ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"' EXIT INT TERM
+error_exit() {
+  error "$1"
+  exit "${2:-1}"
+}
+
+# Determine the course directory from the source path, which is laid out as
+#   <course>/<NN>/README.md
+# so the course owning this chapter is the parent of the chapter directory.
+# Resolving to an absolute path first handles both relative invocations and the
+# absolute path the editor's Run-on-Save hook passes. Adding a new course
+# therefore requires no change here: its own check_syntax.sh is picked up.
+resolve_syntax_lang() {
+  local chapter_dir
+
+  if [[ -d "$(dirname "${SRC_MD}")" ]]; then
+    chapter_dir="$(cd "$(dirname "${SRC_MD}")" && pwd)"
+    SYNTAX_LANG="$(basename "$(dirname "${chapter_dir}")")"
+  fi
+
+  if [[ -z "${SYNTAX_LANG}" ]] || [[ ! -x "${SYNTAX_LANG}/check_syntax.sh" ]]; then
+    warn "No check_syntax.sh for course '${SYNTAX_LANG:-?}'; skipping syntax check."
+    SYNTAX_LANG=""
+  fi
+}
 
 process_file() {
   # Create a fresh temp directory for syntax checking (cleaned up by EXIT trap).
   [ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"
-  SYNTAX_TMP=$(mktemp -d "c/tmp_syntax_XXXXXX")
+  SYNTAX_TMP=$(mktemp -d "${SYNTAX_LANG:-.}/tmp_syntax_XXXXXX")
   mkdir -p "${SYNTAX_TMP}/src"
 
   info "Processing ${SRC_MD}..."
@@ -62,9 +96,9 @@ process_file() {
   # Read the source markdown file line by line
   while IFS= read -r line; do
     # Check for Markdown placeholder: [//]: # (INCLUDE: filename)
-    if echo "$line" | grep -qE '^\[\/\/\]:\s*#\s*\(INCLUDE:'; then
+    if echo "$line" | grep -qE '^\[\/\/\]:[[:space:]]*#[[:space:]]*\(INCLUDE:'; then
       # Extract the full argument string inside the parentheses
-      args=$(echo "$line" | sed -E 's/^\[\/\/\]:\s*#\s*\((INCLUDE:.*)\).*/\1/')
+      args=$(echo "$line" | sed -E 's/^\[\/\/\]:[[:space:]]*#[[:space:]]*\((INCLUDE:.*)\).*/\1/')
       # Split the argument string into an array
       read -ra tokens <<<"$args"
 
@@ -140,21 +174,28 @@ process_file() {
       local syntax_dest
       local rel_to_src
       rel_to_src="${filename#*src/}"
-      if [ "${no_comment}" = "false" ] || [ "${reference}" = "true" ]; then
-        syntax_dest="${SYNTAX_TMP}/${rel_to_src}"
+      syntax_dest="${SYNTAX_TMP}/src/${rel_to_src}"
+
+      # Stage a VERBATIM copy for the syntax check -- never the slide version.
+      # The markdown copy is range-sliced and has its "DO NOT CONTAIN" guard
+      # lines stripped; compiling that would report bogus diagnostics for code
+      # a range omitted, and would compile bodies the author deliberately
+      # fenced off with "#if 0 /* DO NOT CONTAIN ... */" (intentionally broken
+      # teaching examples). Copying the original keeps the staged tree a
+      # faithful subset of src/, so it compiles exactly as check_syntax.sh does.
+      # Only source files are staged. A Makefile shown on a slide would
+      # otherwise be built in this partial tree and fail on the .c files no
+      # slide happens to include; the real projects are built by check_syntax.sh.
+      if [ -f "${filename}" ] && [ -n "${lang}" ]; then
         mkdir -p "$(dirname "${syntax_dest}")"
-      else
-        syntax_dest="/dev/null"
+        cp "${filename}" "${syntax_dest}"
+      elif [ "${reference}" = "true" ] && [ ! -f "${filename}" ]; then
+        warn "Reference file not found: ${filename}"
       fi
 
-      # --reference: copy only to syntax_dest, do not add a code block to markdown.
+      # --reference: stage only, do not add a code block to markdown.
       if [ "${reference}" = "true" ]; then
-        if [ -f "${filename}" ]; then
-          cp "${filename}" "${syntax_dest}"
-          info "Reference file staged: ${syntax_dest}"
-        else
-          warn "Reference file not found: ${filename}"
-        fi
+        [ -f "${filename}" ] && info "Reference file staged: ${syntax_dest}"
         continue
       fi
 
@@ -174,15 +215,14 @@ process_file() {
           fi
         fi
 
-        # Extract and append content.
-        # The same filtered output goes to both TMP_MD (markdown) and syntax_dest (syntax check).
+        # Extract and append content to the markdown only; the syntax-check
+        # copy was already staged verbatim above.
         if [ "${num_ranges}" -eq 0 ]; then
           # No --from/--to: whole file, strip DO NOT CONTAIN lines.
           sed -n "1,\$p" "${filename}" |
             grep -v "DO NOT CONTAIN THIS LINE IN THE MARKDOWN" |
             tr -d '\r' |
-            awk 'NF{found=NR} {lines[NR]=$0} END{for(i=1;i<=found;i++) print lines[i]}' |
-            tee -a "${syntax_dest}" \
+            awk 'NF{found=NR} {lines[NR]=$0} END{for(i=1;i<=found;i++) print lines[i]}' \
               >>"${TMP_MD}"
         else
           # One or more ranges: concatenate in order, no DO NOT CONTAIN stripping.
@@ -197,15 +237,8 @@ process_file() {
               fi
             done
           } | tr -d '\r' |
-            awk 'NF{found=NR} {lines[NR]=$0} END{for(i=1;i<=found;i++) print lines[i]}' |
-            tee -a "${syntax_dest}" \
+            awk 'NF{found=NR} {lines[NR]=$0} END{for(i=1;i<=found;i++) print lines[i]}' \
               >>"${TMP_MD}"
-        fi
-
-        # Print current accumulated content of the syntax-check file after each INCLUDE write.
-        if [ "${syntax_dest}" != "/dev/null" ] && [ -s "${syntax_dest}" ]; then
-          info "Syntax-check content for: $(basename "${filename}")"
-          cat "${syntax_dest}"
         fi
 
         if [ "$no_comment" = "false" ] && [ "$num_ranges" -gt 0 ]; then
@@ -226,12 +259,14 @@ process_file() {
   done <"${SRC_MD}"
 
   # Run syntax check on all collected source files before building.
-  local syntax_tmp_name
-  syntax_tmp_name="$(basename "${SYNTAX_TMP}")"
-  info "Running syntax check on collected files..."
-  if ! c/check_syntax.sh "${syntax_tmp_name}"; then
-    error "Syntax check failed. Fix the errors above before building."
-    exit 1
+  if [ -n "${SYNTAX_LANG}" ]; then
+    local syntax_tmp_name
+    syntax_tmp_name="$(basename "${SYNTAX_TMP}")"
+    info "Running syntax check on collected files..."
+    if ! "${SYNTAX_LANG}/check_syntax.sh" "${syntax_tmp_name}"; then
+      error "Syntax check failed. Fix the errors above before building."
+      exit 1
+    fi
   fi
 
   TYPE="${OUTPUT##*.}"
@@ -249,13 +284,50 @@ process_file() {
   info "Conversion complete: ${OUTPUT}"
 }
 
-if [ "$LOOP_MODE" = "true" ]; then
-  # Infinite loop for real-time processing
-  while true; do
+main() {
+  case "${1:-}" in
+  -h | --help)
+    show_help
+    exit 0
+    ;;
+  esac
+
+  if [[ "$#" -lt 3 ]]; then
+    error "Usage: ${SCRIPT_NAME} SOURCE_MARKDOWN TEMP_MARKDOWN OUTPUT [loop]"
+    show_help
+    exit 1
+  fi
+
+  # Relative arguments are resolved against the repository root.
+  cd "${SCRIPT_DIR}"
+
+  SRC_MD="$1"
+  TMP_MD="$2"
+  OUTPUT="$3"
+
+  if [[ "$#" -eq 4 ]] && [[ "$4" = "loop" ]]; then
+    LOOP_MODE="true"
+  fi
+
+  [[ -f "${SRC_MD}" ]] || error_exit "Source markdown not found: ${SRC_MD}"
+
+  resolve_syntax_lang
+
+  # Clean up the syntax-check temp dir on any exit path.
+  trap '[ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"' EXIT INT TERM
+
+  if [[ "${LOOP_MODE}" = "true" ]]; then
+    # Infinite loop for real-time processing
+    while true; do
+      process_file
+      # Sleep for 1 second before next processing cycle
+      sleep 1
+    done
+  else
     process_file
-    # Sleep for 1 second before next processing cycle
-    sleep 1
-  done
-else
-  process_file
+  fi
+}
+
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+  main "$@"
 fi

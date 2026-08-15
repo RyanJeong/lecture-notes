@@ -486,6 +486,12 @@
 
 [//]: # (INCLUDE: ./cpp/10/src/15_file7.cc)
 
+---
+
+## 파일 스트림 (File Streams) (Cont'd - 17)
+
+- 파일 출력 스트림 조정자 변수 확인 예제 코드: 파일 크기 계산 결과
+
 ```text
 There       // 5 + 1('\n')
 are         // 3 + 1('\n')

@@ -40,10 +40,10 @@ error() { printf '%s\n' "$(color_red)[ERROR]$(color_reset) ${1:-}" >&2; }
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly ERROR_FILE="${SCRIPT_DIR}/error_file_lists.txt"
-readonly GCC_FLAGS="-c -fsyntax-only -ansi -Wall -Wextra -Werror -Wno-trigraphs -trigraphs -fno-builtin"
+readonly GCC_FLAGS="-fsyntax-only -ansi -Wall -Wextra -Werror -Wno-trigraphs -trigraphs -fno-builtin"
 
 show_help() {
-  awk '/^# =====/{delim++; if(delim==3) exit; next} delim==2 && /^# /{sub(/^# ?/, ""); print}' "$0"
+  awk '/^# =====/{delim++; if(delim==3) exit; next} delim==2 && /^# /{sub(/^# /, ""); print}' "$0"
 }
 
 error_exit() {

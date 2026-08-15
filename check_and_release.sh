@@ -49,85 +49,119 @@ error_exit() {
 
 readonly THRESHOLD=0.77 # 77%
 
-# -- Argument parsing --------------------------------------------------------
-
-if [[ "${1:-}" == "-h" ]] || [[ "${1:-}" == "--help" ]]; then
-  show_help
-  exit 0
-fi
-
-input="${1:-}"
-[[ -n "$input" ]] || error_exit "Usage: $SCRIPT_NAME <input.pdf>"
-[[ -f "$input" ]] || error_exit "File not found: $input"
+# Script-wide so the EXIT trap can still see it: a variable local to main()
+# is already out of scope when the trap fires, and under `set -u` that makes
+# the trap itself fail and poison the exit status.
+TMP_RENDER_DIR=""
 
 # -- Slide content area check ------------------------------------------------
 
-pages=$(pdfinfo "$input" | awk '/^Pages:/ {print $2}')
+# Rasterize each page, trim the surrounding whitespace, and compare the trimmed
+# height against the full slide height.
+check_content_area() {
+  local input="$1"
+  local tmpdir="$2"
+  local pages img page_num trimmed orig_h trim_h ratio percent
+  local exceeded=0
 
-tmpdir=$(mktemp -d)
-trap 'rm -rf "$tmpdir"' EXIT
+  pages=$(pdfinfo "${input}" | awk '/^Pages:/ {print $2}')
+  pdftoppm -png "${input}" "${tmpdir}/page"
 
-pdftoppm -png "$input" "$tmpdir/page"
+  for img in "${tmpdir}"/page-*.png; do
+    page_num=$(echo "${img}" | grep -oP 'page-\K[0-9]+')
+    trimmed="${tmpdir}/trimmed-${page_num}.png"
+    convert "${img}" -threshold 90% -trim +repage "${trimmed}"
 
-exceeded_pages=0
-for img in "$tmpdir"/page-*.png; do
-  page_num=$(echo "$img" | grep -oP 'page-\K[0-9]+')
-  trimmed="$tmpdir/trimmed-$page_num.png"
-  convert "$img" -threshold 90% -trim +repage "$trimmed"
+    orig_h=$(identify -format "%h" "${img}")
+    trim_h=$(identify -format "%h" "${trimmed}")
+    ratio=$(awk "BEGIN {printf \"%.2f\", ${trim_h}/${orig_h}}")
 
-  orig_h=$(identify -format "%h" "$img")
-  trim_h=$(identify -format "%h" "$trimmed")
-  ratio=$(awk "BEGIN {printf \"%.2f\", $trim_h/$orig_h}")
+    if (($(awk "BEGIN {print (${ratio} > ${THRESHOLD})}"))); then
+      percent=$(awk "BEGIN {printf \"%d\", ${ratio}*100}")
+      warn "Page ${page_num}: content fills ${percent}% of slide (exceeds ${THRESHOLD})"
+      exceeded=$((exceeded + 1))
+    fi
+  done
 
-  if (($(awk "BEGIN {print ($ratio > $THRESHOLD)}"))); then
-    local_percent=$(awk "BEGIN {printf \"%d\", $ratio*100}")
-    warn "Page $page_num: content fills ${local_percent}% of slide (exceeds ${THRESHOLD})"
-    exceeded_pages=$((exceeded_pages + 1))
+  if [[ "${exceeded}" -ne 0 ]]; then
+    error_exit "${exceeded} out of ${pages} pages exceed the content area threshold."
   fi
-done
 
-if [[ "$exceeded_pages" -ne 0 ]]; then
-  error_exit "$exceeded_pages out of $pages pages exceed the content area threshold."
-fi
-
-info "All pages are within the acceptable content area."
+  info "All pages are within the acceptable content area."
+}
 
 # -- Forbidden pattern check -------------------------------------------------
 
-# input: cpp/00/temp.pdf -> release/cpp/00.pdf
-input_dir=$(dirname "$input") # cpp/00
-lang=$(dirname "$input_dir")  # cpp
-ch=$(basename "$input_dir")   # 00
-md_file="${input_dir}/temp.md"
+check_forbidden_patterns() {
+  local md_file="$1"
+  local content_errors=0
 
-[[ -f "$md_file" ]] || error_exit "Markdown source not found: $md_file"
+  [[ -f "${md_file}" ]] || error_exit "Markdown source not found: ${md_file}"
 
-content_errors=0
+  if grep -nP '// Warning: File .+ not found; creating empty file\.' "${md_file}"; then
+    error "${md_file} contains a generated empty-file warning comment."
+    content_errors=$((content_errors + 1))
+  fi
 
-if grep -nP '// Warning: File .+ not found; creating empty file\.' "$md_file"; then
-  error "$md_file contains a generated empty-file warning comment."
-  content_errors=$((content_errors + 1))
-fi
+  if grep -nF 'DO NOT CONTAIN THIS LINE IN THE MARKDOWN' "${md_file}"; then
+    error "${md_file} contains a forbidden marker line."
+    content_errors=$((content_errors + 1))
+  fi
 
-if grep -nF 'DO NOT CONTAIN THIS LINE IN THE MARKDOWN' "$md_file"; then
-  error "$md_file contains a forbidden marker line."
-  content_errors=$((content_errors + 1))
-fi
+  if [[ "${content_errors}" -gt 0 ]]; then
+    error_exit "${content_errors} forbidden pattern(s) found in ${md_file}. Release aborted."
+  fi
 
-if [[ "$content_errors" -gt 0 ]]; then
-  error_exit "$content_errors forbidden pattern(s) found in $md_file. Release aborted."
-fi
-
-info "Content checks passed."
+  info "Content checks passed."
+}
 
 # -- Release -----------------------------------------------------------------
 
-mkdir -p "release/${lang}"
-cp "$input" "release/${lang}/${ch}.pdf"
-info "Copied ${lang}/${ch}.pdf"
+release_chapter() {
+  local input="$1"
+  local input_dir="$2"
+  local lang="$3"
+  local ch="$4"
+  local md_file="$5"
 
-marp --pptx --allow-local-files --theme ./theme.css "$md_file"
-mv "${input_dir}/temp.pptx" "release/${lang}/${ch}.pptx"
-info "Generated ${lang}/${ch}.pptx"
+  mkdir -p "release/${lang}"
+  cp "${input}" "release/${lang}/${ch}.pdf"
+  info "Copied ${lang}/${ch}.pdf"
 
-info "Release completed for ${lang}/${ch}."
+  marp --pptx --allow-local-files --theme ./theme.css "${md_file}"
+  mv "${input_dir}/temp.pptx" "release/${lang}/${ch}.pptx"
+  info "Generated ${lang}/${ch}.pptx"
+
+  info "Release completed for ${lang}/${ch}."
+}
+
+main() {
+  case "${1:-}" in
+  -h | --help)
+    show_help
+    exit 0
+    ;;
+  esac
+
+  local input="${1:-}"
+  [[ -n "${input}" ]] || error_exit "Usage: ${SCRIPT_NAME} <input.pdf>"
+  [[ -f "${input}" ]] || error_exit "File not found: ${input}"
+
+  # input: cpp/00/temp.pdf -> release/cpp/00.pdf
+  local input_dir lang ch md_file
+  input_dir=$(dirname "${input}") # cpp/00
+  lang=$(dirname "${input_dir}")  # cpp
+  ch=$(basename "${input_dir}")   # 00
+  md_file="${input_dir}/temp.md"
+
+  TMP_RENDER_DIR=$(mktemp -d)
+  trap '[ -n "${TMP_RENDER_DIR}" ] && rm -rf "${TMP_RENDER_DIR}"' EXIT INT TERM
+
+  check_content_area "${input}" "${TMP_RENDER_DIR}"
+  check_forbidden_patterns "${md_file}"
+  release_chapter "${input}" "${input_dir}" "${lang}" "${ch}" "${md_file}"
+}
+
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+  main "$@"
+fi

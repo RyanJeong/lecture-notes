@@ -753,6 +753,13 @@ Derived::Print
 
 - `Derived1`과 `Derived2`가 모두 `Base`를 가상 상속했으므로, `Base` 서브객체는 `MostDerived` 내에 **단 한 번** 존재
   - `Base` 서브객체는 객체의 가장 끝 부분(0x1308)에 배치됨
+
+---
+
+## 다중 상속 (Multiple Inheritance) (Cont'd - 9)
+
+### 4-1. `MostDerived` 클래스 (Cont'd)
+
 - `MostDerived`는 두 쌍의 `vptr` / `vbptr`을 가짐(각 기반 클래스용)
   - 상속 순서가 `Derived1`, `Derived2` 순서이므로, `Derived1` 멤버를 객체에 우선 실체화함
   - `vptr_Derived1`: `Derived1` 서브객체용, `vbptr_Derived1`: `Base` 서브 객체까지의 오프셋(+8 바이트)
@@ -765,7 +772,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 9)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 10)
 
 ### 4-2. `MostDerived` 객체 메모리 레이아웃
 
@@ -795,7 +802,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 10)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 11)
 
 ### `MostDerived` 객체 바인딩 과정
 
@@ -803,7 +810,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 11)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 12)
 
 [//]: # (INCLUDE: ./cpp/06/src/virtual_base/Makefile --reference)
 
@@ -815,7 +822,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 12)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 13)
 
 - `person.cc`
 
@@ -823,7 +830,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 13)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 14)
 
 - `student.hpp`
 
@@ -831,7 +838,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 14)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 15)
 
 - `student.cc`
 
@@ -839,7 +846,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 15)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 16)
 
 - `professor.hpp`
 
@@ -847,7 +854,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 16)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 17)
 
 - `professor.cc`
 
@@ -855,7 +862,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 17)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 18)
 
 - `ta.hpp`
 
@@ -863,7 +870,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 18)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 19)
 
 - `ta.cc`
 
@@ -871,7 +878,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 19)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 20)
 
 - `main.cc`
 
@@ -879,7 +886,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 20)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 21)
 
 ### 믹스인 클래스
 
@@ -890,7 +897,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 21)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 22)
 
 [//]: # (INCLUDE: ./cpp/06/src/mixin/Makefile --reference)
 
@@ -900,7 +907,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 22)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 23)
 
 - `prftype.hpp`
 
@@ -908,7 +915,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 23)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 24)
 
 - `person.hpp`
 
@@ -916,7 +923,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 24)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 25)
 
 - `person.cc`
 
@@ -924,7 +931,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 25)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 26)
 
 - `student.hpp`
 
@@ -932,7 +939,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 26)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 27)
 
 - `student.cc`
 
@@ -940,7 +947,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 27)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 28)
 
 - `professor.hpp`
 
@@ -948,7 +955,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 28)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 29)
 
 - `professor.cc`
 
@@ -956,7 +963,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 29)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 30)
 
 - `ta.hpp`
 
@@ -964,7 +971,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 30)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 31)
 
 - `ta.cc`
 
@@ -972,7 +979,7 @@ Derived::Print
 
 ---
 
-## 다중 상속 (Multiple Inheritance) (Cont'd - 31)
+## 다중 상속 (Multiple Inheritance) (Cont'd - 32)
 
 - `main.cc`
 

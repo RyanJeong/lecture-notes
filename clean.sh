@@ -31,7 +31,7 @@ error() { printf '%s\n' "$(color_red)[ERROR]$(color_reset) ${1:-}" >&2; }
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 show_help() {
-  awk '/^# =====/{delim++; if(delim==3) exit; next} delim==2 && /^# /{sub(/^# ?/, ""); print}' "$0"
+  awk '/^# =====/{delim++; if(delim==3) exit; next} delim==2 && /^# /{sub(/^# /, ""); print}' "$0"
 }
 
 error_exit() {
@@ -47,12 +47,18 @@ main() {
     ;;
   esac
 
-  for target in c cpp; do
-    local script="${SCRIPT_DIR}/${target}/clean.sh"
-    [ -f "${script}" ] || error_exit "clean.sh not found: ${script}"
-    info "Running ${target}/clean.sh ..."
+  # Every course directory owns a clean.sh, so new courses are picked up
+  # without editing this list.
+  local found=0
+  local script
+  for script in "${SCRIPT_DIR}"/*/clean.sh; do
+    [ -f "${script}" ] || continue
+    found=1
+    info "Running $(basename "$(dirname "${script}")")/clean.sh ..."
     bash "${script}"
   done
+
+  [ "${found}" -eq 1 ] || error_exit "No course clean.sh found under ${SCRIPT_DIR}"
 
   info "All clean complete."
 }

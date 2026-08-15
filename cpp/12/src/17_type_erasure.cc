@@ -2,7 +2,16 @@
 
 // Custom allocator (standard inheritance for simplicity)
 template <class T>
-struct MyAlloc : std::allocator<T> {};
+struct MyAlloc : std::allocator<T> {
+  MyAlloc() = default;
+  template <class U>
+  MyAlloc(const MyAlloc<U>&) {}
+  // Without this, the inherited rebind yields std::allocator<U>, not MyAlloc<U>
+  template <class U>
+  struct rebind {
+    typedef MyAlloc<U> other;
+  };
+};
 
 // Custom deleter (a simple lambda function)
 auto del = [](int* p) { delete p; };
