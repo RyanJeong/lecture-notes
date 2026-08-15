@@ -414,6 +414,7 @@ a pointer to the right child node
 
 ### `alloc` 함수의 문제점
 
+[//]: # (INCLUDE: ./c/05/src/alloc/alloc.h --reference)
 [//]: # (INCLUDE: ./c/05/src/alloc/alloc.c --from 4 --to 22 --no-comment)
 
 ---
