@@ -342,9 +342,15 @@
 
 ---
 
-## 제어 블록의 기타 데이터 (Other Data) (Cont'd)
+## 제어 블록의 기타 데이터 (Other Data) (Cont'd - 1)
 
-[//]: # (INCLUDE: ./cpp/12/src/17_type_erasure.cc)
+[//]: # (INCLUDE: ./cpp/12/src/17_type_erasure.cc --to 14)
+
+---
+
+## 제어 블록의 기타 데이터 (Other Data) (Cont'd - 2)
+
+[//]: # (INCLUDE: ./cpp/12/src/17_type_erasure.cc --from 16)
 
 ---
 
