@@ -13,6 +13,10 @@
 
 [//]: # (INCLUDE: ./c/01/src/00_hello_world.c)
 
+---
+
+## Hello, World (Cont'd)
+
 ### C++
 
 [//]: # (INCLUDE: ./cpp/01/src/00_hello_world.cc)
@@ -205,7 +209,7 @@
 
 ### C++에서의 C 표준 헤더 사용 예제 - Trigonometric Functions
 
-![h:200 center](img/00-tri.png)
+![h:150 center](img/00-tri.png)
 
 [//]: # (INCLUDE: ./cpp/01/src/15_trigonometric.cc)
 
