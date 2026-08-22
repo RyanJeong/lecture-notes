@@ -117,16 +117,14 @@
 ## 베어메탈 (BM, Bare Metal) (Cont'd - 1)
 
 ```c
-int main()
-{
-    hardware_init();          /* clocks, GPIO, timers */
-    while (1) {               /* super loop */
-        read_sensors();
-        update_control();
-        drive_outputs();
-    }
+int main() {
+  hardware_init();          /* clocks, GPIO, timers */
+  while (1) {               /* super loop */
+    read_sensors();
+    update_control();
+    drive_outputs();
+  }
 }
-
 ```
 
 - 실시간 처리가 필요한 작업은 **인터럽트 서비스 루틴**(ISR, Interrupt Service Routine)에서 수행
@@ -182,7 +180,6 @@ void NetworkTask(void* arg) {
     vTaskDelay(pdMS_TO_TICKS(1000));  /* every 1 s */
   }
 }
-
 ```
 
 - 커널 API(예: `xTaskCreate`)로 등록된 함수는 독립적인 실행 흐름으로 관리됨
