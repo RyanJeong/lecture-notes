@@ -407,7 +407,7 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 | 항목 | 내용 |
 | --- | --- |
-| 구성 | Cortex-A72(arm64) + VideoCore GPU |
+| 구성 | Cortex-A72(`arm64`) + VideoCore GPU |
 | 실행 환경 | Raspberry Pi OS(Linux) |
 | 강점 | GPIO와 Linux를 동시에 제공, 방대한 자료와 낮은 가격 |
 | 주 용도 | 교육, 개념 검증, 시제품(양산에는 부적합) |
