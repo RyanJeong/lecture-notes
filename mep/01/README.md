@@ -254,7 +254,7 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 - **가능한 한 빨리 처리하고 즉시 잠든다** — "race to sleep"
   - SIMD 등의 연산 최적화는 전력 절감으로 이어짐 — 5장에서 상세히 다룸
-- 폴링 대신 **인터럽트**로 기상 — 대기 중 CPU를 돌리지 않음
+- 폴링 대신 **인터럽트**로 기상 — 대기 중 CPU를 사용하지 않음
 - 무선 송신은 소모가 가장 큼 — **전송 빈도와 페이로드를 줄이는 것**이 최우선
 - 사용하지 않는 주변장치의 클록을 차단
 
@@ -262,7 +262,6 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 - Linux 급 시스템은 상시 동작하는 프로세스가 많아 딥슬립이 어려움
 - 배터리 장치라면 **MCU + 베어메탈/RTOS** 조합이 일반적
-- 라즈베리파이는 상시 전원 환경을 전제로 함
 
 ---
 
@@ -270,7 +269,7 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 | 계층 | 대표 플랫폼 | 실행 환경 |
 | --- | --- | --- |
-| 교육용 MCU | Raspberry Pi Pico (RP2350) | 베어메탈 / RTOS |
+| 교육용 MCU | Raspberry Pi Pico(RP2350) | 베어메탈 / RTOS |
 | 범용 MCU | STMicroelectronics STM32 | 베어메탈 / RTOS |
 | 무선 MCU | Espressif ESP32 | RTOS |
 | 산업용 MPU | NXP i.MX | Linux |
@@ -283,165 +282,137 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 ## STMicroelectronics STM32
 
-![h:150 center](img/09-stm32.png)
+![h:250 center](img/09-stm32.png)
 
-- ARM **Cortex-M** 계열 MCU 제품군 — 임베디드 교육과 산업 현장의 사실상 표준
+- ARM **Cortex-M** 계열 MCU 제품군 — 임베디드 산업 현장의 사실상 표준
 
 | 항목 | 내용 |
 | --- | --- |
-| 코어 | Cortex-M0/M0+/M3/M4/M7/M33 |
-| 시리즈 | F(범용), L·U(저전력), H(고성능), G(모터), WB·WL(무선) |
+| 구성 | Cortex-M0+ ~ M33 + 주변장치 내장 |
 | 실행 환경 | 베어메탈, FreeRTOS, Zephyr |
-| 개발 도구 | STM32CubeIDE, CubeMX(핀·클록 설정 GUI), HAL/LL 드라이버 |
+| 강점 | 핀 호환을 유지하며 성능·메모리를 바꿔 갈 수 있는 넓은 제품군 |
 | 주 용도 | 산업 제어, 모터 제어, 가전, 의료기기 |
 
-- 제품군이 매우 넓어 **핀 호환**을 유지하며 성능·메모리를 바꿔 갈 수 있음
 - CubeMX로 초기화 코드를 생성해 주변장치 설정 부담이 작음
-- 국내외 자료와 레퍼런스 디자인이 풍부
 
 ---
 
 ## Espressif ESP32
 
-![h:150 center](img/10-esp32.png)
+![h:250 center](img/10-esp32.png)
 
 - **WiFi와 Bluetooth를 칩에 내장**한 MCU — IoT 분야에서 가장 널리 쓰임
 
 | 항목 | 내용 |
 | --- | --- |
-| 코어 | Xtensa 계열, 또는 RISC-V(ESP32-C 계열) |
-| 무선 | WiFi, Bluetooth/BLE 내장 |
+| 구성 | Xtensa 또는 RISC-V + WiFi·BLE |
 | 실행 환경 | FreeRTOS 기본 내장(ESP-IDF) |
-| 개발 도구 | ESP-IDF, Arduino Core for ESP32 |
+| 강점 | 무선 모듈이 없어 원가·기판 면적 절감, 딥슬립 지원 |
 | 주 용도 | 스마트홈, 무선 센서 노드, 시제품 |
 
-- 무선 모듈을 따로 붙일 필요가 없어 **부품 원가와 기판 면적**이 크게 줄어듦
-- 딥슬립을 지원해 배터리 센서 노드로도 사용 가능
-- 다만 무선 송신 중 전류 소모가 크므로 **전송 주기 설계**가 중요
+- 배터리 센서 노드로도 쓰이나, 송신 구간의 전류 소모가 큼
 
 ---
 
 ## Raspberry Pi Pico (RP2350)
 
-![h:150 center](img/11-pico.png)
+![h:250 center](img/11-pico.png)
 
-- 본 수업 플랫폼과 **같은 재단이 만든 MCU 보드** — MCU와 MPU의 차이를 한 생태계 안에서 비교할 수 있음
+- **라즈베리파이 재단(Raspberry Pi Foundation)이 만든 MCU 보드** — Linux는 동작하지 않음
 
 | 항목 | 내용 |
 | --- | --- |
-| 코어 | ARM Cortex-M33 듀얼 코어 또는 RISC-V(Hazard3) 듀얼 코어 (부팅 시 선택) |
-| 메모리 | SRAM 512KB, 보드 플래시 4MB |
-| 특징 | PIO(프로그래머블 I/O)로 까다로운 타이밍 신호를 CPU 부담 없이 생성 |
+| 구성 | Cortex-M33 또는 RISC-V(Hazard3) + PIO |
 | 실행 환경 | 베어메탈(C/C++ SDK), FreeRTOS, MicroPython |
+| 강점 | PIO로 까다로운 타이밍 신호를 CPU 부담 없이 생성 |
 | 주 용도 | 교육, 센서 제어, 실시간 신호 생성 |
 
-- 이름은 라즈베리파이지만 **Linux가 동작하지 않는 MCU**
-- Arm과 RISC-V를 한 칩에서 모두 시험해 볼 수 있는 흔치 않은 구조
+- 부팅 시 Arm과 RISC-V 중 하나를 고르는 흔치 않은 구조
 
 ---
 
 ## NVIDIA Jetson
 
-![h:150 center](img/12-nvidia-jetson.png)
+![h:250 center](img/12-nvidia-jetson.png)
 
 - GPU를 탑재한 **엣지 AI 전용 모듈** — 장치에서 직접 딥러닝 추론을 수행
 
 | 항목 | 내용 |
 | --- | --- |
-| 제품군 | Jetson Nano, Xavier NX, Orin Nano / Orin NX / AGX Orin |
-| 구성 | Cortex-A CPU + CUDA GPU + 딥러닝 가속기(DLA) |
-| 실행 환경 | Linux (JetPack, Ubuntu 기반) |
-| 개발 도구 | CUDA, cuDNN, TensorRT, DeepStream, Isaac ROS |
-| 주 용도 | 로보틱스, 자율주행, 드론, 스마트 팩토리, 의료 영상 |
+| 구성 | Cortex-A + CUDA GPU + 딥러닝 가속기(DLA) |
+| 실행 환경 | Linux(JetPack) |
+| 강점 | 데스크톱과 같은 CUDA 생태계로 학습 모델을 그대로 이식 |
+| 주 용도 | 로보틱스, 자율주행, 드론 |
 
-- 데스크톱과 **동일한 CUDA 생태계**를 활용해 학습 모델의 이식이 용이하고, TensorRT로 추론 지연·전력 소모를 최소화
-- 전력 모드를 단계별로 설정할 수 있어, 성능과 소비 전력을 조절 가능
-- MCU 대비 소비 전력이 훨씬 크고 단가가 높아, 배터리 장치에는 부적합
+- 제품군은 Orin Nano부터 AGX Orin까지 성능 단계별로 구성
 
 ---
 
 ## Qualcomm
 
-![h:150 center](img/13-qualcomm.png)
+![h:250 center](img/13-qualcomm.png)
 
 - 모바일 AP 기술을 임베디드로 확장한 **고성능 응용 프로세서**
 
 | 항목 | 내용 |
 | --- | --- |
-| 제품군 | Snapdragon(모바일), IoT·로보틱스용 파생 제품군 |
-| 구성 | Cortex-A CPU + GPU + DSP + NPU 이종 결합 |
+| 구성 | Cortex-A + GPU + DSP + NPU |
 | 실행 환경 | Linux, Android |
-| 주 용도 | 스마트폰, 로보틱스, XR, 차량 인포테인먼트 |
+| 강점 | 작업별로 효율적인 유닛에 배분, 카메라·통신 처리에 강함 |
+| 주 용도 | 스마트폰, 로보틱스, XR, 차량 |
 
-- CPU·GPU·DSP·NPU가 한 칩에 있어 **작업별로 가장 효율적인 유닛에 배분**
-- 카메라 처리(ISP)와 통신 기능이 강점
-- 성능이 높은 만큼 소비 전력도 커서 배터리 장치에는 제약이 있음
+- 대표 제품군은 Snapdragon과 그 IoT·로보틱스 파생 계열
 
 ---
 
 ## 특화 SoC 사례: Ambarella
 
-![h:150 center](img/14-ambarella.png)
+![h:250 center](img/14-ambarella.png)
+
+- 범용 플랫폼이 아닌, 특정 분야에 극단적으로 특화된 칩의 사례
 
 | 항목 | 내용 |
 | --- | --- |
-| 제품군 | CV 시리즈(전용 AI 엔진 탑재) |
-| 강점 | 고효율 영상 인코딩과 저전력 AI 추론을 동시 수행 |
+| 구성 | Cortex-A + 영상 인코더 + 전용 AI 엔진 |
 | 실행 환경 | Linux |
+| 강점 | 고효율 영상 인코딩과 저전력 AI 추론을 동시 수행 |
 | 주 용도 | IP 감시 카메라, 차량용 블랙박스, 드론, ADAS |
 
-- 범용 플랫폼이 아니라 **한 분야만 극단적으로 잘하는 칩**의 예
-- **영상 처리와 AI 추론에 특화**된 SoC — 감시 카메라 분야의 대표 주자
-- 상용 CCTV는 범용 프로세서 대신 **영상 전용 SoC**를 사용해 같은 전력으로 훨씬 높은 해상도와 프레임률을 처리함
+- 상용 CCTV는 범용 프로세서 대신 영상 처리에 특화된 SoC를 주로 채택
 
 ---
 
 ## 임베디드 Linux SoC (NXP i.MX / Rockchip RK3588)
 
-![h:200 center](img/15-linux-soc.png)
+![h:250 center](img/15-linux-soc.png)
 
 - 두 계열 모두 라즈베리파이와 같은 **Linux + GPIO** 구조
 
 | 항목 | NXP i.MX | Rockchip RK3588 |
 | --- | --- | --- |
-| 성격 | 산업용 — 공급 안정성 우선 | 고성능 — 연산·영상 성능 우선 |
-| 구성 | Cortex-A ×2-×4 + NPU(8M Plus 등) | ARM Cortex-A76 ×4 + A55 ×4(Octa-core) + NPU |
-| 강점 | 장기 공급 보증, CAN-FD·TSN 등 산업용 인터페이스 | 8K 디코딩, 다중 카메라, 강한 NPU |
-| 주 용도 | 산업 제어, 의료, 차량 | 고성능 SBC, 엣지 AI, 사이니지 |
+| 구성 | Cortex-A53·A55 + NPU | Cortex-A76·A55 + NPU |
+| 실행 환경 | Linux | Linux, Android |
+| 강점 | 장기 공급 보증, CAN-FD·TSN | 8K 디코딩, 다중 카메라 |
+| 주 용도 | 산업 제어, 의료, 차량 | 고성능 SBC, 엣지 AI |
+
+- 산업용은 성능보다 몇 년간 같은 칩을 구매할 수 있는지가 중요
 
 ---
 
 ## Raspberry Pi
 
-![h:150 center](img/16-rpi.png)
+![h:250 center](img/16-rpi.png)
 
 - 교육과 프로토타이핑을 위한 **단일 보드 컴퓨터** — 본 수업의 플랫폼
 
 | 항목 | 내용 |
 | --- | --- |
-| 코어 | ARM Cortex-A 계열(arm64) |
+| 구성 | Cortex-A72(arm64) + VideoCore GPU |
 | 실행 환경 | Raspberry Pi OS(Linux) |
-| 강점 | 방대한 자료, 저렴한 가격, GPIO와 Linux를 동시에 제공 |
-| 약점 | 소비 전력이 커 배터리 구동에 부적합, 산업 환경 내구성 부족 |
+| 강점 | GPIO와 Linux를 동시에 제공, 방대한 자료와 낮은 가격 |
+| 주 용도 | 교육, 개념 검증, 시제품(양산에는 부적합) |
 
-- **MPU의 특성**(Linux, 네트워크, 카메라)과 **MCU의 특성**(GPIO 직접 제어)을 한 보드에서 경험
-- 실무에서 쓰는 도구(CMake, Git, Docker, CI)를 그대로 사용할 수 있음
-- 양산 제품에 그대로 쓰기보다는 **개념 검증과 학습**에 강점
-
----
-
-## 플랫폼 비교 (Platform Comparison)
-
-| 플랫폼 | 계층 | 실행 환경 | 무선 | 주 용도 |
-| --- | --- | --- | --- | --- |
-| Raspberry Pi Pico | MCU | 베어메탈/RTOS | Pico W | 교육, 신호 제어 |
-| STM32 | MCU | 베어메탈/RTOS | 일부 모델 | 산업·모터 제어 |
-| ESP32 | MCU | RTOS | 내장 | IoT, 스마트홈 |
-| NXP i.MX | SoC | Linux | 외부 | 산업·의료·차량 |
-| Rockchip RK3588 | SoC | Linux/Android | 외부 | 고성능 SBC, 엣지 AI |
-| NVIDIA Jetson | 모듈 | Linux | 모델별 | 엣지 AI, 로보틱스 |
-| Qualcomm | AP | Linux/Android | 내장 | 로보틱스, XR |
-| Raspberry Pi | SBC | Linux | 내장 | 교육·시제품 |
+- MPU의 특성(Linux·네트워크)과 MCU의 특성(GPIO 제어)을 함께 경험
 
 ---
 
@@ -453,7 +424,7 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 4. **영상 처리나 AI 추론이 핵심인가** → 전용 SoC·모듈(Ambarella, Jetson, Qualcomm)
 5. **양산 규모와 원가는** → 대량 양산일수록 전용 SoC가 유리
 
-> 정답은 없으며, **요구사항이 플랫폼을 결정**
+> **요구사항이 플랫폼을 결정**
 
 ---
 
