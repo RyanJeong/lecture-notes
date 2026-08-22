@@ -322,7 +322,7 @@ journalctl -u ssh --since "10 min ago"  # time ranges
 
 ## 초기 설정 (Initial Setup)
 
-- OS 이미지는 공식 툴인 **[Raspberry Pi Imager](https://www.raspberrypi.com/software/)**를 활용하여 SD 카드에 플래싱
+- OS 이미지는 공식 툴인 [**Raspberry Pi Imager**](https://www.raspberrypi.com/software/)를 활용하여 SD 카드에 플래싱
 - 플래싱 시 [사전 설정(Advanced Options) 구성](https://www.raspberrypi.com/documentation/computers/getting-started.html#customisation)을 통해 모니터 없는 헤드리스 환경 구축 가능:
   - 호스트명 및 사용자 계정/비밀번호 설정
   - Wi-Fi SSID 및 접속 정보 설정
@@ -371,9 +371,9 @@ sudo nmcli connection modify "<NAME>" \
 
 ### 블루투스 규격의 진화 (Classic vs BLE)
 
-- Bluetooth Classic (1.0~3.0): 대용량 데이터 및 고음질 오디오 스트리밍에 최적화
+- Bluetooth Classic(1.0~3.0): 대용량 데이터 및 고음질 오디오 스트리밍에 최적화
   - 상시 연결, 높은 전력 소모
-- **BLE (Bluetooth Low Energy, 4.0 이상)**: 소량 센서 데이터의 주기적 전송 및 저전력 동작에 최적화
+- **BLE(Bluetooth Low Energy, 4.0 이상)**: 소량 센서 데이터의 주기적 전송 및 저전력 동작에 최적화
   - 동전 배터리로 수개월~수년 구동
 
 ### 라즈베리파이 무선 칩셋 특성 (Dual Mode)
