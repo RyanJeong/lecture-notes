@@ -1186,7 +1186,7 @@ n: 3         (decimal)
 
 ### 명시적 타입 변환(Explicit Conversion)
 
-- `(type) expression` 형태를 사용하면 `expression` 타입을 `type` 으로 타입 변환
+- `(type) expression` 형태를 사용하면 `expression` 타입을 `type`으로 타입 변환
   - `(type)`은 타입 변환 연산자(type conversion operator)
   - 오른쪽에서 왼쪽으로의 결합 방향을 가짐
 - 명시적으로 타입 변환을 표현하여 사용자의 의도를 명확히 표현할 수 있음

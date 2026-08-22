@@ -32,7 +32,7 @@
 type *identifier
 ```
 
-- 포인터 변수 선언에 사용한 `*` 는 연산자가 아닌 문법 표현
+- 포인터 변수 선언에 사용한 `*`는 연산자가 아닌 문법 표현
 
 ![w:550 center](img/01-pointer.png)
 
@@ -44,15 +44,15 @@ type *identifier
 
 ### 객체의 포인터를 반환하는 단항 연산자 `&` (Address-of Operator)
 
-- 피연산자 객체의 타입이 `T` 라면 `T` 를 가리키는 포인터(`T *`)가 반환됨
+- 피연산자 객체의 타입이 `T`라면 `T`를 가리키는 포인터(`T *`)가 반환됨
   - 포인터: **타입이 포함된 주소**
 
 ![w:550 center](img/02-address-of.png)
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 10 --to 10 --no-comment)
 
-- `&c` 는 변수 `c` 의 포인터 반환
-- `p = &c` 는 포인터 변수 `p` 에 `c` 의 포인터를 대입
+- `&c`는 변수 `c`의 포인터 반환
+- `p = &c`는 포인터 변수 `p`에 `c`의 포인터를 대입
 
 ---
 
@@ -77,19 +77,19 @@ type *identifier
 
 ## Pointers and Addresses (Cont'd - 4)
 
-### 단항 연산자 `*`, `&` 의 사용 예
+### 단항 연산자 `*`, `&`의 사용 예
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 19 --to 34 --no-comment)
 
 - 단항 연산자의 결합 방향은 오른쪽에서 왼쪽
-- `int *ip` 는 포인터 변수 선언이며, 초기화자로 `x` 의 포인터를 사용
-- `&x` 는 변수 `x` 의 포인터를 반환(*rvalue*)하고, `*ip` 는 포인터가 가리키는 객체를 간접 참조(*lvalue*)
+- `int *ip`는 포인터 변수 선언이며, 초기화자로 `x`의 포인터를 사용
+- `&x`는 변수 `x`의 포인터를 반환(*rvalue*)하고, `*ip`는 포인터가 가리키는 객체를 간접 참조(*lvalue*)
 
 ---
 
 ## Pointers and Addresses (Cont'd - 5)
 
-### 단항 연산자 `*`, `&` 의 동작 분석
+### 단항 연산자 `*`, `&`의 동작 분석
 
 ![center](img/03-mem-ptr.png)
 
@@ -178,7 +178,7 @@ type *identifier
 | `a[i]`     | `*(a + i)`                    |
 | `&a[i]`    | `a + i`                       |
 
-1. 배열 이름 `a` 는 **배열 0번째 요소 포인터(`&a[0]`)로 자동 변환**된다(decay, pointer to `T`).
+1. 배열 이름 `a`는 **배열 0번째 요소 포인터(`&a[0]`)로 자동 변환**된다(decay, pointer to `T`).
     > An expression that has array type is converted to a pointer to the first element of the array, except when it is the operand of the `sizeof` operator, the unary `&` operator, or is a string literal used to initialize an array.
 2. **첨자 연산은 내부적으로 포인터 산술로 변환된다.**
 
@@ -263,7 +263,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 124 --to 125 --no-comment)
 
-- 함수 매개변수에서 `char s[]` 는 자동으로 `char *s` 로 변환(decay)
+- 함수 매개변수에서 `char s[]`는 자동으로 `char *s`로 변환(decay)
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 133 --to 134 --no-comment)
 
@@ -287,8 +287,8 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ### 포인터와 정수 간 덧셈/뺄셈
 
-- 주소 `p` 에 대해 *n* 만큼 더할 경우, `p` 로부터 `n * sizeof(T)` 바이트 만큼 **뒤 주소**로 이동(forward)
-- 주소 `p` 에 대해 *n* 만큼 뺄 경우, `p` 로부터 `n * sizeof(T)` 바이트 만큼 **앞 주소**로 이동(backward)
+- 주소 `p`에 대해 *n*만큼 더할 경우, `p` 로부터 `n * sizeof(T)` 바이트 만큼 **뒤 주소**로 이동(forward)
+- 주소 `p`에 대해 *n*만큼 뺄 경우, `p` 로부터 `n * sizeof(T)` 바이트 만큼 **앞 주소**로 이동(backward)
 
 | Expression | Description                                        | Address Computation (Conceptual)      |
 | ---------- | -------------------------------------------------- | ------------------------------------- |
@@ -321,7 +321,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 [//]: # (INCLUDE: ./c/05/src/04_adv_strlen.c)
 
 - 문자열의 시작 주소(`s`)와 문자열의 마지막 주소(`p`)를 활용한 예
-- 마지막(`'\0'` 를 담고 있는 요소)의 주소에서 시작 주소를 뺀 결과는 **문자열의 실제 길이**가 됨
+- 마지막(`'\0'`를 담고 있는 요소)의 주소에서 시작 주소를 뺀 결과는 **문자열의 실제 길이**가 됨
 
 ---
 
@@ -332,9 +332,9 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 ![center](img/12-alloc.png)
 
 - 스택 기반의 할당기이며, 런타임에 추가로 필요한 객체를 할당하거나 불필요한 객체를 반환할 수 있음
-  - `allocbuf` 는 `char` 타입 배열로, 고정된 크기의 메모리 버퍼 역할을 함
+  - `allocbuf`는 `char` 타입 배열로, 고정된 크기의 메모리 버퍼 역할을 함
     - 추가적인 객체 사용 요청이 들어오면 해당 배열 공간을 제공
-  - `allocp` 는 `allocbuf` 내에서 현재 위치를 가리키는 포인터 변수
+  - `allocp`는 `allocbuf` 내에서 현재 위치를 가리키는 포인터 변수
     - 스택 포인터 역할 수행
 
 ---
@@ -388,7 +388,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 160 --to 160 --no-comment)
 
 - **문자열은 상수이자 이름 없는 객체**이며, 상수는 읽기 전용 데이터 영역(.rodata)에 위치
-- `pmessage` 는 상수 객체를 가리키는 포인터이며, **문자열을 소유하지 않는 형태**
+- `pmessage`는 상수 객체를 가리키는 포인터이며, **문자열을 소유하지 않는 형태**
 - `pmessage` 포인터를 간접 참조해 내용을 읽을 순 있으나 수정은 허용하지 않음(UB)
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 164 --to 164 --no-comment)
@@ -444,7 +444,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 [//]: # (INCLUDE: ./c/05/src/06_strcpy2.c)
 
-- 지역 변수 `i` 를 사용하지 않고 포인터 변수만을 사용하여 구현
+- 지역 변수 `i`를 사용하지 않고 포인터 변수만을 사용하여 구현
 
 [//]: # (INCLUDE: ./c/05/src/07_strcpy3_ignore.c)
 
@@ -609,7 +609,7 @@ print them in order
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 217 --to 222 --no-comment)
 
-- 표현식 `matrix[i][j]` 는 `*(*(matrix + i) + j)` 로 계산
+- 표현식 `matrix[i][j]`는 `*(*(matrix + i) + j)`로 계산
 - 오프셋 계산 식은 `(i * <COLUMNS>) + j`
 
 ---
@@ -620,7 +620,7 @@ print them in order
 
 [//]: # (INCLUDE: ./c/05/src/_snippet.c --from 240 --to 249 --no-comment)
 
-- 표현식 `cube[i][j][k]` 는 `*(*(*(cube + i) + j) + k)` 로 계산
+- 표현식 `cube[i][j][k]`는 `*(*(*(cube + i) + j) + k)`로 계산
 - 오프셋 계산식은 `(i * <ROWS> * <COLUMNS>) + (j * <COLUMNS>) + k`
 
 ---
@@ -725,9 +725,9 @@ print them in order
 ### `argv` (Argument Vector)
 
 - 프로그램 실행 시 전달되는 데이터를 문자열 형태로 가리키는 포인터 배열
-- `argv[0]` 은 프로그램 실행 시 명령을 문자열로 가리키고 있음
-- `argv[1]` ~ `argv[argc - 1]` 은 사용자가 프로그램 실행 시 전달한 데이터를 가리킴
-- `argv[argc]` 은 `NULL` 를 가리키며, 전달인자의 끝을 나타냄
+- `argv[0]`은 프로그램 실행 시 명령을 문자열로 가리키고 있음
+- `argv[1]` ~ `argv[argc - 1]`은 사용자가 프로그램 실행 시 전달한 데이터를 가리킴
+- `argv[argc]`은 `NULL`을 가리키며, 전달인자의 끝을 나타냄
 
 ---
 
