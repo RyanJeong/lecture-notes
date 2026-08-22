@@ -76,7 +76,7 @@ Car -- Person : < owns
 
 - 두 클래스는 *is-a* 관계로 표현됨
   - A horse *is an* animal.
-  - `Animal` 은 기반 클래스(일반적인 의미)
+  - `Animal`은 기반 클래스(일반적인 의미)
   - `Horse`는 기반 클래스로부터 구체화된 파생 클래스(구체적인 의미)
 - 파생 클래스(derived class)는 기반 클래스(base class)로부터 구체화한 결과물
 - 클래스 다이어그램에서 상속 표현 시 두 클래스 사이에 실선으로 된 화살표를 사용
@@ -113,7 +113,7 @@ Car -- Person : < owns
   - `Person` 클래스는 기반 클래스, `Student` 클래스는 파생 클래스
   - `Person` 클래스는 주민등록번호를 저장할 데이터 멤버(`identity`) 필요
   - `Student` 클래스는 주민등록번호와 학점을 저장할 데이터 멤버(`identity`, `gpa`) 필요
-    - `identity` 는 기반 클래스로부터 상속됨
+    - `identity`는 기반 클래스로부터 상속됨
     - `Student` 클래스에 `gpa`만 추가하면 됨
 
 ---
@@ -172,8 +172,8 @@ Car -- Person : < owns
 
 ![center](img/08-Figure_11_7.png)
 
-- 기반 클래스 객체는 데이터 멤버 `identity` 를 가짐
-- 파생 클래스 객체는 데이터 멤버 `gpa` 와 **상속한 기반 클래스 멤버인 `identity`를 가짐**
+- 기반 클래스 객체는 데이터 멤버 `identity`를 가짐
+- 파생 클래스 객체는 데이터 멤버 `gpa`와 **상속한 기반 클래스 멤버인 `identity`를 가짐**
 - `identity`는 `private` 멤버이므로, 기반 클래스 범위(base class scope)에서만 접근 가능
 - **파생 클래스 객체는 파생 클래스 범위(derived class scope)를 가짐**
   - 파생 클래스 메서드는 `identity`에 접근 불가

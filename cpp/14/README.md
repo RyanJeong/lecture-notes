@@ -331,7 +331,7 @@
 
 - Key를 이용해 데이터를 저장하고 검색하는 컨테이너
 
-### Ordered Containers: `std::map` 과 `std::set`
+### Ordered Containers: `std::map`과 `std::set`
 
 - 균형 이진 트리(red-black tree)를 사용하여 **항상 정렬된 상태 유지**
 - 삽입, 삭제, 검색 모두 $O(\log N)$
@@ -389,7 +389,7 @@
 
 ## Associative Containers (연관 컨테이너) (Cont'd - 7)
 
-### Unordered Containers: `std::unordered_map` 과 `std::unordered_set`
+### Unordered Containers: `std::unordered_map`과 `std::unordered_set`
 
 - 해시 테이블(Hash Table)을 사용하며, **정렬되지 않음**
 - 평균: 삽입, 삭제, 검색 $O(1)$
