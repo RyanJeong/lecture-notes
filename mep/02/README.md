@@ -11,15 +11,15 @@
 
 ![h:280 center](img/00-rpi-board.png)
 
-- 영국 라즈베리파이 재단이 교육용으로 개발한 **싱글 보드 컴퓨터**(SBC)
-- 신용카드 크기의 기판에 CPU, 메모리, 입출력이 모두 집적
-- 저렴한 가격과 방대한 자료 덕분에 교육·프로토타이핑의 사실상 표준
+- 영국 라즈베리파이 재단에서 교육용으로 개발한 **싱글 보드 컴퓨터**(SBC)
+- 신용카드 크기의 단일 기판에 CPU, 메모리, 입출력 장치 통합 집적
+- 뛰어난 가성비와 풍부한 생태계를 바탕으로 교육 및 프로토타이핑의 업계 표준으로 활용
 
 ### 싱글 보드 컴퓨터
 
-- 하나의 기판에 컴퓨터의 모든 요소가 포함됨
-- 일반 PC와 동일하게 **범용 운영체제**(Linux)를 구동
-- 동시에 **GPIO 핀**을 통해 MCU처럼 하드웨어를 직접 제어
+- 단일 기판 내에 컴퓨터의 주요 구성 요소가 모두 집약된 형태
+- 일반 PC와 동일한 **범용 운영체제**(Linux) 구동 가능
+- **GPIO 핀**을 탑재하여 MCU처럼 하드웨어를 직접 제어 가능
 
 ---
 
@@ -27,15 +27,13 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 프로세서 | ARM 기반 SoC (예: BCM2711, Cortex-A72) |
+| 프로세서 | ARM 기반 SoC(예: BCM2711, Cortex-A72) |
 | 아키텍처 | `aarch64` (`arm64`, 64-bit) |
-| 메모리 | 모델에 따라 1GB ~ 8GB LPDDR4 |
+| 메모리 | 모델별 1GB ~ 8GB LPDDR4 |
 | 저장장치 | MicroSD 카드(또는 USB 부팅) |
-| 네트워크 | 유선 이더넷, 무선 WiFi, 블루투스 |
-| 확장 | 40핀 GPIO 헤더, USB, HDMI, CSI, DSI |
-| 전원 | USB-C 또는 Micro-USB, 5V |
-
-- 본 수업의 타깃 아키텍처는 **`arm64`**
+| 네트워크 | 유선 이더넷, 무선 Wi-Fi, 블루투스 |
+| 확장성 | 40핀 GPIO 헤더, USB, HDMI, CSI, DSI |
+| 전원 | USB-C 또는 Micro-USB(5V) |
 
 ---
 
@@ -43,16 +41,16 @@
 
 ![h:240 center](img/01-rpi-models.png)
 
-| 계열 | 특징 | 용도 |
+| 계열 | 특징 | 주요 용도 |
 | --- | --- | --- |
-| Model B (3/4/5) | 표준 크기, 이더넷·USB 다수 | 데스크톱 대체, 서버, 본 수업 |
-| Model A | B에서 이더넷·USB 축소, 저전력 | 임베디드 내장 |
-| Zero / Zero 2 W | 초소형, 저전력, 무선 내장 | 소형 IoT, 웨어러블 |
-| Compute Module (CM) | 커넥터 방식 모듈, 캐리어 보드 필요 | **양산 제품 내장** |
-| Pico | RP2040 **MCU** — Linux 미탑재 | 베어메탈 제어 |
+| Model B(3/4/5) | 표준 규격, 다수의 이더넷·USB 포트 탑재 | 데스크톱 대체, 서버, 본 실습 |
+| Model A | Model B 대비 이더넷·USB 축소, 저전력 설계 | 임베디드 시스템 내장 |
+| Zero / Zero 2 W | 초소형, 저전력, 무선 네트워크 내장 | 소형 IoT, 웨어러블 기기 |
+| Compute Module(CM) | 커넥터 방식 모듈(별도 캐리어 보드 필요) | 양산형 제품 내장 |
+| Pico | RP2040 MCU 기반(Linux 미탑재) | 베어메탈 하드웨어 제어 |
 
-> GPIO 40핀 헤더의 **핀 배치는 세대 간 호환**되므로 실습 회로는 그대로 사용 가능
-> **주의**: Pico는 이름은 라즈베리파이지만 **MCU** 이며 Linux가 동작하지 않음.
+> **참고:** GPIO 40핀 헤더의 **핀 배치는 세대 간 호환**되므로 동일한 실습 회로 재사용 가능
+> **주의:** Pico는 라즈베리파이 브랜드 제품이나 Linux가 구동되지 않는 **MCU** 형태임.
 
 ---
 
@@ -62,50 +60,50 @@
 
 ![h:300 center](img/02-gpio-pinout.png)
 
-| 체계 | 설명 | 사용 |
+| 체계 | 설명 | 사용 목적 |
 | --- | --- | --- |
-| 물리 핀 번호 | 헤더의 물리적 위치(1~40) | 회로 연결 시 |
-| BCM 번호 | SoC 내부의 GPIO 번호 | **소프트웨어에서 사용** |
+| 물리 핀 번호 | 헤더의 물리적 위치(1~40번) | 회로 실물 연결 시 적용 |
+| BCM 번호 | SoC 내부의 GPIO 제어 번호 | **소프트웨어 제어 시 사용** |
 
-> 두 체계를 혼동하면 엉뚱한 핀을 제어하게 됨(본 수업의 모든 코드는 **BCM 번호**를 기준으로 작성함)
+> **주의:** 두 체계를 혼동할 경우 오작동이 발생할 수 있음(본 강의의 모든 소스 코드는 **BCM 번호** 기준 작성)
 
 ---
 
 ## GPIO의 대체 기능 (Alternate Functions)
 
-- 각 핀은 단순 입출력 외에 **통신용 특수 기능**을 겸함
+- 각 핀은 일반 입출력(GPIO) 외에 **통신 전용 특수 기능**을 겸함
 
-| 기능 | 용도 | 본 수업에서 |
-| --- | --- | --- |
-| I2C (SDA/SCL) | 2선식 다중 장치 통신 | 센서 모듈 |
-| SPI (MOSI/MISO/SCLK/CE) | 고속 동기 통신 | **MCP3008 ADC**(실습 04) |
-| UART (TXD/RXD) | 직렬 통신, 콘솔 | 디버깅 |
-| PWM | 아날로그 형태 출력 | LED 밝기, 부저 |
+| 기능 | 주요 용도 |
+| --- | --- |
+| I2C(SDA/SCL) | 2선식 다중 기기 통신 |
+| SPI(MOSI/MISO/SCLK/CE) | 고속 동기식 통신 |
+| UART(TXD/RXD) | 직렬 통신, 시리얼 콘솔 |
+| PWM | 아날로그 형태 신호 출력 |
 
-### 주의할 점
+### 주요 주의사항
 
-- 특수 기능 핀을 일반 GPIO로 쓰면 해당 통신 기능을 사용할 수 없음
-- SPI·I2C는 `raspi-config`에서 **명시적으로 활성화**해야 동작
-- 핀을 배정하기 전에 어떤 통신을 쓸지 먼저 결정할 것
+- 특수 기능으로 할당된 핀을 일반 GPIO로 사용할 경우 해당 통신 기능 사용 불가
+- SPI 및 I2C 인터페이스는 `raspi-config`에서 **명시적으로 활성화**해야 동작
+- 핀 배정 전 필요한 통신 인터페이스 규격을 사전 정의할 것
 
 ---
 
 ## 전기적 주의사항 (Electrical Cautions)
 
-- GPIO는 **3.3V 로직** — 5V 신호를 직접 인가하면 SoC가 손상됨
-- 핀당 최대 전류는 약 16mA, 전체 합계는 약 50mA로 제한
-- LED는 반드시 **전류 제한 저항과 직렬** 연결
+- GPIO는 **3.3V 로직 레벨**을 사용하며, 5V 신호 직접 인가 시 SoC 파손 위험 발생
+- 핀당 허용 전류는 최대 약 16mA, 전체 핀 합계는 약 50mA 이내로 제한
+- LED 연결 시 반드시 **전류 제한 저항을 직렬로 배치**해야 함
 
-### 저항값 계산 예 (설계 수치 채택 이유)
+### 저항값 계산 예
 
-- **전원 전압 ($V_{\text{CC}}$):** **3.3V** (라즈베리파이 GPIO 로직 전압)
-- **LED 순방향 전압 ($V_f$):** 약 **2.0V** *(일반 지시등용 적색·초록색 LED의 구동 전압 강하량)*
-- **목표 전류 ($I_f$):** 약 **4mA** *(핀당 제한 16mA 대비 SoC 안정성 확보 및 적정 밝기 타협선)*
+- **전원 전압($V_{\text{CC}}$):** **3.3V**(라즈베리파이 GPIO 로직 전압)
+- **LED 순방향 전압($V_f$):** 약 **2.0V** *(일반 지시등용 적색·초록색 LED 구동 시 전압 강하량)*
+- **목표 전류($I_f$):** 약 **4mA** *(핀당 최대 제한치 16mA 대비 SoC 안정성 확보 및 시인성 타협선)*
 
 $$R = \frac{V_{\text{CC}} - V_f}{I_f} = \frac{3.3 - 2.0}{0.004} = 325\,\Omega \approx 330\,\Omega$$
 
-- **330Ω 저항의 의미:** GPIO 과부하를 막고 눈부심 없이 실습하기 가장 적절하여 실습 키트에 포함됨
-- 모터처럼 전류가 큰 부하는 **트랜지스터나 드라이버 회로**를 거쳐 구동
+- **330Ω 저항 선정 이유:** GPIO 과부하를 방지하고 적절한 시인성을 확보하는 최적 수치로 실습 키트에 채택됨
+- 모터 등 대전류 부하 연결 시 **트랜지스터 또는 드라이버 회로**를 경유하여 구동
 
 ---
 
@@ -113,14 +111,14 @@ $$R = \frac{V_{\text{CC}} - V_f}{I_f} = \frac{3.3 - 2.0}{0.004} = 325\,\Omega \a
 
 ![h:280 center](img/03-power-supply.png)
 
-- 라즈베리파이는 **전원 품질에 민감**한 보드
+- 라즈베리파이는 **전원 공급의 안정성 및 품질에 민감함**
 
-| 증상 | 흔한 원인 |
+| 증상 | 주요 원인 |
 | --- | --- |
-| 부팅 도중 멈춤·재시작 | 전류 부족 |
-| 화면에 번개 아이콘 표시 | 저전압 감지 |
-| USB 장치 인식 실패 | 전류 여유 부족 |
-| SD 카드 손상 반복 | 갑작스러운 전원 차단 |
+| 부팅 중 중단 또는 재부팅 | 공급 전류 부족 |
+| 화면 내 경고 또는 번개 아이콘 표시 | 저전압 상태 감지 |
+| USB 장치 인식 불가 또는 오작동 | 전원 공급 용량 부족 |
+| SD 카드 파일 시스템 손상 반복 | 부적절한 전원 강제 차단 |
 
 ---
 
@@ -128,10 +126,11 @@ $$R = \frac{V_{\text{CC}} - V_f}{I_f} = \frac{3.3 - 2.0}{0.004} = 325\,\Omega \a
 
 ### 권장 사항
 
-![h:310 center](img/04-power-supply.png)
+![h:280 center](img/04-power-supply.png)
 
-- **정격 전류를 충족하는 정품 어댑터** 사용 — PC의 USB 포트로는 부족한 경우가 많음
-- 저전압 여부 확인
+- **정격 출력 규격을 준수하는(혹은 그에 준하는) 전용 어댑터 사용 권장**
+  - PC USB 포트는 전류 용량이 미흡할 수 있음
+- 저전압 상태 모니터링 명령어
 
 ```bash
 vcgencmd get_throttled     # 0x0 means no throttling
@@ -142,31 +141,33 @@ dmesg | grep -i voltage
 
 ## 라즈베리파이의 활용 사례 (Use Cases)
 
-- **홈 서버**: 파일 서버, 미디어 서버, 광고 차단 DNS
-- **IoT 게이트웨이**: 센서 데이터 수집과 클라우드 전송
-- **로보틱스**: 이동 로봇의 상위 제어기
-- **엣지 AI**: 카메라 영상에서 객체를 직접 탐지
-- **산업 프로토타이핑**: 양산 전 개념 검증(PoC)
+- **홈 서버**: 네트워크 파일 서버, 미디어 스트리밍, DNS 기반 광고 차단
+- **IoT 게이트웨이**: 센서 데이터 수집 및 클라우드 플랫폼 전송
+- **로보틱스**: 자율주행 및 이동 로봇의 상위 제어 장치
+- **엣지 AI**: 실시간 카메라 영상 기반 비전 및 객체 인식 처리
+- **산업용 프로토타입**: 양산 전 시스템 개념 검증(PoC)
 
-> 본 강의에서는 라즈베리파이를 활용해 센서 → 처리 → 웹 대시보드 → 배포까지 전 과정을 경험
+### 본 교과목에서의 학습 목표
+
+- 라즈베리파이를 활용하여 센서 데이터 수집 → 데이터 처리 → 웹 대시보드 구축 → 서비스 배포까지의 전 과정을 실습함
 
 ---
 
 ## 라즈베리파이 운영체제 (Raspberry Pi OS)
 
-- 데비안(Debian) 기반의 리눅스 배포판이며, 라즈베리파이에 최적화됨
-- 과거 명칭은 Raspbian
+- 데비안(Debian) 기반의 리눅스 배포판으로, 라즈베리파이 하드웨어 환경에 최적화됨
+- 구(舊) 명칭: Raspbian
 
 ### 배포판 선택
 
-| 종류 | 특징 | 용도 |
+| 종류 | 주요 특징 | 권장 용도 |
 | --- | --- | --- |
-| Desktop | GUI 포함 | 학습, 개발 |
-| Lite | CLI 전용, 경량 | 서버, 임베디드 배포 |
-| 64-bit | arm64 | **본 수업 기준** |
+| Desktop | GUI 환경 포함 | 일반 학습 및 개발 환경 |
+| Lite | CLI 전용(경량화) | 서버 구축 및 임베디드 배포 |
+| 64-bit | `arm64` 아키텍처 지원 | **본 강의 실습 기준** |
 
-- 임베디드 배포에서는 불필요한 구성요소가 없는 **Lite**를 선호
-- 저장 공간, 부팅 시간, 공격 표면이 모두 줄어듦
+- 임베디드 운영 환경에서는 불필요한 요소가 제거된 **Lite 버전 사용**을 권장
+  - 저장 공간 최적화, 부팅 시간 단축, 보안 공격 표면(Attack Surface) 축소 이점 제공
 
 ---
 
@@ -174,24 +175,24 @@ dmesg | grep -i voltage
 
 ![h:190 center](img/05-boot-sequence.png)
 
-1. **SoC ROM**: 전원 인가 시 칩 내부의 부트 ROM이 실행됨
-2. **부트로더**: SD 카드의 부트 파티션에서 펌웨어를 적재
-3. **커널 적재**: `kernel8.img`(`arm64` 커널)를 메모리에 적재
-4. **디바이스 트리**: `.dtb` 파일로 하드웨어 구성을 커널에 전달
-5. **`init` 실행**: 루트 파일시스템을 마운트하고 `systemd` 시작
-6. **서비스 시작**: 네트워크, SSH 등 각 서비스가 순차적으로 기동
+1. **SoC ROM**: 전원 인가 시 칩 내부 부트 ROM 실행
+2. **부트로더**: SD 카드의 부트 파티션에서 펌웨어 적재
+3. **커널 적재**: `kernel8.img` (`arm64` 커널)를 메모리에 적재
+4. **디바이스 트리**: `.dtb` 파일을 통해 하드웨어 구성 정보를 커널에 전달
+5. **`init` 실행**: 루트 파일 시스템 마운트 후 `systemd` 프로세스 시작
+6. **서비스 실행**: 네트워크, SSH 등 주요 시스템 서비스 순차 구동
 
 ### 디바이스 트리 (Device Tree)
 
-- 어떤 하드웨어가 어느 주소에 붙어 있는지 기술한 자료 구조
-- x86의 BIOS/ACPI와 달리, ARM은 디바이스 트리로 하드웨어를 설명
-- `config.txt`의 `dtoverlay` 설정으로 주변장치를 활성화
+- 하드웨어 구성 및 주소 할당 정보를 기술하는 데이터 구조
+- x86의 BIOS/ACPI와 달리 ARM 아키텍처는 디바이스 트리를 통해 하드웨어 정보를 전달함
+- `config.txt` 내 `dtoverlay` 설정을 통해 주변 장치 오버레이 활성화
 
 ---
 
 ## 부팅 설정 파일 (Boot Configuration)
 
-- 부팅 동작은 `/boot/firmware`의 텍스트 파일로 제어
+- 부팅 동작 관련 설정은 `/boot/firmware` 디렉터리의 텍스트 파일로 제어함
 
 ### `config.txt`
 
@@ -209,11 +210,11 @@ hdmi_force_hotplug=1
 
 ### `cmdline.txt`
 
-- 커널에 전달되는 **한 줄짜리** 부팅 인자(루트 파티션, 콘솔 등)
-- 줄바꿈을 넣으면 부팅에 실패하므로 편집 시 주의
+- 커널에 전달되는 **단일 행**의 부팅 파라미터 지정(루트 파티션, 시리얼 콘솔 등)
+- 개행 문자(줄바꿈) 포함 시 부팅 오류가 발생하므로 수정 시 주의 필요
 
-> 두 파일은 **FAT32 파티션**에 있어 다른 PC에서도 SD 카드를 꽂아 수정 가능.
-> 부팅이 안 될 때 복구하는 주요 수단
+> **참고:** 해당 파일들은 **FAT32 파티션**에 위치하여, 타 PC에 SD 카드를 연결하여 직접 수정 가능함.
+> **참고:** 부팅 장애 발생 시 주 복구 수단으로 활용됨.
 
 ---
 
@@ -221,36 +222,36 @@ hdmi_force_hotplug=1
 
 ![h:180 center](img/06-filesystem-tree.png)
 
-| 경로 | 용도 |
+| 경로 | 주요 용도 |
 | --- | --- |
-| `/boot/firmware` | 부트로더, 커널, `config.txt` (FAT32) |
-| `/` | 루트 파일시스템 (ext4) |
-| `/etc` | 시스템 설정 파일 |
-| `/home/<user>` | 사용자 홈 디렉터리 |
-| `/dev` | 장치 파일 — `gpiochip0`, `video0` 등 |
-| `/proc`, `/sys` | 커널이 제공하는 가상 파일시스템 |
-| `/var/log` | 로그 |
+| `/boot/firmware` | 부트로더, 커널, `config.txt` 위치(FAT32) |
+| `/` | 루트 파일 시스템(ext4) |
+| `/etc` | 시스템 제어 설정 파일 |
+| `/home/<user>` | 사용자 전용 홈 디렉터리 |
+| `/dev` | 장치 파일(`gpiochip0`, `video0` 등) |
+| `/proc`, `/sys` | 커널 정보를 제공하는 가상 파일 시스템 |
+| `/var/log` | 시스템 및 애플리케이션 로그 저장 |
 
-- **모든 것이 파일**이라는 UNIX 철학에 따라, GPIO와 기타 장치도 `/dev`의 파일로 접근
+- "모든 것은 파일이다"라는 UNIX 철학에 따라 GPIO 및 주요 장치도 `/dev` 이하 파일 형태로 접근
 
 ---
 
 ## 장치 파일과 GPIO (Device Files)
 
-- 현행 Raspberry Pi OS는 GPIO를 **문자 디바이스**로 노출
-  - `/dev/gpiochip0` — GPIO 컨트롤러
-- 과거의 `/sys/class/gpio` (sysfs) 방식은 폐기 예정이므로 사용하지 않음
+- 최신 Raspberry Pi OS는 GPIO를 **문자 디바이스(Character Device)** 형태로 노출
+- 예: `/dev/gpiochip0` (GPIO 컨트롤러)
+- 레거시 방식인 `/sys/class/gpio` (sysfs) 방식은 더 이상 사용되지 않을 예정(Deprecated)으로 사용 지양
 
-### 왜 문자 디바이스인가
+### 문자 디바이스 도입 배경
 
-| 항목 | sysfs (구) | 문자 디바이스 (현) |
+| 구분 | sysfs(기존) | 문자 디바이스(현재) |
 | --- | --- | --- |
-| 접근 방식 | 경로 문자열 조작 | `ioctl` 기반 API |
-| 소유권 | 불명확 | 프로세스가 라인을 점유 |
-| 종료 시 정리 | 수동 | 프로세스 종료 시 자동 해제 |
-| 성능 | 느림 | 빠름 |
+| 접근 방식 | 경로 문자열 제어 | `ioctl` 기반 API |
+| 소유권 | 명확하지 않음 | 프로세스 단위의 라인 점유 |
+| 자원 정리 | 수동 해제 필요 | 프로세스 종료 시 자동 정리 |
+| 처리 성능 | 상대적으로 느림 | 우수함(고속 처리) |
 
-- 본 수업은 문자 디바이스를 감싼 **libgpiod** 라이브러리를 사용
+- 본 실습에서는 문자 디바이스 API를 추상화한 `libgpiod` 라이브러리를 표준으로 사용함
 
 ---
 
@@ -268,7 +269,7 @@ sudo apt install -y libgpiod-dev gpiod
 
 # GPIO inspection
 gpiodetect               # list controllers
-gpioinfo gpiochip0       # per-line state and owning process
+gpioinfo -c gpiochip0    # per-line state and owning process
 
 # Service management
 systemctl status ssh
@@ -279,70 +280,69 @@ sudo systemctl enable --now ssh
 
 ## 안전한 종료와 SD 카드 (Shutdown and SD Card)
 
-- 전원을 그냥 뽑으면 파일시스템이 손상될 수 있음
+- 전원 무단 차단 시 파일 시스템 손상 및 데이터 손실 위험 발생
 
 ```bash
-sudo shutdown -h now     # clean shutdown
-sudo reboot              # restart
+sudo shutdown -h now     # Safely stop processes, unmount FS, and power off
+sudo reboot              # Safely stop processes, unmount FS, and restart
 ```
 
 ### SD 카드 수명 관리
 
-- SD 카드는 쓰기 횟수에 한계가 있어, 로그를 과도하게 기록하면 수명이 단축됨
-- 완성된 제품에서는 다음을 고려
-  - 로그를 메모리 파일시스템(`tmpfs`)에 기록
-  - 루트 파일시스템을 읽기 전용으로 마운트
-  - 중요한 데이터는 외부 저장소나 서버로 전송
+- SD 카드는 플래시 메모리 특성상 쓰기 횟수 제한이 존재하므로 과도한 로그 기록 시 수명 단축
+- 상용 제품 구현 시 고려사항:
+  - 로그 기록 위치를 램 기반 파일 시스템(`tmpfs`)으로 전환
+  - 루트 파일 시스템을 읽기 전용(Read-Only)으로 마운트
+  - 주요 데이터는 외부 저장 매체 또는 원격 서버로 전송 관리
 
 ---
 
 ## 서비스 관리 (systemd)
 
-- Linux의 서비스는 `systemd`가 관리하며, 임베디드 배포의 핵심 수단
+- 리눅스 시스템 서비스는 `systemd`가 관장하며, 임베디드 소프트웨어 배포의 핵심 수단임
 
 ```bash
-systemctl status ssh          # show status
-sudo systemctl start ssh      # start now
-sudo systemctl enable ssh     # start automatically on boot
-sudo systemctl enable --now ssh   # enable and start in one step
+systemctl status ssh             # show status
+sudo systemctl start ssh         # start now
+sudo systemctl enable ssh        # start automatically on boot
+sudo systemctl enable --now ssh  # start and enable in one step
 
-journalctl -u ssh -f          # follow the log
-journalctl -u ssh --since "10 min ago"
+journalctl -u ssh -f                    # follow the log
+journalctl -u ssh --since "10 min ago"  # time ranges
 ```
 
-### 왜 중요한가
+### systemd 도입의 주요 이점
 
-- 내가 만든 프로그램도 서비스로 등록하면
-  - 부팅과 동시에 자동 실행
-  - 비정상 종료 시 자동 재시작
-  - 로그가 `journalctl`로 일원화됨
-- 8장의 배포 파이프라인에서 이 방식을 그대로 사용
+- 개발한 애플리케이션을 서비스로 등록 시 제공되는 기능:
+- 시스템 부팅 시 자동 실행 설정
+- 프로세스 비정상 종료 시 자동 재시작
+- 통합 로그 관리 시스템(`journalctl`)을 통한 로깅 일원화
 
 ---
 
 ## 초기 설정 (Initial Setup)
 
-- OS 이미지는 **Raspberry Pi Imager**로 SD 카드에 기록
-- 기록 시 고급 설정에서 다음을 미리 지정하면 모니터 없이 부팅 가능
-  - 호스트명, 사용자 계정과 비밀번호
-  - WiFi SSID와 비밀번호
-  - SSH 활성화
+- OS 이미지는 공식 툴인 **[Raspberry Pi Imager](https://www.raspberrypi.com/software/)**를 활용하여 SD 카드에 플래싱
+- 플래싱 시 [사전 설정(Advanced Options) 구성](https://www.raspberrypi.com/documentation/computers/getting-started.html#customisation)을 통해 모니터 없는 헤드리스 환경 구축 가능:
+  - 호스트명 및 사용자 계정/비밀번호 설정
+  - Wi-Fi SSID 및 접속 정보 설정
+  - SSH 원격 접속 활성화
 
 ### 헤드리스 (Headless) 운용
 
-- 모니터·키보드 없이 네트워크로만 접속하는 방식
-- 임베디드 장치는 대부분 헤드리스로 운용됨
+- 디스플레이 및 입력 장치 없이 네트워크를 통해 원격 제어하는 운용 방식
+- 대부분의 임베디드 운영 환경에서 표준으로 채택됨
 
 ```bash
-ssh <user>@<hostname>.local     # connect via mDNS
-ssh <user>@192.168.0.10         # connect by IP
+ssh <user>@raspberrypi.local  # connect via mDNS(Multicast DNS)
+ssh <user>@192.168.0.10       # connect by IP
 ```
 
 ---
 
 ## 네트워크 구성 (Network Configuration)
 
-- 현행 Raspberry Pi OS는 **NetworkManager**로 네트워크를 관리
+- 최신 Raspberry Pi OS는 **NetworkManager**를 통해 네트워크 제어 수행
 
 ```bash
 # Scan for and join a wireless network
@@ -354,6 +354,8 @@ nmcli connection show
 ip addr show wlan0
 
 # Configure a static IP
+# Note: Replace <NAME> with the Connection Profile name
+# (NAME column in 'nmcli connection show')
 sudo nmcli connection modify "<NAME>" \
   ipv4.addresses 192.168.0.10/24 \
   ipv4.gateway 192.168.0.1 \
@@ -361,11 +363,42 @@ sudo nmcli connection modify "<NAME>" \
   ipv4.method manual
 ```
 
-- 실습실처럼 IP가 바뀌는 환경에서는 **고정 IP** 또는 mDNS가 유용
+- IP 할당이 변동되는 실습 환경에서는 **고정 IP 설정** 또는 mDNS 활용 권장
 
 ---
 
 ## 블루투스 (Bluetooth)
+
+### 블루투스 규격의 진화 (Classic vs BLE)
+
+- Bluetooth Classic (1.0~3.0): 대용량 데이터 및 고음질 오디오 스트리밍에 최적화
+  - 상시 연결, 높은 전력 소모
+- **BLE (Bluetooth Low Energy, 4.0 이상)**: 소량 센서 데이터의 주기적 전송 및 저전력 동작에 최적화
+  - 동전 배터리로 수개월~수년 구동
+
+### 라즈베리파이 무선 칩셋 특성 (Dual Mode)
+
+- 라즈베리파이는 Wi-Fi와 블루투스(Classic + BLE) 제어를 단일 칩셋에서 처리함
+- 동시 사용 시 동일 2.4GHz 대역 간섭으로 인해 무선 성능 저하가 발생할 수 있음
+- 시분할(TDM) 제어로 Classic 오디오 연결 상태에서도 BLE 센서 데이터 수집 가능
+
+![h:160 center](img/07-interference.png)
+
+---
+
+## 블루투스 (Bluetooth) (Cont'd)
+
+### 무선 통신 규격 비교
+
+| 규격 | 통신 거리 | 전력 소모 | 주요 용도 |
+| --- | --- | --- | --- |
+| Wi-Fi | 중거리 | 높음 | 대용량 데이터 전송, 인터넷 연동 |
+| Bluetooth | 단거리 | 중간 | 근거리 대역 기기 연동 |
+| BLE | 단거리 | 매우 낮음 | 소형 센서 노드, 배터리 구동 기기 |
+
+### 리눅스 환경의 블루투스 제어 (`bluetoothctl`)
+
+- 라즈베리파이에서 무선 기기 검색, 페어링, 연결을 통합 관리하는 CLI 도구
 
 ```bash
 bluetoothctl
@@ -375,38 +408,27 @@ bluetoothctl
 # [bluetooth]# connect <MAC>
 ```
 
-- 라즈베리파이는 WiFi와 블루투스를 하나의 칩에서 처리
-- 두 기능을 동시에 사용하면 대역 간섭으로 성능이 저하될 수 있음
-
-### 무선 통신의 선택 기준
-
-| 방식 | 거리 | 전력 | 용도 |
-| --- | --- | --- | --- |
-| WiFi | 중 | 높음 | 대용량 데이터, 인터넷 연결 |
-| Bluetooth | 짧음 | 낮음 | 근거리 기기 연동 |
-| BLE | 짧음 | 매우 낮음 | 센서 비콘, 배터리 장치 |
-
 ---
 
 ## 원격 개발 환경 (Remote Development)
 
-- 라즈베리파이에서 직접 편집하는 대신, **호스트 PC에서 편집하고 원격 실행**
+- 라즈베리파이 자체 편집 대신 **호스트 PC에서 개발 후 타깃 보드 원격 실행** 방식 권장
 
-### 방법 1: SSH + 원격 편집
+### 방식 1: SSH 기반 원격 개발 (Remote Development)
 
-- VS Code의 Remote-SSH 확장으로 라즈베리파이의 파일을 직접 편집
-- 편집은 호스트에서, 빌드와 실행은 타깃에서 수행
+- VS Code의 Remote-SSH 확장을 통한 타깃 보드 내 소스 코드 직접 편집
+- 소스 편집은 호스트 PC에서, 빌드 및 실행은 타깃 보드에서 수행
 
-### 방법 2: 크로스 컴파일 (6주차)
+### 방식 2: 크로스 컴파일 (Cross Compilation)
 
-- 호스트에서 빌드까지 마치고, 결과 바이너리만 전송
+- 호스트 PC에서 타깃용 아키텍처로 빌드를 완료한 후 Executable 바이너리 전송
 
 ```bash
 scp build/app <user>@<host>:/home/<user>/
-ssh <user>@<host> ./app
+ssh <user>@<host>
 ```
 
-- 빌드가 오래 걸릴수록 크로스 컴파일의 이점이 커짐
+- 대규모 프로젝트일수록 호스트 자원을 활용한 크로스 컴파일의 효율성 증가
 
 ---
 
@@ -415,7 +437,6 @@ ssh <user>@<host> ./app
 ```bash
 # Compilers
 g++ --version            # confirm C++14 support
-cmake --version
 
 # GPIO library
 pkg-config --modversion libgpiod
@@ -433,4 +454,4 @@ arecord -l               # confirm the microphone is detected
 sudo usermod -aG gpio,video,audio "$USER"
 ```
 
-- 권한이 없으면 장치 열기에서 실패하므로, 오류 발생 시 가장 먼저 확인할 것
+- 장치 접근 권한 미부여 시 I/O 에러가 발생하므로, 환경 구축 후 우선 점검 필요
