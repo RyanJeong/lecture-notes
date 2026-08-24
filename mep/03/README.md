@@ -9,7 +9,7 @@
 
 ## 컴파일 과정 (Compilation Pipeline)
 
-![h:200 center](img/00-compile.png)
+![h:210 center](img/00-compile.png)
 
 | 단계 | 명령 | 산출물 |
 | --- | --- | --- |
