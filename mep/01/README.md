@@ -95,12 +95,13 @@
 
 ---
 
-## 소프트웨어 실행 환경의 세 계층 (Three Layers)
+## 소프트웨어 실행 환경의 세 가지 선택 (Three Execution Models)
 
-![h:300 center](img/04-three-layers.png)
+![h:400 center](img/04-three-layers.png)
 
-- 상위 계층일수록 **개발 편의성** 향상, 하위 계층일수록 **예측 가능성 및 제어 효율성** 증대
-- 애플리케이션 요구사항에 따른 계층 결정이 곧 **하드웨어/소프트웨어 플랫폼 선택**의 기준
+- 왼쪽으로 갈수록 타이밍 결정론과 하드웨어 제어 정밀도가, 오른쪽으로 갈수록 개발 생산성과 이식성이 높아짐
+- 실시간 요구(응답 지연 한계)와 기능 요구(네트워크·파일시스템·GUI)가 실행 환경을 결정
+  - 하드웨어/소프트웨어 플랫폼 선택의 기준이 됨
 
 ---
 
@@ -252,7 +253,7 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 ## 저전력 설계의 원칙 (Low-Power Design)
 
 - **신속한 처리 후 즉시 슬립 진입**(Race-to-Sleep 원칙)
-- 연산 최적화(예: SIMD)를 통한 CPU 가동 시간 단축이 전력 절감으로 직결(5장 상세 다룸)
+- 연산 최적화(예: SIMD)를 통한 CPU 가동 시간 단축이 전력 절감으로 직결(5장에서 상세히 다룸)
 - 폴링(Polling) 방식 지양, **인터럽트(Interrupt)** 기반 대기/기상 설계
 - 무선 송수신 모듈의 전력 소모 극대화 방지: **전송 주기 및 데이터 크기 최소화**
 - 미사용 주변장치(Peripherals)의 클록 공급 차단(Clock Gating)
@@ -321,9 +322,9 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 | 항목 | 내용 |
 | --- | --- |
-| 구성 | Cortex-M33 또는 RISC-V(Hazard3) + PIO |
+| 구성 | Cortex-M33 또는 RISC-V(Hazard3) + [PIO(Programmable I/O)](https://tutoduino.fr/en/pio-rp2040-en/) |
 | 실행 환경 | 베어메탈(C/C++ SDK), FreeRTOS, MicroPython |
-| 강점 | PIO(Programmable I/O)를 활용하여 CPU 부하 없이 정밀 타이밍 신호 생성 |
+| 강점 | PIO를 활용하여 CPU 부하 없이 정밀 타이밍 신호 생성 |
 | 주 용도 | 교육, 센서 제어, 실시간 신호 생성 |
 
 - 부팅 시 Arm과 RISC-V 아키텍처 중 선택이 가능한 독특한 구조
@@ -406,7 +407,7 @@ $$\text{Battery life (h)} \approx \frac{\text{Battery capacity (mAh)}}{\text{Ave
 
 | 항목 | 내용 |
 | --- | --- |
-| 구성 | Cortex-A72(`arm64`) + VideoCore GPU |
+| 구성 | Cortex-A72 + Broadcom VideoCore GPU |
 | 실행 환경 | Raspberry Pi OS(Linux) |
 | 강점 | GPIO 제어와 Linux 환경을 동시 제공, 방대한 커뮤니티 및 저렴한 가격 |
 | 주 용도 | 교육, 개념 검증(PoC), 시제품 개발(대량 양산에는 미적합) |
