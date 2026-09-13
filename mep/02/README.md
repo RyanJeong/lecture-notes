@@ -46,7 +46,7 @@
 
 ## Raspberry Pi 4의 메모리 (Memory)
 
-![h:240 center](img/11-rpi-mem.png)
+![h:280 center](img/11-rpi-mem.png)
 
 - 주기억장치는 SoC 내부가 아니라 보드에 실장된 **LPDDR4 SDRAM**
 - 1GB, 2GB, 4GB, 8GB로 제공되며 용량은 보드 구매 시점에 고정
@@ -59,21 +59,21 @@
 
 ## microSD 카드 슬롯 (microSD Card)
 
-![h:200 center](img/08-microsd.png)
+![h:240 center](img/08-microsd.png)
 
-- 부트 파일, 커널, 루트 파일 시스템, 사용자 데이터를 담는 기본 저장장치
+- 부트 파일, 커널, 루트 파일 시스템, 사용자 데이터를 저장하는 기본 저장장치
 - Imager가 OS 이미지를 기록하면 부트 파티션과 Linux 루트 파티션 생성
 - 부트 파티션에는 펌웨어와 설정 파일, 루트 파티션에는 커널과 사용자 공간 운영체제 저장
 - 속도 등급만으로 성능이 결정되지 않으므로 신뢰할 수 있는 고내구성 카드 사용
 - 전원 강제 차단 시 쓰기 중인 데이터와 파일 시스템 손상 가능
-- 이미지 설치 시 RPI Imager에서 `Storage` 선택 시 대상 장치 확인 필수 — **잘못 고르면 PC 데이터가 삭제됨**
-- 쓰기량이 많은 서버는 USB SSD 부팅, 로그 원격 전송, 읽기 전용 루트 파일 시스템 검토
+- 이미지 설치 시 Raspberry Pi Imager의 `Storage` 항목에서 대상 장치 확인 필수 — **잘못 선택하면 PC의 데이터가 삭제됨**
+- 쓰기 빈도가 높은 서버는 USB SSD 부팅, 로그 원격 전송, 읽기 전용 루트 파일 시스템 검토
 
 ---
 
 ## GPIO 헤더 (General-Purpose Input/Output)
 
-![h:240 center](img/09-rpi-gpio.png)
+![h:260 center](img/09-rpi-gpio.png)
 
 - **GPIO**는 *General-Purpose Input/Output*의 약자 — 소프트웨어가 핀의 입출력을 제어하는 범용 디지털 인터페이스
 - **40핀 2.54mm pitch 헤더**를 사용하며 전원·접지·GPIO 핀이 함께 배치
@@ -87,7 +87,7 @@
 
 ## PoE 헤더 (Power over Ethernet Header)
 
-![h:350 center](img/12-rpi-poe-hat.png)
+![h:360 center](img/12-rpi-poe-hat.png)
 
 - **PoE**는 *Power over Ethernet*의 약자 — 이더넷 케이블 하나로 데이터와 직류 전원을 함께 전달
 - 4핀 PoE 헤더는 일반 GPIO가 아니라 **PoE HAT** 전용 인터페이스
@@ -98,7 +98,7 @@
 
 ## 기가비트 이더넷 (Gigabit Ethernet)
 
-![h:200 center](img/10-poe.png)
+![h:220 center](img/10-rpi-eth.png)
 
 - RJ45 커넥터의 **IEEE 802.3ab 1000BASE-T** 유선 이더넷 인터페이스
 - Cat5e 이상 케이블과 기가비트 스위치 조합에서 이론상 **1Gbit/s** 링크 협상
@@ -131,7 +131,7 @@ lsusb -t
 ```
 
 - 버스 전원이 부족하면 외부 전원 USB 허브 사용
-- USB 3.0 장치와 2.4GHz 동글을 가까이 두면 전파 간섭 발생 — 연장 케이블이나 USB 2.0 포트 사용
+- USB 3.0 장치와 2.4GHz 동글을 근접 배치하면 전파 간섭 발생 — 연장 케이블 또는 USB 2.0 포트 사용
 
 ---
 
@@ -141,7 +141,7 @@ lsusb -t
 
 - 보드 가장자리의 3.5mm 잭은 **TRRS**(Tip-Ring-Ring-Sleeve) 4극 커넥터
 - 스테레오 아날로그 오디오 출력(L/R)과 **컴포지트 비디오 출력**(CVBS)을 한 잭에서 제공
-- 일반 3극 TRS 케이블은 오디오만 사용 가능 — 비디오까지 쓰려면 호환 4극 A/V 케이블 필요
+- 일반 3극 TRS 케이블은 오디오만 사용 가능 — 비디오를 함께 사용하려면 호환 4극 A/V 케이블 필요
 - 디지털 I2S가 아닌 아날로그 출력이므로 긴 케이블과 전기적 잡음의 영향을 받음
 
 | 접점   | 일반적인 신호    |
@@ -163,10 +163,10 @@ lsusb -t
 - Raspberry Pi 4는 카메라용 **CSI**(Camera Serial Interface)와 디스플레이용 **DSI**(Display Serial Interface) 사용
 - 15핀 FFC(Flat Flexible Cable) 커넥터와 전용 리본 케이블 사용 — 접점 방향과 폭이 맞지 않으면 연결 금지
 
-| 인터페이스 | 데이터 흐름       | 연결 장치                                    |
-| ---------- | ----------------- | -------------------------------------------- |
-| CSI        | 카메라 -> SoC     | Raspberry Pi Camera Module, 호환 이미지 센서 |
-| DSI        | SoC -> 디스플레이 | Raspberry Pi Touch Display, 호환 LCD         |
+| 인터페이스 | 데이터 흐름      | 연결 장치                                    |
+| ---------- | ---------------- | -------------------------------------------- |
+| CSI        | 카메라 → SoC     | Raspberry Pi Camera Module, 호환 이미지 센서 |
+| DSI        | SoC → 디스플레이 | Raspberry Pi Touch Display, 호환 LCD         |
 
 - 사용 가능한 레인 수와 해상도·프레임 속도는 보드·카메라·디스플레이 조합에 따라 달라짐
 - USB 카메라와 달리 전용 고속 영상 경로와 장치 트리·libcamera 설정 사용
@@ -175,7 +175,7 @@ lsusb -t
 
 ## micro-HDMI 출력 (Micro High-Definition Multimedia Interface)
 
-![h:300 center](img/16-display.png)
+![h:310 center](img/16-display.png)
 
 - **HDMI**는 *High-Definition Multimedia Interface*의 약자 — 비압축 디지털 영상과 오디오를 한 케이블로 전달
 - **micro-HDMI Type D 포트 2개** 제공 — 모니터 두 대 연결 가능
@@ -184,7 +184,7 @@ lsusb -t
 - 커넥터 크기만 다르고 신호 규격은 HDMI와 동일 — 변환 케이블 또는 어댑터 필요
 
 > 고해상도 출력에는 규격에 맞는 케이블과 충분한 전원 사용
-> 오디오가 HDMI로 나가면 4극 아날로그 잭과 출력 장치가 달라짐
+> 오디오가 HDMI로 출력되면 4극 아날로그 잭과 출력 장치가 달라짐
 
 ---
 
@@ -205,7 +205,7 @@ lsusb -t
 
 ### `vcgencmd`
 
-- 라즈베리 파이의 SoC 펌웨어로부터 전압, 온도, 클록 주파수 등의 하드웨어 모니터링 정보를 실시간으로 조회하는 명령줄 도구
+- 라즈베리파이의 SoC 펌웨어로부터 전압, 온도, 클록 주파수 등의 하드웨어 모니터링 정보를 실시간으로 조회하는 명령줄 도구
 
 ```bash
 # Measures the internal SoC core supply voltage (VDD_CORE)
@@ -246,7 +246,7 @@ iw dev wlan0 link
 ```
 
 - 이동형 장치는 Wi-Fi, 장시간 SSH·대용량 전송은 Gigabit Ethernet 우선 고려
-- 무선랜 고정 IP 설정은 뒤의 **네트워크 구성** 절차를 따를 것
+- 무선랜 고정 IP 설정은 후술하는 **네트워크 구성** 절차를 따를 것
 
 ---
 
@@ -256,7 +256,7 @@ iw dev wlan0 link
 
 - 무선 칩은 Bluetooth Classic과 **BLE**(Bluetooth Low Energy) 지원
 - Classic은 키보드·마우스·스피커처럼 지속 연결과 비교적 큰 데이터 전송에 사용
-- BLE는 광고 패킷과 짧은 연결로 센서 값·배터리 상태 같은 소량 데이터를 저전력 전송
+- BLE는 광고 패킷과 짧은 연결을 이용해 센서 값·배터리 상태 등 소량 데이터를 저전력으로 전송
 - 2.4GHz Wi-Fi와 대역을 공유하며, USB 3.0의 고주파 노이즈·주변 AP·금속 케이스 등 물리적 전파 간섭을 받음
 
 ```bash
@@ -288,11 +288,9 @@ bluetoothctl
 
 ---
 
-## GPIO 헤더 (GPIO Header)
+## GPIO 핀 번호 체계 (Pin Numbering)
 
-### 핀 번호 체계
-
-![h:300 center](img/02-gpio-pinout.png)
+![h:320 center](img/02-gpio-pinout.png)
 
 | 체계         | 설명                       | 사용 목적                   |
 | ------------ | -------------------------- | --------------------------- |
@@ -303,7 +301,7 @@ bluetoothctl
 
 ---
 
-## GPIO의 대체 기능 (Alternate Functions)
+## GPIO 대체 기능 (Alternate Functions)
 
 - 각 핀은 일반 입출력(GPIO) 외에 **통신 전용 특수 기능**을 겸함
 
@@ -324,18 +322,17 @@ bluetoothctl
 
 ## GPIO 대체 기능 - I2C 개요 (Inter-Integrated Circuit)
 
-![h:200 center](img/20-i2c.png)
+![h:230 center](img/20-i2c.png)
 
 - **두 선**만으로 여러 장치를 연결하는 동기식 반이중(Half-Duplex) 버스
 
-| 신호  | 이름              | 역할                                 |
-| ----- | ----------------- | ------------------------------------ |
-| `SDA` | Serial Data Line  | 주고받는 데이터                      |
-| `SCL` | Serial Clock Line | 마스터인 라즈베리 파이가 만드는 클럭 |
+| 신호  | 이름              | 역할                                |
+| ----- | ----------------- | ----------------------------------- |
+| `SDA` | Serial Data Line  | 주고받는 데이터                     |
+| `SCL` | Serial Clock Line | 마스터인 라즈베리파이가 만드는 클럭 |
 
 - 장치마다 고유 **주소**를 가지므로 장치가 추가되어도 추가 선을 구성하지 않아도 됨
 - 두 선 모두 **풀업 저항** 사용
-- 용도: 온습도·가속도 센서, OLED 디스플레이, RTC 모듈
 
 ---
 
@@ -355,54 +352,54 @@ bluetoothctl
 
 ## GPIO 대체 기능 - I2C 오픈 드레인 동작 (Open-Drain Operation)
 
-- 트랜지스터는 라인을 **LOW로 끌어내리기만** 하고, HIGH는 풀업 저항이 담당
+- 트랜지스터는 라인을 **LOW로만 구동**하며, HIGH 복귀는 풀업 저항이 담당
 
 | 게이트 전압 | 내부 통로          | 버스 라인                        | 논리        |
 | ----------- | ------------------ | -------------------------------- | ----------- |
 | Low (OFF)   | 끊김 — 스위치 열림 | 풀업 저항 $R_p$ 가 전원으로 당김 | **HIGH(1)** |
 | High (ON)   | 연결 — 스위치 닫힘 | 접지(GND)로 직접 통함            | **LOW(0)**  |
 
-### 왜 오픈 드레인을 쓰는가
+### 오픈 드레인을 사용하는 이유
 
-- 어느 장치도 라인을 HIGH로 **밀지 않고**, 끌어내리기만 가능
-- 여러 장치가 같은 선에 동시에 붙어도 **전원 단락**(short) 사고가 없음
-- 한 장치라도 LOW로 당기면 라인 전체가 LOW — ACK와 버스 중재가 이 성질을 이용
+- 어느 장치도 라인을 HIGH로 **구동하지 않으며**, LOW로 끌어내리는 동작만 수행
+- 여러 장치를 같은 선에 동시에 연결해도 **전원 단락**(short)이 발생하지 않음
+- 장치 중 하나라도 LOW로 구동하면 라인 전체가 LOW — ACK와 버스 중재가 이 성질을 이용
 
 ---
 
 ## GPIO 대체 기능 - I2C 설정과 확인 (Setup and Check)
 
-| 항목      | Raspberry Pi 4                             |
-| --------- | ------------------------------------------ |
-| 핀        | `SDA` GPIO2(3번), `SCL` GPIO3(5번)         |
-| 속도      | 표준 100kHz, 고속 400kHz                   |
-| 풀업 저항 | 보드에 내장 — 외부 저항 불필요             |
-| 활성화    | `raspi-config` -> Interface Options -> I2C |
+| 항목      | Raspberry Pi 4                           |
+| --------- | ---------------------------------------- |
+| 핀        | `SDA` GPIO2(3번), `SCL` GPIO3(5번)       |
+| 속도      | 표준 100kHz, 고속 400kHz                 |
+| 풀업 저항 | 보드에 내장 — 외부 저항 불필요           |
+| 활성화    | `raspi-config` → Interface Options → I2C |
 
 ```bash
 sudo raspi-config  # Enable I2C interface in system configuration
 i2cdetect -y 1     # Scan and list active slave device addresses on I2C bus 1
 ```
 
-- `i2cdetect` 가 출력하는 숫자가 곧 장치 **주소**
-- 아무 주소도 보이지 않으면 코드가 아니라 **배선과 전원**부터 확인
+- `i2cdetect`가 출력하는 숫자가 장치 **주소**에 해당
+- 주소가 하나도 표시되지 않으면 코드가 아니라 **배선과 전원**을 먼저 점검
 
 ---
 
 ## GPIO 대체 기능 - SPI (Serial Peripheral Interface)
 
-![h:200 center](img/25-spi.png)
+![h:145 center](img/25-spi.png)
 
 - 4선 전이중(Full-Duplex) 동기식 버스 — 보내는 동안 동시에 받음
 - 주소가 아니라 **CE**(Chip Enable, 표준 용어로는 SS - Slave Select, CS - Chip Select) 선으로 대상 장치를 선택
-- 장치를 늘리려면 CE 선이 하나씩 더 필요하나 I2C보다 빠름
+- 장치를 추가하려면 CE 선이 하나씩 더 필요하나 전송 속도는 I2C보다 빠름
 
-| 신호          | 방향         | Raspberry Pi 4 핀         |
-| ------------- | ------------ | ------------------------- |
-| `MOSI`        | 파이 -> 장치 | GPIO10(19번)              |
-| `MISO`        | 장치 -> 파이 | GPIO9(21번)               |
-| `SCLK`        | 파이 -> 장치 | GPIO11(23번)              |
-| `CE0` / `CE1` | 파이 -> 장치 | GPIO8(24번) / GPIO7(26번) |
+| 신호          | 방향        | Raspberry Pi 4 핀         |
+| ------------- | ----------- | ------------------------- |
+| `MOSI`        | 파이 → 장치 | GPIO10(19번)              |
+| `MISO`        | 장치 → 파이 | GPIO9(21번)               |
+| `SCLK`        | 파이 → 장치 | GPIO11(23번)              |
+| `CE0` / `CE1` | 파이 → 장치 | GPIO8(24번) / GPIO7(26번) |
 
 ```shell
 sudo raspi-config  # Enable SPI interface in system configuration
@@ -413,10 +410,10 @@ ls /dev/spidev0.*  # List active SPI device nodes (e.g., /dev/spidev0.0, /dev/sp
 
 ## GPIO 대체 기능 - UART (Universal Asynchronous Receiver/Transmitter)
 
-![h:160 center](img/21-uart.png)
+![h:150 center](img/21-uart.png)
 
 - 클럭선이 없는 **비동기** 전이중 직렬 통신 — 양쪽이 같은 **보율**(baud rate)로 약속
-- `TXD` 와 `RXD` 를 서로 **교차 연결**하며, 1:1 통신만 가능
+- `TXD`와 `RXD`를 서로 **교차 연결**하며, 1:1 통신만 가능
   - Raspberry Pi 4 핀: `TXD` GPIO14(8번), `RXD` GPIO15(10번)
 - 기본 용도는 **시리얼 콘솔** — 네트워크가 없어도 부팅 로그 확인 가능
 - **3.3V 로직** — 5V TTL이나 RS-232에 직접 연결 금지, 레벨 변환기 필요
@@ -428,17 +425,17 @@ ls /dev/spidev0.*  # List active SPI device nodes (e.g., /dev/spidev0.0, /dev/sp
 | PL011     | 클럭이 안정적이라 고속에 유리      | Bluetooth |
 | mini UART | CPU 클럭에 연동되어 흔들릴 수 있음 | 40핀 헤더 |
 
-- `dtoverlay=disable-bt` 로 Bluetooth를 끄면 PL011을 라즈베리 파이 GPIO 헤더로 사용 가능
+- `dtoverlay=disable-bt`로 Bluetooth를 끄면 PL011을 라즈베리파이 GPIO 헤더로 사용 가능
 
 ---
 
 ## GPIO 대체 기능 - PWM (Pulse Width Modulation)
 
-![h:160 center](img/22-pwm.png)
+![h:180 center](img/22-pwm.png)
 
 - 디지털 출력만으로 **중간 세기**를 만드는 방법
   - 주기는 고정하고, 켜져 있는 시간의 비율인 **듀티**만 조절
-- 눈이나 모터가 개별 펄스를 따라가지 못할 만큼 빠르면 평균값으로 인식
+- 전환 주기가 눈이나 모터의 응답 속도보다 충분히 빠르면 평균값으로 인식
 
 | 항목            | Raspberry Pi 4                          |
 | --------------- | --------------------------------------- |
@@ -446,8 +443,7 @@ ls /dev/spidev0.*  # List active SPI device nodes (e.g., /dev/spidev0.0, /dev/sp
 | 그 외 핀        | 소프트웨어 PWM — 스케줄러에 밀려 흔들림 |
 | 대표 용도       | LED 밝기, 모터 속도, 서보 각도          |
 
-- 서보는 보통 50Hz 주기에 1~2ms 펄스폭으로 각도를 지정
-- **실습 01**에서 LED 밝기 조절에 소프트웨어 PWM을 사용
+- 서보는 일반적으로 50Hz 주기에서 1~2ms 펄스폭으로 각도를 지정
 
 ---
 
@@ -460,8 +456,8 @@ ls /dev/spidev0.*  # List active SPI device nodes (e.g., /dev/spidev0.0, /dev/sp
 ### 저항값 계산 예
 
 - **전원 전압($V_{\text{CC}}$):** **3.3V**(라즈베리파이 GPIO 로직 전압)
-- **LED 순방향 전압($V_f$):** 약 **2.0V** _(일반 지시등용 적색·초록색 LED 구동 시 전압 강하량)_
-- **목표 전류($I_f$):** 약 **4mA** _(핀당 최대 제한치 16mA 대비 SoC 안정성 확보 및 시인성 타협선)_
+- **LED 순방향 전압($V_f$):** 약 **2.0V**(일반 지시등용 적색·초록색 LED의 전압 강하량)
+- **목표 전류($I_f$):** 약 **4mA**(핀당 한계 16mA 대비 안정성과 시인성의 절충값)
 
 $$R = \frac{V_{\text{CC}} - V_f}{I_f} = \frac{3.3 - 2.0}{0.004} = 325\,\Omega \approx 330\,\Omega$$
 
@@ -491,7 +487,7 @@ $$R = \frac{V_{\text{CC}} - V_f}{I_f} = \frac{3.3 - 2.0}{0.004} = 325\,\Omega \a
 
 ![h:280 center](img/04-power-supply.png)
 
-- **정격 출력 규격을 준수하는(혹은 그에 준하는) 전용 어댑터 사용 권장**
+- **정격 출력 규격을 충족하는 전용 어댑터 사용 권장**
   - PC USB 포트는 전류 용량이 미흡할 수 있음
 - 저전압 상태 모니터링 명령어
 
@@ -693,7 +689,7 @@ journalctl -u ssh --since "10 min ago"  # time ranges
 
 1. PC에 Raspberry Pi Imager 설치 후 실행
 2. `Raspberry Pi Device`에서 `Raspberry Pi 4` 선택
-3. `Operating System`에서 `Raspberry Pi OS (other)` -> `Raspberry Pi OS Lite (64-bit)` 선택
+3. `Operating System`에서 `Raspberry Pi OS (other)` → `Raspberry Pi OS Lite (64-bit)` 선택
 4. `Storage`에서 대상 microSD 카드 선택
 5. 사용자 설정에서 호스트명, 사용자 이름·비밀번호, Wi-Fi 국가·SSID·비밀번호, SSH 활성화 지정
 6. 설정을 확인하고 microSD 카드에 OS 이미지 기록
@@ -714,7 +710,7 @@ getconf LONG_BIT     # 64
 cat /etc/os-release  # Debian GNU/Linux 13 (trixie), ...
 ```
 
-- `uname -a`에 `aarch64`, `getconf LONG_BIT`가 `64`면 64-bit OS 정상 설치
+- `uname -a`에 `aarch64`, `getconf LONG_BIT`가 `64`이면 64-bit OS 정상 설치
 - `hostnamectl`로 호스트명과 운영체제 정보를 함께 확인 가능
 
 ---
@@ -723,7 +719,7 @@ cat /etc/os-release  # Debian GNU/Linux 13 (trixie), ...
 
 ### 헤드리스 (Headless) 운용
 
-![h:150 center](img/26-rpi-imager-ssh.png)
+![h:170 center](img/26-rpi-imager-ssh.png)
 
 - 디스플레이 및 입력 장치 없이 네트워크를 통해 원격 제어하는 운용 방식
 - 대부분의 임베디드 운영 환경에서 표준으로 채택됨
@@ -735,7 +731,7 @@ ssh -p <port> <user>@<host>        # when the port has been changed
 exit                               # leave the remote shell
 ```
 
-- 첫 접속 시 호스트 키 확인 메시지가 나오면 대상 장치를 확인한 뒤 `yes` 입력
+- 첫 접속 시 호스트 키 확인 메시지가 표시되면 대상 장치를 확인한 뒤 `yes` 입력
 - 접속되지 않으면 Raspberry Pi에서 `systemctl status ssh`와 `ip addr` 먼저 확인
 - 공개 네트워크에서는 비밀번호 대신 SSH 키 인증 사용, 기본 계정·비밀번호 사용 금지
 
@@ -755,8 +751,7 @@ nmcli connection show
 ip addr show wlan0
 
 # Configure a static IP
-# Note: Replace <NAME> with the Connection Profile name
-# (NAME column in 'nmcli connection show')
+# Note: Replace <NAME> with the Connection Profile name (NAME column in 'nmcli connection show')
 sudo nmcli connection modify "<NAME>" \
   ipv4.addresses 192.168.0.10/24 \
   ipv4.gateway 192.168.0.1 \
@@ -768,7 +763,7 @@ sudo nmcli connection up "<NAME>"
 # Verify address, route and DNS
 ip -4 addr show wlan0
 ip route
-resolvectl status wlan0
+nmcli dev show wlan0 | grep DNS
 ```
 
 ---
@@ -794,17 +789,7 @@ sudo nmcli connection up "Campus Wi-Fi"
 ```
 
 - `192.168.0.42`는 공유기 DHCP 범위와 겹치지 않는 주소로 선택
-- IP가 변동되는 실습 환경에서는 **고정 IP**, 공유기의 **DHCP 예약**, mDNS(`raspberrypi.local`) 중 하나를 선택
-
-```bash
-sudo nmcli connection modify "Campus Wi-Fi" \
-  ipv4.method auto \
-  ipv4.addresses "" \
-  ipv4.gateway "" \
-  ipv4.dns ""
-sudo nmcli connection down "Campus Wi-Fi"
-sudo nmcli connection up "Campus Wi-Fi"
-```
+- IP가 변동되는 실습 환경에서는 **[고정 IP](https://ohyaan.github.io/basic-operations/networking_setup_and_management_for_raspberry_pi/#static-ipv4-with-networkmanager)**, 공유기의 **DHCP 예약**, mDNS(`raspberrypi.local`) 중 하나를 선택
 
 ---
 
