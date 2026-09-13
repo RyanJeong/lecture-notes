@@ -40,7 +40,7 @@
 | SoC                  | Broadcom BCM2711      | CPU와 주변 장치 컨트롤러 통합                 |
 | CPU 마이크로아키텍처 | ARM Cortex-A72        | 명령어 실행, 연산, 분기 예측, 캐시 처리       |
 | ISA                  | ARMv8-A, AArch64      | 소프트웨어가 사용하는 명령어와 실행 모델 정의 |
-| 운영체제 ABI         | Linux arm64           | 컴파일된 프로그램과 커널 사이의 호출 규약     |
+| 운영체제 ABI         | Linux `arm64`         | 컴파일된 프로그램과 커널 사이의 호출 규약     |
 
 ---
 
@@ -62,11 +62,11 @@
 ![h:240 center](img/08-microsd.png)
 
 - 부트 파일, 커널, 루트 파일 시스템, 사용자 데이터를 저장하는 기본 저장장치
-- Imager가 OS 이미지를 기록하면 부트 파티션과 Linux 루트 파티션 생성
+- Raspberry Pi Imager가 OS 이미지를 기록하면 부트 파티션과 Linux 루트 파티션 생성
 - 부트 파티션에는 펌웨어와 설정 파일, 루트 파티션에는 커널과 사용자 공간 운영체제 저장
 - 속도 등급만으로 성능이 결정되지 않으므로 신뢰할 수 있는 고내구성 카드 사용
 - 전원 강제 차단 시 쓰기 중인 데이터와 파일 시스템 손상 가능
-- 이미지 설치 시 Raspberry Pi Imager의 `Storage` 항목에서 대상 장치 확인 필수 — **잘못 선택하면 PC의 데이터가 삭제됨**
+- 이미지 설치 시 Imager의 `Storage` 항목에서 대상 장치 확인 필수 — **잘못 선택하면 PC의 데이터가 삭제됨**
 - 쓰기 빈도가 높은 서버는 USB SSD 부팅, 로그 원격 전송, 읽기 전용 루트 파일 시스템 검토
 
 ---
@@ -77,7 +77,7 @@
 
 - **GPIO**는 *General-Purpose Input/Output*의 약자 — 소프트웨어가 핀의 입출력을 제어하는 범용 디지털 인터페이스
 - **40핀 2.54mm pitch 헤더**를 사용하며 전원·접지·GPIO 핀이 함께 배치
-- 신호는 **3.3V CMOS 로직**이며 출력 HIGH는 약 3.3V
+- 신호는 **3.3V** [**CMOS 로직**](https://www.geeksforgeeks.org/digital-logic/cmos-logic-gate/)이며 출력 HIGH는 약 3.3V
   - 5V 신호를 GPIO 입력에 직접 연결하면 SoC 손상
 - I2C, SPI, UART, PWM 등 대체 기능 제공 — 소프트웨어에서는 물리 핀 번호가 아닌 **BCM GPIO 번호** 사용
 
@@ -102,6 +102,7 @@
 
 - RJ45 커넥터의 **IEEE 802.3ab 1000BASE-T** 유선 이더넷 인터페이스
 - Cat5e 이상 케이블과 기가비트 스위치 조합에서 이론상 **1Gbit/s** 링크 협상
+  - Cat5e(Category 5e): 최대 1Gbps(1000Mbps)의 데이터 전송 속도와 100MHz의 대역폭을 지원하는 표준 이더넷 케이블 규격
 - 실제 처리량은 프로토콜 오버헤드, 저장 장치, CPU, 네트워크 장비에 따라 더 낮음
 - SSH, 원격 개발, 대용량 전송처럼 안정성과 낮은 지연이 필요한 작업에 적합
 
@@ -234,7 +235,7 @@ vcgencmd get_throttled
 
 ![h:150 center](img/18-wifi-bluetooth.png)
 
-- **IEEE 802.11ac** 기반 듀얼 밴드 Wi-Fi 지원
+- **IEEE 802.11ac** 기반 듀얼 밴드(두 대역, 2.4GHz/5.0GHz) Wi-Fi 지원
 - 2.4GHz는 도달 거리와 벽 투과에 유리하지만 Bluetooth·전자레인지·IoT 장치와 대역 공유
 - 5GHz는 채널 폭과 환경에 따라 처리량이 높고 혼잡이 적지만 벽과 거리에 민감
 - 반이중 무선 매체이므로 표시된 링크 속도와 실제 TCP 처리량은 다름
@@ -250,14 +251,29 @@ iw dev wlan0 link
 
 ---
 
-## Bluetooth와 BLE (Bluetooth Low Energy)
+## Bluetooth와 BLE (Classic vs BLE)
 
-![h:200 center](img/19-uart.png)
+- 무선 칩은 Bluetooth Classic과 **BLE**(Bluetooth Low Energy)를 함께 지원하는 듀얼 모드
 
-- 무선 칩은 Bluetooth Classic과 **BLE**(Bluetooth Low Energy) 지원
-- Classic은 키보드·마우스·스피커처럼 지속 연결과 비교적 큰 데이터 전송에 사용
-- BLE는 광고 패킷과 짧은 연결을 이용해 센서 값·배터리 상태 등 소량 데이터를 저전력으로 전송
-- 2.4GHz Wi-Fi와 대역을 공유하며, USB 3.0의 고주파 노이즈·주변 AP·금속 케이스 등 물리적 전파 간섭을 받음
+| 규격      | 통신 거리 | 전력 소모 | 주요 용도                        |
+| --------- | --------- | --------- | -------------------------------- |
+| Wi-Fi     | 중거리    | 높음      | 대용량 데이터 전송, 인터넷 연동  |
+| Bluetooth | 단거리    | 중간      | 근거리 대역 기기 연동            |
+| BLE       | 단거리    | 매우 낮음 | 소형 센서 노드, 배터리 구동 기기 |
+
+- **Classic**(1.0~3.0): 상시 연결과 고음질 오디오 스트리밍 등 대용량 전송에 최적화
+- **BLE**(4.0 이상): 광고 패킷과 짧은 연결로 소량 데이터를 간헐 전송, 동전 배터리로 수개월~수년 구동
+
+---
+
+## 라즈베리파이의 블루투스 (Dual-Mode Chipset)
+
+![h:160 center](img/07-interference.png)
+
+- Wi-Fi와 블루투스(Classic + BLE)를 **단일 칩셋**에서 처리
+- 동시 사용 시 2.4GHz 대역 간섭으로 무선 성능이 저하될 수 있음
+  - USB 3.0의 고주파 노이즈·주변 AP·금속 케이스의 영향도 받음
+- 시분할(TDM) 제어로 Classic 오디오 연결 상태에서도 BLE 센서 데이터 수집 가능
 
 ```bash
 bluetoothctl
@@ -342,11 +358,11 @@ bluetoothctl
 
 - 트랜지스터를 증폭이 아니라 **순수 스위치**로만 사용 — 이 구조를 **오픈 드레인**(open-drain)이라 함
 
-| MOSFET   | BJT 대응  | 그림 위치 | 연결 대상                        |
-| -------- | --------- | --------- | -------------------------------- |
-| `Gate`   | Base      | 왼쪽      | Clock Out / Data Out — 제어 입구 |
-| `Drain`  | Collector | 위쪽      | `SCL` / `SDA` 버스 라인          |
-| `Source` | Emitter   | 아래쪽    | 접지(GND)                        |
+| MOSFET   | 그림 위치 | 연결 대상                        |
+| -------- | --------- | -------------------------------- |
+| `Gate`   | 왼쪽      | Clock Out / Data Out — 제어 입구 |
+| `Drain`  | 위쪽      | `SCL` / `SDA` 버스 라인          |
+| `Source` | 아래쪽    | 접지(GND)                        |
 
 ---
 
@@ -354,10 +370,18 @@ bluetoothctl
 
 - 트랜지스터는 라인을 **LOW로만 구동**하며, HIGH 복귀는 풀업 저항이 담당
 
-| 게이트 전압 | 내부 통로          | 버스 라인                        | 논리        |
-| ----------- | ------------------ | -------------------------------- | ----------- |
-| Low (OFF)   | 끊김 — 스위치 열림 | 풀업 저항 $R_p$ 가 전원으로 당김 | **HIGH(1)** |
-| High (ON)   | 연결 — 스위치 닫힘 | 접지(GND)로 직접 통함            | **LOW(0)**  |
+| 게이트 전압 | 내부 통로          | 버스 라인                            | 논리        |
+| ----------- | ------------------ | ------------------------------------ | ----------- |
+| Low (OFF)   | 끊김 — 스위치 열림 | 풀업 저항 $R_p$가 전원 전압으로 복원 | **HIGH(1)** |
+| High (ON)   | 연결 — 스위치 닫힘 | 접지(GND)에 직접 연결                | **LOW(0)**  |
+
+### 동작 절차
+
+- **주소 전송**: 마스터가 Data Out을 스위칭해 대상 슬레이브의 주소를 SDA 버스 전체에 송출하며, SCL 클럭도 마스터가 생성
+- **주소 필터링**: 모든 슬레이브가 Data In으로 수신하나, 주소가 일치하는 장치만 응답
+- **수신 확인**(ACK): 해당 슬레이브가 Data Out을 ON으로 전환해 SDA를 LOW로 구동함으로써 수신을 통지
+- **데이터 전송**: 마스터가 Data In으로 ACK를 확인한 뒤 해당 슬레이브와만 데이터를 송수신
+- **클럭 스트레칭**(clock stretching): 슬레이브의 처리가 지연되면 SCL을 LOW로 유지해 마스터의 전송을 일시 중지
 
 ### 오픈 드레인을 사용하는 이유
 
@@ -431,7 +455,7 @@ ls /dev/spidev0.*  # List active SPI device nodes (e.g., /dev/spidev0.0, /dev/sp
 
 ## GPIO 대체 기능 - PWM (Pulse Width Modulation)
 
-![h:180 center](img/22-pwm.png)
+![h:200 center](img/22-pwm.png)
 
 - 디지털 출력만으로 **중간 세기**를 만드는 방법
   - 주기는 고정하고, 켜져 있는 시간의 비율인 **듀티**만 조절
@@ -442,8 +466,6 @@ ls /dev/spidev0.*  # List active SPI device nodes (e.g., /dev/spidev0.0, /dev/sp
 | 하드웨어 PWM 핀 | GPIO12·18(PWM0), GPIO13·19(PWM1)        |
 | 그 외 핀        | 소프트웨어 PWM — 스케줄러에 밀려 흔들림 |
 | 대표 용도       | LED 밝기, 모터 속도, 서보 각도          |
-
-- 서보는 일반적으로 50Hz 주기에서 1~2ms 펄스폭으로 각도를 지정
 
 ---
 
@@ -656,7 +678,7 @@ sudo reboot              # Safely stop processes, unmount FS, and restart
 
 ---
 
-## 서비스 관리 (systemd)
+## 서비스 관리 (`systemd`)
 
 - 리눅스 시스템 서비스는 `systemd`가 관장하며, 임베디드 소프트웨어 배포의 핵심 수단임
 
@@ -670,7 +692,7 @@ journalctl -u ssh -f                    # follow the log
 journalctl -u ssh --since "10 min ago"  # time ranges
 ```
 
-### systemd 도입의 주요 이점
+### `systemd` 도입의 주요 이점
 
 - 개발한 애플리케이션을 서비스로 등록 시 제공되는 기능:
 - 시스템 부팅 시 자동 실행 설정
@@ -790,49 +812,6 @@ sudo nmcli connection up "Campus Wi-Fi"
 
 - `192.168.0.42`는 공유기 DHCP 범위와 겹치지 않는 주소로 선택
 - IP가 변동되는 실습 환경에서는 **[고정 IP](https://ohyaan.github.io/basic-operations/networking_setup_and_management_for_raspberry_pi/#static-ipv4-with-networkmanager)**, 공유기의 **DHCP 예약**, mDNS(`raspberrypi.local`) 중 하나를 선택
-
----
-
-## 블루투스 (Bluetooth)
-
-### 블루투스 규격의 진화 (Classic vs BLE)
-
-- Bluetooth Classic(1.0~3.0): 대용량 데이터 및 고음질 오디오 스트리밍에 최적화
-  - 상시 연결, 높은 전력 소모
-- **BLE(Bluetooth Low Energy, 4.0 이상)**: 소량 센서 데이터의 주기적 전송 및 저전력 동작에 최적화
-  - 동전 배터리로 수개월~수년 구동
-
-### 라즈베리파이 무선 칩셋 특성 (Dual Mode)
-
-- 라즈베리파이는 Wi-Fi와 블루투스(Classic + BLE) 제어를 단일 칩셋에서 처리함
-- 동시 사용 시 동일 2.4GHz 대역 간섭으로 인해 무선 성능 저하가 발생할 수 있음
-- 시분할(TDM) 제어로 Classic 오디오 연결 상태에서도 BLE 센서 데이터 수집 가능
-
-![h:160 center](img/07-interference.png)
-
----
-
-## 블루투스 (Bluetooth) (Cont'd)
-
-### 무선 통신 규격 비교
-
-| 규격      | 통신 거리 | 전력 소모 | 주요 용도                        |
-| --------- | --------- | --------- | -------------------------------- |
-| Wi-Fi     | 중거리    | 높음      | 대용량 데이터 전송, 인터넷 연동  |
-| Bluetooth | 단거리    | 중간      | 근거리 대역 기기 연동            |
-| BLE       | 단거리    | 매우 낮음 | 소형 센서 노드, 배터리 구동 기기 |
-
-### 리눅스 환경의 블루투스 제어 (`bluetoothctl`)
-
-- 라즈베리파이에서 무선 기기 검색, 페어링, 연결을 통합 관리하는 CLI 도구
-
-```bash
-bluetoothctl
-# [bluetooth]# power on
-# [bluetooth]# scan on
-# [bluetooth]# pair <MAC>
-# [bluetooth]# connect <MAC>
-```
 
 ---
 
