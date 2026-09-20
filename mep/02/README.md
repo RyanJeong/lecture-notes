@@ -53,7 +53,7 @@
 - **LPDDR4**(Low-Power Double Data Rate 4): 저전력을 목표로 설계된 DDR4 계열 동기식 동적 RAM
 - SDRAM은 휘발성 메모리 — 전원이 차단되면 내용 소실
 - 실행 중인 프로그램과 커널이 적재되는 공간이므로, 용량이 클수록 동시 처리에 유리
-- 영구 저장장치가 아니며, 운영체제와 사용자 파일은 별도 저장장치(e.g., microSD card, USB flash drive)에 기록
+- 영구 저장장치가 아니므로 운영체제와 사용자 파일은 별도 저장장치(예: microSD card, USB flash drive)에 기록
 
 ---
 
@@ -75,7 +75,7 @@
 
 ![h:260 center](img/09-rpi-gpio.png)
 
-- **GPIO**는 *General-Purpose Input/Output*의 약자 — 소프트웨어가 핀의 입출력을 제어하는 범용 디지털 인터페이스
+- **GPIO**는 *General-Purpose Input/Output*의 약자 — 소프트웨어로 핀의 입출력을 제어하는 범용 디지털 인터페이스
 - **40핀 2.54mm pitch 헤더**를 사용하며 전원·접지·GPIO 핀이 함께 배치
 - 신호는 **3.3V** [**CMOS 로직**](https://www.geeksforgeeks.org/digital-logic/cmos-logic-gate/)이며 출력 HIGH는 약 3.3V
   - 5V 신호를 GPIO 입력에 직접 연결하면 SoC 손상
@@ -246,7 +246,8 @@ nmcli device status
 iw dev wlan0 link
 ```
 
-- 이동형 장치는 Wi-Fi, 장시간 SSH·대용량 전송은 Gigabit Ethernet 우선 고려
+- 이동형 장치: Wi-Fi 우선 고려
+- 장시간 SSH·대용량 전송: Gigabit Ethernet 우선 고려
 - 무선랜 고정 IP 설정은 후술하는 **네트워크 구성** 절차를 따를 것
 
 ---
@@ -530,7 +531,7 @@ dmesg | grep -i voltage
 
 ### 본 교과목에서의 학습 목표
 
-- 라즈베리파이를 활용하여 센서 데이터 수집 → 데이터 처리 → 웹 대시보드 구축 → 서비스 배포까지의 전 과정을 실습함
+- 센서 데이터 수집 → 데이터 처리 → 웹 대시보드 구축 → 서비스 배포의 전 과정 실습
 
 ---
 
@@ -632,7 +633,7 @@ hdmi_force_hotplug=1
 | 자원 정리 | 수동 해제 필요   | 프로세스 종료 시 자동 정리 |
 | 처리 성능 | 상대적으로 느림  | 우수함(고속 처리)          |
 
-- 본 실습에서는 문자 디바이스 API를 추상화한 `libgpiod` 라이브러리를 표준으로 사용함
+- 본 실습에서는 문자 디바이스 API를 추상화한 `libgpiod` 라이브러리를 표준으로 사용
 
 ---
 
