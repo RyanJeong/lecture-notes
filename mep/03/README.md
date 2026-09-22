@@ -46,7 +46,7 @@ clang++ -std=c++14 main.cc -o app
 
 ## CMake란 (What CMake Is)
 
-![h:200 center](img/01-cmake-two-phase.png)
+![h:230 center](img/01-cmake-two-phase.png)
 
 - **CMake는 독립된 빌드 시스템이 아닌 빌드 시스템 생성기**(Build-System Generator)
 - `CMakeLists.txt`를 참조하여 플랫폼별 네이티브 빌드 파일(예: Makefile, Ninja) 생성
@@ -62,8 +62,9 @@ clang++ -std=c++14 main.cc -o app
 
 ## 타깃 중심 설계 (Target-Centric Design)
 
-- 현대 CMake의 핵심 개념은 **타깃**(Target)(실행 파일, 라이브러리 등 명명된 빌드 산출물)
-- 포함 경로, 컴파일 플래그, 링크 대상은 전역 변수가 아닌 **타깃 단위로 부착**
+- 현대 CMake의 핵심 개념은 **타깃**(Target)
+  - 실행 파일, 라이브러리 등 명명된 빌드 산출물
+- 포함 경로, 컴파일 플래그, 링크 대상은 **타깃 단위로 부착**
 
 ```cmake
 add_library(sensors SHARED src/dht11.cc src/hcsr04.cc)
@@ -153,7 +154,7 @@ target_link_libraries(Tool PRIVATE AnotherLibrary SomeLibrary)
 - **자체 미사용**: `AnotherLibrary` 자체 빌드 시 `Dependency`를 직접 사용하지 않음
 - **상위 전파**: `Tool`이 `AnotherLibrary`를 링크할 때 `Dependency`(`doThingy()`)가 직접 연결됨
 - **전달 전용**: 자신은 컴파일하지 않으며, 상위 대상에게만 의존성 속성을 전달함
-- **주요 활용**: Header-only 라이브러리 연결 또는 공통 컴파일 플래그·경로 전달 타깃에 활용함
+- **주요 활용**: Header-only 라이브러리(예: nlohmann/json, Eigen 등) 연결 또는 공통 컴파일 플래그·경로 전달 타깃에 활용함
 
 ```cmake
 add_library(AnotherLibrary INTERFACE)
@@ -231,6 +232,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
 ./build/blink
 ```
+
+- `cmake` 빌드 시 `-v` 인자를 같이 전달하면 실제 실행된 상세 빌드 명령어 확인 가능
 
 ---
 
@@ -355,24 +358,6 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 
 ---
 
-## 자주 발생하는 빌드 오류 (Common Errors)
-
-| 오류 메시지                        | 주요 원인                           | 해결 방안                                  |
-| ---------------------------------- | ----------------------------------- | ------------------------------------------ |
-| `No such file or directory` (헤더) | 포함 경로 누락                      | `target_include_directories` 설정 추가     |
-| `undefined reference to ...`       | 링크 대상 누락                      | `target_link_libraries` 설정 추가          |
-| `undefined reference to main`      | 진입점 없는 소스를 실행 파일로 빌드 | 타깃 유형 재확인                           |
-| `Could NOT find X`                 | 패키지 미설치 또는 경로 지정 오류   | 개발 패키지 설치 및 `PKG_CONFIG_PATH` 확인 |
-| 옵션 변경 미반영                   | Configure 재수행 미실시             | `cmake -B build` 재실행                    |
-
-### 문제 해결 절차
-
-1. **최상단 첫 번째 오류 메시지 우선 확인**(이후 오류는 연쇄 발생 결과일 가능성이 높음)
-2. 컴파일 단계와 링크 단계의 오류 구별
-3. `cmake --build build -v` 명령으로 실제 실행된 상세 명령어 확인
-
----
-
 ## 아웃오브소스 빌드 (Out-of-Source Build)
 
 - 빌드 산출물을 소스 디렉터리와 명확히 분리하여 생성하는 방식
@@ -387,7 +372,7 @@ project/
 
 ### 주요 장점
 
-- 소스 트리의 오염을 방지하여 `git status` 상태를 깨끗하게 유지함
+- 소스 트리의 오염을 방지하여 프로젝트 루트 상태를 깨끗하게 유지함
 - 다양한 빌드 설정을 독립적으로 동시에 유지 가능함(`build-debug`, `build-release`, `build-pi`)
 - 디렉터리 삭제만으로 빌드 환경 완전 초기화 가능함
 
@@ -402,42 +387,39 @@ rm -rf build && cmake -B build && cmake --build build
 ![h:200 center](img/06-host-target.png)
 
 - **호스트**(Host): 컴파일러를 실행하는 시스템(고성능 x86_64 워크스테이션, CI 서버 등)
-- **타깃**(Target): 생성된 바이너리를 실제로 실행하는 시스템(라즈베리파이 등 arm64 환경)
+- **타깃**(Target): 생성된 바이너리를 실제로 실행하는 시스템(라즈베리파이 등 AArch64 환경)
 
 > **크로스 컴파일**: 호스트 환경에서 실행되되, 타깃 아키텍처용 기계어 바이너리를 생성하는 작업
 
-### 타깃 장비(라즈베리파이) 직접 빌드의 한계점
-
-- 직접 빌드도 가능하나, 실무 환경에서는 다음 이유로 크로스 컴파일을 권장함
-
-1. **성능 및 시간**: 대규모 C++ 빌드 시 워크스테이션(수 분) 대비 타깃 장비(수 시간) 소요
-2. **CI/CD 환경**: GitHub Actions 러너(x86_64) 등 물리적 타깃 장비 연동 제한
-3. **재현성 확보**: 도커 기반 빌드 환경 구축을 통한 일관된 결과 보장
+- 타깃 장비(라즈베리파이)에서 직접 빌드도 가능하나, 실무 환경에서는 다음 이유로 크로스 컴파일을 권장함:
+  1. **성능 및 시간**: 대규모 C++ 빌드 시 워크스테이션(수 분) 대비 타깃 장비(수 시간) 소요
+  2. **CI/CD 환경**: GitHub Actions 러너(x86_64) 등 물리적 타깃 장비 연동 제한
+  3. **재현성 확보**: 도커 기반 빌드 환경 구축을 통한 일관된 결과 보장
 
 ---
 
-## 툴체인과 Sysroot (Toolchain and Sysroot)
+## 툴체인과 `sysroot` (Toolchain and `sysroot`)
 
 - **툴체인**(Toolchain): 호스트에서 동작하며 타깃용 코드를 생성하는 도구 모음
 - 컴파일러, 어셈블러, 링커, 표준 라이브러리로 구성됨
-- 데비안 계열 `arm64` 크로스 컴파일러 패키지 예시: `g++-aarch64-linux-gnu`
+- 데비안 계열 AArch64 크로스 컴파일러 패키지 예시: `g++-aarch64-linux-gnu`
 
 ```bash
 aarch64-linux-gnu-g++ -std=c++14 hello.cc -o hello_pi
 ```
 
-- **Sysroot**: 타깃의 루트 파일시스템 구조를 모방한 디렉터리 환경
+- **`sysroot`**: 타깃의 루트 파일시스템 구조를 모방한 디렉터리 환경
 
 ```text
 sysroot/
 ├── usr/
 │   ├── include/                  # target headers
-│   └── lib/aarch64-linux-gnu/    # target shared libraries
+│   └── lib/aarch64-linux-gnu/    # AArch64 target shared libraries
 └── lib/
     └── aarch64-linux-gnu/
 ```
 
-> `sysroot` 미설정 시 링커가 호스트(x86_64) 라이브러리를 참조하여 링크 오류 발생함
+> `sysroot` 미설정 시 링커가 호스트(x86_64) 라이브러리를 참조하여 링크 오류 발생
 
 ---
 
@@ -453,14 +435,13 @@ set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(CMAKE_C_COMPILER   aarch64-linux-gnu-gcc)
 set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)
 
-set(CMAKE_SYSROOT /opt/sysroots/aarch64-linux-gnu)
-
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 ```
 
-- `FIND_ROOT_PATH_MODE_*` 옵션은 `find_*` 계열 탐색 명령이 호스트가 아닌 `sysroot` 내부만 탐색하도록 강제함
+- `FIND_ROOT_PATH_MODE_*` 옵션은 `find_*` 계열 탐색 명령이 호스트가 아닌 `sysroot` 내부만 탐색하도록 강제
+- `CMAKE_SYSROOT`는 실제 빌드 명령에서 컨테이너 경로 `/sysroot`로 지정
 
 ---
 
@@ -489,24 +470,143 @@ readelf -h build-pi/app | grep Machine
 
 ---
 
+## Docker란 (What Docker Is)
+
+![h:100 center](img/07-docker.png)
+
+- Docker: 프로그램과 실행 환경을 이미지로 묶어 컨테이너에서 실행하는 도구
+- **이미지**: 실행 환경을 기록한 읽기 전용 템플릿
+- **컨테이너**: 이미지에서 실행한 프로세스
+- 소스와 빌드 디렉터리는 볼륨으로 컨테이너에 연결
+- Dockerfile로 호스트와 무관한 빌드 환경 재현
+
+---
+
+## [Docker 설치](https://docs.docker.com/desktop/) (Installing Docker)
+
+| 호스트  | 설치 방법                                                                                    |
+| ------- | -------------------------------------------------------------------------------------------- |
+| Windows | [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) |
+| macOS   | [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/)         |
+| Linux   | [Docker Engine 설치 안내](https://docs.docker.com/engine/install/)                           |
+
+- Windows와 macOS: Docker Desktop의 Linux 컨테이너 사용
+- Linux: Docker Engine과 Buildx 플러그인 사용
+- 설치 확인: `docker run --rm hello-world`
+
+---
+
+## Docker 이미지와 아키텍처 (Image and Architecture)
+
+- 이미지 기반: Ubuntu 24.04
+- 컨테이너의 CPU 아키텍처: 호스트에 맞춰 선택
+- 최종 프로그램의 타깃: 두 경우 모두 Linux AArch64
+
+| 호스트 CPU | 컨테이너 플랫폼 | 실행 방식                          |
+| ---------- | --------------- | ---------------------------------- |
+| `x86_64`   | `linux/amd64`   | x86_64 컨테이너에서 네이티브 실행  |
+| `aarch64`  | `linux/arm64`   | AArch64 컨테이너에서 네이티브 실행 |
+
+- 다른 플랫폼을 선택하면 Docker Desktop 또는 QEMU 에뮬레이션 필요
+- 이미지 플랫폼과 최종 프로그램의 타깃 아키텍처는 서로 다름
+
+---
+
+## Docker 크로스 빌드 이미지 (Docker Cross-Build Image)
+
+[//]: # "INCLUDE: ./mep/03/Dockerfile"
+
+- `cmake`: 빌드 파일 생성과 빌드 실행
+- `g++-aarch64-linux-gnu`: Raspberry Pi용 AArch64 코드 생성
+- `file`: 빌드 결과의 아키텍처 확인
+- 이미지 내부에 CMake와 크로스 컴파일러를 함께 설치
+
+---
+
+## Docker 이미지 빌드 (Building the Image)
+
+- 작업 디렉터리: `mep/03`
+- `--platform`: 빌더 컨테이너의 CPU 아키텍처 선택
+- `--load`: 빌드한 이미지를 로컬 Docker 저장소에 등록
+
+```bash
+docker buildx build \
+  --platform linux/amd64 \
+  -t mep03-cross:amd64 \
+  --load .
+```
+
+- AArch64 호스트에서는 플랫폼을 `linux/arm64`, 이미지 태그를 `mep03-cross:arm64`로 변경
+
+---
+
+## `sysroot` 구성 (Preparing a `sysroot`)
+
+- 표준 C++ 라이브러리만 사용하는 예제: 이미지의 크로스 툴체인만 사용
+- `libgpiod` 등 타깃에 별도 설치한 라이브러리: 타깃 파일을 `sysroot`로 복사
+- `sysroot`: 타깃의 `/usr`와 `/lib`을 보관하는 호스트 디렉터리
+- Docker 이미지: CMake와 크로스 툴체인 보관
+- 호스트 디렉터리: Raspberry Pi에서 가져온 `sysroot` 보관
+- 컨테이너: 호스트의 `sysroot`를 `/sysroot`로 마운트하여 사용
+
+```bash
+mkdir -p sysroot/usr sysroot/lib
+rsync -a pi@raspberrypi.local:/usr/include/ sysroot/usr/include/
+rsync -a pi@raspberrypi.local:/usr/lib/ sysroot/usr/lib/
+rsync -a pi@raspberrypi.local:/lib/ sysroot/lib/
+```
+
+- Raspberry Pi의 `/usr`와 `/lib` 내용을 호스트의 `sysroot/usr`와 `sysroot/lib`에 보관
+- Raspberry Pi와 `sysroot`의 운영체제·아키텍처·라이브러리 버전 일치 필요
+- 빌드 중에는 `sysroot`의 `/usr`와 `/lib`가 컨테이너의 `/sysroot` 아래에 존재
+- `sysroot`는 이미지에 고정하지 않고 컨테이너에 `/sysroot`로 읽기 전용 연결
+
+---
+
+## 컨테이너 실행과 볼륨 (Running the Container)
+
+```bash
+mkdir -p build-docker-amd64
+docker run --rm --platform linux/amd64 \
+  -v "$PWD:/src:ro" \
+  -v "$PWD/build-docker-amd64:/out" \
+  mep03-cross:amd64
+```
+
+- `/src`: CMake 프로젝트를 읽는 경로
+- `/out`: CMake 캐시와 실행 파일을 호스트에 기록하는 경로
+- AArch64 호스트에서는 이미지 이름을 `mep03-cross:arm64`, 플랫폼을 `linux/arm64`로 변경
+
+---
+
 ## 실습 프로젝트 (Practice Project)
 
 - 다음 파일은 이 장의 실제 빌드 예제
 
 ```text
-project/
+mep/03/
 ├── CMakeLists.txt
 ├── src/00_hello_pi.cc
-└── cmake/toolchains/aarch64-linux-gnu.cmake
+├── cmake/toolchains/aarch64-linux-gnu.cmake
+└── Dockerfile
 ```
 
-### CMakeLists.txt
+- `CMakeLists.txt`: 프로젝트와 실행 파일 정의
+- `src/00_hello_pi.cc`: 빌드할 C++ 소스
+- `cmake/toolchains/`: 타깃 시스템과 컴파일러 지정
+- `Dockerfile`: 빌드 환경과 실행 명령 기록
+
+---
+
+## CMakeLists.txt
 
 [//]: # "INCLUDE: ./mep/03/CMakeLists.txt"
 
 ---
 
-## 실습 프로젝트 (Cont'd)
+## 소스 코드와 타깃 (Source and Target)
+
+[//]: # "INCLUDE: ./mep/03/src/00_hello_pi.cc"
 
 - `project()`: 프로젝트 이름과 사용하는 언어 선언
 - `set()`: C++ 표준 지정
@@ -516,268 +616,91 @@ project/
 
 ---
 
-## CMake 빌드 실습 (CMake Build Practice)
-
-```bash
-cmake -S project -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel
-./build/hello_pi
-```
-
-1. `-S`: 소스 디렉터리 지정
-2. `-B`: 빌드 디렉터리 지정
-3. Configure 단계에서 `CMakeLists.txt`를 읽고 빌드 파일 생성
-4. `cmake --build`로 생성된 빌드 도구 실행
-5. `build/hello_pi`에 호스트용 실행 파일 생성
-
-> `-S`와 `-B`를 사용하는 아웃오브소스 빌드로 소스와 생성물 분리
-
-### 증분 빌드 확인
-
-```bash
-cmake --build build --parallel
-touch project/src/00_hello_pi.cc
-cmake --build build --parallel --verbose
-```
-
-- 변경된 소스와 해당 소스에 의존하는 대상만 재컴파일
-- `--verbose`로 실제 컴파일러 명령 확인
-
----
-
-## 호스트별 크로스 컴파일 준비 (Host Toolchains)
-
-- **호스트**: 컴파일을 수행하는 환경
-- **타깃**: 결과를 실행하는 라즈베리파이
-- 이 실습의 타깃: Raspberry Pi OS 64-bit(Debian GNU/Linux 13 이상)의 `linux_aarch64`
-- 표준 C++ 라이브러리만 사용하는 예제이므로 별도 라즈베리파이 `sysroot` 없이 빌드 가능
-- GPIO·센서 라이브러리 연결 시 해당 라이브러리가 설치된 타깃 `sysroot` 필요
-
----
-
-## 호스트별 크로스 컴파일 준비 (Cont'd)
-
-### 호스트 운영체제와 이미지 아키텍처
-
-| 호스트       | 호스트 커널/도구             | 사용할 크로스 컴파일러          |
-| ------------ | ---------------------------- | ------------------------------- |
-| x86_64 Linux | Debian 13 이상               | `aarch64-linux-gnu-g++`         |
-| x86_64 macOS | Docker Desktop 또는 Homebrew | `aarch64-unknown-linux-gnu-g++` |
-
----
-
-## 호스트별 크로스 컴파일 준비 (Cont'd - 1)
-
-### ARM 호스트
-
-- aarch64 macOS: Docker Desktop 또는 Homebrew에서 `aarch64-unknown-linux-gnu-g++` 사용
-- aarch64 Linux: Debian 13 이상에서 `aarch64-linux-gnu-g++` 사용
-
-> macOS 호스트 CPU와 Docker 컨테이너의 Linux 아키텍처는 별개
-
----
-
-## Debian 호스트에서 빌드 (Debian Host)
-
-### 툴체인 설치
-
-```bash
-sudo apt update
-sudo apt install cmake g++-aarch64-linux-gnu binutils-aarch64-linux-gnu file
-```
-
----
-
-## Debian 호스트에서 빌드 (Cont'd)
-
-### CMake 크로스 빌드
-
-```bash
-cmake -S project -B build-pi \
-  -DCMAKE_TOOLCHAIN_FILE="$PWD/project/cmake/toolchains/aarch64-linux-gnu.cmake" \
-  -DCMAKE_BUILD_TYPE=Release
-cmake --build build-pi --parallel
-```
-
-- 툴체인 파일에서 CMake 시스템 이름을 Linux, 프로세서 타입을 `aarch64`로 설정
-- `aarch64-linux-gnu-g++`로 라즈베리파이용 ARM64 기계어 생성
-
-### 결과 검증
-
-```bash
-file build-pi/hello_pi
-readelf -h build-pi/hello_pi | grep Machine
-```
-
-- `Machine: AArch64` 출력 확인
-- 라즈베리파이에 파일을 복사한 뒤 실행
-
----
-
-## macOS 호스트에서 빌드 (macOS Host)
-
-- Homebrew tap에서 Linux AArch64용 GNU 툴체인 설치
-
-```bash
-brew install cmake
-brew tap messense/macos-cross-toolchains
-brew install aarch64-unknown-linux-gnu
-```
-
-- 툴체인 파일의 기본 컴파일러 이름을 macOS용 이름으로 변경
-
-```bash
-cmake -S project -B build-pi-macos \
-  -DCMAKE_TOOLCHAIN_FILE="$PWD/project/cmake/toolchains/aarch64-linux-gnu.cmake" \
-  -DCMAKE_C_COMPILER=aarch64-unknown-linux-gnu-gcc \
-  -DCMAKE_CXX_COMPILER=aarch64-unknown-linux-gnu-g++ \
-  -DCMAKE_BUILD_TYPE=Release
-cmake --build build-pi-macos --parallel
-file build-pi-macos/hello_pi
-```
-
-> macOS에서는 `aarch64-linux-gnu-g++` 대신 Homebrew 툴체인의 `aarch64-unknown-linux-gnu-` 접두사 사용
-
----
-
-## 툴체인 파일 적용 (Applying the CMake Toolchain File)
+## 툴체인 파일 적용 (Applying the Toolchain File)
 
 [//]: # "INCLUDE: ./mep/03/cmake/toolchains/aarch64-linux-gnu.cmake"
 
 - `CMAKE_SYSTEM_NAME`과 `CMAKE_SYSTEM_PROCESSOR`: 결과물의 대상 시스템 지정
-- `CMAKE_C_COMPILER`와 `CMAKE_CXX_COMPILER`: 실제 cross compiler 지정
-- `CMAKE_FIND_ROOT_PATH_MODE_*`: 프로그램은 호스트에서 탐색하고, 라이브러리·헤더·패키지는 타깃 영역에서 탐색
-- 새로운 Configure 시 타깃별 빌드 디렉터리 사용
+- `CMAKE_C_COMPILER`와 `CMAKE_CXX_COMPILER`: 실제 크로스 컴파일러 지정
+- `CMAKE_FIND_ROOT_PATH_MODE_*`: 프로그램은 호스트에서, 라이브러리·헤더·패키지는 타깃 영역에서 탐색
+- `sysroot` 사용 시 `CMAKE_SYSROOT`를 Configure 단계에서 추가
 
 ---
 
-## Sysroot와 외부 라이브러리 (Sysroot and Libraries)
-
-- 예제의 `iostream`: GNU AArch64 툴체인에 포함된 타깃 표준 라이브러리 사용
-- `libgpiod`와 같이 라즈베리파이에 별도로 설치한 라이브러리: 헤더와 라이브러리를 호스트에 복사하거나 sysroot로 지정
-
----
-
-## Sysroot와 외부 라이브러리 (Cont'd)
+## 컨테이너에서 CMake 빌드 (Building with CMake)
 
 ```bash
-cmake -S project -B build-pi \
-  -DCMAKE_TOOLCHAIN_FILE="$PWD/project/cmake/toolchains/aarch64-linux-gnu.cmake" \
-  -DCMAKE_SYSROOT=/opt/rpi-sysroot
+cmake -S /src -B /out \
+  -DCMAKE_TOOLCHAIN_FILE=/src/cmake/toolchains/aarch64-linux-gnu.cmake \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build /out --parallel
 ```
 
----
-
-## Sysroot와 외부 라이브러리 (Cont'd - 1)
-
-- sysroot 안의 `/usr/include`, `/usr/lib/aarch64-linux-gnu`와 타깃 파일의 일치 여부 확인
-- 호스트의 x86_64 라이브러리 링크 시 Configure가 성공해도 라즈베리파이에서 실행 불가
+- Configure 단계에서 `CMakeLists.txt`를 읽고 빌드 파일 생성
+- Build 단계에서 생성된 빌드 도구 실행
+- 컨테이너의 `g++-aarch64-linux-gnu`로 Linux AArch64 실행 파일 생성
 
 ---
 
-## Docker란 (What Docker Is)
-
-- Docker: 프로그램과 실행 환경을 이미지로 묶어 컨테이너에서 실행하는 도구
-- **이미지**: CMake와 cross compiler를 포함한 읽기 전용 템플릿
-- **컨테이너**: 이미지에서 실행한 프로세스이며, 소스·빌드 디렉터리는 볼륨으로 연결 가능
-- Dockerfile에 설치 과정을 기록하여 호스트 환경과 관계없이 동일한 빌드 환경 재현
-
----
-
-## Docker란 (Cont'd)
-
-### Docker 설치
-
-#### Debian GNU/Linux 13
+## `sysroot`를 사용하는 빌드 (Building with a `sysroot`)
 
 ```bash
-sudo apt update
-sudo apt install docker.io docker-buildx
-sudo usermod -aG docker "$USER"
-```
-
-- 그룹 변경 후 다시 로그인하거나 새 셸 시작
-- 설치 확인: `docker run --rm hello-world`
-
-#### macOS
-
-```bash
-brew install --cask docker
-open -a Docker
-docker run --rm hello-world
-```
-
-- Docker Desktop 실행 후 `docker` 명령으로 Docker Engine에 연결
-
----
-
-## Docker 크로스 빌드 이미지 (Docker Cross-Build Image)
-
-[//]: # "INCLUDE: ./mep/03/Dockerfile"
-
----
-
-## Docker 크로스 빌드 이미지 (Cont'd)
-
-- Debian GNU/Linux 13(trixie) 기반 이미지
-- 컨테이너에서 `g++-aarch64-linux-gnu`를 실행하여 AArch64용 실행 파일 생성
-- 실행 시 소스를 `/src`로 연결하여 수정 사항을 즉시 반영
-- 결과를 `/out`에 기록하여 호스트의 빌드 디렉터리에서 확인
-
----
-
-## Docker 플랫폼 선택 (Docker `--platform`)
-
-| 호스트 CPU    | 이미지 플랫폼 | 의미                                                  |
-| ------------- | ------------- | ----------------------------------------------------- |
-| x86_64 Linux  | `linux/amd64` | 네이티브 Linux 컨테이너에서 ARM64 cross compiler 실행 |
-| x86_64 macOS  | `linux/amd64` | Docker Desktop이 x86_64 Linux 컨테이너 실행           |
-| aarch64 Linux | `linux/arm64` | 네이티브 ARM64 Linux 컨테이너에서 실행                |
-| aarch64 macOS | `linux/arm64` | Docker Desktop이 ARM64 Linux 컨테이너 실행            |
-
-- `--platform`: **빌더 컨테이너의 CPU 아키텍처** 선택
-- 최종 프로그램의 타깃: 두 경우 모두 Linux AArch64
-- x86_64 호스트에서 `linux/arm64` 선택 시 에뮬레이션으로 빌드 속도 저하 가능
-- aarch64 호스트에서 `linux/amd64` 선택 시 Docker Desktop 또는 QEMU의 에뮬레이션 필요
-
----
-
-## Docker 빌드: x86_64 호스트 (Docker on x86_64)
-
-```bash
-docker buildx build \
-  --platform linux/amd64 \
-  -t project-cross:amd64 \
-  --load project
-
-mkdir -p project/build-docker-amd64
 docker run --rm --platform linux/amd64 \
-  -v "$PWD/project:/src:ro" \
-  -v "$PWD/project/build-docker-amd64:/out" \
-  project-cross:amd64
-file project/build-docker-amd64/hello_pi
+  -v "$PWD:/src:ro" \
+  -v "$PWD/sysroot:/sysroot:ro" \
+  -v "$PWD/build-docker-amd64:/out" \
+  mep03-cross:amd64 \
+  sh -c 'cmake -S /src -B /out \
+    -DCMAKE_TOOLCHAIN_FILE=/src/cmake/toolchains/aarch64-linux-gnu.cmake \
+    -DCMAKE_SYSROOT=/sysroot -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build /out --parallel'
 ```
 
-- `--load`: 로컬 Docker 이미지 저장소에 이미지 등록
-- 컨테이너의 CMake가 `/src`를 읽고 `/out`에 AArch64 실행 파일 생성
+- 외부 라이브러리의 헤더와 라이브러리를 `/sysroot`에서 탐색
+- 표준 라이브러리만 사용하는 현재 예제에는 `sysroot` 선택 사항
 
 ---
 
-## Docker 빌드: aarch64 호스트 (Docker on aarch64)
+## 빌드 결과 검증 (Verifying the Output)
 
 ```bash
-docker buildx build \
-  --platform linux/arm64 \
-  -t project-cross:arm64 \
-  --load project
-
-mkdir -p project/build-docker-arm64
-docker run --rm --platform linux/arm64 \
-  -v "$PWD/project:/src:ro" \
-  -v "$PWD/project/build-docker-arm64:/out" \
-  project-cross:arm64
-file project/build-docker-arm64/hello_pi
+docker run --rm --platform linux/amd64 \
+  -v "$PWD/build-docker-amd64:/out:ro" \
+  mep03-cross:amd64 file /out/hello_pi
+docker run --rm --platform linux/amd64 \
+  -v "$PWD/build-docker-amd64:/out:ro" \
+  mep03-cross:amd64 sh -c \
+  'readelf -h /out/hello_pi | grep Machine'
 ```
 
-- Apple Silicon macOS와 ARM64 Linux에서는 이미지가 네이티브로 실행
-- 이미지 플랫폼과 결과물 타깃을 구분하기 위해 `file`로 결과 확인
+- `Machine: AArch64` 출력 확인
+- 호스트용 실행 파일을 실수로 생성하지 않았는지 확인
+
+---
+
+## 라즈베리파이로 전송 (Sending to Raspberry Pi)
+
+```bash
+scp build-docker-amd64/hello_pi \
+  pi@raspberrypi.local:~/mep03/
+ssh pi@raspberrypi.local '~/mep03/hello_pi'
+```
+
+- `scp`: SSH를 통해 빌드 산출물 전송
+- Raspberry Pi에서 실행 권한과 라이브러리 설치 상태 확인
+- 호스트의 빌드 디렉터리와 타깃의 실행 디렉터리 분리
+
+---
+
+## 증분 빌드 확인 (Checking Incremental Builds)
+
+```bash
+touch src/00_hello_pi.cc
+docker run --rm --platform linux/amd64 \
+  -v "$PWD:/src:ro" \
+  -v "$PWD/build-docker-amd64:/out" \
+  mep03-cross:amd64
+```
+
+- 변경된 소스와 해당 소스에 의존하는 대상만 재컴파일
+- 이미지와 소스의 역할을 분리하여 동일 환경에서 반복 빌드
