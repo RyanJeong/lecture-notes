@@ -1,4 +1,5 @@
 <!-- _class: lead -->
+
 # 마이크로임베디드프로그래밍
 
 ## 실습 준비와 GPIO 기초
@@ -12,7 +13,8 @@
 - **3인 1조**로 수행
 - 배선 변경 시 **반드시 전원을 차단**할 것
 - LED는 항상 전류 제한 저항과 직렬로 연결
-- GPIO는 **3.3V 기준** — 5V 신호를 직접 연결하지 말 것(에외: HC-SR04 실습)
+- GPIO는 **3.3V 기준** — 5V 신호를 직접 연결하지 말 것
+  - HC-SR04 실습의 5V Echo 신호도 분압 후 연결
 
 ### 보고서 제출
 
@@ -24,15 +26,15 @@
 
 ## 개발 환경 (Development Environment)
 
-| 구분 | 내용 |
-| --- | --- |
-| 타깃 보드 | Raspberry Pi(Raspberry Pi OS, 64-bit) |
-| 언어 | C++14 |
-| 컴파일러 | `clang++` (타깃), 크로스 툴체인(호스트) |
-| GPIO 라이브러리 | libgpiod v2(필요 시 lgpio) |
-| 빌드 시스템 | CMake |
-| 형상 관리 | Git / GitHub |
-| CI/CD | GitHub Actions |
+| 구분            | 내용                                    |
+| --------------- | --------------------------------------- |
+| 타깃 보드       | Raspberry Pi(Raspberry Pi OS, 64-bit)   |
+| 언어            | C++14                                   |
+| 컴파일러        | `clang++` (타깃), 크로스 툴체인(호스트) |
+| GPIO 라이브러리 | libgpiod v2(필요 시 lgpio)              |
+| 빌드 시스템     | CMake                                   |
+| 형상 관리       | Git / GitHub                            |
+| CI/CD           | GitHub Actions                          |
 
 - 본 수업은 Python이 아닌 **C++ 기반**으로 진행함
 - GPIO 제어는 현행 Raspberry Pi OS가 지원하는 **libgpiod**를 사용
@@ -51,10 +53,10 @@
 
 ## 공통 개발 흐름 (Workflow)
 
-- 모든 실습이 공유하는 헤더는 `mep/common/` 한 곳에만 보관함
+- 모든 실습이 공유하는 헤더는 `project/common/` 한 곳에만 보관
 
 ```text
-mep/
+project/
 ├── common/
 │   ├── gpio_helper.hpp        # RAII wrapper
 │   └── signal_stop.hpp        # Ctrl-C stop flag
@@ -79,71 +81,56 @@ gpioinfo gpiochip0
 
 ---
 
-## GPIO 기초 - 가장 단순한 예제 (Minimal Example)
-
-- 본격적인 실습 전에, libgpiod의 최소 형태를 먼저 확인
-
-[//]: # (INCLUDE: ./mep/09/src/00_gpio_blink.cc --to 10)
-
----
-
-## GPIO 기초 - 가장 단순한 예제 (Minimal Example) (Cont'd - 1)
-
-[//]: # (INCLUDE: ./mep/09/src/00_gpio_blink.cc --from 15 --to 34)
-
-- `open` -> `settings`/`config` -> `request_lines` -> `set_value` -> `release` -> `close`
-
----
-
-## GPIO 기초 - 가장 단순한 예제 (Minimal Example) (Cont'd - 2)
-
-[//]: # (INCLUDE: ./mep/09/src/00_gpio_blink.cc --from 37)
-
-- 모든 호출의 반환값을 확인하고, 확보한 자원을 역순으로 해제하는 것이 기본
-
----
-
-## GPIO 기초 - 구성과 빌드 (Layout and Build)
-
-```text
-mep/09/src/
-└── 00_gpio_blink.cc           # minimal example, uses no shared header
-```
-
-```bash
-cd mep/09/src
-clang++ -std=c++14 -Wall -Wextra 00_gpio_blink.cc -o blink -lgpiod
-./blink                        # blinks 10 times, then exits on its own
-```
-
-- 이 예제만 `-I` 가 필요 없음 — RAII 래퍼 없이 libgpiod를 직접 부르기 때문
-- 정해진 횟수만 돌고 끝나므로 신호 처리도 넣지 않음
-
----
-
 ## GPIO 기초 - 디지털 입출력 (Digital I/O Basics)
 
-<!-- IMAGE [파형] HIGH/LOW 전압 레벨과 임계 전압, 불확정 구간 표시 (img/17-logic-levels.png) -->
+![h:150 center](img/00-logic-levels.png)
 
-- 디지털 신호는 전압을 **두 상태**로 해석
-
-| 상태 | 라즈베리파이(3.3V 로직) |
-| --- | --- |
-| LOW(0) | 약 0V 근처 |
-| HIGH(1) | 약 3.3V 근처 |
-| 불확정 | 그 사이 — **읽을 때마다 값이 달라질 수 있음** |
+| 상태    | 라즈베리파이(3.3V 로직)                      |
+| ------- | -------------------------------------------- |
+| LOW(0)  | 약 0V 근처                                   |
+| HIGH(1) | 약 3.3V 근처                                 |
+| 불확정  | 그 사이 구간 — **판독 시마다 값이 불안정함** |
 
 ### 플로팅 (Floating)
 
-- 입력 핀을 아무 데도 연결하지 않으면 전압이 떠서 **값이 임의로 변함**
-- 그래서 스위치 입력에는 **풀업 또는 풀다운**이 반드시 필요
+- 입력 핀 미연결 시 전압이 불안정하여 값이 임의로 변동됨(플로팅 현상)
+- 스위치 입력에는 풀업 또는 풀다운 회로 구성이 필수
 
-| 방식 | 평상시 | 눌렀을 때 |
-| --- | --- | --- |
-| 풀업(Pull-Up) | HIGH | LOW |
-| 풀다운(Pull-Down) | LOW | HIGH |
+---
 
-> 실습에서는 **10kΩ 풀업**을 사용하므로 "누름 = LOW"
+## GPIO 기초 - 디지털 입출력 (Cont'd)
+
+| 방식              | 평상시 | 눌렀을 때 |
+| ----------------- | ------ | --------- |
+| 풀업(Pull-Up)     | HIGH   | LOW       |
+| 풀다운(Pull-Down) | LOW    | HIGH      |
+
+---
+
+## GPIO 기초 - 라인 확보 (Acquiring a Line)
+
+- libgpiod v2는 **설정 객체 세 개**를 거쳐 한 번의 요청으로 라인을 확보
+- 실습에서는 설정·요청의 모든 실패 경로를 처리하는 RAII 래퍼 사용
+
+```cpp
+GpioChip chip("gpiochip0");
+if (!chip.ok()) return 1;
+
+GpioLine line(chip, 17);  // BCM 17
+if (!line.RequestOutput("mep-blink", 0)) return 1;
+if (!line.Set(1)) return 1;
+```
+
+- `consumer` 이름은 `gpioinfo`에 그대로 보이므로, 누가 라인을 쥐고 있는지 알 수 있음
+
+---
+
+## GPIO 기초 - 해제 순서 (Releasing in Reverse)
+
+- `GpioLine` 소멸자가 `gpiod_line_request_release()`를 호출
+- 이어서 `GpioChip` 소멸자가 `gpiod_chip_close()`를 호출
+- 확보의 **역순으로 자동 해제**되어 조기 `return`과 예외 경로에서도 자원 회수
+
 ---
 
 ## GPIO 기초 - 헤더 핀 배치 (Header Pinout)
@@ -151,32 +138,37 @@ clang++ -std=c++14 -Wall -Wextra 00_gpio_blink.cc -o blink -lgpiod
 ![h:420 center](img/22-rpi-pinout.png)
 
 - 40핀 중 **GPIO로 쓸 수 있는 것은 26개**, 나머지는 전원과 접지
-- I2C·SPI·UART는 **정해진 핀에 고정** — 해당 기능을 쓸 때는 다른 핀으로 옮길 수 없음
+- 각 컨트롤러 신호는 지정된 대체 기능 핀에서만 사용 가능하며 가능한 핀 조합은 보드 핀 기능표로 확인
 
 ---
 
 ## GPIO 기초 - 출력 회로와 전류 (Output and Current)
 
-<!-- IMAGE [개념도] GPIO -> 저항 -> LED -> GND 결선과 전류 방향 (img/18-led-current.png) -->
+![h:60 center](img/01-gpio-led.png)
 
 - GPIO 출력은 **전류를 공급하거나 흡수**하며 소자를 구동
 
 ### LED 회로
 
-```text
-GPIO ---- [ 330Ω ] ---- |>|(LED) ---- GND
-                       anode  cathode
-```
+![h:200 center](img/02-led.png)
 
 - LED는 **극성이 있음** — 긴 다리가 애노드(+)
 - 저항이 없으면 과전류로 **LED와 GPIO 핀이 모두 손상**됨
 
+---
+
+## GPIO 기초 - 출력 회로와 전류 (Output and Current) (Cont'd)
+
+### 저항
+
+![h:250 center](img/03-register.png)
+
 ### 전류 한계
 
-| 항목 | 대략적인 한계 |
-| --- | --- |
-| 핀 하나 | 십여 mA |
-| 전체 합계 | 수십 mA |
+| 항목      | 대략적인 한계 |
+| --------- | ------------- |
+| 핀 하나   | 십여 mA       |
+| 전체 합계 | 수십 mA       |
 
 - 모터·릴레이처럼 전류가 큰 부하는 **트랜지스터나 드라이버**를 거칠 것
 
@@ -190,16 +182,16 @@ GPIO ---- [ 330Ω ] ---- |>|(LED) ---- GND
 
 ### 교보재 점검 목록
 
-| 품목 | 수량 | 확인 |
-| --- | --- | --- |
-| Raspberry Pi 4/400(전원·microSD) | 1 set | |
-| 브레드보드 | 1 | |
-| 점퍼 케이블(M-M, M-F) | 20+ | |
-| LED 5mm / 푸시버튼 | 3 / 2 | |
-| DHT11 / CdS / MCP3008 | 각 1 | |
-| HC-SR04 / 부저 | 각 1 | |
-| USB 웹캠 | 1 | |
-| 저항 330Ω / 10kΩ / 1kΩ / 2kΩ | 3 / 2 / 1 / 1 | |
+| 품목                             | 수량          | 확인 |
+| -------------------------------- | ------------- | ---- |
+| Raspberry Pi 4/400(전원·microSD) | 1 set         |      |
+| 브레드보드                       | 1             |      |
+| 점퍼 케이블(M-M, M-F)            | 20+           |      |
+| LED 5mm / 푸시버튼               | 3 / 2         |      |
+| DHT11 / CdS / MCP3008            | 각 1          |      |
+| HC-SR04 / 부저                   | 각 1          |      |
+| USB 웹캠                         | 1             |      |
+| 저항 330Ω / 10kΩ / 1kΩ / 2kΩ     | 3 / 2 / 1 / 1 |      |
 
 ---
 
@@ -212,11 +204,11 @@ cat /etc/os-release
 
 # Development tools
 clang++ --version
-cmake --version
 
-# Install and verify the GPIO library
+# Install and verify the GPIO libraries
 sudo apt update
-sudo apt install -y clang libgpiod-dev gpiod
+sudo apt install -y clang libgpiod-dev gpiod liblgpio-dev \
+                    libasound2-dev alsa-utils v4l-utils
 gpiodetect
 
 # Grant access (takes effect after re-login)
@@ -230,8 +222,6 @@ sudo usermod -aG gpio,video,audio "$USER"
 
 ## 실습 01 - 다중 LED와 스위치 제어
 
-<!-- IMAGE [사진] 완성된 LED 3개 + 버튼 2개 브레드보드 실물 사진 (img/03-lab01-built.png) -->
-
 - GPIO 디지털 **출력**으로 LED 3개를 제어하고, **PWM**으로 밝기까지 조절
 - GPIO 디지털 **입력**으로 푸시버튼 2개의 상태를 읽음
 - SW1은 수동/촛불 모드 전환, SW2는 밝기 단계 조절
@@ -239,24 +229,24 @@ sudo usermod -aG gpio,video,audio "$USER"
 
 ### 사용 부품
 
-| 부품 | 수량 | 비고 |
-| --- | --- | --- |
-| LED 5mm | 3 | 각각 330Ω 직렬 |
-| 푸시버튼 스위치 | 2 | 10kΩ 풀업 |
-| 저항 330Ω | 3 | 전류 제한 |
-| 저항 10kΩ | 2 | 풀업 |
+| 부품            | 수량 | 비고           |
+| --------------- | ---- | -------------- |
+| LED 5mm         | 3    | 각각 330Ω 직렬 |
+| 푸시버튼 스위치 | 2    | 10kΩ 풀업      |
+| 저항 330Ω       | 3    | 전류 제한      |
+| 저항 10kΩ       | 2    | 풀업           |
 
 ---
 
 ## 실습 01 - 핀 배치 (Pin Assignment)
 
-| 기능 | BCM 번호 | 비고 |
-| --- | --- | --- |
-| LED 1 | 17 | 330Ω 직렬 |
-| LED 2 | 27 | 330Ω 직렬 |
-| LED 3 | 22 | 330Ω 직렬 |
-| 버튼 1 | 23 | 10kΩ 풀업 |
-| 버튼 2 | 24 | 10kΩ 풀업 |
+| 기능   | BCM 번호 | 비고      |
+| ------ | -------- | --------- |
+| LED 1  | 17       | 330Ω 직렬 |
+| LED 2  | 27       | 330Ω 직렬 |
+| LED 3  | 22       | 330Ω 직렬 |
+| 버튼 1 | 23       | 10kΩ 풀업 |
+| 버튼 2 | 24       | 10kΩ 풀업 |
 
 ### 풀업 회로의 동작
 
@@ -268,20 +258,12 @@ sudo usermod -aG gpio,video,audio "$USER"
 
 ## 실습 01 - 택트 스위치의 방향 (Switch Orientation)
 
-### 택트 스위치의 방향
+### 택트 스위치 접점 방향
+
+![h:250 center](img/05-switch.png)
 
 - 4핀 택트 스위치는 **같은 변의 두 다리가 내부에서 항상 붙어 있음**
 - 이 붙어 있는 쌍이 **가운데 홈을 가로지르도록** 꽂아야 함
-
-```text
-    correct                        rotated 90 deg (does not work)
-  f  [1]---[3]                   f  [1]   [2]
-     ---------- channel             ---------- channel
-  e  [2]---[4]                   e  [3]   [4]
-     1-2 shorted, 3-4 shorted       1-3 shorted, 2-4 shorted
-     pressing joins the columns     pressing joins nothing
-```
-
 - 90도 돌려 꽂으면 **눌러도 GPIO 핀까지 신호가 가지 않음**
   - 증상: 선이 계속 HIGH이고, 아무리 눌러도 프로그램이 반응하지 않음
 - 확신이 서지 않으면 테스터의 통전 모드로 **누르기 전후를 직접 확인**할 것
@@ -308,71 +290,51 @@ sudo usermod -aG gpio,video,audio "$USER"
 
 ## 실습 01 - 자원 관리 (RAII)
 
-<!-- IMAGE [다이어그램] 자원 수명 다이어그램 - 생성자 획득, 소멸자 해제. 조기 return 경로 포함 (img/05-raii-lifetime.png) -->
-
 - GPIO는 열었으면 반드시 닫아야 하는 자원
-- 조기 반환이나 예외 발생 시에도 해제되도록 **RAII 래퍼**를 사용
+- 조기 반환이나 예외 발생 시에도 해제되도록 **RAII 래퍼**를 사용(`common/gpio_helper.hpp`)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 35 --to 52 --no-comment)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 35 --to 44"
 
 - 소멸자가 해제를 책임지므로 `return` 경로마다 해제 코드를 쓸 필요가 없음
 
 ---
 
-## 신호 처리와 안전한 종료 (Signals and Clean Shutdown)
+## 실습 01 - 공용 신호 처리기 (Shared Stop Handler)
 
-- 실습 프로그램은 무한 루프를 돌므로 **Ctrl-C 로 끝내는 것이 정상 경로**
-- 그런데 신호는 **명령어와 명령어 사이 아무 데서나** 도착함
+- 안전한 종료를 위한 래퍼(`common/signal_stop.hpp`)
 
-### 처리기 안에서 해도 되는 일은 거의 없음
+[//]: # "INCLUDE: ./mep/common/signal_stop.hpp --from 30 --to 39"
 
-| 하면 안 되는 것 | 이유 |
-| --- | --- |
-| `printf` | 내부 잠금을 쓰므로 같은 함수 실행 중 재진입하면 교착 |
-| `malloc` / `free` | 힙 잠금도 같은 문제 |
-| libgpiod 호출 | 비동기 신호 안전(async-signal-safe)이 보장되지 않음 |
-
-- 안전하게 쓸 수 있는 것은 `volatile sig_atomic_t` 변수 하나뿐
-- 그래서 처리기는 **깃발만 세우고** 즉시 반환하고, 정리는 루프를 빠져나온 뒤 수행
+- `SIGHUP`까지 받는 이유: SSH 연결이 끊길 때 오는 신호이며, 실습 중 프로그램이 죽는 가장 흔한 경로임
 
 ---
 
-## 공용 신호 처리기 (Shared Stop Handler)
-
-[//]: # (INCLUDE: ./mep/common/signal_stop.hpp --from 21 --to 39 --no-comment)
-
-- `SIGHUP` 까지 받는 이유: SSH 연결이 끊길 때 오는 신호이며,
-  실습 중 프로그램이 죽는 가장 흔한 경로임
-
----
-
-## PWM - 디지털 핀으로 밝기 만들기 (Pulse Width Modulation)
+## 실습 01 - 디지털 핀으로 밝기 만들기 (Pulse Width Modulation)
 
 - GPIO는 HIGH/LOW 두 값만 낼 수 있어 **중간 밝기를 직접 만들 수 없음**
 - 대신 눈보다 빠르게 켜고 끄면, 켜져 있던 **시간 비율**이 밝기로 보임
 
+---
+
+## 실습 01 - 디지털 핀으로 밝기 만들기 (Cont'd)
+
 $$\text{Duty} = \frac{T_{on}}{T_{on} + T_{off}} \times 100\%$$
 
-```text
-duty  25%   ##______##______##______##______
-duty  50%   ####____####____####____####____
-duty 100%   ################################
-            |<-- 1 period = 10 ms -->|
-```
+![h:180 center](img/06-pwm.png)
 
 - **주기**(period)는 깜빡임이 보이지 않을 만큼 짧아야 함 — 100Hz 이상 권장
 - 밝기를 바꾸는 것은 **듀티**(duty)이지 주기가 아님
 
 ---
 
-## 소프트웨어 PWM과 하드웨어 PWM (Software and Hardware PWM)
+## 실습 01 - 소프트웨어 PWM과 하드웨어 PWM (Software and Hardware PWM)
 
-| 구분 | 소프트웨어 PWM | 하드웨어 PWM |
-| --- | --- | --- |
-| 생성 주체 | 프로그램이 직접 켜고 끔 | 칩 내부 타이머 |
-| 사용 가능 핀 | 모든 GPIO | GPIO12·13·18·19 뿐 |
-| 정확도 | 스케줄러에 밀려 흔들림 | 프로그램과 무관하게 일정 |
-| CPU 사용 | 주기마다 계속 사용 | 설정 후 거의 없음 |
+| 구분         | 소프트웨어 PWM          | 하드웨어 PWM             |
+| ------------ | ----------------------- | ------------------------ |
+| 생성 주체    | 프로그램이 직접 켜고 끔 | 칩 내부 타이머           |
+| 사용 가능 핀 | 모든 GPIO               | GPIO12·13·18·19 뿐       |
+| 정확도       | 스케줄러에 밀려 흔들림  | 프로그램과 무관하게 일정 |
+| CPU 사용     | 주기마다 계속 사용      | 설정 후 거의 없음        |
 
 - 실습은 LED를 17·27·22에 두므로 **소프트웨어 PWM**을 사용
 - LED 조명은 약간의 흔들림이 문제되지 않지만, **모터나 서보는 하드웨어 PWM**이 필요
@@ -384,7 +346,7 @@ duty 100%   ################################
 ## 실습 01 - 구성과 빌드 (Layout and Build)
 
 ```text
-mep/
+project/
 ├── common/
 │   ├── gpio_helper.hpp
 │   ├── signal_stop.hpp
@@ -394,7 +356,7 @@ mep/
 ```
 
 ```bash
-cd mep/09/src
+cd project/09/src
 clang++ -std=c++14 -Wall -Wextra -I../../common \
         01_multi_led_switch.cc -o lab01 -lgpiod
 ./lab01                        # Ctrl-C to stop
@@ -406,7 +368,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 헤더와 핀 정의
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --to 17)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --to 17"
 
 ---
 
@@ -414,7 +376,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 주기 상수 — PWM은 10ms, 버튼은 그 안에서 10스텝마다
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 18 --to 25 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 18 --to 25"
 
 ---
 
@@ -422,7 +384,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 듀티 판정과 밝기 단계 — 하드웨어를 만지지 않는 순수 함수
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 27 --to 41)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 27 --to 41"
 
 ---
 
@@ -430,7 +392,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 무작위 값으로 **뛰는** 것은 전기 잡음처럼 보임 — 촛불은 **흘러가야** 함
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 46 --to 60)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 46 --to 60"
 
 - 8번에 한 번은 **바람**(draught) — 평소 흔들림보다 훨씬 깊게 내려감
 
@@ -438,7 +400,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 ## 실습 01 - 목표까지 다가가기 (Approaching a Target)
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 65 --to 81)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 65 --to 81"
 
 - 목표를 지나치지 않고 다가가기만 하므로, 밝기가 **끊기지 않고 이어짐**
 - 세 LED가 각자 다른 속도로 움직여 **같이 뛰는 일이 없음**
@@ -447,9 +409,9 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 ## 실습 01 - 예제 코드 (Cont'd - 3)
 
-- 자원 확보 — LED는 출력, 버튼은 `Button` 이 풀업까지 요청
+- 자원 확보 — LED는 출력, 버튼은 `Button`이 풀업까지 요청
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 93 --to 112)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 93 --to 112"
 
 ---
 
@@ -457,15 +419,15 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 초기 상태 — 촛불마다 목표와 속도를 따로 가짐
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 114 --to 132)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 114 --to 132"
 
 ---
 
 ## 실습 01 - 예제 코드 (Cont'd - 5)
 
-- PWM 한 주기 — LED 레벨을 100us 마다 씀
+- PWM 한 주기 — LED 레벨을 100us마다 씀
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 135 --to 146)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 135 --to 146"
 
 ---
 
@@ -473,7 +435,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 같은 주기 안에서 **10스텝마다** 버튼을 확인 — 약 1ms 간격
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 147 --to 159 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 147 --to 159"
 
 ---
 
@@ -481,7 +443,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 눌림 결과 출력, 그리고 수동 모드의 듀티
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 161 --to 174)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 161 --to 174"
 
 ---
 
@@ -489,7 +451,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 촛불 모드 — 각 불꽃이 자기 목표로 흘러가고, 닿으면 새 목표를 뽑음
 
-[//]: # (INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 175 --to 190 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/01_multi_led_switch.cc --from 175 --to 190"
 
 ---
 
@@ -500,16 +462,16 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 ```text
 |<--------------- 1 period = 10 ms = 100 steps --------------->|
  step 0    10    20    30    40    50    60    70    80    90
-   |  B     B     B     B     B     B     B     B     B     B     B = button read (~1 ms)
-   |##########################____________________________       duty 40%
-   |                                                        ^ duty updated at period end
+   |  B     B     B     B     B     B     B     B     B     B  | B = button read (~1 ms)
+   | ###############################E_________________________ | duty 50%
+   |                                                         ^ duty updated at period end
 ```
 
-| 하는 일 | 주기 |
-| --- | --- |
-| LED 레벨 쓰기 | 100us 마다(step) |
-| 버튼 읽기 | 약 1ms 마다 |
-| 듀티 갱신 | 10ms 마다(주기 끝) |
+| 하는 일       | 주기               |
+| ------------- | ------------------ |
+| LED 레벨 쓰기 | 100us 마다(step)   |
+| 버튼 읽기     | 약 1ms 마다        |
+| 듀티 갱신     | 10ms 마다(주기 끝) |
 
 - 버튼을 주기 끝에서 한 번만 읽으면 `usleep` 오차만큼 간격이 흔들림
   - 그래서 **주기 안에서** 고정 간격으로 읽음
@@ -534,31 +496,22 @@ mode=manual  brightness=75%      <- SW1
 
 ---
 
-## 스위치 바운싱 (Switch Bouncing)
+## 실습 01 - 스위치 바운싱 (Switch Bouncing)
 
-<!-- IMAGE [파형] 기계식 스위치의 채터링 파형과 디바운스 후 파형 비교 (img/19-debounce.png) -->
+![center](img/09-chattering.png)
 
 - 기계식 스위치는 접점이 붙을 때 **수 밀리초 동안 여러 번 튐**(채터링)
 - 프로그램은 이를 여러 번의 입력으로 오인함
-
-### 해결 방법
-
-| 방식 | 설명 | 이 실습에서 |
-| --- | --- | --- |
-| 상태 안정화 | 같은 값이 N 회 연속 읽히면 확정 | 지연이 생기고, 긴 채터링에는 무력 |
-| 에지 + 잠금 | 첫 에지에 즉시 반응한 뒤 재무장을 미룸 | **채택** |
-| 하드웨어 | RC 필터, 슈미트 트리거 | 회로를 바꿔야 함 |
-
-- **폴링을 느리게 하는 것은 디바운스가 아님** — 어느 튐이 표본에 걸리는지가
-  바뀔 뿐이어서, 한 번 누른 것이 여전히 여러 번으로 잡힘
+- **첫 에지에 반응한 뒤 재무장을 미루는 방식** 채택
+- **폴링을 느리게 하는 것은 디바운스가 아님** — 어느 튐이 표본에 걸리는지가 바뀔 뿐이어서, 한 번 누른 것이 여전히 여러 번으로 잡힘
 
 ---
 
-## 공용 버튼 클래스 (Shared Button)
+## 실습 01 - 공용 버튼 클래스 (Shared Button)
 
 - `common/button.hpp` — 풀업 스위치 하나를 다루는 데 필요한 전부
 
-[//]: # (INCLUDE: ./mep/common/button.hpp --from 48 --to 64 --no-comment)
+[//]: # "INCLUDE: ./mep/common/button.hpp --from 48 --to 64"
 
 - 규칙은 두 줄: **누른 즉시 보고**하고, 선이 다시 HIGH로 **안정될 때까지** 재무장하지 않음
 - "N밀리초 동안 무시"만으로는 부족 — 채터링이 그보다 길면 또 두 번 잡힘
@@ -567,12 +520,9 @@ mode=manual  brightness=75%      <- SW1
 
 ## 실습 01 - 과제 (Tasks)
 
-<!-- IMAGE [파형] 스위치 바운싱 오실로스코프 파형. 디바운스 전후 비교 (img/06-switch-bouncing.png) -->
-
 1. SW2로 밝기를 바꾸며 LED 3개가 같은 밝기로 켜지는지 확인
 2. SW1으로 촛불 모드에 들어가 세 LED가 서로 다르게 흔들리는지 확인
 3. 흔들림의 폭과 속도를 바꿔 가장 그럴듯한 값을 찾을 것
-4. 밝기 단계를 5단계에서 20단계로 늘리고, 눈에 보이는 차이를 기록
 
 ### 고찰 항목
 
@@ -599,16 +549,16 @@ mode=manual  brightness=75%      <- SW1
 
 ---
 
-## 상태 기계의 구성 요소 (Anatomy of a State Machine)
+## 실습 02 - 상태 기계의 구성 요소 (Anatomy of a State Machine)
 
-| 요소 | 의미 | 실습 02에서 |
-| --- | --- | --- |
-| 상태 | 시스템이 머무는 하나의 국면 | `kCarGo`, `kWarn`, `kWalk` |
-| 전이 | 상태를 옮기는 규칙 | `NextState()` |
-| 타임아웃 | 시간이 지나 일어나는 전이 | `StateDurationMs()` |
-| 이벤트 | 외부 자극으로 일어나는 전이 | 보행자 버튼 |
-| 진입 동작 | 상태에 들어갈 때 한 번만 하는 일 | 상태 이름 출력 |
-| 출력 | 현재 상태로 결정되는 결과 | `RedOn()`, `GreenOn()` |
+| 요소      | 의미                             | 실습 02에서                |
+| --------- | -------------------------------- | -------------------------- |
+| 상태      | 시스템이 머무는 하나의 국면      | `kCarGo`, `kWarn`, `kWalk` |
+| 전이      | 상태를 옮기는 규칙               | `NextState()`              |
+| 타임아웃  | 시간이 지나 일어나는 전이        | `StateDurationMs()`        |
+| 이벤트    | 외부 자극으로 일어나는 전이      | 보행자 버튼                |
+| 진입 동작 | 상태에 들어갈 때 한 번만 하는 일 | 상태 이름 출력             |
+| 출력      | 현재 상태로 결정되는 결과        | `RedOn()`, `GreenOn()`     |
 
 - 출력을 **상태만의 함수**로 두면 LED가 시퀀스와 어긋날 수 없음
 - 전이 함수와 출력 함수는 하드웨어를 만지지 않으므로 **단위 테스트 가능**
@@ -643,11 +593,11 @@ mode=manual  brightness=75%      <- SW1
        +-------------------- 8s -------------------------+
 ```
 
-| 상태 | 녹색 LED | 적색 LED | 의미 |
-| --- | --- | --- | --- |
-| `kCarGo` | 켜짐 | 꺼짐 | 차량 통행 |
-| `kWarn` | 점멸 | 꺼짐 | 곧 정지 |
-| `kWalk` | 꺼짐 | 켜짐 | 보행자 횡단 |
+| 상태     | 녹색 LED | 적색 LED | 의미        |
+| -------- | -------- | -------- | ----------- |
+| `kCarGo` | 켜짐     | 꺼짐     | 차량 통행   |
+| `kWarn`  | 점멸     | 꺼짐     | 곧 정지     |
+| `kWalk`  | 꺼짐     | 켜짐     | 보행자 횡단 |
 
 - 시퀀스는 **시간이 스스로 진행**시키고, 버튼은 다음 전이를 앞당기는 이벤트
 - 녹색이 아닐 때 누른 요청은 **버려지지 않고 걸려 있다가** 다음 녹색에서 처리됨
@@ -660,14 +610,14 @@ mode=manual  brightness=75%      <- SW1
 
 - 녹색이 아닐 때 누른 요청을 **버리면** 버튼이 고장난 것처럼 보임
 
-| 누른 시점 | 버리는 경우 | 걸어 두는 경우(현재) |
-| --- | --- | --- |
-| `CAR GO` 초반 | 즉시 반영 | 즉시 반영 |
-| `CAR GO` 막바지 | **아무 일도 없음** | 최소 녹색 후 반영 |
-| `WARN` 중 | **아무 일도 없음** | 이미 오는 횡단으로 처리 |
-| `WALK` 중 | **아무 일도 없음** | 다음 녹색에서 반영 |
+| 누른 시점       | 버리는 경우        | 걸어 두는 경우(현재)    |
+| --------------- | ------------------ | ----------------------- |
+| `CAR GO` 초반   | 즉시 반영          | 즉시 반영               |
+| `CAR GO` 막바지 | **아무 일도 없음** | 최소 녹색 후 반영       |
+| `WARN` 중       | **아무 일도 없음** | 이미 오는 횡단으로 처리 |
+| `WALK` 중       | **아무 일도 없음** | 다음 녹색에서 반영      |
 
-- 21초 주기에서 버리는 방식은 **약 8초 동안만** 반응함 — 나머지는 무반응
+- 21초 주기에서 녹색 10초에만 받는 방식은 **약 11초 동안** 무반응
 - 걸어 두면 **어느 시점에 눌러도** 한 주기 안에 횡단 신호가 옴
 
 ---
@@ -675,7 +625,7 @@ mode=manual  brightness=75%      <- SW1
 ## 실습 02 - 구성과 빌드 (Layout and Build)
 
 ```text
-mep/
+project/
 ├── common/
 │   ├── gpio_helper.hpp
 │   ├── signal_stop.hpp
@@ -685,7 +635,7 @@ mep/
 ```
 
 ```bash
-cd mep/09/src
+cd project/09/src
 clang++ -std=c++14 -Wall -Wextra -I../../common \
         02_sequence_state_machine.cc -o lab02 -lgpiod
 ./lab02                        # Ctrl-C to stop
@@ -697,7 +647,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 상태와 각 상태가 머무는 시간
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 26 --to 41 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 26 --to 41"
 
 ---
 
@@ -705,7 +655,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 순서 전이 — 신호는 앞으로만 진행
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 47 --to 57 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 47 --to 57"
 
 ---
 
@@ -713,7 +663,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 요청은 녹색 시간만 줄이고, **최소 녹색 아래로는 내려가지 않음**
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 64 --to 69 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 64 --to 69"
 
 ---
 
@@ -721,7 +671,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 출력은 상태만으로 결정되므로 LED가 시퀀스와 어긋날 수 없음
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 68 --to 74 --no-comment)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 68 --to 74"
 
 ---
 
@@ -729,7 +679,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 자원 확보와 오류 검사
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 93 --to 112)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 93 --to 112"
 
 ---
 
@@ -737,7 +687,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 초기 상태와 첫 진입 출력
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 114 --to 121)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 114 --to 121"
 
 ---
 
@@ -745,7 +695,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 모든 누름에 응답하고, 요청은 걸어 둠
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 123 --to 141)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 123 --to 141"
 
 ---
 
@@ -753,7 +703,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 타임아웃 전이와 진입 동작
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 147 --to 163)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 147 --to 163"
 
 ---
 
@@ -761,7 +711,7 @@ clang++ -std=c++14 -Wall -Wextra -I../../common \
 
 - 상태로부터 출력을 갱신
 
-[//]: # (INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 165 --to 182)
+[//]: # "INCLUDE: ./mep/09/src/02_sequence_state_machine.cc --from 165 --to 182"
 
 ---
 
@@ -780,8 +730,8 @@ pedestrian crossing; press GPIO23 to request. Ctrl-C to stop
 ^Cstopped
 ```
 
-- 누른 즉시 `request registered` 가 나와야 함 — 안 나오면 커널이 누름을 못 본 것
-- 아무것도 누르지 않아도 `CAR GO → WARN → WALK` 는 **시간만으로** 계속 돌아감
+- 누른 즉시 `request registered`가 나와야 함 — 안 나오면 커널이 누름을 못 본 것
+- 아무것도 누르지 않아도 `CAR GO → WARN → WALK`는 **시간만으로** 계속 돌아감
 
 ---
 
@@ -792,7 +742,7 @@ pedestrian crossing; press GPIO23 to request. Ctrl-C to stop
 3. 버튼을 길게 누르면 즉시 초기 상태로 돌아가는 리셋 전이를 추가
 4. 상태를 하나 더 추가(예: 전 방향 정지)하고 전이 표를 갱신
 
-### 고찰 항목
+### 실습 02 고찰 항목
 
 - 상태를 열거형으로 관리했을 때와 `bool` 플래그로 관리했을 때의 차이
 - 상태가 10개로 늘어난다면 코드를 어떻게 구성하겠는가
@@ -800,42 +750,21 @@ pedestrian crossing; press GPIO23 to request. Ctrl-C to stop
 
 ---
 
-## 9장 정리 (Summary)
-
-- 디지털 입력은 **플로팅**을 막기 위해 풀업 또는 풀다운이 필요
-  - 실습은 10kΩ 풀업 — **누름 = LOW**로 논리가 반전됨
-- 출력은 전류 한계가 있으므로 LED에 **330Ω 직렬 저항**이 필수
-- libgpiod 사용 절차: `open` → `get_line` → `request_*` → `get/set_value` → `release` → `close`
-  - 모든 반환값을 검사하고, **RAII로 해제를 구조적으로 보장**
-- 기계식 스위치는 **바운싱**이 있어 디바운스 처리가 필요
-  - 폴링을 늦추는 것은 디바운스가 아니고, 무작정 기다리면 반응만 느려짐
-  - 누른 즉시 처리하고 **선이 다시 안정될 때까지 재무장하지 않는** 방식을 사용
-- 동작하지 않을 때는 **커널이 핀의 변화를 보는지부터** 확인할 것
-  - `gpiomon --bias=pull-up --chip gpiochip0 23` 이 조용하면 원인은 코드가 아니라 배선
-- 중간 밝기는 **PWM**의 듀티로 만들며, 주기는 깜빡임이 보이지 않을 만큼 짧아야 함
-  - 소프트웨어 PWM은 모든 핀에서 되지만 스케줄러에 밀려 흔들림
-- 순차 제어는 **상태 기계**로 표현하면 전이 규칙이 한곳에 모이고 테스트가 가능해짐
-  - 전이는 **타임아웃**과 **이벤트** 두 가지로 나뉘며, 출력은 상태만의 함수로 둘 것
-
-> 다음 장에서는 센서와 통신하며 프로토콜과 타이밍을 다룸
-
----
-
 ## 부록 - 공용 코드 (Appendix: Shared Code)
 
-- `mep/common/` 의 헤더 여덟 개는 9~14장의 실습이 그대로 재사용
+- `mep/common/`의 헤더 여덟 개는 9~14장의 실습이 그대로 재사용
 - 여기서는 **파일 전체를 순서대로** 실음 — 슬라이드가 나뉘어도 한 파일의 연속임
 
-| 파일 | 줄 수 | 하는 일 | 쓰는 곳 |
-| --- | --- | --- | --- |
-| `signal_stop.hpp` | 41 | Ctrl-C 로 루프를 끝냄 | 전 장 |
-| `button.hpp` | 77 | 풀업 버튼, 채터링 흡수 | 9장 |
-| `gpio_helper.hpp` | 138 | libgpiod v2 RAII 래퍼 | 9~11장 |
-| `dht11.hpp` | 112 | 단선 온습도 프로토콜 | 10, 11장 |
-| `mcp3008.hpp` | 71 | SPI ADC | 10, 11장 |
-| `hcsr04.hpp` | 81 | 초음파 거리 측정 | 10, 11장 |
-| `alsa_capture.hpp` | 100 | PCM 오디오 캡처 | 12장 |
-| `v4l2_capture.hpp` | 212 | V4L2 MJPEG 영상 캡처 | 12장 |
+| 파일               | 줄 수 | 하는 일                | 쓰는 곳  |
+| ------------------ | ----- | ---------------------- | -------- |
+| `signal_stop.hpp`  | 41    | Ctrl-C 로 루프를 끝냄  | 전 장    |
+| `button.hpp`       | 77    | 풀업 버튼, 채터링 흡수 | 9장      |
+| `gpio_helper.hpp`  | 142   | libgpiod v2 RAII 래퍼  | 9~11장   |
+| `dht11.hpp`        | 112   | 단선 온습도 프로토콜   | 10, 11장 |
+| `mcp3008.hpp`      | 71    | SPI ADC                | 10, 11장 |
+| `hcsr04.hpp`       | 107   | 초음파 거리 측정       | 10, 11장 |
+| `alsa_capture.hpp` | 100   | PCM 오디오 캡처        | 12장     |
+| `v4l2_capture.hpp` | 216   | V4L2 MJPEG 영상 캡처   | 12장     |
 
 ---
 
@@ -851,298 +780,310 @@ pedestrian crossing; press GPIO23 to request. Ctrl-C to stop
 
 ## 부록 - signal_stop.hpp
 
-[//]: # (INCLUDE: ./mep/common/signal_stop.hpp --to 20)
+[//]: # "INCLUDE: ./mep/common/signal_stop.hpp --to 20"
 
 ---
 
 ## 부록 - signal_stop.hpp (Cont'd)
 
-[//]: # (INCLUDE: ./mep/common/signal_stop.hpp --from 21)
+[//]: # "INCLUDE: ./mep/common/signal_stop.hpp --from 21"
 
 ---
 
 ## 부록 - button.hpp
 
-[//]: # (INCLUDE: ./mep/common/button.hpp --to 20)
+[//]: # "INCLUDE: ./mep/common/button.hpp --to 20"
 
 ---
 
 ## 부록 - button.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/button.hpp --from 21 --to 36)
+[//]: # "INCLUDE: ./mep/common/button.hpp --from 21 --to 36"
 
 ---
 
 ## 부록 - button.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/button.hpp --from 37 --to 51)
+[//]: # "INCLUDE: ./mep/common/button.hpp --from 37 --to 51"
 
 ---
 
 ## 부록 - button.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/button.hpp --from 52 --to 64)
+[//]: # "INCLUDE: ./mep/common/button.hpp --from 52 --to 64"
 
 ---
 
 ## 부록 - button.hpp (Cont'd - 4)
 
-[//]: # (INCLUDE: ./mep/common/button.hpp --from 65 --to 77)
+[//]: # "INCLUDE: ./mep/common/button.hpp --from 65 --to 77"
 
 ---
 
 ## 부록 - gpio_helper.hpp
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --to 18)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --to 18"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 19 --to 34)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 19 --to 34"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 35 --to 55)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 35 --to 55"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 56 --to 75)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 56 --to 75"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 4)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 76 --to 96)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 76 --to 96"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 5)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 97 --to 107)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 97 --to 107"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 6)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 108 --to 118)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 108 --to 118"
 
 ---
 
 ## 부록 - gpio_helper.hpp (Cont'd - 7)
 
-[//]: # (INCLUDE: ./mep/common/gpio_helper.hpp --from 119 --to 138)
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 119 --to 138"
+
+---
+
+## 부록 - gpio_helper.hpp (Cont'd - 8)
+
+[//]: # "INCLUDE: ./mep/common/gpio_helper.hpp --from 139"
 
 ---
 
 ## 부록 - dht11.hpp
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --to 20)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --to 20"
 
 ---
 
 ## 부록 - dht11.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --from 21 --to 35)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --from 21 --to 35"
 
 ---
 
 ## 부록 - dht11.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --from 36 --to 50)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --from 36 --to 50"
 
 ---
 
 ## 부록 - dht11.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --from 51 --to 67)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --from 51 --to 67"
 
 ---
 
 ## 부록 - dht11.hpp (Cont'd - 4)
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --from 68 --to 82)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --from 68 --to 82"
 
 ---
 
 ## 부록 - dht11.hpp (Cont'd - 5)
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --from 83 --to 101)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --from 83 --to 101"
 
 ---
 
 ## 부록 - dht11.hpp (Cont'd - 6)
 
-[//]: # (INCLUDE: ./mep/common/dht11.hpp --from 102)
+[//]: # "INCLUDE: ./mep/common/dht11.hpp --from 102"
 
 ---
 
 ## 부록 - mcp3008.hpp
 
-[//]: # (INCLUDE: ./mep/common/mcp3008.hpp --to 20)
+[//]: # "INCLUDE: ./mep/common/mcp3008.hpp --to 20"
 
 ---
 
 ## 부록 - mcp3008.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/mcp3008.hpp --from 21 --to 38)
+[//]: # "INCLUDE: ./mep/common/mcp3008.hpp --from 21 --to 38"
 
 ---
 
 ## 부록 - mcp3008.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/mcp3008.hpp --from 39 --to 54)
+[//]: # "INCLUDE: ./mep/common/mcp3008.hpp --from 39 --to 54"
 
 ---
 
 ## 부록 - mcp3008.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/mcp3008.hpp --from 55)
+[//]: # "INCLUDE: ./mep/common/mcp3008.hpp --from 55"
 
 ---
 
 ## 부록 - hcsr04.hpp
 
-[//]: # (INCLUDE: ./mep/common/hcsr04.hpp --to 18)
+[//]: # "INCLUDE: ./mep/common/hcsr04.hpp --to 18"
 
 ---
 
 ## 부록 - hcsr04.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/hcsr04.hpp --from 19 --to 38)
+[//]: # "INCLUDE: ./mep/common/hcsr04.hpp --from 19 --to 38"
 
 ---
 
 ## 부록 - hcsr04.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/hcsr04.hpp --from 39 --to 58)
+[//]: # "INCLUDE: ./mep/common/hcsr04.hpp --from 39 --to 58"
 
 ---
 
 ## 부록 - hcsr04.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/hcsr04.hpp --from 59 --to 75)
+[//]: # "INCLUDE: ./mep/common/hcsr04.hpp --from 59 --to 75"
 
 ---
 
 ## 부록 - hcsr04.hpp (Cont'd - 4)
 
-[//]: # (INCLUDE: ./mep/common/hcsr04.hpp --from 76)
+[//]: # "INCLUDE: ./mep/common/hcsr04.hpp --from 76 --to 94"
+
+---
+
+## 부록 - hcsr04.hpp (Cont'd - 5)
+
+[//]: # "INCLUDE: ./mep/common/hcsr04.hpp --from 95"
 
 ---
 
 ## 부록 - alsa_capture.hpp
 
-[//]: # (INCLUDE: ./mep/common/alsa_capture.hpp --to 20)
+[//]: # "INCLUDE: ./mep/common/alsa_capture.hpp --to 20"
 
 ---
 
 ## 부록 - alsa_capture.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/alsa_capture.hpp --from 21 --to 39)
+[//]: # "INCLUDE: ./mep/common/alsa_capture.hpp --from 21 --to 39"
 
 ---
 
 ## 부록 - alsa_capture.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/alsa_capture.hpp --from 40 --to 58)
+[//]: # "INCLUDE: ./mep/common/alsa_capture.hpp --from 40 --to 58"
 
 ---
 
 ## 부록 - alsa_capture.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/alsa_capture.hpp --from 59 --to 78)
+[//]: # "INCLUDE: ./mep/common/alsa_capture.hpp --from 59 --to 78"
 
 ---
 
 ## 부록 - alsa_capture.hpp (Cont'd - 4)
 
-[//]: # (INCLUDE: ./mep/common/alsa_capture.hpp --from 79 --to 93)
+[//]: # "INCLUDE: ./mep/common/alsa_capture.hpp --from 79 --to 93"
 
 ---
 
 ## 부록 - alsa_capture.hpp (Cont'd - 5)
 
-[//]: # (INCLUDE: ./mep/common/alsa_capture.hpp --from 94)
+[//]: # "INCLUDE: ./mep/common/alsa_capture.hpp --from 94"
 
 ---
 
 ## 부록 - v4l2_capture.hpp
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --to 12)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --to 12"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 1)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 13 --to 32)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 13 --to 32"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 2)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 33 --to 52)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 33 --to 52"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 3)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 53 --to 66)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 53 --to 66"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 4)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 67 --to 82)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 67 --to 82"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 5)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 83 --to 95)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 83 --to 95"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 6)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 96 --to 114)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 96 --to 114"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 7)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 115 --to 134)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 115 --to 134"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 8)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 135 --to 152)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 135 --to 152"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 9)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 153 --to 172)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 153 --to 172"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 10)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 173 --to 188)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 173 --to 188"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 11)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 189 --to 200)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 189 --to 200"
 
 ---
 
 ## 부록 - v4l2_capture.hpp (Cont'd - 12)
 
-[//]: # (INCLUDE: ./mep/common/v4l2_capture.hpp --from 201)
+[//]: # "INCLUDE: ./mep/common/v4l2_capture.hpp --from 201"

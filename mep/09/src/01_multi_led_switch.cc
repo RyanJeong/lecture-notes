@@ -1,4 +1,5 @@
 #include <unistd.h>
+
 #include <cstdio>
 #include <ctime>
 
@@ -185,7 +186,12 @@ int main() {
     }
   }
 
-  for (int i = 0; i < kLedCount; ++i) leds[i].Set(0);
+  for (int i = 0; i < kLedCount; ++i) {
+    if (!leds[i].Set(0)) {
+      std::fprintf(stderr, "cannot turn off LED %u\n", kLedPins[i]);
+      return 1;
+    }
+  }
   std::printf("stopped\n");
   return 0;
 }

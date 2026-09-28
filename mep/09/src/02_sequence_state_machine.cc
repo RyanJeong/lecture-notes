@@ -1,4 +1,5 @@
 #include <unistd.h>
+
 #include <cstdio>
 #include <ctime>
 
@@ -179,8 +180,10 @@ int main() {
 
   // Both lights off on the way out: a crossing left showing CAR GO after the
   // program has exited is worse than a dark one.
-  red.Set(0);
-  green.Set(0);
+  if (!red.Set(0) || !green.Set(0)) {
+    std::fprintf(stderr, "cannot turn off the LEDs\n");
+    return 1;
+  }
   std::printf("stopped\n");
   return 0;
 }
