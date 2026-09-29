@@ -29,6 +29,97 @@
 
 ---
 
+## 연계 실습 - 03장의 실행 파일을 라이브러리로 분리
+
+- 03장의 `hello_pi` 타깃을 출발점으로 사용
+- `main()` 밖의 센서 변환 코드를 `sensors` 라이브러리로 이동
+- 응용 프로그램은 공개 헤더만 포함하고 구현 파일은 직접 참조하지 않음
+
+```text
+mep04/
+├── CMakeLists.txt
+├── include/sensors/convert.hpp    # public API
+├── src/convert.cc                 # private implementation
+└── app/main.cc                    # consumer
+```
+
+> 목표: **같은 기능을 유지한 채 빌드 경계와 공개 경계를 분리**
+
+---
+
+## 연계 실습 - 공개 API와 구현
+
+```cpp
+// include/sensors/convert.hpp
+#pragma once
+
+float RawToCelsius(int raw);
+```
+
+- `app/main.cc`: `#include "sensors/convert.hpp"`만 사용
+- 공개 헤더 변경은 소비자의 재컴파일 범위를 넓힘
+
+---
+
+## 연계 실습 - 구현은 라이브러리 내부에 유지
+
+```cpp
+// src/convert.cc
+#include "sensors/convert.hpp"
+
+float RawToCelsius(int raw) { return static_cast<float>(raw) * 0.1f; }
+```
+
+- 보정식·플랫폼 헤더·내부 헬퍼는 `src/`에 유지
+
+---
+
+## 연계 실습 - CMake 타깃으로 정적 라이브러리 만들기
+
+```cmake
+add_library(sensors STATIC src/convert.cc)
+target_include_directories(sensors PUBLIC include)
+target_compile_features(sensors PUBLIC cxx_std_14)
+
+add_executable(sensor_app app/main.cc)
+target_link_libraries(sensor_app PRIVATE sensors)
+```
+
+- `PUBLIC include`: 소비자에게 공개 헤더 경로만 전파
+
+---
+
+## 연계 실습 - 정적 라이브러리 빌드와 확인
+
+```bash
+cmake -S . -B build-static -DCMAKE_BUILD_TYPE=Release
+cmake --build build-static --parallel
+file build-static/sensor_app build-static/libsensors.a
+```
+
+---
+
+## 연계 실습 - 공유 라이브러리로 전환하고 관찰하기
+
+```cmake
+add_library(sensors SHARED src/convert.cc)
+set_target_properties(sensors PROPERTIES
+  VERSION 1.0.0
+  SOVERSION 1)
+```
+
+```bash
+cmake -S . -B build-shared -DCMAKE_BUILD_TYPE=Release
+cmake --build build-shared --parallel
+readelf -d build-shared/sensor_app | grep NEEDED
+readelf -d build-shared/libsensors.so.1.0.0 | grep SONAME
+```
+
+- `STATIC`만 `SHARED`로 바꾼 뒤 산출물과 `NEEDED` 항목 비교
+- 공개 함수 시그니처 유지 상태에서 구현 변경 후 실행 여부 확인
+
+---
+
 ## 정적 라이브러리 (Static Library)
 
 ![h:140 center](img/00-static-link.png)
@@ -52,8 +143,25 @@ clang++ -std=c++14 main.cc -L. -lsensors -o app
 3. 링커가 해결되지 않은 심볼을 제공하는 오브젝트 추출
 4. 추출한 코드가 실행 파일에 포함
 
-- 사용하지 않는 오브젝트: 일반적으로 실행 파일에 미포함
-- 라이브러리 순서: 심볼 해석에 영향 가능
+- 참조되지 않는 오브젝트: 아카이브에서 추출되지 않아 실행 파일에 미포함
+
+```text
+main.o: SensorRead() reference
+libsensors.a: SensorRead() definition
+```
+
+```bash
+# Success: the archive resolves SensorRead() left undefined by main.o
+clang++ main.o -L. -lsensors -o app
+# found one unresolved symbol from main.o and resolved it from libsensors.a
+
+# Failure: no unresolved symbol exists when the archive is scanned
+clang++ -L. -lsensors main.o -o app
+# undefined reference to SensorRead()
+```
+
+- 정적 아카이브 순서: **심볼을 참조하는 오브젝트 뒤**에 배치
+  - 링커(Linker)의 순차 처리: 왼쪽에서 오른쪽, 필요 심볼만 아카이브에서 추출
 
 ---
 
@@ -85,28 +193,132 @@ ln -s libsensors.so.1.0.0 libsensors.so.1
 ln -s libsensors.so.1 libsensors.so
 ```
 
----
-
-## 공유 라이브러리의 장점과 비용
-
-| 장점                                  | 비용                           |
-| ------------------------------------- | ------------------------------ |
-| 여러 프로세스의 코드 페이지 공유 가능 | `.so` 버전·적재 경로 관리 필요 |
-| ABI 호환 시 소비자 재링크 없이 갱신   | 공개 ABI 장기 유지 필요        |
-| 독립적인 점검·교체 가능               | 적재 실패 가능성               |
-
-- 실행 중인 프로세스: 다시 시작 후 새 라이브러리 적재
+- `-fPIC`(Position-Independent Code): 임의의 적재 주소에서 실행 가능한 코드 생성
 
 ---
 
-## 정적과 공유의 비교 (Comparison)
+## 공유 객체의 세 이름
 
-| 항목             | 정적(`.a`)      | 공유(`.so`)                    |
-| ---------------- | --------------- | ------------------------------ |
-| 코드 결합 시점   | 빌드 시         | 참조는 빌드 시, 해석은 적재 시 |
-| 재링크 없는 갱신 | 불가            | ABI 호환 시 가능               |
-| ABI 계약         | 재빌드로 동기화 | 심볼·타입 안정성 필요          |
-| 배포 복잡도      | 파일 하나       | 라이브러리 동반 배포           |
+![h:150 center](img/18-soname-chain.png)
+
+- ABI(Application Binary Interface): 별도 컴파일한 코드 사이의 이진 수준 계약
+
+| 이름      | 예                    | 사용 시점                        | 관리 주체   |
+| --------- | --------------------- | -------------------------------- | ----------- |
+| 링커 이름 | `libsensors.so`       | 빌드 시 `-lsensors`              | 개발 패키지 |
+| SONAME    | `libsensors.so.1`     | 실행 파일 `NEEDED`, 실행 시 탐색 | ABI 주 버전 |
+| real name | `libsensors.so.1.0.0` | 실제 공유 객체 파일              | 개별 릴리스 |
+
+- 링커 이름과 SONAME: real name을 가리키는 심볼릭 링크
+- 실행 파일은 real name이 아니라 라이브러리의 `DT_SONAME`을 기록
+
+---
+
+## ELF와 동적 섹션
+
+- ELF(Executable and Linkable Format): Linux 실행 파일·오브젝트 파일·공유 라이브러리의 파일 형식
+- ELF 파일: 코드·데이터·심볼·적재 정보처럼 목적별 데이터를 여러 섹션에 기록
+- 동적 섹션(dynamic section): 동적 링커가 적재·심볼 해석에 사용하는 항목 목록
+
+```text
+ELF shared library
+├── .text, .data        program code and data
+├── .dynsym             dynamic symbol table
+├── .dynstr             dynamic string table
+└── .dynamic            dynamic linker entries: DT_*
+```
+
+- `readelf -d`: `.dynamic`의 `DT_*` 항목을 읽기 쉬운 형태로 출력
+- `DT_`: ELF 동적 섹션 항목을 나타내는 접두사
+
+---
+
+## ELF 동적 섹션 - `DT_SONAME`과 `DT_NEEDED`
+
+```text
+$ readelf -d libsensors.so.1.0.0
+  (SONAME)  Library soname: [libsensors.so.1]
+
+$ readelf -d app
+  (NEEDED)  Shared library: [libsensors.so.1]
+```
+
+| 항목        | 기록 위치           | 의미                          |
+| ----------- | ------------------- | ----------------------------- |
+| `DT_SONAME` | 공유 객체           | 이 파일이 제공하는 ABI 이름   |
+| `DT_NEEDED` | 실행 파일·공유 객체 | 실행 시 필요한 공유 객체 이름 |
+
+- 링커: `libsensors.so`를 선택한 뒤 `DT_SONAME`을 소비자의 `DT_NEEDED`로 기록
+- 동적 링커: 소비자의 `DT_NEEDED` 이름으로 적재 대상을 탐색
+
+---
+
+## 동적 링커의 라이브러리 선택 흐름
+
+```text
+Build time
+  cc app.o -lsensors
+  └── records libsensors.so DT_SONAME in app DT_NEEDED
+
+Run time
+  app DT_NEEDED: libsensors.so.1
+  └── searches ld.so.cache, RPATH/RUNPATH, then default paths
+      └── follows the symbolic link and loads libsensors.so.1.0.0
+```
+
+- `libsensors.so`: 빌드 시 선택용 이름
+- `libsensors.so.1`: 이미 빌드된 실행 파일의 ABI 요구 이름
+- real name: 배포자가 교체하는 실제 파일
+
+---
+
+## SONAME 유지 - 호환 릴리스 업데이트
+
+```text
+1.0.0 → 1.1.0 or 1.0.1
+VERSION   1.0.0 → 1.1.0
+SOVERSION 1     → 1
+
+libsensors.so.1 ──> libsensors.so.1.0.0
+                     ↓ package update and ldconfig
+libsensors.so.1 ──> libsensors.so.1.1.0
+```
+
+- 기존 `app`의 `DT_NEEDED`는 계속 `libsensors.so.1`
+- 패키지 관리자: 새 real name 설치, SONAME 링크·`ld.so.cache` 갱신
+- 다음 실행부터 동적 링커가 새 real name을 적재
+- 함수 내부 수정·버그 수정·기존 ABI를 보존한 함수 추가에 적용
+- 실행 중인 프로세스: 기존 매핑 유지, 재시작 후 새 라이브러리 적재
+
+---
+
+## SONAME 증가 - ABI 비호환 릴리스
+
+```text
+1.x ABI                         2.x ABI
+libsensors.so.1 ──> 1.1.0       libsensors.so.2 ──> 2.0.0
+        ↑                                  ↑
+    existing app                      newly linked app
+```
+
+- `SOVERSION 2` 설정: 새 real name에 `DT_SONAME=libsensors.so.2` 기록
+- 기존 실행 파일: 요구 SONAME `.so.1` 유지, 기존 ABI 실행
+- 새 빌드: `libsensors.so` 링크가 `.so.2`를 가리키면 `NEEDED=.so.2` 기록
+- `.so.1` 제거: 기존 실행 파일의 적재 실패 원인
+
+---
+
+## 정적과 공유 - 배포와 비용 비교
+
+| 관점      | 정적 라이브러리(`.a`)    | 공유 라이브러리(`.so`)           |
+| --------- | ------------------------ | -------------------------------- |
+| 코드 결합 | 링크 시 실행 파일에 포함 | `NEEDED` 기록 후 적재 시 해석    |
+| 갱신      | 소비자 재링크 필요       | ABI 호환 시 재링크 없이 교체     |
+| 자원      | 바이너리별 코드 복사본   | 여러 프로세스의 코드 페이지 공유 |
+| 운영 비용 | 실행 파일 하나로 배포    | SONAME·검색 경로·공개 ABI 관리   |
+
+- 정적 링크: 파일 시스템 제약 또는 단일 실행 파일 배포에 적합
+- 공유 링크: 여러 앱의 코드 공유와 독립 패치 릴리스에 적합
 
 ---
 
@@ -127,7 +339,7 @@ file ./app libsensors.so.1.0.0
 ## 적재 실패의 원인
 
 - 파일을 찾지 못함: 라이브러리 검색 경로 문제
-- `SONAME` 불일치: 필요한 ABI 버전 없음
+- 필요한 `SONAME` 파일 부재: 요구 ABI 주 버전 미설치 또는 탐색 경로 문제
 - 심볼 없음: 라이브러리 버전 또는 가시성 문제
 
 ```text
@@ -139,19 +351,155 @@ libsensors.so.1: cannot open shared object file
 
 ---
 
-## PIC와 ABI (PIC and ABI)
+## 공유 라이브러리의 두 이진 계약
 
-### `-fPIC` (Position-Independent Code)
+| 구분 | 계약 대상           | 질문                                               | 위반 시 결과            |
+| ---- | ------------------- | -------------------------------------------------- | ----------------------- |
+| PIC  | 코드와 적재 주소    | 어느 가상 주소에서도 같은 코드를 실행 가능한가     | 텍스트 재배치·적재 실패 |
+| ABI  | 호출자와 라이브러리 | 별도 컴파일한 기계 코드가 같은 방식으로 통신하는가 | 링크 실패·오동작        |
 
-- 공유 라이브러리: 프로세스마다 다른 가상 주소에 적재 가능
-- 절대 주소에 의존하지 않는 코드로 컴파일 필요
-- ELF 기반 리눅스 대상 공유 라이브러리: `-fPIC` 사용
+- PIC(Position-Independent Code): **프로세스 메모리** 안에서 코드의 위치 독립성 보장
+- ABI(Application Binary Interface): **번역 단위·라이브러리 경계**에서 이진 호환성 보장
+- 둘 다 소스 코드가 아닌 컴파일 후 기계 코드의 성질
 
-### ABI (Application Binary Interface)
+---
 
-- 컴파일된 코드 사이의 이진 수준 계약
-- 이름 맹글링, 타입 배치, 호출 규약, 심볼 포함
-- API 호환성과 ABI 호환성은 별개의 개념
+## PIC - `-fPIC`가 만드는 위치 독립 코드
+
+```bash
+clang++ -std=c++14 -fPIC -c sensors.cc -o sensors.o
+clang++ -shared sensors.o -o libsensors.so
+```
+
+- `-fPIC`: Position-Independent Code 생성 옵션
+- 절대 주소 대신 PC 상대 주소와 전역 오프셋 테이블(Global Offset Table, GOT) 사용
+- ELF 기반 리눅스의 공유 라이브러리: `-fPIC` 사용
+
+### PIC 목적
+
+- 임의의 가상 적재 주소
+- 읽기 전용 코드 페이지 공유
+- 주소 공간 배치 난수화(Address Space Layout Randomization, ASLR)
+
+---
+
+## PIC - PC 상대 주소, GOT, PLT
+
+| 용어                 | 역할                                      | PIC에서의 사용                        |
+| -------------------- | ----------------------------------------- | ------------------------------------- |
+| PC 상대 주소         | 현재 명령어 주소 + 고정 오프셋            | 라이브러리 내부 코드·데이터 위치 계산 |
+| 전역 오프셋 테이블   | 런타임 주소를 담는 쓰기 가능 테이블       | 전역 변수·외부 심볼의 실제 주소 보관  |
+| 프로시저 연결 테이블 | GOT를 통해 외부 함수로 점프하는 코드 조각 | 외부 함수 호출과 지연 바인딩          |
+
+```text
+PIC code -> PC-relative offset -> GOT slot -> resolved address
+call external function -> PLT stub -> GOT slot -> function address
+```
+
+- PC 상대 주소(PC-relative offset): 라이브러리 파일 안에 고정된 값으로 어느 적재 주소에서도 동일
+- 전역 오프셋 테이블(Global Offset Table, GOT): 동적 링커가 프로세스별 실제 주소로 채움
+- 프로시저 연결 테이블(Procedure Linkage Table, PLT): 함수의 실제 주소를 코드에 직접 기록하지 않는 호출 경로
+
+---
+
+## PIC - 두 적재 주소에서 같은 주소 계산
+
+```text
+library offsets: instruction = 0x1200, GOT slot = 0x4000
+PC-relative displacement: 0x4000 - 0x1200 = 0x2e00
+
+process A load base B = 0x7f20_4000_0000
+PC = B + 0x1200 = 0x7f20_4000_1200
+GOT = PC + 0x2e00 = 0x7f20_4000_4000
+
+process B load base B = 0x7f91_8000_0000
+PC = B + 0x1200 = 0x7f91_8000_1200
+GOT = PC + 0x2e00 = 0x7f91_8000_4000
+```
+
+- 적재 기준 주소(load base): 동적 링커가 라이브러리 첫 적재 구간에 배정한 가상 주소
+- ASLR: 프로세스마다 다른 load base 선택
+- 명령어 바이트의 `0x2e00`은 두 프로세스에서 동일
+- 각 GOT 슬롯: 해당 프로세스의 실제 전역 변수·함수 주소를 보관
+
+---
+
+## PIC - non-PIC의 텍스트 재배치
+
+```text
+non-PIC instruction contains absolute address A = 0x4000_6000
+actual address after load = load base B + 0x6000
+
+dynamic loader patches .text: A <- B + 0x6000
+  -> writes to code page
+```
+
+- 적재 기준 주소: 라이브러리 코드·데이터가 프로세스 가상 주소 공간에서 시작하는 주소
+- 텍스트 재배치: 비PIC 코드에 들어 있는 절대 주소를 실제 적재 기준 주소에 맞춰 수정하는 작업
+
+---
+
+## PIC - 텍스트 재배치가 만드는 사본
+
+```text
+PIC .text
+process A .text ---\
+process B .text ----> same read-only physical page
+process C .text ---/
+
+non-PIC text relocation
+process A writes .text -> private Copy-on-Write page
+process B writes .text -> another private Copy-on-Write page
+```
+
+- 공유 라이브러리 파일 자체만으로 코드 페이지 공유가 보장되는 것은 아님
+- PIC: 적재 시 코드 수정이 없으므로 여러 프로세스가 같은 읽기 전용 `.text` 물리 페이지 공유
+- GOT·전역 데이터: 쓰기 가능 영역이므로 원래 프로세스별 사본
+- 64비트 링커: 텍스트 재배치가 필요한 비PIC 오브젝트의 공유 라이브러리 링크 거부 가능
+
+> PIC의 메모리 절감 대상: 라이브러리의 읽기 전용 코드 페이지
+
+---
+
+## ABI - API 선언과 이진 계약
+
+```cpp
+// public header, source-level API
+int SensorRead(int channel, float* value);
+```
+
+| 구분 | 호출자가 아는 정보                         | 확인 시점   |
+| ---- | ------------------------------------------ | ----------- |
+| API  | 함수 이름, 매개변수 타입, 반환 타입        | 소스 컴파일 |
+| ABI  | 심볼 이름, 전달 위치, 반환 위치, 타입 배치 | 링크·실행   |
+
+- API 호환: 기존 소스 코드가 새 헤더로 다시 컴파일 가능
+- ABI 호환: **재컴파일하지 않은** 기존 실행 파일이 새 라이브러리와 실행 가능
+
+---
+
+## ABI - AArch64 호출 계약 예시
+
+- `x0`~`x7`: AArch64의 첫 8개 정수·포인터 전달인자용 64비트 레지스터
+- `w0`~`w7`: 같은 레지스터의 하위 32비트 뷰, `int` 같은 32비트 정수 전달인자·반환값에 사용
+- 이 예제의 반환 타입은 `int`: 성공·실패 상태를 `w0`으로 반환
+
+```text
+C++ declaration
+  int SensorRead(int channel, float* value);
+
+AArch64 caller                       AArch64 library function
+  w0 = channel                  -->    reads int channel from w0
+  x1 = value                    -->    writes float through pointer in x1
+  expects int result in w0      <--    returns int status in w0
+
+Itanium C++ ABI symbol: _Z10SensorReadiPf
+```
+
+- 호출 규약 불일치: 잘못된 레지스터·스택 위치에서 전달인자 해석
+- 이름 맹글링 불일치: `undefined reference` 발생
+- 클래스·구조체 배치 불일치: 링크 성공 후 잘못된 메모리 접근 가능
+- C API(`extern "C"`): 이름 맹글링 노출 축소, C++ ABI 경계 단순화
 
 ---
 
@@ -165,25 +513,13 @@ libsensors.so.1: cannot open shared object file
 
 ---
 
-## ABI 호환성을 깨는 변경
-
-| 변경                       | ABI 호환성                  |
-| -------------------------- | --------------------------- |
-| 함수 추가                  | 기존 계약 유지 시 호환 가능 |
-| 함수 내부 구현 변경        | 호환 유지                   |
-| 함수 시그니처 변경         | **호환성 깨짐**             |
-| 구조체 필드 추가·순서 변경 | **호환성 깨짐**             |
-| 가상 함수 추가             | **호환성 깨짐**             |
-| 열거형 값 추가             | 사용 방식에 따라 다름       |
-
----
-
 ## ABI 노출을 줄이는 설계
 
-- 공개 헤더에 구조체 내부 배치를 노출하지 않음
-- 불투명 포인터로 구현 상태를 라이브러리 내부에 유지
+- 공개 헤더에는 **전방 선언, 생성·사용·파괴 함수**만 둠
+- 파일 디스크립터, 버퍼, 락, 구현 클래스는 라이브러리 내부에 둠
 
 ```c
+// include/sensors/sensor.h: public contract for consumers
 struct SensorCtx;
 
 struct SensorCtx* SensorCreate(void);
@@ -191,53 +527,63 @@ int SensorRead(struct SensorCtx* context, float* out);
 void SensorDestroy(struct SensorCtx* context);
 ```
 
-- 호출자는 내부 크기·필드에 의존하지 않으므로 구현 변경의 ABI 영향 축소
-
----
-
-## SONAME과 버전 관리 (SONAME and Versioning)
-
-![h:150 center](img/18-soname-chain.png)
-
-- `SONAME`: 동적 링커가 기록·검색하는 공유 객체 이름
-- ABI 주 버전을 포함하는 관례
-
-```bash
-clang++ -shared -fPIC -Wl,-soname,libsensors.so.1 \
-  sensors.cc -o libsensors.so.1.0.0
+```c
+// src/sensor.c: implementation compiled only by the library
+struct SensorCtx {
+  int file_descriptor;
+  void* sample_buffer;
+  unsigned int calibration_revision;
+};
 ```
 
-- ABI 하위 호환성 유지 시 같은 `SONAME`의 파일로 교체 가능
+- 호출자에 노출되는 정보: 포인터 타입뿐
+- 내부 구조체에 필드를 추가해도 기존 호출자의 ABI는 유지
+- 생성된 핸들은 반드시 같은 라이브러리의 `SensorDestroy()`로 해제
 
 ---
 
-## SONAME 증가 규칙
+## CMake의 SONAME·버전·링크 생성
 
-- 함수 추가(기존 계약 유지) → `SONAME` 유지
-- 내부 구현 수정 → `SONAME` 유지
-- 함수 제거, 시그니처 변경, 구조체 배치 변경 → **`SONAME` 주 버전 증가**
+```cmake
+set_target_properties(sensors PROPERTIES
+  VERSION 1.0.0
+  SOVERSION 1)
+install(TARGETS sensors LIBRARY DESTINATION lib)
+```
 
-- 호환성 정책은 공개 ABI 범위 정의 후 적용
+- `VERSION`: real name의 전체 릴리스 버전
+- `SOVERSION`: 공유 객체의 `DT_SONAME` ABI 주 버전
+
+```text
+build output                     install/lib/
+libsensors.so     -> .so.1       libsensors.so     -> .so.1
+libsensors.so.1   -> .so.1.0.0   libsensors.so.1   -> .so.1.0.0
+libsensors.so.1.0.0              libsensors.so.1.0.0
+```
+
+- `cmake --build`: 빌드 디렉터리에 real name과 심볼릭 링크 생성
+- `cmake --install`: 설치 디렉터리에 같은 링크 구조 설치
+- `VERSION`·`SOVERSION` 설정: 수동 `ln -s` 불필요
 
 ---
 
-## 라이브러리 경계 설정
+## ABI 변경과 SONAME - 릴리스 판단표
 
-- 하나의 라이브러리: 함께 변경·배포되는 기능 집합
-- 너무 큰 경계: 관련 없는 기능까지 함께 변경
-- 너무 작은 경계: 의존성·`SONAME`·배포 단위 증가
+| 변경                         | 기존 실행 파일           | SONAME       |
+| ---------------------------- | ------------------------ | ------------ |
+| 함수 내부 보정식 수정        | 그대로 실행              | 유지         |
+| 새 함수 추가                 | 기존 호출은 그대로 실행  | 유지         |
+| 함수 삭제·시그니처 변경      | 링크 또는 호출 실패 가능 | 주 버전 증가 |
+| 공개 구조체의 필드 배치 변경 | 컴파일 없이 오동작 가능  | 주 버전 증가 |
 
-> 경계 기준: 함께 변경되고 함께 배포되는가
+```cmake
+set_target_properties(sensors PROPERTIES
+  VERSION 2.0.0
+  SOVERSION 2)  # increment only for ABI-breaking releases
+```
 
----
-
-## 라이브러리를 하나로 유지하는 이유
-
-- 라이브러리 분할 수 증가에 따른 관리 단위 증가
-- 각 라이브러리의 공개 심볼, 버전 계약, 의존 관계 관리 필요
-- 호출자 관점: 헤더와 라이브러리 수 감소
-
-> 소규모 임베디드 프로젝트: 과도한 라이브러리 분할은 관리 비용 증가
+- 판단 기준은 소스 호환성이 아니라 **이미 빌드된 소비자 실행 파일**
+- 불투명 핸들 내부 변경은 위 표의 구조체 변경에 해당하지 않음
 
 ---
 
@@ -322,7 +668,7 @@ readelf -Ws libsensors.so | grep GLOBAL
 
 ---
 
-## 최적화의 첫 단계는 측정 (Measure First)
+## 성능 측정과 기준선 (Performance Measurement and Baselines)
 
 - 최적화 대상 선정 기준: **추측이 아닌 측정 결과**
 
@@ -436,7 +782,7 @@ size build/libsensors.so
 
 ![h:300 center](img/21-dead-strip.png)
 
-- 함수·데이터를 별도 섹션에 배치해야 선택 제거 가능
+- 선택 제거 조건: 함수·데이터의 별도 섹션 배치
 - 등록 기반 초기화처럼 간접 참조하는 심볼: 보존 필요
 
 ```cmake
@@ -510,24 +856,13 @@ objcopy --add-gnu-debuglink=app.debug app
 
 ## 라이브러리 설계와 최적화 점검표
 
-- 공개 헤더 최소 선언 제공 여부
-- 플랫폼 의존 코드의 구현 계층 격리 여부
-- API·ABI 변경 여부 구분
-- `SONAME`과 공개 심볼 관리
-- 정적·공유 링크 선택에 배포 조건 반영
-- 기준선·병목 측정 결과 확보
-- 최적화 옵션별 기능 회귀 확인
-- LTO·dead-strip·가시성의 비용 측정
-- 타깃 장치에서 크기·성능·적재 확인
-- 디버그 심볼과 소스 버전 보관
+| 단계 | 점검 항목                              | 확인 방법                     |
+| ---- | -------------------------------------- | ----------------------------- |
+| 설계 | 공개 헤더 최소화, 플랫폼 계층 격리     | 공개 선언과 내부 헤더 대조    |
+| 배포 | API·ABI 변경 구분, `SONAME`·심볼 관리  | 이전 실행 파일 통합 시험      |
+| 선택 | 정적·공유 링크를 배포 조건에 맞게 선택 | 설치 파일·의존성 목록 확인    |
+| 측정 | 기준선·병목·바이너리 크기 기록         | 동일 입력의 반복 측정         |
+| 적용 | LTO·dead-strip·가시성 비용 평가        | 빌드 시간·크기·기능 회귀 비교 |
+| 검증 | 타깃 적재와 디버그 심볼 보관           | 타깃 실행·소스 버전 연결      |
 
----
-
-## 4장 정리와 다음 장 예고
-
-- 라이브러리 경계: 함께 변경·배포되는 기능 단위
-- 정적 링크: 단순 배포 / 공유 링크: 코드 공유·독립 갱신
-- 공개 ABI 최소화와 `SONAME` 기반 호환성 관리
-- 최적화 순서: 측정 → 병목 파악 → 개선 → 재측정
-- LTO, dead-strip, 가시성, strip: 효과·비용 동시 검토
-- 다음 장: SIMD 기반 데이터 병렬 처리
+> 순서: **설계 → 배포 계약 → 측정 → 최적화 적용 → 타깃 검증**
