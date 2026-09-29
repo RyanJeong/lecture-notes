@@ -257,18 +257,19 @@ $ readelf -d app
 
 ```text
 Build time
-  cc app.o -lsensors
+  clang++ app.o -lsensors
   └── records libsensors.so DT_SONAME in app DT_NEEDED
 
 Run time
   app DT_NEEDED: libsensors.so.1
-  └── searches ld.so.cache, RPATH/RUNPATH, then default paths
+  └── searches configured paths, ld.so.cache, and default paths
       └── follows the symbolic link and loads libsensors.so.1.0.0
 ```
 
 - `libsensors.so`: 빌드 시 선택용 이름
 - `libsensors.so.1`: 이미 빌드된 실행 파일의 ABI 요구 이름
 - real name: 배포자가 교체하는 실제 파일
+- 실제 검색 우선순위: `RPATH`·`RUNPATH`·`LD_LIBRARY_PATH` 설정에 따라 달라짐
 
 ---
 
@@ -373,6 +374,7 @@ clang++ -shared sensors.o -o libsensors.so
 
 - `-fPIC`: Position-Independent Code 생성 옵션
 - 절대 주소 대신 PC 상대 주소와 전역 오프셋 테이블(Global Offset Table, GOT) 사용
+  - PIC는 PC 상대 주소 지정과 GOT/PLT 테이블 구조를 결합한 결과물
 - ELF 기반 리눅스의 공유 라이브러리: `-fPIC` 사용
 
 ### PIC 목적
@@ -383,22 +385,30 @@ clang++ -shared sensors.o -o libsensors.so
 
 ---
 
-## PIC - PC 상대 주소, GOT, PLT
+## PIC - PC 상대 주소 지정, GOT, PLT
 
-| 용어                 | 역할                                      | PIC에서의 사용                        |
-| -------------------- | ----------------------------------------- | ------------------------------------- |
-| PC 상대 주소         | 현재 명령어 주소 + 고정 오프셋            | 라이브러리 내부 코드·데이터 위치 계산 |
-| 전역 오프셋 테이블   | 런타임 주소를 담는 쓰기 가능 테이블       | 전역 변수·외부 심볼의 실제 주소 보관  |
-| 프로시저 연결 테이블 | GOT를 통해 외부 함수로 점프하는 코드 조각 | 외부 함수 호출과 지연 바인딩          |
+| 용어                 | 역할                                      | PIC에서의 사용                      |
+| -------------------- | ----------------------------------------- | ----------------------------------- |
+| PC 상대 주소 지정    | 런타임 PC + 링크 시 결정된 변위           | 라이브러리 내부 위치·GOT 슬롯 계산  |
+| 전역 오프셋 테이블   | 런타임 주소를 담는 쓰기 가능 테이블       | 외부·가로채기 가능한 심볼 주소 보관 |
+| 프로시저 연결 테이블 | GOT를 통해 외부 함수로 점프하는 코드 조각 | 외부 함수 호출과 지연 바인딩        |
 
-```text
-PIC code -> PC-relative offset -> GOT slot -> resolved address
-call external function -> PLT stub -> GOT slot -> function address
-```
-
-- PC 상대 주소(PC-relative offset): 라이브러리 파일 안에 고정된 값으로 어느 적재 주소에서도 동일
+- PC 상대 주소 지정(Program Counter-relative addressing): 현재 명령어 주소(PC) + 링크 시 결정된 변위(displacement)
+  - 현재 명령어 주소: 실행 중인 현재 명령어의 가상 주소, 프로세스별 적재 기준 주소에 따라 달라짐
+  - 링크 시 결정된 변위: 정적 링커가 라이브러리 내부 배치 후 코드에 기록하는 상수
 - 전역 오프셋 테이블(Global Offset Table, GOT): 동적 링커가 프로세스별 실제 주소로 채움
 - 프로시저 연결 테이블(Procedure Linkage Table, PLT): 함수의 실제 주소를 코드에 직접 기록하지 않는 호출 경로
+  - 지연 바인딩(Lazy Binding): 프로그램 시작 시 함수가 최초 호출되는 순간에 주소를 바인딩하는 최적화 기법
+  - 첫 호출 시 PLT stub 코드는 동적 링커를 호출하도록 유도하여 외부 함수의 실제 주소를 찾아 GOT 슬롯에 기록 및 실행
+  - 이후 호출부터는 첫 호출 시 완성된 GOT 슬롯의 주소를 읽어 바로 외부 함수로 고속 점프(Jump) 및 실행
+
+```text
+hidden internal symbol : PIC code → PC-rel disp(to Symbol) → symbol address
+external data symbol   : PIC code → PC-rel disp(to Data GOT) → GOT slot(.got) → address
+external function call : PIC call → PLT stub → PC-rel disp(to Func GOT) → GOT slot(.got.plt)  function address
+```
+
+- 내부·숨김 심볼: PC 상대 변위만으로 직접 접근·호출 가능, 외부 심볼: 적재 시점(Load Time), 외부 함수: 지연 바인딩
 
 ---
 
@@ -419,7 +429,8 @@ GOT = PC + 0x2e00 = 0x7f91_8000_4000
 
 - 적재 기준 주소(load base): 동적 링커가 라이브러리 첫 적재 구간에 배정한 가상 주소
 - ASLR: 프로세스마다 다른 load base 선택
-- 명령어 바이트의 `0x2e00`은 두 프로세스에서 동일
+- 정적 링커가 코드·GOT 슬롯의 라이브러리 내부 배치 후 `0x2e00`을 결정
+- 명령어 바이트의 `0x2e00`은 두 프로세스에서 동일, 실행 중 PC만 다름
 - 각 GOT 슬롯: 해당 프로세스의 실제 전역 변수·함수 주소를 보관
 
 ---
@@ -439,25 +450,27 @@ dynamic loader patches .text: A <- B + 0x6000
 
 ---
 
-## PIC - 텍스트 재배치가 만드는 사본
+## PIC - 텍스트 재배치와 코드 페이지 공유
 
 ```text
-PIC .text
-process A .text ---\
-process B .text ----> same read-only physical page
-process C .text ---/
+PIC shared library
+process A virtual .text ---\
+process B virtual .text ----> one read-only physical page
+process C virtual .text ---/
 
-non-PIC text relocation
-process A writes .text -> private Copy-on-Write page
-process B writes .text -> another private Copy-on-Write page
+non-PIC text relocation at load time
+process A: patch .text -> Copy-on-Write -> private physical page A
+process B: patch .text -> Copy-on-Write -> private physical page B
 ```
 
-- 공유 라이브러리 파일 자체만으로 코드 페이지 공유가 보장되는 것은 아님
-- PIC: 적재 시 코드 수정이 없으므로 여러 프로세스가 같은 읽기 전용 `.text` 물리 페이지 공유
-- GOT·전역 데이터: 쓰기 가능 영역이므로 원래 프로세스별 사본
-- 64비트 링커: 텍스트 재배치가 필요한 비PIC 오브젝트의 공유 라이브러리 링크 거부 가능
+- 가상 `.text` 매핑: 각 프로세스 주소 공간의 코드 페이지 연결
+- 물리 코드 페이지: 파일 페이지 캐시에서 제공하는 실제 메모리 페이지
+- PIC 적재: 코드 수정 없음 → 읽기 전용 물리 페이지 하나를 여러 프로세스가 공유
+- non-PIC 적재: 절대 주소 재배치로 코드 쓰기 발생 → Copy-on-Write로 프로세스별 물리 페이지 생성
+- GOT·전역 데이터: 쓰기 가능 영역이므로 PIC 여부와 관계없이 프로세스별 물리 페이지 사용
+- 64비트 링커: 텍스트 재배치를 요구하는 비PIC 오브젝트의 .so 생성 거부 가능(해당 오브젝트 `-fPIC` 재컴파일 필요)
 
-> PIC의 메모리 절감 대상: 라이브러리의 읽기 전용 코드 페이지
+> PIC의 메모리 절감 대상: 여러 프로세스가 공유하는 라이브러리의 읽기 전용 코드 페이지
 
 ---
 
