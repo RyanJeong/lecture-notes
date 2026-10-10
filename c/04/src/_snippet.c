@@ -150,7 +150,7 @@ double get_pi(void)
 
 #if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 /* grandparent.h */
-int func()
+int func(void)
 {
     return 100;
 }
@@ -169,13 +169,13 @@ int func()
 
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 /* grandparent.h */
-#ifndef __GRANDPARENT_H__
-#define __GRANDPARENT_H__
-int func()
+#ifndef GRANDPARENT_H
+#define GRANDPARENT_H
+int func(void)
 {
     return 100;
 }
-#endif /* __GRANDPARENT_H__ */
+#endif /* GRANDPARENT_H */
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
 #if 0              /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
