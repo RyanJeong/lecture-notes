@@ -1,4 +1,5 @@
 <!-- _class: lead -->
+
 # 컴퓨터프로그래밍기초
 
 ## Functions and Program Structure
@@ -14,14 +15,14 @@
 ### 함수 사용 이점
 
 1. 응집도 증가 및 결합도 감소
-    - 관련 코드를 독립 영역(함수)으로 분리
-    - **지역 분리로 인한 불필요한 상호작용 제거**
+   - 관련 코드를 독립 영역(함수)으로 분리
+   - **지역 분리로 인한 불필요한 상호작용 제거**
 2. 재사용성
-    - 필요할 때 함수 호출만 하면 됨
+   - 필요할 때 함수 호출만 하면 됨
 3. 가독성 향상
-    - 재사용되는 코드를 함수로 분리해 사용함에 따라 코드가 구조화되고 간결해짐
+   - 재사용되는 코드를 함수로 분리해 사용함에 따라 코드가 구조화되고 간결해짐
 4. 유지보수성 향상
-    - 함수 수정이 필요할 경우 **해당 함수에 대해서만 수정**
+   - 함수 수정이 필요할 경우 **해당 함수에 대해서만 수정**
 
 ---
 
@@ -45,25 +46,25 @@ while (there's another line)           → getline
 
 ## Basics of Functions (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/04/src/00_grep.c --to 8)
+[//]: # "INCLUDE: ./c/04/src/00_grep.c --to 8"
 
 ---
 
 ## Basics of Functions (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/04/src/00_grep.c --from 10 --to 24)
+[//]: # "INCLUDE: ./c/04/src/00_grep.c --from 10 --to 24"
 
 ---
 
 ## Basics of Functions (Cont'd - 4)
 
-[//]: # (INCLUDE: ./c/04/src/00_grep.c --from 26 --to 38)
+[//]: # "INCLUDE: ./c/04/src/00_grep.c --from 26 --to 38"
 
 ---
 
 ## Basics of Functions (Cont'd - 5)
 
-[//]: # (INCLUDE: ./c/04/src/00_grep.c --from 40)
+[//]: # "INCLUDE: ./c/04/src/00_grep.c --from 40"
 
 ---
 
@@ -79,7 +80,7 @@ return‑type function‑name(parameter‑list)
 }
 ```
 
-- ANSI C 이전에는 반환 타입 또는 매개변수 타입 생략이 가능했으나, C99부터 타입 생략은 **금지**되었음
+- ANSI C에서는 반환 타입을 생략하면 `int`로 간주하며, 구식 함수 정의에서는 매개변수 타입 생략도 가능
 - 함수 정의 시 매개변수를 사용하지 않는다면 `void` 키워드를 사용해 의도를 분명히 할 것
 - 값을 반환하지 않는 함수의 타입은 `void` 키워드 사용
 
@@ -101,15 +102,14 @@ return‑type function‑name(parameter‑list)
 jump-statement:
     goto identifier ;
     continue ;
-    break ;                 
+    break ;
     return expression(opt) ; ←
 ```
 
 - 함수의 반환 타입이 `void`가 아니라면 함수 호출 측으로 값을 반환할 수 있음
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 4 --to 7 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 13 --to 13 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 4 --to 7 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 13 --to 13 --no-comment"
 
 ---
 
@@ -117,7 +117,7 @@ jump-statement:
 
 - 반환 표현식의 평가된 타입과 함수의 반환 타입이 서로 다를 경우, **함수의 반환 타입**으로 타입 변환
 
-[//]: # (INCLUDE: ./c/04/src/01_return_type.c)
+[//]: # "INCLUDE: ./c/04/src/01_return_type.c"
 
 ---
 
@@ -134,7 +134,7 @@ jump-statement:
 `-- strindex.c
 ```
 
-[//]: # (INCLUDE: ./c/04/src/grep/Makefile --reference)
+[//]: # "INCLUDE: ./c/04/src/grep/Makefile --reference"
 
 ---
 
@@ -142,7 +142,7 @@ jump-statement:
 
 - `getline.c`
 
-[//]: # (INCLUDE: ./c/04/src/grep/getline.c)
+[//]: # "INCLUDE: ./c/04/src/grep/getline.c"
 
 ---
 
@@ -150,13 +150,13 @@ jump-statement:
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/04/src/grep/main.c --to 8)
+[//]: # "INCLUDE: ./c/04/src/grep/main.c --to 8"
 
 ---
 
 ## Basics of Functions (Cont'd - 12)
 
-[//]: # (INCLUDE: ./c/04/src/grep/main.c --from 10)
+[//]: # "INCLUDE: ./c/04/src/grep/main.c --from 10"
 
 ---
 
@@ -164,7 +164,7 @@ jump-statement:
 
 - `strindex.c`
 
-[//]: # (INCLUDE: ./c/04/src/grep/strindex.c)
+[//]: # "INCLUDE: ./c/04/src/grep/strindex.c"
 
 ---
 
@@ -191,7 +191,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 - ASCII 숫자 문자열을 실수로 변환하는 `atof` 함수
 
-[//]: # (INCLUDE: ./c/04/src/02_atof.c)
+[//]: # "INCLUDE: ./c/04/src/02_atof.c"
 
 ---
 
@@ -205,8 +205,8 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 `-- main.c
 ```
 
-[//]: # (INCLUDE: ./c/04/src/rudimentary_calc/Makefile --reference)
-[//]: # (INCLUDE: ./c/04/src/rudimentary_calc/getline.c --reference)
+[//]: # "INCLUDE: ./c/04/src/rudimentary_calc/Makefile --reference"
+[//]: # "INCLUDE: ./c/04/src/rudimentary_calc/getline.c --reference"
 
 ---
 
@@ -214,7 +214,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/04/src/rudimentary_calc/main.c)
+[//]: # "INCLUDE: ./c/04/src/rudimentary_calc/main.c"
 
 ---
 
@@ -251,11 +251,11 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 - `func.c`
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 20 --to 28 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 20 --to 28 --no-comment"
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 34 --to 36 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 34 --to 36 --no-comment"
 
 ---
 
@@ -272,7 +272,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 
 - 내부 변수는 블록 내에서만 사용 가능하나, 외부 변수는 다른 지역에서도 접근해 사용 가능
 - 내부 변수는 블록의 생애주기(lifecycle)에 의존하나, 외부 변수는 프로그램의 생애주기에 의존함
-- 내부 변수는 초기화를 생략하면 임의의 값이 들어있으나, 외부 변수는 초기화를 생략해도 0으로 초기화됨
+- 자동 내부 변수는 초기화를 생략하면 불확정 값을 가지며, 정적 저장 기간 객체는 초기화를 생략하면 0으로 초기화됨
 
 ---
 
@@ -283,7 +283,7 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 - 외부 변수를 많은 함수가 사용할 경우 **과한 의존 관계**가 형성되어 모듈성이 저하됨
 - 이름이 너무 간결할 경우 이름 충돌 또는 다른 지역에서 이름이 감춰질 위험이 있음
 
-[//]: # (INCLUDE: ./c/04/src/03_shadow_external.c)
+[//]: # "INCLUDE: ./c/04/src/03_shadow_external.c"
 
 ---
 
@@ -306,8 +306,8 @@ gcc *.c -o $(basename $PWD) -ansi -Wall
 ## External Variables (Cont'd - 3)
 
 - 스택을 사용한 postfix notation 수식 처리 과정:
-  1. 수식 중 피연산자는 스택에 push한다.
-  2. 수식 중 연산자는 스택에 있는 두 개의 데이터를 pop하여 연산한 뒤, 결과를 다시 스택에 push한다.
+  1. 수식의 피연산자를 스택에 push
+  2. 수식의 연산자를 만나면 두 데이터를 pop하여 연산한 뒤 결과를 스택에 push
   - e.g., `1 2 - 4 5 + *`
 
 | Token | `1`     | `2`     | `-`      | `4`     | `5`     | `+`     | `*`      |
@@ -340,13 +340,13 @@ while (next operator or operand is not end-of-file indicator)
 
 ## External Variables (Cont'd - 5)
 
-[//]: # (INCLUDE: ./c/04/src/04_stack_calc.c --to 22)
+[//]: # "INCLUDE: ./c/04/src/04_stack_calc.c --to 22"
 
 ---
 
 ## External Variables (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/04/src/04_stack_calc.c --from 23 --to 39)
+[//]: # "INCLUDE: ./c/04/src/04_stack_calc.c --from 23 --to 39"
 
 - **뺄셈과 나눗셈은 교환법칙이 성립하지 않음**
 - 평가 순서는 `&&`, `||`, `?:`, `,` 연산자 외에는 미정의(unspecified)이므로 순서를 명확히 표현해야 함
@@ -356,7 +356,7 @@ while (next operator or operand is not end-of-file indicator)
 
 ## External Variables (Cont'd - 7)
 
-[//]: # (INCLUDE: ./c/04/src/04_stack_calc.c --from 40 --to 55)
+[//]: # "INCLUDE: ./c/04/src/04_stack_calc.c --from 40 --to 55"
 
 - 전역 변수의 이름은 선언 지점으로부터 파일의 끝까지 유효
   - 전역 변수는 파일 범위(file scope)를 가짐
@@ -366,7 +366,7 @@ while (next operator or operand is not end-of-file indicator)
 
 ## External Variables (Cont'd - 8)
 
-[//]: # (INCLUDE: ./c/04/src/04_stack_calc.c --from 57 --to 76)
+[//]: # "INCLUDE: ./c/04/src/04_stack_calc.c --from 57 --to 76"
 
 - 헤더 파일에 작성된 함수 선언들은 `#include` 전처리문으로 파일을 포함한 지점으로부터 해당 소스 파일의 끝까지 유효
 
@@ -374,13 +374,13 @@ while (next operator or operand is not end-of-file indicator)
 
 ## External Variables (Cont'd - 9)
 
-[//]: # (INCLUDE: ./c/04/src/04_stack_calc.c --from 78 --to 99)
+[//]: # "INCLUDE: ./c/04/src/04_stack_calc.c --from 78 --to 99"
 
 ---
 
 ## External Variables (Cont'd - 10)
 
-[//]: # (INCLUDE: ./c/04/src/04_stack_calc.c --from 101)
+[//]: # "INCLUDE: ./c/04/src/04_stack_calc.c --from 101"
 
 - `#define` 지시자로 작성된 매크로는 해당 매크로를 정의한 지점으로부터 해당 소스 파일의 끝까지 유효
 - 프로그램이 데이터를 읽어올 때, 만약 읽어야 할 데이터보다 더 많은 데이터를 읽어온 경우 이를 어딘가에 보존해야 함
@@ -397,12 +397,12 @@ while (next operator or operand is not end-of-file indicator)
 
 - 범위(scope)는 식별자(identifiers)가 유효하게 사용될 수 있는 코드 범위를 의미
 
-| Scope Type          | Applicable Identifiers        | Start Point                 | End Point                   | Summary Description                     |
-| ------------------- | ----------------------------- | --------------------------- | --------------------------- | --------------------------------------- |
-| **File Scope**      | Global variables, functions   | Point of declaration        | End of the translation unit | Visible throughout the file             |
-| **Block Scope**     | Local variables, parameters   | Point of declaration        | End of the enclosing block  | Visible only within the block           |
-| **Function Scope**  | Labels (for `goto`)           | Beginning of the function   | End of the function         | Labels are visible anywhere in function |
-| **Prototype Scope** | Parameter names in prototypes | Beginning of the prototype  | End of the prototype        | Names are valid only in the prototype   |
+| Scope Type          | Applicable Identifiers        | Start Point                | End Point                   | Summary Description                     |
+| ------------------- | ----------------------------- | -------------------------- | --------------------------- | --------------------------------------- |
+| **File Scope**      | Global variables, functions   | Point of declaration       | End of the translation unit | Visible throughout the file             |
+| **Block Scope**     | Local variables, parameters   | Point of declaration       | End of the enclosing block  | Visible only within the block           |
+| **Function Scope**  | Labels (for `goto`)           | Beginning of the function  | End of the function         | Labels are visible anywhere in function |
+| **Prototype Scope** | Parameter names in prototypes | Beginning of the prototype | End of the prototype        | Names are valid only in the prototype   |
 
 - 번역 단위(translation unit)는 하나의 C 소스 파일이 전처리기에 의해 전처리된 결과물을 의미
 
@@ -415,7 +415,7 @@ while (next operator or operand is not end-of-file indicator)
 - 식별자(변수 또는 함수의 이름) 선언이 전역 공간(outside of all blocks)에 위치한 경우
 - 식별자는 선언된 위치로부터 파일의 끝까지 유효함
 
-[//]: # (INCLUDE: ./c/04/src/05_file_scope.c)
+[//]: # "INCLUDE: ./c/04/src/05_file_scope.c"
 
 ---
 
@@ -426,7 +426,7 @@ while (next operator or operand is not end-of-file indicator)
 - 식별자가 블록 내에 위치한 경우
 - 식별자는 블록 내 선언된 위치로부터 해당 블록의 끝까지 유효함
 
-[//]: # (INCLUDE: ./c/04/src/06_block_scope.c)
+[//]: # "INCLUDE: ./c/04/src/06_block_scope.c"
 
 ---
 
@@ -437,7 +437,7 @@ while (next operator or operand is not end-of-file indicator)
 - 레이블만 사용하는 스코프
 - 레이블이 등장한 함수 전체에서 유효함
 
-[//]: # (INCLUDE: ./c/04/src/07_function_scope.c)
+[//]: # "INCLUDE: ./c/04/src/07_function_scope.c"
 
 ---
 
@@ -449,26 +449,26 @@ while (next operator or operand is not end-of-file indicator)
 - 선언에 등장하는 매개변수 식별자는 선언 내에서만 유효함
 - **타입 검사 목적으로만 사용**
 
-[//]: # (INCLUDE: ./c/04/src/08_prototype_scope.c)
+[//]: # "INCLUDE: ./c/04/src/08_prototype_scope.c"
 
 ---
 
 ## Scope Rules (Cont'd - 5)
 
-### ANSI C (C89) §3.2.1.5 — "Storage-Class Specifiers"
+### ANSI C (C89) §3.5.1 — "Storage-Class Specifiers"
 
 > A storage-class specifier declares the storage duration, linkage, and visibility (scope) of an object or function.
 
 - 연결성(linkage)은 식별자가 다른 파일(translation unit)에서도 공유될 수 있는지 여부를 의미
 - 저장 기간(storage duration)은 객체(objects)가 메모리에 존재하는 생애주기를 의미
 
-| Keyword     | Scope        | Linkage         | Storage Duration                 | Description                                     |
-| ----------- | ------------ | --------------- | -------------------------------- | ----------------------------------------------- |
-| `auto`      | Block        | None            | Automatic (expires at block end) | Default for local variables                     |
-| `register`  | Block        | None            | Automatic                        | Cannot take address, register optimization hint |
-| `static`    | Block / File | None / Internal | Static (until program ends)      | Retains value / Not accessible from other files |
-| `extern`    | Block / File | External        | Static                           | References a definition from another file       |
-| `typedef`   | Block / File | None            | None (type alias only)           | Defines a new type name (alias) **only**        |
+| Keyword    | Scope        | Linkage         | Storage Duration                 | Description                                     |
+| ---------- | ------------ | --------------- | -------------------------------- | ----------------------------------------------- |
+| `auto`     | Block        | None            | Automatic (expires at block end) | Default for local variables                     |
+| `register` | Block        | None            | Automatic                        | Cannot take address, register optimization hint |
+| `static`   | Block / File | None / Internal | Static (until program ends)      | Retains value / Not accessible from other files |
+| `extern`   | Block / File | External        | Static                           | References a definition from another file       |
+| `typedef`  | Block / File | None            | None (type alias only)           | Defines a new type name (alias) **only**        |
 
 ---
 
@@ -487,7 +487,7 @@ Storage Duration : Automatic
 - 지역 변수는 기본적으로 `auto` 저장 클래스
   - 오늘날 거의 사용되지 않음
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 46 --to 46 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 46 --to 46 --no-comment"
 
 ---
 
@@ -505,11 +505,11 @@ Storage Duration : Automatic
 - 함수 호출 시점에 생성되었다가 종료 시점에 소멸됨(automatic)
 - CPU의 레지스터를 사용하도록 **제안**하는 키워드
   - 반드시 레지스터를 사용하도록 하는 것이 아님
-- **레지스터는 주소를 갖지 않으므로 주소 연산자(`&`)를 사용할 수 없음**
+- `register`로 선언한 객체에는 실제 저장 위치와 관계없이 주소 연산자(`&`)를 사용할 수 없음
 - 대부분의 컴파일러는 빌드 과정에서 레지스터가 사용될 변수를 판단 및 자동 적용
   - 오늘날 거의 사용되지 않음
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 55 --to 56 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 55 --to 56 --no-comment"
 
 ---
 
@@ -534,11 +534,11 @@ Storage Duration : Static      / Static
 
 ### Block-Scope `static`
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 63 --to 68 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 63 --to 68 --no-comment"
 
 ### File-Scope `static`
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 72 --to 78 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 72 --to 78 --no-comment"
 
 ---
 
@@ -566,11 +566,11 @@ Storage Duration : Static           / Static
 
 ### Block-Scope `extern`
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 82 --to 91 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 82 --to 91 --no-comment"
 
 ### File-Scope `extern`
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 95 --to 98 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 95 --to 98 --no-comment"
 
 ---
 
@@ -593,13 +593,13 @@ Storage Duration : Static           / Static
 - 식별자를 **메모리에 할당**
 - 외부 식별자는 한 번만 정의되어야 하며, 여러 파일에 동일한 식별자를 중복 정의할 경우 링킹 과정에서 오류 발생
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 102 --to 104 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 102 --to 104 --no-comment"
 
 ### 외부 변수 선언
 
 - 외부 배열 선언 시 크기는 생략될 수 있음
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 110 --to 115 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 110 --to 115 --no-comment"
 
 ---
 
@@ -630,13 +630,13 @@ Storage Duration : Static           / Static
 
 - 프로그램에서 사용될 함수 선언, 상수 정의, 매크로 정의 등을 모아 놓은 파일이며, 주로 확장자 `.h`를 사용
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 119 --to 121 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 119 --to 121 --no-comment"
 
 - 사용자가 정의한 헤더 파일은 상대 경로 또는 절대 경로를 사용해 프로그램에 포함할 수 있음
   - 상대 경로는 헤더 파일 포함 전처리문이 존재하는 소스 파일을 기준으로 경로를 나타냄
   - 절대 경로는 포함할 헤더 파일이 존재하는 전체 경로를 나타냄
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 125 --to 129 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 125 --to 129 --no-comment"
 
 ---
 
@@ -670,7 +670,7 @@ Storage Duration : Static           / Static
     `-- my_math.c
 ```
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 133 --to 139 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 133 --to 139 --no-comment"
 
 ```bash
 gcc src/my_math.c -o my_math -I./include
@@ -691,7 +691,7 @@ gcc src/my_math.c -o my_math -I./include
 gcc src/my_math.c -o my_math.i -I./include -E -P
 ```
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 143 --to 148 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 143 --to 148 --no-comment"
 
 ---
 
@@ -701,11 +701,9 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - 다음은 헤더 파일이 **중복 포함**되어 컴파일 시 오류 발생
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 152 --to 156 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 160 --to 161 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 165 --to 167 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 152 --to 156 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 160 --to 161 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 165 --to 167 --no-comment"
 
 ---
 
@@ -714,11 +712,9 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 - 헤더 가드는 헤더 파일이 전처리 과정에서 **중복 포함되는 것을 방지**함
 - 전통적으로 전처리문 중 `#ifndef`를 사용해 구현
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 171 --to 178 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 160 --to 161 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 165 --to 167 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 171 --to 178 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 160 --to 161 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 165 --to 167 --no-comment"
 
 ---
 
@@ -735,7 +731,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 └── stack.c
 ```
 
-[//]: # (INCLUDE: ./c/04/src/calc/Makefile --reference)
+[//]: # "INCLUDE: ./c/04/src/calc/Makefile --reference"
 
 ---
 
@@ -743,7 +739,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - `calc.h`
 
-[//]: # (INCLUDE: ./c/04/src/calc/calc.h)
+[//]: # "INCLUDE: ./c/04/src/calc/calc.h"
 
 ---
 
@@ -751,7 +747,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - `getch.c`
 
-[//]: # (INCLUDE: ./c/04/src/calc/getch.c)
+[//]: # "INCLUDE: ./c/04/src/calc/getch.c"
 
 ---
 
@@ -759,13 +755,13 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - `stack.c`
 
-[//]: # (INCLUDE: ./c/04/src/calc/stack.c --to 15)
+[//]: # "INCLUDE: ./c/04/src/calc/stack.c --to 15"
 
 ---
 
 ## Header Files (Cont'd - 10)
 
-[//]: # (INCLUDE: ./c/04/src/calc/stack.c --from 17)
+[//]: # "INCLUDE: ./c/04/src/calc/stack.c --from 17"
 
 ---
 
@@ -773,13 +769,13 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - `getop.c`
 
-[//]: # (INCLUDE: ./c/04/src/calc/getop.c --to 14)
+[//]: # "INCLUDE: ./c/04/src/calc/getop.c --to 14"
 
 ---
 
 ## Header Files (Cont'd - 12)
 
-[//]: # (INCLUDE: ./c/04/src/calc/getop.c --from 15)
+[//]: # "INCLUDE: ./c/04/src/calc/getop.c --from 15"
 
 ---
 
@@ -787,19 +783,19 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/04/src/calc/main.c --to 19)
+[//]: # "INCLUDE: ./c/04/src/calc/main.c --to 19"
 
 ---
 
 ## Header Files (Cont'd - 14)
 
-[//]: # (INCLUDE: ./c/04/src/calc/main.c --from 20 --to 36)
+[//]: # "INCLUDE: ./c/04/src/calc/main.c --from 20 --to 36"
 
 ---
 
 ## Header Files (Cont'd - 15)
 
-[//]: # (INCLUDE: ./c/04/src/calc/main.c --from 37)
+[//]: # "INCLUDE: ./c/04/src/calc/main.c --from 37"
 
 ---
 
@@ -815,7 +811,7 @@ gcc src/my_math.c -o my_math.i -I./include -E -P
 
 - 재귀를 활용한 예 - 사용자 정의 함수 `printd`
 
-[//]: # (INCLUDE: ./c/04/src/09_printd.c)
+[//]: # "INCLUDE: ./c/04/src/09_printd.c"
 
 ---
 
@@ -878,13 +874,13 @@ Stack (Low Address)
 
 - 재귀를 활용한 정렬 함수 `qsort`
 
-[//]: # (INCLUDE: ./c/04/src/10_qsort.c --to 18)
+[//]: # "INCLUDE: ./c/04/src/10_qsort.c --to 18"
 
 ---
 
 ## Recursion (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/04/src/10_qsort.c --from 20)
+[//]: # "INCLUDE: ./c/04/src/10_qsort.c --from 20"
 
 - 배열 `16, 4, 12, 9, 13, 15, 1, 8, 11` 오름차순 정렬 과정
 
@@ -909,7 +905,7 @@ Stack (Low Address)
 - 표준 라이브러리 헤더 파일 포함 시 `<filename>` 사용
 - 토큰(token-sequence)을 사용할 수도 있음
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 182 --to 187 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 182 --to 187 --no-comment"
 
 ---
 
@@ -927,7 +923,7 @@ Stack (Low Address)
 - 식별자는 변수명 규칙을 따르며, **대문자로 작성하는 것이 관례**
 - 식별자는 전처리문 위치로부터 파일의 끝 또는 `#undef`로 식별자를 명시적으로 해제하기 전까지 유효
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 191 --to 193 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 191 --to 193 --no-comment"
 
 ---
 
@@ -935,9 +931,8 @@ Stack (Low Address)
 
 - 식별자를 큰 따옴표로 감싸면 **문자열 상수**가 되어 전처리기가 처리하지 못함
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 197 --to 197 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 205 --to 207 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 197 --to 197 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 205 --to 207 --no-comment"
 
 ---
 
@@ -945,7 +940,7 @@ Stack (Low Address)
 
 ### 매크로 치환의 다양한 형태 1 - 함수형 매크로(Function-Like Macro Definition)
 
-[//]: # (INCLUDE: ./c/04/src/11_macro_func.c)
+[//]: # "INCLUDE: ./c/04/src/11_macro_func.c"
 
 - 매개변수를 받아 치환하는 형태
 - 함수보다 빠르게 동작(in-line code이므로 함수 호출을 하지 않음)
@@ -958,15 +953,15 @@ Stack (Low Address)
 
 ### 함수형 매크로 사용 시 주의사항
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 212 --to 213 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 212 --to 213 --no-comment"
 
 - 부수효과가 있는 표현은 잘못된 결과를 초래할 수 있음
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 219 --to 221 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 219 --to 221 --no-comment"
 
 - 매개변수 토큰에 괄호를 잘못 사용하거나 쓰지 않아 매크로 치환이 의도와는 다르게 되는 경우
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 225 --to 226 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 225 --to 226 --no-comment"
 
 ---
 
@@ -977,7 +972,7 @@ Stack (Low Address)
 - 토큰에 여러 문장을 사용해야 할 경우 **연결됨**을 나타내는 백슬래시(`\`)를 각 행 끝에 표현
   - 전처리기는 `\` 기호를 만나면 줄바꿈을 무시하고 하나의 긴 토큰으로 인식
 
-[//]: # (INCLUDE: ./c/04/src/12_macro1.c)
+[//]: # "INCLUDE: ./c/04/src/12_macro1.c"
 
 ---
 
@@ -988,7 +983,7 @@ Stack (Low Address)
 - 매크로를 사용한 복합문 표현 시 **do-while문을 사용하는 것이 일반적임**
 - Do-while문 없이 사용한 여러 줄 매크로는 일부 문맥에서 오작동할 수 있음
 
-[//]: # (INCLUDE: ./c/04/src/13_macro2.c)
+[//]: # "INCLUDE: ./c/04/src/13_macro2.c"
 
 ---
 
@@ -1000,7 +995,7 @@ Stack (Low Address)
   - `#` 연산자는 매개변수 토큰을 문자열 리터럴로 변환함
 - 함수형 매크로의 전달인자로 문자열 리터럴도 사용 가능
 
-[//]: # (INCLUDE: ./c/04/src/14_macro3.c)
+[//]: # "INCLUDE: ./c/04/src/14_macro3.c"
 
 ---
 
@@ -1008,9 +1003,8 @@ Stack (Low Address)
 
 - 문자열 나열은 컴파일 과정에서 하나의 문자열로 연결됨
 
-[//]: # (INCLUDE: ./c/04/src/14_macro3.c --from 4 --to 4 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 233 --to 238 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/14_macro3.c --from 4 --to 4 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 233 --to 238 --no-comment"
 
 ---
 
@@ -1021,7 +1015,7 @@ Stack (Low Address)
 - `##` 연산자는 토큰 연결 연산자이며, 전처리 연산자 중 하나임
 - 전처리 과정에서 `##` 연산자를 사용해 표현한 토큰은 하나의 토큰으로 연결됨
 
-[//]: # (INCLUDE: ./c/04/src/15_token_parsing_operator1.c)
+[//]: # "INCLUDE: ./c/04/src/15_token_parsing_operator1.c"
 
 ---
 
@@ -1029,7 +1023,7 @@ Stack (Low Address)
 
 ### 토큰 연결 연산자를 사용한 디버깅 함수형 매크로
 
-[//]: # (INCLUDE: ./c/04/src/16_token_parsing_operator2.c)
+[//]: # "INCLUDE: ./c/04/src/16_token_parsing_operator2.c"
 
 ---
 
@@ -1055,7 +1049,7 @@ Stack (Low Address)
 
 - 전처리 과정에서 조건에 따라 코드를 선택하는 예시
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 243 --to 255 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 243 --to 255 --no-comment"
 
 ---
 
@@ -1065,7 +1059,7 @@ Stack (Low Address)
 
 - 전처리 과정에서 식별자의 정의 여부를 참 거짓으로 평가하는 연산자
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 259 --to 277 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 259 --to 277 --no-comment"
 
 ---
 
@@ -1073,9 +1067,8 @@ Stack (Low Address)
 
 ### 조건부 포함의 대표적인 예 - 헤더 가드
 
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 281 --to 284 --no-comment)
-
-[//]: # (INCLUDE: ./c/04/src/_snippet.c --from 288 --to 291 --no-comment)
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 281 --to 284 --no-comment"
+[//]: # "INCLUDE: ./c/04/src/_snippet.c --from 288 --to 291 --no-comment"
 
 - 첫 번째 형태(`#if !defined(MACRO)`)는 표현이 길고 부정 연산자(`!`)를 포함하여 가독성이 저하됨
 - 두 번째 형태(`#ifndef MACRO`)는 더 간결하고 의미가 직접적으로 드러나 가독성과 명확성이 향상됨
