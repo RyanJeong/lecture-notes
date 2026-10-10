@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    printf("long size\t\t: %20lu\n", sizeof(long));
+    printf("long size\t\t: %20lu\n", (unsigned long) sizeof(long));
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     printf("Minimum signed long\t: %20ld\n", LONG_MIN);
     printf("Maximum signed long\t: %20ld\n", LONG_MAX);
