@@ -269,7 +269,9 @@ sizeof(type name)
 
 - `bsearch.c`
 
-## [//]: # (INCLUDE: ./c/06/src/keyword/bsearch.c --to 4 --from 6 --to 7 --from 9 --to 13)
+[//]: # "INCLUDE: ./c/06/src/keyword/bsearch.c --to 4 --from 6 --to 7 --from 9 --to 13"
+
+---
 
 ## Arrays of Structures (Cont'd - 9)
 
@@ -281,7 +283,9 @@ sizeof(type name)
 
 - `main.c`
 
-## [//]: # (INCLUDE: ./c/06/src/keyword/main.c --to 15)
+[//]: # "INCLUDE: ./c/06/src/keyword/main.c --to 15"
+
+---
 
 ## Arrays of Structures (Cont'd - 11)
 
@@ -404,7 +408,7 @@ a pointer to the right child node
 - 자기 자신의 객체를 포함하는 것은 허용되지 않음
   - 불완전 타입 객체는 **실제 얼마큼의 메모리를 점유해야 할지 알 수 없으므로** 생성 불가
 - **자기 자신을 가리키는 포인터는 허용함**
-  - 포인터 타입은 불완전 타입을 가리킬 수 있고 포인터 자체의 크기는 구현에서 결정되므로 생성 가능
+  - 포인터 타입은 불완전 구조체를 가리킬 수 있고, 포인터 타입 자체는 완전 타입이므로 선언 가능
 
 ---
 
@@ -871,7 +875,8 @@ void free(void *p);
   - 따라서 포인터 버전은 `low + (high - low) / 2` 형태만이 유일하게 성립함
 - **정수 오버플로 방지**
   - `low + high`는 두 값이 매우 클 때 오버플로가 발생해 `mid`가 음수가 될 수 있음
-  - `high - low`는 항상 `high` 이하라 오버플로가 없어, 인덱스 버전에서도 권장되는 형태
+  - 인덱스 범위 `0 <= low <= high`에서는 `low + (high - low) / 2`가 덧셈 오버플로를 피함
+  - 포인터 차이 `high - low`는 같은 배열 객체 안에서만 유효하고, 차이가 `ptrdiff_t`로 표현 가능해야 함
 
 ---
 
