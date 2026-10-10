@@ -1,5 +1,5 @@
-#ifndef __TABLE_TABLE_H__
-#define __TABLE_TABLE_H__
+#ifndef TABLE_LOOKUP_TABLE_H
+#define TABLE_LOOKUP_TABLE_H
 
 #if 1                   /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 struct nlist {          /* table entry: */
@@ -15,4 +15,4 @@ unsigned hash(char *s);
 struct nlist *lookup(char *s);
 struct nlist *install(char *name, char *defn);
 
-#endif /* __TABLE_TABLE_H__ */
+#endif /* TABLE_LOOKUP_TABLE_H */

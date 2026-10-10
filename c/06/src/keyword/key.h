@@ -1,5 +1,5 @@
-#ifndef __KEYWORD_KEY_H__
-#define __KEYWORD_KEY_H__
+#ifndef KEYWORD_KEY_H
+#define KEYWORD_KEY_H
 
 struct key {
     char *word;
@@ -9,4 +9,4 @@ struct key {
 extern const int NKEYS;
 extern struct key keytab[];
 
-#endif /* __KEYWORD_KEY_H__ */
+#endif /* KEYWORD_KEY_H */
