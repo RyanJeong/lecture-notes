@@ -1,4 +1,5 @@
 <!-- _class: lead -->
+
 # 컴퓨터프로그래밍기초
 
 ## Input and Output
@@ -14,7 +15,7 @@
 
 ![center h:250](img/00-stdio.png)
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 2 --to 9 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 2 --to 9 --no-comment"
 
 ---
 
@@ -49,7 +50,7 @@ prog >outfile
 
 - `otherprog.c`
 
-[//]: # (INCLUDE: ./c/07/src/00_otherprog.c)
+[//]: # "INCLUDE: ./c/07/src/00_otherprog.c"
 
 ---
 
@@ -57,7 +58,7 @@ prog >outfile
 
 - `prog.c`
 
-[//]: # (INCLUDE: ./c/07/src/01_prog.c)
+[//]: # "INCLUDE: ./c/07/src/01_prog.c"
 
 ---
 
@@ -87,12 +88,12 @@ cat out
 
 ## Formatted Output — Printf
 
-### `int printf(char *format, arg1, arg2, ...)`
+### `int printf(const char *format, ...)`
 
 - `printf` 함수는 주어진 인자들을 변환한 후 표준 출력으로 출력하는 함수
 - 출력된 문자 수를 정수 값으로 반환
 
-[//]: # (INCLUDE: ./c/07/src/02_printf.c)
+[//]: # "INCLUDE: ./c/07/src/02_printf.c"
 
 ---
 
@@ -147,7 +148,7 @@ cat out
 
 ### 정수 타입 변환 지정자 예시 1
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 17 --to 35 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 17 --to 35 --no-comment"
 
 ---
 
@@ -155,7 +156,7 @@ cat out
 
 ### 정수 타입 변환 지정자 예시 2
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 42 --to 55 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 42 --to 55 --no-comment"
 
 ---
 
@@ -169,7 +170,7 @@ cat out
   - e.g., `1.234E+00`의 유효 숫자는 4개(`1`, `2`, `3`, `4`)
 - 변환 문자 `g`, `G`는 뒤따르는 0과 불필요한 소수점은 무시됨
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 62 --to 72 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 62 --to 72 --no-comment"
 
 ---
 
@@ -184,7 +185,7 @@ else
     %g (%G) → use fixed-point format %f
 ```
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 79 --to 91 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 79 --to 91 --no-comment"
 
 ---
 
@@ -192,7 +193,7 @@ else
 
 ### 문자열 및 기타 변환 지정자 예시
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 98 --to 110 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 98 --to 110 --no-comment"
 
 ---
 
@@ -200,7 +201,7 @@ else
 
 ### `printf` 함수 사용 시 주의점
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 117 --to 120 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 117 --to 120 --no-comment"
 
 - `printf` 함수의 첫 인자(형식 문자열)는 뒤따르는 전달인자의 수, 그리고 각 전달인자의 타입을 결정함
 - 형식 문자열에서 요구하는 전달인자의 수 또는 타입이 일치하지 않을 경우 **잘못된 결과**가 출력될 수 있음
@@ -215,7 +216,7 @@ else
 - `sprintf`의 출력은 `char` 타입 배열(`string`)로 전달됨
 - `string`은 출력 결과를 저장하기 위해 **충분한 공간**이 있어야 함
 
-[//]: # (INCLUDE: ./c/07/src/03_sprintf.c)
+[//]: # "INCLUDE: ./c/07/src/03_sprintf.c"
 
 ---
 
@@ -223,7 +224,7 @@ else
 
 ### 가변 전달인자 함수의 선언
 
-- `printf` 함수의 실제 선언은 `int printf(char *fmt, ...)`
+- `printf` 함수의 선언은 `int printf(const char *format, ...)`
 - 함수의 매개변수 중 `...` 표현은 전달인자의 수 또는 타입이 **변한다**는 의미
 - 가변 전달인자는 함수 호출 시 **타입이 승격된 값** 형태로 **이름 없는 객체**가 생성됨(**값에 의한 전달**)
   - `char` 또는 `short` 타입 객체는 `int` 타입으로 승격(§3.2.1.1 — "Integral Promotions")
@@ -246,19 +247,19 @@ else
 
 - `printf` 함수의 축약 형태인 `minprintf` 함수를 구현하면서 가변 전달인자 함수 동작 원리 학습
 
-[//]: # (INCLUDE: ./c/07/src/04_minprintf.c --to 18)
+[//]: # "INCLUDE: ./c/07/src/04_minprintf.c --to 18"
 
 ---
 
 ## Variable-Length Argument Lists (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/07/src/04_minprintf.c --from 19)
+[//]: # "INCLUDE: ./c/07/src/04_minprintf.c --from 19"
 
 ---
 
 ## Formatted Input — Scanf
 
-### `int scanf(char *format, ...)`
+### `int scanf(const char *format, ...)`
 
 - `scanf` 함수는 `printf` 함수와 사용 형태가 유사한 입력 함수
 - 표준 입력으로부터 데이터를 형식에 따라 읽어온 뒤, 결과를 전달인자에 저장
@@ -268,7 +269,7 @@ else
 - 읽어온 데이터를 전달인자에 성공적으로 전달한 개수를 정수 값으로 반환
 - 표준 입력에 더 이상 읽어올 데이터가 없다면 `EOF` 반환
 
-[//]: # (INCLUDE: ./c/07/src/05_scanf.c)
+[//]: # "INCLUDE: ./c/07/src/05_scanf.c"
 
 ---
 
@@ -306,7 +307,7 @@ else
 
 ### 정수 타입 변환 지정자 예시
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 127 --to 144 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 127 --to 144 --no-comment"
 
 ---
 
@@ -314,7 +315,7 @@ else
 
 ### 부동소수점 변환 지정자 예시
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 151 --to 163 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 151 --to 163 --no-comment"
 
 ---
 
@@ -324,7 +325,7 @@ else
 
 > A directive composed of white-space character(s) is executed by reading input up to the first non-white-space character (which remains unread), or until no more characters can be read.
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 170 --to 177 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 170 --to 177 --no-comment"
 
 - 표준 입력에 포함된 공백 문자를 적절히 처리하지 못하면 전달인자에 잘못된 값이 전달될 수 있음
 
@@ -334,7 +335,7 @@ else
 
 ### 표준 입력에 포함된 공백 처리 방법 1
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 184 --to 191 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 184 --to 191 --no-comment"
 
 - **형식 문자열 내 공백을 활용해 불필요한 공백을 소비하는 방법**
 - 표준 입력에 포함된 공백의 개수와 관계없이 사용 가능
@@ -345,7 +346,7 @@ else
 
 ### 표준 입력에 포함된 공백 처리 방법 2
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 198 --to 206 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 198 --to 206 --no-comment"
 
 - 표준 입력에 포함된 공백의 수만큼 `getchar` 함수를 통해 공백을 소비하는 방법
 
@@ -355,11 +356,11 @@ else
 
 ### 형식 문자열 내 일반 문자 사용 예
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 213 --to 217 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 213 --to 217 --no-comment"
 
 - 형식 문자열 내의 일반 문자가 입력 버퍼의 문자와 **일치**하면, 해당 문자를 버퍼에서 제거(소비)하고 다음 입력을 계속 진행함
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 221 --to 223 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 221 --to 223 --no-comment"
 
 - 입력 버퍼에 형식 문자열과 다른 문자가 나타나면, 즉시 읽기 동작을 중단
   - 매칭되지 않은 나머지 변수들은 할당되지 않은 상태
@@ -370,7 +371,7 @@ else
 
 ### 변환 지정자의 활용 1 - 억제 문자와 폭
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 230 --to 239 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 230 --to 239 --no-comment"
 
 ---
 
@@ -385,7 +386,7 @@ else
   1. `l`: 입력 스트림으로부터 읽어온 결과를 `double` 타입으로 변환
   2. `L`: 입력 스트림으로부터 읽어온 결과를 `long double` 타입으로 변환
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 246 --to 256 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 246 --to 256 --no-comment"
 
 ---
 
@@ -395,7 +396,7 @@ else
 
 - 읽어온 데이터 중 전달인자에 성공적으로 전달하지 못한 데이터는 표준 입력에 그대로 보존됨
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 263 --to 274 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 263 --to 274 --no-comment"
 
 ---
 
@@ -403,20 +404,19 @@ else
 
 ### `scanf` 반환값에 따른 처리
 
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 281 --to 285 --no-comment)
-
-[//]: # (INCLUDE: ./c/07/src/_snippet.c --from 289 --to 293 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 281 --to 285 --no-comment"
+[//]: # "INCLUDE: ./c/07/src/_snippet.c --from 289 --to 293 --no-comment"
 
 ---
 
 ## Formatted Input — Scanf (Cont'd - 13)
 
-### `int sscanf(char *string, char *format, arg1, arg2, ...)`
+### `int sscanf(const char *string, const char *format, ...)`
 
 - `scanf`의 입력은 표준 입력(키보드)으로부터 전달됨
 - `sscanf`의 입력은 `char` 타입 배열(`string`)로부터 전달됨
 
-[//]: # (INCLUDE: ./c/07/src/06_sscanf.c)
+[//]: # "INCLUDE: ./c/07/src/06_sscanf.c"
 
 ---
 
@@ -424,7 +424,7 @@ else
 
 - `sscanf` 함수 활용 - 형식 검사
 
-[//]: # (INCLUDE: ./c/07/src/07_sscanf_format.c)
+[//]: # "INCLUDE: ./c/07/src/07_sscanf_format.c"
 
 ---
 
@@ -449,13 +449,13 @@ FILE *fp;
 
 ## File Access (Cont'd - 1)
 
-### `FILE *fopen(char *name, char *mode)`
+### `FILE *fopen(const char *name, const char *mode)`
 
 - `fopen` 함수는 프로그램에서 파일을 사용하기 위해 호출하는 함수
   - `name`은 프로그램 내에서 사용하고자 하는 파일 경로
   - `mode`는 프로그램에서 파일을 어떤 모드로 접근할지 지정
 - `fopen` 함수를 호출하면 스트림(`FILE` 객체 포인터)을 반환
-  - 파일을 성공적으로 열었다면(open, 사용 가능한 상태) 유효한 주소 반환
+  - 파일을 성공적으로 열었다면(open, 사용 가능한 상태) 스트림을 가리키는 널이 아닌 포인터 반환
   - 파일을 여는 데 실패했다면 `NULL` 반환
     - 파일 경로에 파일이 존재하지 않음
     - 파일에 대한 권한이 없음
@@ -492,7 +492,7 @@ FILE *fp;
 
 - 운영체제는 프로그램 실행 시 세 개의 스트림을 자동으로 열고 이를 가리키는 포인터를 제공함
   - 표준 입력(키보드, `stdin`), 표준 출력(모니터, `stdout`), 표준 오류(모니터, `stderr`)
-- 세 파일 포인터는 `stdio.h` 헤더 내에 **상수** 형태로 선언되어 있음
+- 세 스트림은 `stdio.h` 헤더에서 매크로로 제공됨
 - 표준 입력과 표준 출력은 파일 또는 파이프로 대체 가능하며, 표준 오류는 표준 출력의 재지정(`>` 또는 `|`)에 영향받지 않음
 
 ![center](img/04-streams.png)
@@ -537,7 +537,7 @@ FILE *fp;
 ### `int fclose(FILE *fp)`
 
 - `fopen` 함수의 반대 역할을 수행하며, 스트림이 참조하는 파일을 닫음(close, 사용 불가능한 상태)
-- 프로그램 종료 시 프로그램에서 열린 모든 출력 파일에 대해 `fclose` 함수가 자동 호출됨
+- 프로그램이 정상 종료되면 기록되지 않은 스트림 데이터가 플러시되고 열린 스트림이 닫힘
   - 열 수 있는 파일의 총량이 정해져 있으므로, 불필요하게 열려 있는 파일을 닫아 시스템 자원 고갈을 예방해야 함
 - `fclose` 함수는 출력 버퍼에 대기 중인 데이터가 있다면 이를 즉시 파일로 내보냄(flush)
   - 내보내는 데이터는 버퍼에 우선 누적되며, 버퍼가 가득 차거나 `fflush` 또는 `fclose` 호출 시 flush 발생
@@ -549,13 +549,13 @@ FILE *fp;
 
 - 파일 입출력을 사용한 `cat`
 
-[//]: # (INCLUDE: ./c/07/src/08_cat.c --to 10)
+[//]: # "INCLUDE: ./c/07/src/08_cat.c --to 10"
 
 ---
 
 ## File Access (Cont'd - 7)
 
-[//]: # (INCLUDE: ./c/07/src/08_cat.c --from 12)
+[//]: # "INCLUDE: ./c/07/src/08_cat.c --from 12"
 
 ---
 
@@ -574,11 +574,11 @@ FILE *fp;
 
 - `stdlib.h` 헤더 내에 해당 함수의 선언이 포함되어 있음
 - 프로그램을 즉시 종료할 때 사용
-  - 프로그램에서 열린 모든 출력 파일에 대해 `fclose` 함수가 자동 호출됨
+  - 기록되지 않은 모든 스트림 데이터를 플러시하고 열린 스트림을 닫음
 - 인자는 프로그램 종료시 반환되는 반환값으로 사용
   - 프로그램 반환값의 관례적 표현으로 0(zero, 프로그램 정상 종료)과 non-zero(프로그램 비정상 종료) 사용
-- `main` 함수가 아닌 다른 함수 내에서 프로그램을 즉시 종료할 수 있다는 장점이 있음
-  - `main` 함수 내에서의 반환문 표현은 `exit` 함수 호출 표현과 동일함
+- `exit(status)`는 어느 함수에서 호출하든 프로그램 전체를 종료함
+  - 프로그램 시작 시 호출된 `main`에서 `return status;`를 실행하면 `exit(status)`를 호출한 것과 같은 효과
 
 ---
 
@@ -588,19 +588,19 @@ FILE *fp;
   - `cat` 첫 버전은 **일반 출력과 오류 출력 둘 다 표준 출력 스트림으로 전달**
   - `stderr` 스트림은 표준 출력의 재지정(`>` 또는 `|`)에 영향받지 않으므로 **일반 출력과 오류 출력을 구분**할 수 있음
 
-[//]: # (INCLUDE: ./c/07/src/09_advanced_cat.c --to 11)
+[//]: # "INCLUDE: ./c/07/src/09_advanced_cat.c --to 11"
 
 ---
 
 ## Error Handling — Stderr and Exit (Cont'd - 2)
 
-[//]: # (INCLUDE: ./c/07/src/09_advanced_cat.c --from 13 --to 33)
+[//]: # "INCLUDE: ./c/07/src/09_advanced_cat.c --from 13 --to 33"
 
 ---
 
 ## Error Handling — Stderr and Exit (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/07/src/09_advanced_cat.c --from 34)
+[//]: # "INCLUDE: ./c/07/src/09_advanced_cat.c --from 34"
 
 ---
 
@@ -608,7 +608,7 @@ FILE *fp;
 
 ### `char *fgets(char *line, int maxline, FILE *fp)`
 
-[//]: # (INCLUDE: ./c/07/src/10_line_io.c --from 4 --to 15 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/10_line_io.c --from 4 --to 15 --no-comment"
 
 - 스트림이 참조하는 파일로부터 최대 `maxline - 1`개의 문자를 `'\n'` 문자도 포함하여 읽어옴
 - 읽은 결과는 `line`에 저장되며, 끝에 `'\0'`이 붙음
@@ -620,11 +620,11 @@ FILE *fp;
 
 ### `int fputs(const char *line, FILE *fp)`
 
-[//]: # (INCLUDE: ./c/07/src/10_line_io.c --from 19 --to 26 --no-comment)
+[//]: # "INCLUDE: ./c/07/src/10_line_io.c --from 19 --to 26 --no-comment"
 
 - 스트림이 참조하는 파일로 문자열 `line`을 내보내며, `'\n'` 문자는 자동으로 추가되지 않음
   - `line` 내 `'\n'` 문자가 포함되어 있지 않다면 `fputs` 함수가 자동으로 개행하지 않음
-- 내보내는 데 성공하면 0을 반환하며, 오류 발생 시 `EOF` 반환
+- 내보내는 데 성공하면 음수가 아닌 값을 반환하며, 오류 발생 시 `EOF` 반환
 
 ---
 
@@ -632,14 +632,12 @@ FILE *fp;
 
 ### `char *gets(char *line)`
 
-- `gets` 함수는 `fgets(line, maxline, stdin)`를 호출하는 것
-- `gets` 함수는 `'\n'`을 제거한 문자열을 반환하나, **버퍼 오버플로우의 위험**이 있음
-  - `gets` 함수 사용보다는 `fgets` 함수 사용 **권장**
+- `gets` 함수는 입력 크기를 제한할 수 없고 `'\n'`을 저장하지 않으므로 **버퍼 오버플로우 위험**이 있음
+  - `gets` 대신 `fgets` 사용 권장
 
 ### `int puts(const char *line)`
 
-- `puts` 함수는 `fputs(line, stdout)`를 호출하는 것
-- `puts` 함수는 내보내는 문자열 끝에 자동으로 `'\n'` 문자를 **자동** 추가
+- `puts` 함수는 문자열을 표준 출력에 쓰고 끝에 `'\n'` 문자를 추가
 
 ---
 
@@ -647,7 +645,7 @@ FILE *fp;
 
 - `getline` 함수 재구현: `fgets` 함수를 활용한 안전한 `getline` 함수
 
-[//]: # (INCLUDE: ./c/07/src/11_getline.c)
+[//]: # "INCLUDE: ./c/07/src/11_getline.c"
 
 - `fgets` 함수를 사용해 표준 입력으로부터 문자열을 읽고, `strlen` 함수를 사용해 길이를 반환하는 함수
 - 파일 끝(EOF)에서 읽거나 오류 발생 시 0 반환
@@ -664,16 +662,16 @@ FILE *fp;
 - 아래 함수들의 `s`, `t`는 `char *` 타입, `c`는 `int` 타입, `n`은 `size_t` 타입
 
 ```text
-strcat(s,t)           concatenate t to end of s  
-strncat(s,t,n)        concatenate n characters of t to end of s  
-strcmp(s,t)           return negative, zero, or positive for  
-                        s < t, s == t, or s > t  
-strncmp(s,t,n)        same as strcmp but only in first n characters  
-strcpy(s,t)           copy t to s  
-strncpy(s,t,n)        copy at most n characters of t to s  
-strlen(s)             return length of s  
-strchr(s,c)           return pointer to first c in s, or NULL if not present  
-strrchr(s,c)          return pointer to last c in s, or NULL if not present  
+strcat(s,t)           concatenate t to end of s
+strncat(s,t,n)        concatenate n characters of t to end of s
+strcmp(s,t)           return negative, zero, or positive for
+                        s < t, s == t, or s > t
+strncmp(s,t,n)        same as strcmp but only in first n characters
+strcpy(s,t)           copy t to s
+strncpy(s,t,n)        copy at most n characters of t to s
+strlen(s)             return length of s
+strchr(s,c)           return pointer to first c in s, or NULL if not present
+strrchr(s,c)          return pointer to last c in s, or NULL if not present
 ```
 
 ---
@@ -687,14 +685,14 @@ strrchr(s,c)          return pointer to last c in s, or NULL if not present
   - `int` 타입은 `unsigned char` 타입 값과 `EOF`를 표현할 수 있는 타입
 
 ```text
-isalpha(c)    non-zero if c is alphabetic, 0 if not  
-isupper(c)    non-zero if c is upper case, 0 if not  
-islower(c)    non-zero if c is lower case, 0 if not  
-isdigit(c)    non-zero if c is digit, 0 if not  
-isalnum(c)    non-zero if isalpha(c) or isdigit(c), 0 if not  
-isspace(c)    non-zero if c is blank, tab, newline, return, formfeed, vertical tab  
-toupper(c)    return c converted to upper case  
-tolower(c)    return c converted to lower case  
+isalpha(c)    non-zero if c is alphabetic, 0 if not
+isupper(c)    non-zero if c is upper case, 0 if not
+islower(c)    non-zero if c is lower case, 0 if not
+isdigit(c)    non-zero if c is digit, 0 if not
+isalnum(c)    non-zero if isalpha(c) or isdigit(c), 0 if not
+isspace(c)    non-zero if c is blank, tab, newline, return, formfeed, vertical tab
+toupper(c)    return c converted to upper case
+tolower(c)    return c converted to lower case
 ```
 
 ---
@@ -710,7 +708,7 @@ tolower(c)    return c converted to lower case
 - 문자열 `s`에 담긴 명령(e.g., `mkdir`, `ls`, etc.)을 운영체제 쉘에서 실행한 후, 현재 프로그램 실행 재개
 - 명령 내용은 운영체제에 따라 다름
 
-[//]: # (INCLUDE: ./c/07/src/12_system.c)
+[//]: # "INCLUDE: ./c/07/src/12_system.c"
 
 ---
 
@@ -725,7 +723,7 @@ void free(void *p)
 ```
 
 - 메모리 관리 함수로부터 반환된 포인터는 **올바른 메모리 정렬(alignment)을 보장**
-- `void *` 타입을 반환하므로, 적절한 타입으로의 캐스팅 필요
+- `void *` 타입은 객체 포인터 타입으로 암묵적 변환되므로 C에서는 캐스팅 불필요
 - `malloc` 함수는 초기화되지 않은 `size` 바이트의 메모리 공간을 할당하여 반환하며, 실패 시 `NULL` 반환
 - `calloc` 함수는 크기의 객체 `nobj`개를 위한 메모리를 확보하고 0으로 초기화하며, 실패 시 `NULL` 반환
 - `free` 함수는 메모리 관리 함수(`malloc`, `calloc`, `realloc` 등)로 확보한 메모리 해제
@@ -741,15 +739,15 @@ void free(void *p)
 - **컴파일 시 컴파일러에 `-lm` 플래그를 같이 전달해야 함**
 
 ```text
-sin(x)       sine of x, x in radians  
-cos(x)       cosine of x, x in radians  
-atan2(y,x)   arctangent of y/x, in radians  
-exp(x)       exponential function eˣ  
-log(x)       natural (base e) logarithm of x (x > 0)  
-log10(x)     common (base 10) logarithm of x (x > 0)  
-pow(x,y)     xʸ  
-sqrt(x)      square root of x (x ≥ 0)  
-fabs(x)      absolute value of x  
+sin(x)       sine of x, x in radians
+cos(x)       cosine of x, x in radians
+atan2(y,x)   arctangent of y/x, in radians
+exp(x)       exponential function eˣ
+log(x)       natural (base e) logarithm of x (x > 0)
+log10(x)     common (base 10) logarithm of x (x > 0)
+pow(x,y)     xʸ
+sqrt(x)      square root of x (x ≥ 0)
+fabs(x)      absolute value of x
 ```
 
 ---
@@ -773,4 +771,4 @@ void srand(unsigned int seed)
 
 - 난수 생성 예
 
-[//]: # (INCLUDE: ./c/07/src/13_rand.c)
+[//]: # "INCLUDE: ./c/07/src/13_rand.c"
