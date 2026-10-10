@@ -64,7 +64,7 @@ type *identifier
 - 간접 참조(indirection)를 수행
 - 피연산자가 객체를 가리키는 포인터일 경우 연산 결과는 해당 객체를 나타내는 *lvalue*가 됨
 
-| Category                                | _lvalue_                        | _rvalue_                                          |
+| Category                                | *lvalue*                        | *rvalue*                                          |
 | --------------------------------------- | ------------------------------- | ------------------------------------------------- |
 | **Meaning**                             | Refers to a memory **location** | Represents a **value**, not necessarily in memory |
 | **Can appear on left of `=`?**          | Yes                             | No                                                |
@@ -84,7 +84,7 @@ type *identifier
 
 - 단항 연산자의 결합 방향은 오른쪽에서 왼쪽
 - `int *ip`는 포인터 변수 선언이며, 초기화자로 `x`의 포인터를 사용
-- `&x`는 변수 `x`의 포인터를 반환(_rvalue_)하고, `*ip`는 포인터가 가리키는 객체를 간접 참조(_lvalue_)
+- `&x`는 변수 `x`의 포인터를 반환(*rvalue*)하고, `*ip`는 포인터가 가리키는 객체를 간접 참조(*lvalue*)
 
 ---
 
@@ -138,7 +138,7 @@ type *identifier
 ### 포인터 매개변수
 
 - 함수의 기본 타입 매개변수는 원본 전달인자에 접근할 수 없음
-  - C 함수들은 전달인자를 값(_rvalue_)으로 전달
+  - C 함수들은 전달인자를 값(*rvalue*)으로 전달
 - **포인터 매개변수를 사용하면 원본 전달인자를 간접적으로 접근할 수 있음**
 
 ![center](img/08-swap.png)
