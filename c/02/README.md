@@ -1,4 +1,5 @@
 <!-- _class: lead -->
+
 # 컴퓨터프로그래밍기초
 
 ## Types, Operators and Expressions
@@ -12,28 +13,28 @@
 - 문자와 숫자, 밑줄(`_`) 사용 가능
 - **변수명 첫 글자에 숫자 사용 불가**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 4 --to 6 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 4 --to 6 --no-comment"
 
 - ANSI C (ISO C90) 표준은 `_`로 시작하는 식별자(변수명)를 표준 라이브러리 및 구현 내부에서 사용함
   - 변수명 첫 글자에 밑줄은 사용 가능하나, **표준 헤더파일 내 식별자와 충돌할 수 있음(사용하지 않는 것을 권장)**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 10 --to 10 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 10 --to 10 --no-comment"
 
 - 변수명의 대소문자는 구분됨
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 14 --to 14 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 14 --to 14 --no-comment"
 
 ---
 
 ## Variable Names (Cont'd)
 
 - 예약어(keywords)는 변수명으로 사용 불가
-  - `while`, `for`, `int`, `float`, etc.
+  - `while`, `for`, `int`, `float` 등
 - 변수명은 사용 목적에 맞는 적합한 이름을 사용해야 함
 - 지역 변수는 함수라는 제한된 범위가 맥락을 보완하므로, **간결한 명칭** 사용 권장
 - 전역 변수는 사용 범위가 넓어 맥락 파악이 어려우므로, 이름만으로도 용도를 알 수 있게 **상세한 명칭** 사용 권장
 
-[//]: # (INCLUDE: ./c/02/src/00_variable_name.c)
+[//]: # "INCLUDE: ./c/02/src/00_variable_name.c"
 
 ---
 
@@ -66,10 +67,10 @@
 ![center](img/00-data-model.png)
 
 - 데이터 모델은 아래 규칙을 준수해 정수 타입의 크기를 표현:
-  1. `short`, `int` 타입은 적어도 2 바이트 이상의 크기를 가져야 한다.
-  2. `long` 타입은 적어도 4 바이트 이상의 크기를 가져야 한다.
-  3. `short` 타입의 크기는 `int` 타입보다 클 수 없다.
-  4. `int` 타입의 크기는 `long` 타입보다 클 수 없다.
+  1. `short`, `int` 타입은 적어도 2바이트 이상의 크기를 가져야 함
+  2. `long` 타입은 적어도 4바이트 이상의 크기를 가져야 함
+  3. `short` 타입의 크기는 `int` 타입보다 클 수 없음
+  4. `int` 타입의 크기는 `long` 타입보다 클 수 없음
 
 ---
 
@@ -84,8 +85,9 @@
     - `long` 타입은 `signed long` 타입
 - 무부호 값은 0과 양수만 표현 가능(**음수 표현 불가**)
   - e.g., 한정사를 사용한 `unsigned char` 타입의 표현 범위는 `0` ~ `255`
-- 부호 값은 양수와 음수 모두 표현 가능(2의 보수 표현 사용)
-  - e.g., 한정사를 사용한 `signed char`와 한정사를 생략한 `char` 타입의 표현 범위는 `-128` ~ `127`
+- 부호 값은 양수와 음수 모두 표현 가능
+  - 음수 표현 방식과 `char`의 부호 여부는 구현 정의
+  - 8비트 2의 보수 구현에서 `signed char`의 표현 범위는 `-128` ~ `127`
 - 문자 타입은 사용 환경에 따라 부호 타입 또는 무부호 타입일 수 있음(machine-dependent)
   - 화면에 출력할 문자들은 `0` ~ `127` 범위에 정의되어 있으며, 부호 타입과 무부호 타입 둘 다 문자를 올바르게 표현 가능
 
@@ -95,7 +97,7 @@
 
 ### LP64 데이터 모델의 타입 크기 - `char`
 
-[//]: # (INCLUDE: ./c/02/src/01_char.c)
+[//]: # "INCLUDE: ./c/02/src/01_char.c"
 
 ```text
 char size               :                    1
@@ -110,7 +112,7 @@ Maximum unsigned char   :                  255
 
 ### LP64 데이터 모델의 타입 크기 - `short`
 
-[//]: # (INCLUDE: ./c/02/src/02_short.c)
+[//]: # "INCLUDE: ./c/02/src/02_short.c"
 
 ```text
 short size              :                    2
@@ -125,7 +127,7 @@ Maximum unsigned short  :                65535
 
 ### LP64 데이터 모델의 타입 크기 - `int`
 
-[//]: # (INCLUDE: ./c/02/src/03_int.c)
+[//]: # "INCLUDE: ./c/02/src/03_int.c"
 
 ```text
 int size                :                    4
@@ -140,7 +142,7 @@ Maximum unsigned int    :           4294967295
 
 ### LP64 데이터 모델의 타입 크기 - `long`
 
-[//]: # (INCLUDE: ./c/02/src/04_long.c)
+[//]: # "INCLUDE: ./c/02/src/04_long.c"
 
 ```text
 long size               :                    8
@@ -155,14 +157,14 @@ Maximum unsigned long   : 18446744073709551615
 
 ### 정수 타입 변환 지정자 - `char`, `short`, `int`
 
-[//]: # (INCLUDE: ./c/02/src/03_int.c --from 8 --to 10 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/03_int.c --from 8 --to 10 --no-comment"
 
 - 부호 타입 정수 값 출력 시 `%d` 사용
 - 무부호 타입 정수 값 출력 시 `%u` 사용
 
 ### 확장 정수 타입 변환 지정자 - `long`
 
-[//]: # (INCLUDE: ./c/02/src/04_long.c --from 8 --to 10 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/04_long.c --from 8 --to 10 --no-comment"
 
 - 부호 타입 확장 정수 값 출력 시 `%ld` 사용
 - 무부호 타입 확장 정수 값 출력 시 `%lu` 사용
@@ -173,7 +175,7 @@ Maximum unsigned long   : 18446744073709551615
 
 > 다음 코드의 실행 결과는?
 
-[//]: # (INCLUDE: ./c/02/src/05_overflow.c)
+[//]: # "INCLUDE: ./c/02/src/05_overflow.c"
 
 ![center h:200](img/01-overflow.png)
 
@@ -204,7 +206,7 @@ Maximum unsigned long   : 18446744073709551615
 ## Data Types and Sizes (Cont'd - 10)
 
 - 무부호 타입 정수에서는 MSB가 **부호가 아닌 가장 큰 가중치**를 표현하는 데 사용됨
-  - No negative numbers → `1000 0000` is `128`, `1111 1111` is `255`.
+  - No negative numbers → `1000 0000` is `128`, `1111 1111` is `255`
 
 | 7 (MSB) | 6   | 5   | 4   | 3   | 2   | 1   | 0   | Value (`unsigned char`) |
 | ------- | --- | --- | --- | --- | --- | --- | --- | ----------------------- |
@@ -316,12 +318,12 @@ Maximum unsigned long   : 18446744073709551615
 ## Data Types and Sizes (Cont'd - 18)
 
 - 연산 결과 값(magnitude)이 **데이터 표현 범위를 벗어날 경우** 오버플로우 발생
-  - e.g., 값 표현에 4비트를 사용한다고 가정(*k* = 4):
+  - e.g., 값 표현에 4비트를 사용한다고 가정(_k_ = 4):
     - 양수를 표현할 수 있는 비트의 범위는 `0000` ~ `0111`
     - 음수를 표현할 수 있는 비트의 범위는 `1000` ~ `1111`
   1. `+7` (`0111`)에 1을 더하면 오버플로우 발생(`+8`을 표현하려면 한 비트가 더 필요함)
   2. `-8` (`1000`)에 1을 빼면 **오버플로우** 발생(`-9`를 표현하려면 한 비트가 더 필요함)
-    > NB: The term **underflow** normally refers to floating point numbers only!
+     > NB: The term **underflow** normally refers to floating point numbers only!
 
 ---
 
@@ -337,7 +339,7 @@ Maximum unsigned long   : 18446744073709551615
 
 > 다음 코드의 실행 결과는?
 
-[//]: # (INCLUDE: ./c/02/src/06_precision.c)
+[//]: # "INCLUDE: ./c/02/src/06_precision.c"
 
 ![center h:200](img/07-precision.png)
 
@@ -398,7 +400,7 @@ Maximum unsigned long   : 18446744073709551615
 $$(-1)^S \times 1.M \times 2^{E - 127}$$
 
 - **4 bytes**를 사용해 실수 데이터를 표현하는 방법
-- 부호부(*S*, sign)는 **1 bit**, 지수부(*E*, exponent)는 **8 bits**, 가수부(*M*, mantissa)는 **23 bits**를 사용
+- 부호부(_S_, sign)는 **1 bit**, 지수부(_E_, exponent)는 **8 bits**, 가수부(_M_, mantissa)는 **23 bits**를 사용
 - 실수 데이터를 2진수로 변환한 뒤, **정규화**를 한 결과를 부호부, 지수부, 가수부에 표현
 - 가수부는 실제 23 bits의 정밀도를 갖는게 아닌, **24 bits의 정밀도를 가짐**
   - 정규화된 형태는 1 bit가 암묵적으로 표현되므로, 이를 implicit bit 또는 hidden bit라고 부름
@@ -426,20 +428,20 @@ $$(-1)^S \times 1.M \times 2^{E - 127}$$
 
 ### 단정도 부동소수점의 미리 정의된 형태
 
-- *E* = `0`, *M* = `0`
+- _E_ = `0`, _M_ = `0`
   - 부동소수점에서 0(`±0`)을 표현하는 방식(부호 비트에 따라 `+0` 또는 `-0`)
-- *E* = `0`, *M* ≠ `0`
+- _E_ = `0`, _M_ ≠ `0`
   - 서브노멀 값(subnormal number, denormalized number)을 표현: $(-1)^S \times 0.M \times 2^{-126}$
   - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용(언더플로우)**
   - 정규화된 수와 달리 implicit bit(`1.XXX` 형태의 `1`)가 없으므로 정밀도가 더 낮음
   - 연산 결과가 서브노멀 값보다도 작을 경우 **0으로 처리됨(flush to zero)**
-- *E* = `1` ~ `254`, *M* = any value
+- _E_ = `1` ~ `254`, _M_ = any value
   - 정규화된 수(normalized number)를 표현: $(-1)^S \times 1.M \times 2^{E - 127}$
   - 일반적인 부동소수점 값을 저장할 때 사용
-- *E* = `255`, *M* = `0`
+- _E_ = `255`, _M_ = `0`
   - **연산 결과가 표현할 수 있는 최대치를 초과해 오버플로우가 발생한 경우**
   - IEEE 754에서는 무한대(`±∞`)로 처리됨(부호 비트에 따라 `+∞` 또는 `-∞`)
-- *E* = `255`, *M* ≠ `0`
+- _E_ = `255`, _M_ ≠ `0`
   - `NaN` (not a number)
   - 정의되지 않은 연산 결과로 인해 숫자가 아닌 결과가 반환된 경우(e.g., `0 / 0`, `∞ - ∞`, etc.)
 
@@ -449,20 +451,20 @@ $$(-1)^S \times 1.M \times 2^{E - 127}$$
 
 ### 단정도 부동소수점에서 정규화된 값($(-1)^S \times 1.M \times 2^{E - 127}$)으로 표현할 수 있는 최대 및 최소값
 
-- *S* = `0`, *E* = `254`, *M* = `1111111...111` (23 bits)
+- _S_ = `0`, _E_ = `254`, _M_ = `1111111...111` (23 bits)
   - 가장 큰 정규화된 값(양수): `+3.4028235 × 10³⁸`
-- *S* = `0`, *E* = `1`, *M* = `0000000...000` (23 bits)
+- _S_ = `0`, _E_ = `1`, _M_ = `0000000...000` (23 bits)
   - 가장 작은 정규화된 값(양수): `+1.17549435 × 10⁻³⁸`
-- *S* = `1`, *E* = `254`, *M* = `1111111...111` (23 bits)
+- _S_ = `1`, _E_ = `254`, _M_ = `1111111...111` (23 bits)
   - 가장 큰 정규화된 값(음수): `-3.4028235 × 10³⁸`
-- *S* = `1`, *E* = `1`, *M* = `0000000...000` (23 bits)
+- _S_ = `1`, _E_ = `1`, _M_ = `0000000...000` (23 bits)
   - 가장 작은 정규화된 값(음수): `-1.17549435 × 10⁻³⁸`
 
 ### 단정도 부동소수점에서 서브노멀 값($(-1)^S \times 0.M \times 2^{-126}$)으로 표현할 수 있는 최대 및 최소값
 
-- *S* = `0`, *E* = `0`, *M* = `0000000...001` (맨 마지막 비트만 1)
+- _S_ = `0`, _E_ = `0`, _M_ = `0000000...001` (맨 마지막 비트만 1)
   - 가장 작은 서브노멀 값(양수): `+1.40129846 × 10⁻⁴⁵`
-- *S* = `1`, *E* = `0`, *M* = `0000000...001` (맨 마지막 비트만 1)
+- _S_ = `1`, _E_ = `0`, _M_ = `0000000...001` (맨 마지막 비트만 1)
   - 가장 큰 서브노멀 값(음수): `-1.40129846 × 10⁻⁴⁵`
 
 ---
@@ -476,7 +478,7 @@ $$(-1)^S \times 1.M \times 2^{E - 127}$$
 $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 
 - **8 bytes**를 사용해 실수 데이터를 표현하는 방법
-- 부호부(*S*, sign)는 **1 bit**, 지수부(*E*, exponent)는 **11 bits**, 가수부(*M*, mantissa)는 **52 bits**를 사용
+- 부호부(_S_, sign)는 **1 bit**, 지수부(_E_, exponent)는 **11 bits**, 가수부(_M_, mantissa)는 **52 bits**를 사용
 - 실수 데이터를 2진수로 변환한 뒤, **정규화**를 한 결과를 부호부, 지수부, 가수부에 표현
 - 가수부는 실제 52 bits의 정밀도를 갖는 게 아닌, **53 bits의 정밀도를 가짐**
 
@@ -503,20 +505,20 @@ $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 
 ### 배정도 부동소수점의 미리 정의된 형태
 
-- *E* = `0`, *M* = `0`
+- _E_ = `0`, _M_ = `0`
   - 부동소수점에서 **0**(`±0`)을 표현하는 방식(부호 비트에 따라 `+0` 또는 `-0`)
-- *E* = `0`, *M* ≠ `0`
+- _E_ = `0`, _M_ ≠ `0`
   - 서브노멀 값(subnormal number, denormalized number)을 표현: $(-1)^S \times 0.M \times 2^{-1022}$
   - **연산 결과가 정규화된 최소값보다 작은 경우를 저장할 때 사용(언더플로우)**
   - 정규화된 수와 달리 **implicit bit**가 없으므로 정밀도가 더 낮음
   - 연산 결과가 서브노멀 값보다도 작을 경우 **0으로 처리됨(flush to zero)**
-- *E* = `1` ~ `2046`, *M* = any value
+- _E_ = `1` ~ `2046`, _M_ = any value
   - 정규화된 수(normalized number)를 표현: $(-1)^S \times 1.M \times 2^{E - 1023}$
   - 일반적인 부동소수점 값을 저장할 때 사용
-- *E* = `2047`, *M* = `0`
+- _E_ = `2047`, _M_ = `0`
   - **연산 결과가 표현할 수 있는 최대치를 초과해 오버플로우가 발생한 경우**
   - IEEE 754에서는 무한대(`±∞`)로 처리됨(부호 비트에 따라 `+∞` 또는 `-∞`)
-- *E* = `2047`, *M* ≠ `0`
+- _E_ = `2047`, _M_ ≠ `0`
   - `NaN` (not a number)
   - 정의되지 않은 연산 결과로 인해 숫자가 아닌 결과가 반환된 경우(e.g., `0 / 0`, `∞ - ∞`, etc.)
 
@@ -526,20 +528,20 @@ $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 
 ### 배정도 부동소수점에서 정규화된 값($(-1)^S \times 1.M \times 2^{E - 1023}$)으로 표현할 수 있는 최대 및 최소값
 
-- *S* = `0`, *E* = `2046`, *M* = `111111...111` (52 bits)
+- _S_ = `0`, _E_ = `2046`, _M_ = `111111...111` (52 bits)
   - 가장 큰 정규화된 값(양수): `+1.7976931348623157 × 10³⁰⁸`
-- *S* = `0`, *E* = `1`, *M* = `000000...000` (52 bits)
+- _S_ = `0`, _E_ = `1`, _M_ = `000000...000` (52 bits)
   - 가장 작은 정규화된 값(양수): `+2.2250738585072014 × 10⁻³⁰⁸`
-- *S* = `1`, *E* = `2046`, *M* = `111111...111` (52 bits)
+- _S_ = `1`, _E_ = `2046`, _M_ = `111111...111` (52 bits)
   - 가장 큰 정규화된 값(음수): `-1.7976931348623157 × 10³⁰⁸`
-- *S* = `1`, *E* = `1`, *M* = `000000...000` (52 bits)
+- _S_ = `1`, _E_ = `1`, _M_ = `000000...000` (52 bits)
   - 가장 작은 정규화된 값(음수): `-2.2250738585072014 × 10⁻³⁰⁸`
 
 ### 배정도 부동소수점에서 서브노멀 값($(-1)^S \times 0.M \times 2^{-1022}$)으로 표현할 수 있는 최대 및 최소값
 
-- *S* = `0`, *E* = `0`, *M* = `000000...001` (맨 마지막 비트만 1)
+- _S_ = `0`, _E_ = `0`, _M_ = `000000...001` (맨 마지막 비트만 1)
   - 가장 작은 서브노멀 값(양수): `+4.9406564584124654 × 10⁻³²⁴`
-- *S* = `1`, *E* = `0`, *M* = `000000...001` (맨 마지막 비트만 1)
+- _S_ = `1`, _E_ = `0`, _M_ = `000000...001` (맨 마지막 비트만 1)
   - 가장 큰 서브노멀 값(음수): `-4.9406564584124654 × 10⁻³²⁴`
 
 ---
@@ -556,19 +558,19 @@ $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 
 #### 고정소수점
 
-- 값에 오차가 발생하면 안 되는 경우(e.g., 은행, 군사 무기체계, etc.)
-  - **오차가 발생하지 않음**
+- 정해진 소수 자릿수와 반올림 규칙이 필요한 경우
+  - 표현 단위의 정수배가 아닌 값에는 양자화 오차가 발생
   - 값의 표현 범위가 넓어질수록 메모리 사용량이 증가하는 구조
 
 #### 단정도 부동소수점
 
-- 가장 보편적인 방법
-  - **연산 속도가 배정도 부동소수점보다 빠름**
+- 메모리 사용량과 정밀도를 절충하는 방법
+  - 연산 성능은 하드웨어와 구현에 따라 달라짐
 
 #### 배정도 부동소수점
 
 - 단정도 부동소수점보다 **높은 정밀도**를 필요로 하거나, 단정도 부동소수점으로 표현할 수 없는 값을 표현해야 할 경우
-  - **연산 속도가 단정도 부동소수점보다 느림**
+  - 연산 성능은 하드웨어와 구현에 따라 달라짐
 
 ---
 
@@ -576,7 +578,7 @@ $$(-1)^S \times 1.M \times 2^{E - 1023}$$
 
 ### `float` 타입 오차 재현 - 1
 
-[//]: # (INCLUDE: ./c/02/src/07_float_example1.c)
+[//]: # "INCLUDE: ./c/02/src/07_float_example1.c"
 
 ```text
 A single-precision only has about 7 decimal digits of precision.
@@ -589,7 +591,7 @@ f1:  9999876.0, f2: 99998768.0
 
 ### `float` 타입 오차 재현 - 2
 
-[//]: # (INCLUDE: ./c/02/src/08_float_example2.c)
+[//]: # "INCLUDE: ./c/02/src/08_float_example2.c"
 
 ```text
 Float type's mantissa has 24 bits (including the hidden bit).
@@ -602,7 +604,7 @@ f3: 16777216.0, f4: 16777216.0, f5: 16777216.0, f6: 16777218.0
 
 ### `float` 타입 오차 재현 - 3
 
-[//]: # (INCLUDE: ./c/02/src/09_float_example3.c)
+[//]: # "INCLUDE: ./c/02/src/09_float_example3.c"
 
 ```text
 27.1 (may be simply 271/10) cannot be expressed as 2^n.
@@ -615,7 +617,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 ### 실수 값 비교
 
-[//]: # (INCLUDE: ./c/02/src/10_compare_float1.c)
+[//]: # "INCLUDE: ./c/02/src/10_compare_float1.c"
 
 - 실수 값 비교 시 **오차를 고려해야 함**
 - `float` 타입의 기계 앱실론(machine epsilon, 이론적으로 표현 가능한 가장 작은 상대 오차값)은 1.19 × 10⁻⁷
@@ -629,7 +631,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 ### 앱실론을 사용한 올바른 실수 값 비교
 
-[//]: # (INCLUDE: ./c/02/src/11_compare_float2.c)
+[//]: # "INCLUDE: ./c/02/src/11_compare_float2.c"
 
 ---
 
@@ -641,7 +643,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 > On February 25, 1991, during the Gulf War, an American Patriot Missile battery in Dharan, Saudi Arabia, failed to track and intercept an incoming Iraqi Scud missile.
 > The Scud struck an American Army barracks, killing 28 soldiers and injuring around 100 other people.
-> It turns out that the cause was *an inaccurate calculation of the time since boot due to computer arithmetic errors*.
+> It turns out that the cause was _an inaccurate calculation of the time since boot due to computer arithmetic errors_.
 
 ---
 
@@ -667,11 +669,11 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 - 기본 진법은 10진법이며, 접두사를 사용해 8진법 또는 16진법 표현 가능
 
-| Prefix      | Meaning               | Base | Example     |
-| ----------- | --------------------- | ---- | ----------- |
-| (none)      | Decimal (base 10)     | 10   | `123`       |
-| `0`         | Octal (base 8)        | 8    | `0755`      |
-| `0x` / `0X` | Hexadecimal (base 16) | 16   | `0x1A3F`    |
+| Prefix      | Meaning               | Base | Example  |
+| ----------- | --------------------- | ---- | -------- |
+| (none)      | Decimal (base 10)     | 10   | `123`    |
+| `0`         | Octal (base 8)        | 8    | `0755`   |
+| `0x` / `0X` | Hexadecimal (base 16) | 16   | `0x1A3F` |
 
 ---
 
@@ -682,12 +684,12 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 - 기본 타입은 `int` 타입이며, 접미사를 통해 다른 타입 표현 가능
   - `long` 타입 표현 시 소문자 `l`은 숫자 `1`과 비슷하므로, 혼동 방지를 위해 **대문자 `L` 사용 권장**
 
-| Suffix | Type | Description | Example |
-| --- | --- | --- | --- |
-| (none) | `int` | Default type | `123` |
-| `U` / `u` | `unsigned int` | Unsigned integer type | `123U` |
-| `L` / `l` | `long` | Same or wider range than the default type | `123L` |
-| `UL` / `ul` / `Ul` / `uL` / `LU` / `lu` / etc. | `unsigned long` | Order-independent; case mixing permitted | `123UL` |
+| Suffix                                         | Type            | Description                               | Example |
+| ---------------------------------------------- | --------------- | ----------------------------------------- | ------- |
+| (none)                                         | `int`           | Default type                              | `123`   |
+| `U` / `u`                                      | `unsigned int`  | Unsigned integer type                     | `123U`  |
+| `L` / `l`                                      | `long`          | Same or wider range than the default type | `123L`  |
+| `UL` / `ul` / `Ul` / `uL` / `LU` / `lu` / etc. | `unsigned long` | Order-independent; case mixing permitted  | `123UL` |
 
 ---
 
@@ -718,7 +720,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 - 문자 표현 시 반드시 문자 상수를 쓸 것
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 25 --to 26 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 25 --to 26 --no-comment"
 
 - 1번 문장은 문자 상수 `'A'`를 현재 사용중인 시스템의 문자 인코딩 표를 참조하여 특정 정수 값으로 변환
   - ASCII를 사용하는 시스템에서는 `0x41` (`65`)
@@ -751,7 +753,7 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 ### 이스케이프 시퀀스 - 문자 리터럴(Character Literal) 표현
 
 | Escape Sequence | Meaning        | ASCII Code (Decimal) |
-| --------------- | -------------- |--------------------- |
+| --------------- | -------------- | -------------------- |
 | `\\`            | Backslash      | `92`                 |
 | `\'`            | Single quote   | `39`                 |
 | `\"`            | Double quote   | `34`                 |
@@ -764,11 +766,11 @@ With precision 6: 27.100000, with precision 8: 27.10000038
 
 - 이스케이프 시퀀스 형태의 문자 리터럴 출력
 
-[//]: # (INCLUDE: ./c/02/src/12_escape_sequence_literal.c)
+[//]: # "INCLUDE: ./c/02/src/12_escape_sequence_literal.c"
 
 ```text
 This is a backslash: \, single quote: ', double quote: ", question mark: ?
-Null character in the middle 
+Null character in the middle
 '
 |
 ??!
@@ -788,7 +790,7 @@ Null character in the middle
 | `\ooo`          | Octal value (e.g., `\132`) | up to `255` (`\377`) |
 | `\xhh`          | Hex value (e.g., `\x41`)   | up to `255` (`\xFF`) |
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 34 --to 44 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 34 --to 44 --no-comment"
 
 ---
 
@@ -800,7 +802,7 @@ Null character in the middle
   - 상수 표현은 컴파일 시 값이 결정되어 있는 상태(compile time)
   - 변수는 런타임 시 값이 결정되는 상태(runtime)
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 48 --to 52 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 48 --to 52 --no-comment"
 
 ---
 
@@ -809,7 +811,7 @@ Null character in the middle
 ### 문자열 상수(String Constants or String Literals)
 
 - 문자열 상수는 큰 따옴표로 감싼 값으로, 문자열 내에 문자가 존재하지 않거나 하나 이상의 문자가 구성될 수 있음
-  - e.g., `"Hello"`, `""`, etc.
+  - e.g., `"Hello"`, `""`
 - 문자열로 큰 따옴표(`"`)를 표현해야 할 경우 이스케이프 문자를 사용해 표현해야 함(`\"`)
 - `char` 타입 배열은 문자열 상수를 보관할 수 있으며, 마지막 배열 원소는 반드시 널 문자(`'\0'`)로 저장되어야 함
   - 보관할 문자열의 길이가 `SIZE`라면, `char` 타입 배열은 최소 `SIZE + 1` 크기 이상이어야 함
@@ -818,7 +820,7 @@ Null character in the middle
   - `"x"`는 `'x'`, `'\0'`으로 표현되는 문자열 상수
 - 문자열 상수의 나열은 컴파일 시 하나의 문자열로 연결됨
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 60 --to 64 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 60 --to 64 --no-comment"
 
 ---
 
@@ -827,7 +829,7 @@ Null character in the middle
 - 문자열 길이를 계산하는 `strlen` 함수
   - 문자열의 **널 문자**를 활용하여 문자열 길이 계산
 
-[//]: # (INCLUDE: ./c/02/src/13_strlen.c)
+[//]: # "INCLUDE: ./c/02/src/13_strlen.c"
 
 ---
 
@@ -836,7 +838,7 @@ Null character in the middle
 - `strlen` 함수를 사용한 문자열 길이 계산
   - 문자열 길이는 **문자열을 구성하는 실제 문자 개수를 의미**하며, 널 문자는 제외함
 
-[//]: # (INCLUDE: ./c/02/src/14_strlen_example.c)
+[//]: # "INCLUDE: ./c/02/src/14_strlen_example.c"
 
 ---
 
@@ -846,11 +848,11 @@ Null character in the middle
 
 - 키워드 `enum`을 사용해 여러 개의 정수 타입 상수를 선언할 수 있음
 - 열거된 이름에 값을 지정하지 않으면 다음 규칙을 따름:
-  1. 첫 번째로 열거된 이름에 값을 지정하지 않았다면 값 0을 갖는다.
-  2. 다른 열거된 이름에 값을 지정하지 않았다면 이전 열거된 이름의 값보다 1 큰 값을 갖는다.
+  1. 첫 번째로 열거된 이름에 값을 지정하지 않았다면 값 0을 가짐
+  2. 다른 열거된 이름에 값을 지정하지 않았다면 이전 열거된 이름보다 1 큰 값을 가짐
 - 열거된 이름들은 고유해야 하지만, 이름들은 서로 같은 값을 가질 수 있음
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 73 --to 85 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 73 --to 85 --no-comment"
 
 ---
 
@@ -864,7 +866,7 @@ Null character in the middle
 declarator = initializer;  ← NB: '=' is not an assignment operator
 ```
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 91 --to 100 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 91 --to 100 --no-comment"
 
 ---
 
@@ -872,7 +874,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 ### 지역 변수 선언
 
-- 지역 변수(local variable or automatic variable)는 선언 시 초기화자가 없다면 **쓰레기 값(undefined value)을 가짐**
+- 자동 지역 변수(automatic variable)는 선언 시 초기화자가 없다면 **불확정 값(indeterminate value)을 가짐**
 - 지역 변수 초기화에 사용하는 초기화자(initializer)에는 아무 표현식이나 사용 가능
 
 ### 전역 변수 선언
@@ -884,7 +886,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 변수 선언 시 한정사 `const`를 사용할 경우 **읽기 전용 변수가 생성됨**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 114 --to 116 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 114 --to 116 --no-comment"
 
 ---
 
@@ -979,7 +981,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 - 평가 결과는 항상 `0` (거짓) 또는 `1` (참)
 - `if`, `while`, `for` 등에서 조건 표현식의 값은 **`0`이면 거짓, 그 외 값은 참**으로 처리함
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 128 --to 130 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 128 --to 130 --no-comment"
 
 ---
 
@@ -992,7 +994,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 | `++`     | Increments the value first | `++i`   | Right-to-left |
 | `--`     | Decrements the value first | `--i`   | Right-to-left |
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 139 --to 141 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 139 --to 141 --no-comment"
 
 ---
 
@@ -1005,11 +1007,11 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 | `++`     | Uses the value first, then increments | `i++`   | Right-to-left |
 | `--`     | Uses the value first, then decrements | `i--`   | Right-to-left |
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 148 --to 151 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 148 --to 151 --no-comment"
 
 - 후위 증가 연산자와 전위 증가 연산자의 동작 차이
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 158 --to 163 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 158 --to 163 --no-comment"
 
 ---
 
@@ -1017,7 +1019,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 후위 증가 연산자를 활용한 문자열에서 특정 문자를 제거하는 `squeeze` 함수
 
-[//]: # (INCLUDE: ./c/02/src/15_squeeze.c)
+[//]: # "INCLUDE: ./c/02/src/15_squeeze.c"
 
 ---
 
@@ -1025,7 +1027,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 문자열 뒤에 다른 문자열을 연결하는 `strcat` 함수
 
-[//]: # (INCLUDE: ./c/02/src/16_strcat.c)
+[//]: # "INCLUDE: ./c/02/src/16_strcat.c"
 
 ---
 
@@ -1033,7 +1035,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - `strcat` 함수를 사용한 두 문자열 연결
 
-[//]: # (INCLUDE: ./c/02/src/17_strcat_example.c)
+[//]: # "INCLUDE: ./c/02/src/17_strcat_example.c"
 
 ---
 
@@ -1066,7 +1068,7 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
   - 무부호 타입 정수의 오른쪽 이동 시 왼쪽은 항상 `0`으로 채워짐(논리 이동)
   - 부호 타입 정수의 오른쪽 이동 시 왼쪽은 **구현된 정의를 따름**(implementation-defined, 보통 산술 이동을 채택)
 
-[//]: # (INCLUDE: ./c/02/src/18_bit.c)
+[//]: # "INCLUDE: ./c/02/src/18_bit.c"
 
 ---
 
@@ -1074,15 +1076,15 @@ declarator = initializer;  ← NB: '=' is not an assignment operator
 
 - 비트 연산자를 활용한 비트 마스킹
 
-[//]: # (INCLUDE: ./c/02/src/19_bit_mask.c)
+[//]: # "INCLUDE: ./c/02/src/19_bit_mask.c"
 
 ---
 
 ## Operators (Cont'd - 14)
 
-- 비트 마스킹 기반의 특정 위치로부터 *n* 개의 비트를 반환하는 `getbits` 함수
+- 비트 마스킹 기반의 특정 위치로부터 _n_ 개의 비트를 반환하는 `getbits` 함수
 
-[//]: # (INCLUDE: ./c/02/src/20_getbits.c)
+[//]: # "INCLUDE: ./c/02/src/20_getbits.c"
 
 ```text
 x: 0110 1101 (binary)
@@ -1109,7 +1111,7 @@ n: 3         (decimal)
   - **관계 연산자, 논리 연산자, 비트 부정 연산자는 사용 불가**
 - 복합 대입 연산자는 표현을 간결화하며, 특히 표현이 복잡한 경우 유용함
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 177 --to 178 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 177 --to 178 --no-comment"
 
 ---
 
@@ -1117,11 +1119,11 @@ n: 3         (decimal)
 
 - **지정 연산자는 산술 연산자보다 우선순위가 낮음**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 194 --to 198 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 194 --to 198 --no-comment"
 
 - **지정 연산자는 관계 연산자보다 우선순위가 낮음**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 202 --to 206 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 202 --to 206 --no-comment"
 
 ---
 
@@ -1129,7 +1131,7 @@ n: 3         (decimal)
 
 - 지정 연산자 기반의 1 비트의 수를 계산하는 `bitcount` 함수
 
-[//]: # (INCLUDE: ./c/02/src/21_bitcount1.c)
+[//]: # "INCLUDE: ./c/02/src/21_bitcount1.c"
 
 ---
 
@@ -1137,7 +1139,7 @@ n: 3         (decimal)
 
 - 개선된 `bitcount` 함수
 
-[//]: # (INCLUDE: ./c/02/src/22_bitcount2.c)
+[//]: # "INCLUDE: ./c/02/src/22_bitcount2.c"
 
 ---
 
@@ -1149,10 +1151,10 @@ n: 3         (decimal)
 
 - 정수 승격은 표현식을 평가할 때 **항상** 발생
 - 정수 승격 시 **데이터 모델**에 따라 타입 표현 범위가 다르므로 다음 **조건**에 따라 발생:
-  1. 변환되어야 할 타입의 값을 `int` 타입으로 원본 값을 표현할 수 있다면 `int`로 승격한다.
-  2. 그렇지 않다면 `unsigned int`로 승격한다.
+  1. 변환할 타입의 모든 값을 `int` 타입으로 표현할 수 있다면 `int`로 승격
+  2. 그렇지 않다면 `unsigned int`로 승격
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 216 --to 224 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 216 --to 224 --no-comment"
 
 ---
 
@@ -1166,7 +1168,7 @@ n: 3         (decimal)
   - 배정도 부동소수점은 단정도 부동소수점보다 항상 높은 정밀도를 가짐
   - 정수 승격과 달리 **조건 없이 `double` 타입으로 승격됨**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 237 --to 244 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 237 --to 244 --no-comment"
 
 ---
 
@@ -1178,7 +1180,7 @@ n: 3         (decimal)
 
 ### 자동 타입 변환(Implicit Conversion, Automatic Conversion)
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 254 --to 256 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 254 --to 256 --no-comment"
 
 ---
 
@@ -1192,7 +1194,7 @@ n: 3         (decimal)
 - 명시적으로 타입 변환을 표현하여 사용자의 의도를 명확히 표현할 수 있음
 - 암묵적인 타입 변환에서의 정보 손실은 경고를 출력하나, **명시적인 타입 변환에서의 정보 손실은 경고를 출력하지 않음**
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 263 --to 265 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 263 --to 265 --no-comment"
 
 ---
 
@@ -1200,7 +1202,7 @@ n: 3         (decimal)
 
 - 타입 변환을 활용한 ASCII 숫자 문자들을 정수로 변환하는 `atoi` 함수
 
-[//]: # (INCLUDE: ./c/02/src/23_ascii.c)
+[//]: # "INCLUDE: ./c/02/src/23_ascii.c"
 
 ---
 
@@ -1208,7 +1210,7 @@ n: 3         (decimal)
 
 - ASCII 숫자 문자열 `"12345"`를 정수로 변환
 
-[//]: # (INCLUDE: ./c/02/src/24_ascii_example.c)
+[//]: # "INCLUDE: ./c/02/src/24_ascii_example.c"
 
 ---
 
@@ -1216,7 +1218,7 @@ n: 3         (decimal)
 
 - 타입 변환을 활용한 대문자를 소문자로 변환하는 `tolower` 함수
 
-[//]: # (INCLUDE: ./c/02/src/25_tolower.c)
+[//]: # "INCLUDE: ./c/02/src/25_tolower.c"
 
 ---
 
@@ -1224,7 +1226,7 @@ n: 3         (decimal)
 
 - 대문자 `'A'`를 소문자로 변환
 
-[//]: # (INCLUDE: ./c/02/src/26_tolower_example.c)
+[//]: # "INCLUDE: ./c/02/src/26_tolower_example.c"
 
 ---
 
@@ -1234,27 +1236,27 @@ n: 3         (decimal)
 
 - 서로 다른 산술 타입 간 연산(binary arithmetic operations)이 일어날 때 다음 규칙 적용:
   1. 정수 승격
-      - `char`, `signed char`, `unsigned char`, `short`, `unsigned short`, `enum` 타입:
-      `int` 또는 `unsigned int` 타입으로 승격
+     - `char`, `signed char`, `unsigned char`, `short`, `unsigned short`, `enum` 타입:
+       `int` 또는 `unsigned int` 타입으로 승격
   2. 산술 타입 변환
-      1. 두 피연산자 중 하나라도 `long double` 타입이면 둘 다 `long double` 타입으로 변환
-      2. 그렇지 않고 하나라도 `double` 타입이면 둘 다 `double` 타입으로 변환
-      3. 그렇지 않고 하나라도 `float` 타입이면 둘 다 `float` 타입으로 변환
+     1. 두 피연산자 중 하나라도 `long double` 타입이면 둘 다 `long double` 타입으로 변환
+     2. 그렇지 않고 하나라도 `double` 타입이면 둘 다 `double` 타입으로 변환
+     3. 그렇지 않고 하나라도 `float` 타입이면 둘 다 `float` 타입으로 변환
   3. 정수 변환 - 변환 순위(rank, rank(`int`) < rank(`long`))와 부호 여부(signedness)를 고려하여 변환
-      1. rank(`unsigned`) ≥ rank(`signed`)인 경우:
-      `signed` → `unsigned`
-      2. rank(`signed`) > rank(`unsigned`)이고 `signed`가 `unsigned`의 모든 값을 표현 가능한 경우:
-      `unsigned` → `signed`
-      3. rank(`signed`) > rank(`unsigned`)이고 `signed`가 `unsigned`의 모든 값을 표현 불가한 경우:
-      둘 다 더 높은 rank의 `unsigned`
-      4. 두 피연산자 모두 `unsigned`인 경우:
-      두 피연산자 중 더 높은 rank로 변환
+     1. rank(`unsigned`) ≥ rank(`signed`)인 경우:
+        `signed` → `unsigned`
+     2. rank(`signed`) > rank(`unsigned`)이고 `signed`가 `unsigned`의 모든 값을 표현 가능한 경우:
+        `unsigned` → `signed`
+     3. rank(`signed`) > rank(`unsigned`)이고 `signed`가 `unsigned`의 모든 값을 표현 불가한 경우:
+        둘 다 더 높은 rank의 `unsigned`
+     4. 두 피연산자 모두 `unsigned`인 경우:
+        두 피연산자 중 더 높은 rank로 변환
 
 ---
 
 ## Type Conversions (Cont'd - 7)
 
-[//]: # (INCLUDE: ./c/02/src/27_type_conversion.c)
+[//]: # "INCLUDE: ./c/02/src/27_type_conversion.c"
 
 ---
 
@@ -1266,7 +1268,7 @@ n: 3         (decimal)
   - 실수 타입에서 정수 타입으로 변환 시 소수 부분은 버려짐
   - `double` 타입에서 `float` 타입 변환 시 오차가 발생할 수 있음(정밀도가 부족한 경우 반올림 발생)
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 275 --to 282 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 275 --to 282 --no-comment"
 
 ---
 
@@ -1274,7 +1276,7 @@ n: 3         (decimal)
 
 - 난수 발생에 활용되는 `rand`, `srand` 함수
 
-[//]: # (INCLUDE: ./c/02/src/28_random.c)
+[//]: # "INCLUDE: ./c/02/src/28_random.c"
 
 ---
 
@@ -1282,7 +1284,7 @@ n: 3         (decimal)
 
 - `rand`, `srand` 함수를 활용한 난수 생성
 
-[//]: # (INCLUDE: ./c/02/src/29_random_example.c)
+[//]: # "INCLUDE: ./c/02/src/29_random_example.c"
 
 ---
 
@@ -1293,11 +1295,11 @@ n: 3         (decimal)
 - 삼항 연산자의 형태 `condition ? expr_if_true : expr_if_false`는 `if` 조건문을 축약한 형태
 - `expr_if_true`와 `expr_if_false`의 타입이 다르다면, 타입 변환 법칙이 적용됨
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 293 --to 296 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 293 --to 296 --no-comment"
 
 - 표현식이 등장할 수 있는 곳이라면 어디든 사용 가능
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 300 --to 307 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 300 --to 307 --no-comment"
 
 ---
 
@@ -1305,14 +1307,14 @@ n: 3         (decimal)
 
 - 삼항 연산자를 활용한 형식화된 숫자 출력
 
-[//]: # (INCLUDE: ./c/02/src/30_ternary_example.c)
+[//]: # "INCLUDE: ./c/02/src/30_ternary_example.c"
 
 ---
 
 ## Precedence and Order of Evaluation
 
 > `()` in `f(x)` is an **operator**, not just syntax — it does appear in the precedence table.
-`(a + b)` in an expression is **not an operator**, but a **syntax rule** — it controls parsing order, not operator precedence directly.
+> `(a + b)` in an expression is **not an operator**, but a **syntax rule** — it controls parsing order, not operator precedence directly.
 
 ![center](img/14-precedence-and-order-of-evaluation.png)
 
@@ -1322,12 +1324,12 @@ n: 3         (decimal)
 
 ### 연산자의 우선순위(Precedence)와 결합 방향(Associativity) 적용 규칙
 
-1. 아직 결합되지 않은 표현식들 중에서, 우선순위가 가장 높은 연산자가 있는 표현식을 먼저 찾는다.
-2. 선택된 연산자에 대해, 결합 방향(왼쪽에서 오른쪽, 또는 오른쪽에서 왼쪽)에 따라 해당 표현식을 먼저 결합한다.
-3. 결합되지 않은 표현식이 아직 2개 이상 남아 있다면, 다시 1단계로 돌아간 뒤 우선순위가 가장 높은 연산자를 찾아 처리한다.
-4. 모든 연산이 결합되면, 최종적으로 결합된 표현식을 순서대로 평가(evaluate)한다.
+1. 결합되지 않은 표현식 중 우선순위가 가장 높은 연산자의 표현식을 먼저 선택
+2. 선택한 연산자의 결합 방향에 따라 해당 표현식을 결합
+3. 결합되지 않은 표현식이 2개 이상이면 1단계부터 반복
+4. 모든 연산이 결합되면 최종 표현식을 평가
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 318 --to 331 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 318 --to 331 --no-comment"
 
 ---
 
@@ -1337,11 +1339,11 @@ n: 3         (decimal)
 
 - 피연산자들의 값을 계산(evaluation)하고, 그 부수효과(side effects)를 실행하는 순서
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 343 --to 344 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 343 --to 344 --no-comment"
 
-- **대부분의 연산자는 평가 순서가 정의되지 않거나(unspecified), 명시적으로 지정되어 있지 않음(unsequenced)**
+- **대부분의 연산자는 피연산자 평가 순서를 지정하지 않음(unspecified)**
   - 동일한 코드라도 컴파일러에 따라 다른 결과를 초래할 수 있음
-  - 특히 증감 연산자, 함수 호출과 같이 부수효과가 있는 표현식에서는 주의 필요
+  - 한 시퀀스 포인트 사이에서 같은 객체를 여러 번 변경하는 등 규칙을 위반하면 UB
 - 평가 순서가 정해진 연산자들은 논리 연산자(`&&`, `⎮⎮`), 쉼표 연산자(`,`), 삼항 연산자(`?:`)가 있음
 
 ---
@@ -1350,7 +1352,7 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 1
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 363 --to 369 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 363 --to 369 --no-comment"
 
 ---
 
@@ -1358,7 +1360,7 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 2
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 388 --to 393 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 388 --to 393 --no-comment"
 
 ---
 
@@ -1366,7 +1368,7 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 3
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 401 --to 405 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 401 --to 405 --no-comment"
 
 ---
 
@@ -1374,4 +1376,4 @@ n: 3         (decimal)
 
 ### 평가 순서가 보장되지 않는 경우 4
 
-[//]: # (INCLUDE: ./c/02/src/_snippet.c --from 414 --to 419 --no-comment)
+[//]: # "INCLUDE: ./c/02/src/_snippet.c --from 414 --to 419 --no-comment"
