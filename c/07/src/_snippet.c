@@ -38,7 +38,7 @@ void snippet1(void)
 
 void snippet2(void)
 {
-#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
+#if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     int a[] = { 15, 077, 0xFF, 'A', -1 };
 
     printf("%3d %3o %3x %3X\n", a[0], a[0], a[0], a[0]); /* > 15  17   f   F  */
@@ -113,12 +113,12 @@ void snippet5(void)
 
 void snippet6(void)
 {
-#if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
+#if 0  /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
     char *s = "%d\n";
 
     printf(s);       /* FAILS if `s` contains `%`, >????? */
     printf("%s", s); /* SAFE                       >%d    */
-#endif               /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
+#endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 }
 
 void snippet7(void)
