@@ -1,4 +1,5 @@
 <!-- _class: lead -->
+
 # 컴퓨터프로그래밍기초
 
 ## Pointers and Arrays
@@ -19,8 +20,8 @@
 - 각 cell에는 고유한 **주소**(address)가 부여됨
 - 인접한 2 cell → `short` (2 bytes)
 - 인접한 4 cell → `int` (4 bytes)
-- **포인터**(pointer)는 이런 셀‑집합(객체)의 **첫 번째 주소**를 나타냄
-  - 첫 번째 주소는 셀-집합에서 가장 낮은 주소를 의미
+- **포인터**(pointer)는 타입 정보가 결합된 주소 값
+  - 객체 포인터는 해당 객체가 저장된 위치를 가리킴
 
 ---
 
@@ -36,7 +37,7 @@ type *identifier
 
 ![w:550 center](img/01-pointer.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 4 --to 6 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 4 --to 6 --no-comment"
 
 ---
 
@@ -49,7 +50,7 @@ type *identifier
 
 ![w:550 center](img/02-address-of.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 10 --to 10 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 10 --to 10 --no-comment"
 
 - `&c`는 변수 `c`의 포인터 반환
 - `p = &c`는 포인터 변수 `p`에 `c`의 포인터를 대입
@@ -63,12 +64,12 @@ type *identifier
 - 간접 참조(indirection)를 수행
 - 피연산자가 객체를 가리키는 포인터일 경우 연산 결과는 해당 객체를 나타내는 *lvalue*가 됨
 
-| Category | *lvalue* | *rvalue* |
-| --- | --- | --- |
-| **Meaning** | Refers to a memory **location** | Represents a **value**, not necessarily in memory |
-| **Can appear on left of `=`?** | Yes | No |
-| **Has identifiable address?** (`&expr`) | Yes | No |
-| **Can be assigned to?** | Yes (e.g., `x = 5;`) | No (e.g., `x + 1 = 5;` → error) |
+| Category                                | _lvalue_                        | _rvalue_                                          |
+| --------------------------------------- | ------------------------------- | ------------------------------------------------- |
+| **Meaning**                             | Refers to a memory **location** | Represents a **value**, not necessarily in memory |
+| **Can appear on left of `=`?**          | Yes                             | No                                                |
+| **Has identifiable address?** (`&expr`) | Yes                             | No                                                |
+| **Can be assigned to?**                 | Yes (e.g., `x = 5;`)            | No (e.g., `x + 1 = 5;` → error)                   |
 
 - *lvalue*는 값이 저장되는 메모리이며, *rvalue*는 평가된 값을 의미함
 - *lvalue*는 문맥에 따라 *rvalue*로 변환되나, *rvalue*는 *lvalue*가 될 수 없음
@@ -79,11 +80,11 @@ type *identifier
 
 ### 단항 연산자 `*`, `&`의 사용 예
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 19 --to 34 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 19 --to 34 --no-comment"
 
 - 단항 연산자의 결합 방향은 오른쪽에서 왼쪽
 - `int *ip`는 포인터 변수 선언이며, 초기화자로 `x`의 포인터를 사용
-- `&x`는 변수 `x`의 포인터를 반환(*rvalue*)하고, `*ip`는 포인터가 가리키는 객체를 간접 참조(*lvalue*)
+- `&x`는 변수 `x`의 포인터를 반환(_rvalue_)하고, `*ip`는 포인터가 가리키는 객체를 간접 참조(_lvalue_)
 
 ---
 
@@ -93,7 +94,7 @@ type *identifier
 
 ![center](img/03-mem-ptr.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 43 --to 44 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 43 --to 44 --no-comment"
 
 ---
 
@@ -101,11 +102,11 @@ type *identifier
 
 ![center](img/04-mem-ptr.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 48 --to 48 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 48 --to 48 --no-comment"
 
 ![center](img/05-mem-ptr.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 52 --to 52 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 52 --to 52 --no-comment"
 
 ---
 
@@ -113,11 +114,11 @@ type *identifier
 
 ![center](img/06-mem-ptr.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 56 --to 56 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 56 --to 56 --no-comment"
 
 ![center](img/07-mem-ptr.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 60 --to 60 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 60 --to 60 --no-comment"
 
 ---
 
@@ -127,9 +128,8 @@ type *identifier
 
 > One aspect of C functions may be unfamiliar to programmers who are used to some other languages, particularly Fortran. In C, all function arguments are passed **"by value."** This means that the called function is given the values of its arguments in temporary variables rather than the originals. This leads to some different properties than are seen with **"call by reference"** languages like Fortran or with `var` parameters in Pascal, in which the called routine has access to the original argument, not a local copy.
 
-[//]: # (INCLUDE: ./c/05/src/00_swap1.c --from 2 --to 8 --no-comment)
-
-[//]: # (INCLUDE: ./c/05/src/00_swap1.c --from 16 --to 16 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/00_swap1.c --from 2 --to 8 --no-comment"
+[//]: # "INCLUDE: ./c/05/src/00_swap1.c --from 16 --to 16 --no-comment"
 
 ---
 
@@ -138,7 +138,7 @@ type *identifier
 ### 포인터 매개변수
 
 - 함수의 기본 타입 매개변수는 원본 전달인자에 접근할 수 없음
-  - C 함수들은 전달인자를 값(*rvalue*)으로 전달
+  - C 함수들은 전달인자를 값(_rvalue_)으로 전달
 - **포인터 매개변수를 사용하면 원본 전달인자를 간접적으로 접근할 수 있음**
 
 ![center](img/08-swap.png)
@@ -149,7 +149,7 @@ type *identifier
 
 - 포인터 매개변수를 사용한 전달인자 교환
 
-[//]: # (INCLUDE: ./c/05/src/01_swap2.c)
+[//]: # "INCLUDE: ./c/05/src/01_swap2.c"
 
 ---
 
@@ -157,15 +157,14 @@ type *identifier
 
 - 포인터 매개변수를 사용한 정수 입력 함수 `getint`
 
-[//]: # (INCLUDE: ./c/05/src/getint/getch.c --reference)
-
-[//]: # (INCLUDE: ./c/05/src/getint/getint.c --to 6)
+[//]: # "INCLUDE: ./c/05/src/getint/getch.c --reference"
+[//]: # "INCLUDE: ./c/05/src/getint/getint.c --to 6"
 
 ---
 
 ## Pointers and Function Arguments (Cont'd - 4)
 
-[//]: # (INCLUDE: ./c/05/src/getint/getint.c --from 8)
+[//]: # "INCLUDE: ./c/05/src/getint/getint.c --from 8"
 
 ---
 
@@ -178,9 +177,9 @@ type *identifier
 | `a[i]`     | `*(a + i)`                    |
 | `&a[i]`    | `a + i`                       |
 
-1. 배열 이름 `a`는 **배열 0번째 요소 포인터(`&a[0]`)로 자동 변환**된다(decay, pointer to `T`).
-    > An expression that has array type is converted to a pointer to the first element of the array, except when it is the operand of the `sizeof` operator, the unary `&` operator, or is a string literal used to initialize an array.
-2. **첨자 연산은 내부적으로 포인터 산술로 변환된다.**
+1. 배열 이름 `a`는 **배열 0번째 요소 포인터(`&a[0]`)로 자동 변환**(decay, pointer to `T`)
+   > An expression that has array type is converted to a pointer to the first element of the array, except when it is the operand of the `sizeof` operator, the unary `&` operator, or is a string literal used to initialize an array.
+2. **첨자 연산은 포인터 산술로 정의됨**
 
 ---
 
@@ -190,26 +189,26 @@ type *identifier
 
 - 배열 이름을 `sizeof` 연산자의 인자로 사용할 경우
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 69 --to 71 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 69 --to 71 --no-comment"
 
 - 배열 이름을 주소 연산자의 피연산자로 사용할 경우
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 75 --to 76 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 75 --to 76 --no-comment"
 
 - 배열 이름을 초기화 구문에 사용할 경우
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 80 --to 81 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 80 --to 81 --no-comment"
 
 ---
 
 ## Pointers and Arrays (Cont'd - 2)
 
-### ANSI C (C89) §6.5.2.1 — "Array Subscripting"
+### ANSI C (C89) §3.3.2.1 — "Array Subscripting"
 
 > A postfix expression followed by an expression in square brackets (`[]`) is a binary operator that yields the value of the element of the array object at the given index.
-`E1[E2]` is defined as `*((E1) + (E2))`.
+> `E1[E2]` is defined as `*((E1) + (E2))`.
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 90 --to 91 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 90 --to 91 --no-comment"
 
 - 배열 첨자 표현은 실제로 **이항 덧셈 연산자**로 취급되며, 아래와 같은 항등 관계가 형성됨
 
@@ -217,7 +216,7 @@ type *identifier
 a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 ```
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 100 --to 103 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 100 --to 103 --no-comment"
 
 ---
 
@@ -230,7 +229,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/09-array.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 110 --to 111 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 110 --to 111 --no-comment"
 
 ---
 
@@ -240,7 +239,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/10-array.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 115 --to 116 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 115 --to 116 --no-comment"
 
 ---
 
@@ -251,21 +250,21 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 - 음수 첨자(인덱스)는 문법적으로 허용됨
 - **배열의 범위 내에서만 유효하며, 배열의 범위를 벗어나는 것은 허용되지 않음(UB)**
 
-[//]: # (INCLUDE: ./c/05/src/02_neg_index.c)
+[//]: # "INCLUDE: ./c/05/src/02_neg_index.c"
 
 ---
 
 ## Pointers and Arrays (Cont'd - 6)
 
-### ANSI C (C89) §6.7.1 — "Function Definitions"
+### ANSI C (C89) §3.7.1 — "Function Definitions"
 
 > In function parameter declarations, "array of `T`" is adjusted to "pointer to `T`".
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 124 --to 125 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 124 --to 125 --no-comment"
 
 - 함수 매개변수에서 `char s[]`는 자동으로 `char *s`로 변환(decay)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 133 --to 134 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 133 --to 134 --no-comment"
 
 - `arr` 시작 주소를 `strlen` 함수의 전달인자로 넘김(decay, pointer to `T`)
 - 배열을 함수의 전달인자로 전달할 때, **배열 자체가 복사되는 것이 아닌 문자 배열의 시작 주소 포인터만 복사됨**
@@ -276,7 +275,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 - 문자열 길이를 계산하는 `strlen` 함수
 
-[//]: # (INCLUDE: ./c/05/src/03_strlen.c)
+[//]: # "INCLUDE: ./c/05/src/03_strlen.c"
 
 ---
 
@@ -290,14 +289,14 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 - 주소 `p`에 대해 *n*만큼 더할 경우, `p` 로부터 `n * sizeof(T)` 바이트 만큼 **뒤 주소**로 이동(forward)
 - 주소 `p`에 대해 *n*만큼 뺄 경우, `p` 로부터 `n * sizeof(T)` 바이트 만큼 **앞 주소**로 이동(backward)
 
-| Expression | Description                                        | Address Computation (Conceptual)      |
-| ---------- | -------------------------------------------------- | ------------------------------------- |
-| `p + n`    | Returns the address `n` elements forward from `p`  | `p + (n × sizeof(T))`                 |
-| `p += n`   | Moves `p` forward by `n` elements                  | `p = p + (n × sizeof(T))`             |
-| `p++`      | Moves `p` forward by 1 element                     | `p = p + sizeof(T)` (i.e., `p += 1`)  |
-| `p - n`    | Returns the address `n` elements backward from `p` | `p - (n × sizeof(T))`                 |
-| `p -= n`   | Moves `p` backward by `n` elements                 | `p = p - (n × sizeof(T))`             |
-| `p--`      | Moves `p` backward by 1 element                    | `p = p - sizeof(T)` (i.e., `p -= 1`)  |
+| Expression | Description                                        | Address Computation (Conceptual)     |
+| ---------- | -------------------------------------------------- | ------------------------------------ |
+| `p + n`    | Returns the address `n` elements forward from `p`  | `p + (n × sizeof(T))`                |
+| `p += n`   | Moves `p` forward by `n` elements                  | `p = p + (n × sizeof(T))`            |
+| `p++`      | Moves `p` forward by 1 element                     | `p = p + sizeof(T)` (i.e., `p += 1`) |
+| `p - n`    | Returns the address `n` elements backward from `p` | `p - (n × sizeof(T))`                |
+| `p -= n`   | Moves `p` backward by `n` elements                 | `p = p - (n × sizeof(T))`            |
+| `p--`      | Moves `p` backward by 1 element                    | `p = p - sizeof(T)` (i.e., `p -= 1`) |
 
 ---
 
@@ -310,7 +309,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/11-addr-arithmetic.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 141 --to 150 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 141 --to 150 --no-comment"
 
 ---
 
@@ -318,7 +317,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 - 주소 연산을 응용한 간결한 형태의 문자열 길이를 계산하는 `strlen` 함수
 
-[//]: # (INCLUDE: ./c/05/src/04_adv_strlen.c)
+[//]: # "INCLUDE: ./c/05/src/04_adv_strlen.c"
 
 - 문자열의 시작 주소(`s`)와 문자열의 마지막 주소(`p`)를 활용한 예
 - 마지막(`'\0'`를 담고 있는 요소)의 주소에서 시작 주소를 뺀 결과는 **문자열의 실제 길이**가 됨
@@ -345,7 +344,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/13-alloc-example.png)
 
-[//]: # (INCLUDE: ./c/05/src/alloc/alloc.h --reference)
+[//]: # "INCLUDE: ./c/05/src/alloc/alloc.h --reference"
 
 ---
 
@@ -353,13 +352,13 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/14-alloc-example.png)
 
-[//]: # (INCLUDE: ./c/05/src/alloc/main.c --from 6 --to 7 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/alloc/main.c --from 6 --to 7 --no-comment"
 
 ---
 
 ## Address Arithmetic (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/05/src/alloc/alloc.c --from 4 --to 22 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/alloc/alloc.c --from 4 --to 22 --no-comment"
 
 ---
 
@@ -369,13 +368,13 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/15-alloc-example.png)
 
-[//]: # (INCLUDE: ./c/05/src/alloc/main.c --from 11 --to 12 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/alloc/main.c --from 11 --to 12 --no-comment"
 
 ---
 
 ## Address Arithmetic (Cont'd - 8)
 
-[//]: # (INCLUDE: ./c/05/src/alloc/alloc.c --from 26 --to 31 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/alloc/alloc.c --from 26 --to 31 --no-comment"
 
 ---
 
@@ -385,13 +384,13 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/16-strings.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 160 --to 160 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 160 --to 160 --no-comment"
 
-- **문자열은 상수이자 이름 없는 객체**이며, 상수는 읽기 전용 데이터 영역(.rodata)에 위치
-- `pmessage`는 상수 객체를 가리키는 포인터이며, **문자열을 소유하지 않는 형태**
+- 문자열 리터럴은 이름 없는 `char` 배열 객체이며, 수정하려 하면 UB
+- `pmessage`는 문자열 리터럴의 첫 문자를 가리키며, **문자열을 소유하지 않는 형태**
 - `pmessage` 포인터를 간접 참조해 내용을 읽을 순 있으나 수정은 허용하지 않음(UB)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 164 --to 164 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 164 --to 164 --no-comment"
 
 - 문자 배열을 할당함과 동시에 문자열(초기화자, `"now is the time"`)을 **복사**하여 초기화
 - 문자열의 각 문자는 배열의 각 요소에 저장되며, **마지막 요소에는 널 문자(`'\0'`)가 자동 포함됨**
@@ -418,11 +417,11 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 - 유효한 배열 초기화
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 174 --to 181 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 174 --to 181 --no-comment"
 
 - 유효하지 않은 배열 초기화
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 188 --to 189 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 188 --to 189 --no-comment"
 
 ---
 
@@ -434,7 +433,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 - 문자열 관련 표준 함수 선언은 `<string.h>` 헤더 파일 내에 있음
 - 문자열을 복사하는 `strcpy` 함수
 
-[//]: # (INCLUDE: ./c/05/src/05_strcpy1.c)
+[//]: # "INCLUDE: ./c/05/src/05_strcpy1.c"
 
 ---
 
@@ -442,11 +441,11 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 - 간결화된 `strcpy` 함수
 
-[//]: # (INCLUDE: ./c/05/src/06_strcpy2.c)
+[//]: # "INCLUDE: ./c/05/src/06_strcpy2.c"
 
 - 지역 변수 `i`를 사용하지 않고 포인터 변수만을 사용하여 구현
 
-[//]: # (INCLUDE: ./c/05/src/07_strcpy3_ignore.c)
+[//]: # "INCLUDE: ./c/05/src/07_strcpy3_ignore.c"
 
 - 불필요한 중복(`'\0'` 와의 비교) 제거
   - `'\0'` 대입 시 표현식의 최종 평가는 `'\0'` 이며, 이는 곧 거짓을 의미
@@ -458,7 +457,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 - 두 문자열을 비교하는 `strcmp` 함수
 
-[//]: # (INCLUDE: ./c/05/src/08_strcmp1.c)
+[//]: # "INCLUDE: ./c/05/src/08_strcmp1.c"
 
 ---
 
@@ -466,7 +465,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 - 간결화된 `strcmp` 함수
 
-[//]: # (INCLUDE: ./c/05/src/09_strcmp2.c)
+[//]: # "INCLUDE: ./c/05/src/09_strcmp2.c"
 
 ---
 
@@ -478,11 +477,11 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/17-stack.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 196 --to 198 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 196 --to 198 --no-comment"
 
 ![center](img/18-stack.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 202 --to 202 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 202 --to 202 --no-comment"
 
 ---
 
@@ -490,11 +489,11 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 
 ![center](img/19-stack.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 206 --to 206 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 206 --to 206 --no-comment"
 
 ![center](img/20-stack.png)
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 210 --to 210 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 210 --to 210 --no-comment"
 
 ---
 
@@ -517,7 +516,7 @@ print them in order
 └── qsort.c
 ```
 
-[//]: # (INCLUDE: ./c/05/src/sort1/Makefile --reference)
+[//]: # "INCLUDE: ./c/05/src/sort1/Makefile --reference"
 
 ---
 
@@ -526,8 +525,8 @@ print them in order
 ![center](img/21-sort-strings.png)
 
 - 배열에 보관된 문자열을 직접 정렬하는 것은 비효율적임:
-    1. 문자열 중 가장 긴 문자열을 기준으로 모든 배열을 할당해야 한다.
-    2. 문자열의 길이만큼 문자 교환을 수행해야 한다.
+  1. 가장 긴 문자열을 기준으로 모든 배열을 할당해야 함
+  2. 문자열 길이만큼 문자 교환을 수행해야 함
 - 포인터 타입 배열을 사용해 간접적으로 정렬하면 효율적으로 정렬할 수 있음
   - **정렬이 필요한 문자열은 문자열의 시작 주소만 교환하며 정렬**
 
@@ -537,13 +536,13 @@ print them in order
 
 - `alloc.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort1/alloc.c --to 19)
+[//]: # "INCLUDE: ./c/05/src/sort1/alloc.c --to 19"
 
 ---
 
 ## Pointer Arrays; Pointers to Pointers (Cont'd - 3)
 
-[//]: # (INCLUDE: ./c/05/src/sort1/alloc.c --from 21)
+[//]: # "INCLUDE: ./c/05/src/sort1/alloc.c --from 21"
 
 ---
 
@@ -551,7 +550,7 @@ print them in order
 
 - `getline.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort1/getline.c)
+[//]: # "INCLUDE: ./c/05/src/sort1/getline.c"
 
 ---
 
@@ -559,13 +558,13 @@ print them in order
 
 - `line.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort1/line.c --to 11)
+[//]: # "INCLUDE: ./c/05/src/sort1/line.c --to 11"
 
 ---
 
 ## Pointer Arrays; Pointers to Pointers (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/05/src/sort1/line.c --from 13)
+[//]: # "INCLUDE: ./c/05/src/sort1/line.c --from 13"
 
 ---
 
@@ -573,13 +572,13 @@ print them in order
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort1/main.c --to 9)
+[//]: # "INCLUDE: ./c/05/src/sort1/main.c --to 9"
 
 ---
 
 ## Pointer Arrays; Pointers to Pointers (Cont'd - 8)
 
-[//]: # (INCLUDE: ./c/05/src/sort1/main.c --from 11)
+[//]: # "INCLUDE: ./c/05/src/sort1/main.c --from 11"
 
 ---
 
@@ -587,13 +586,13 @@ print them in order
 
 - `qsort.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort1/qsort.c --to 20)
+[//]: # "INCLUDE: ./c/05/src/sort1/qsort.c --to 20"
 
 ---
 
 ## Pointer Arrays; Pointers to Pointers (Cont'd - 10)
 
-[//]: # (INCLUDE: ./c/05/src/sort1/qsort.c --from 22)
+[//]: # "INCLUDE: ./c/05/src/sort1/qsort.c --from 22"
 
 ---
 
@@ -607,7 +606,7 @@ print them in order
 
 ### 2차원 배열
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 217 --to 222 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 217 --to 222 --no-comment"
 
 - 표현식 `matrix[i][j]`는 `*(*(matrix + i) + j)`로 계산
 - 오프셋 계산 식은 `(i * <COLUMNS>) + j`
@@ -618,7 +617,7 @@ print them in order
 
 ### 3차원 배열
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 240 --to 249 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 240 --to 249 --no-comment"
 
 - 표현식 `cube[i][j][k]`는 `*(*(*(cube + i) + j) + k)`로 계산
 - 오프셋 계산식은 `(i * <ROWS> * <COLUMNS>) + (j * <COLUMNS>) + k`
@@ -632,13 +631,13 @@ print them in order
 - 배열의 첫 번째 차원은 배열 초기화 시 또는 함수 인자로 사용 시 생략 가능
 - **그 외 차원은 반드시 명시해야 함**
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 231 --to 231 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 231 --to 231 --no-comment"
 
 #### *n*차원 배열의 첫 번째 차원 생략 가능 이유
 
 1. **전체 초기화자 개수로부터 첫 번째 차원의 크기를 추론할 수 있다.**
-2. 하위 차원의 크기가 명확하므로 전체 요소 수를 하위 차원 수로 나누어 계산 가능하다.
-3. 결과적으로 첫 번째 차원 생략 시에도 배열은 컴파일 시에 완전한 타입(complete type)으로 간주한다.
+2. 하위 차원의 크기가 명확하므로 전체 요소 수를 하위 차원 수로 나누어 계산 가능
+3. 첫 번째 차원을 생략해도 컴파일 시 완전한 타입(complete type)으로 간주
 
 ---
 
@@ -653,7 +652,7 @@ print them in order
 └── month_name.c
 ```
 
-[//]: # (INCLUDE: ./c/05/src/day/Makefile --reference)
+[//]: # "INCLUDE: ./c/05/src/day/Makefile --reference"
 
 ---
 
@@ -661,13 +660,13 @@ print them in order
 
 - `day.c`
 
-[//]: # (INCLUDE: ./c/05/src/day/day.c --to 16)
+[//]: # "INCLUDE: ./c/05/src/day/day.c --to 16"
 
 ---
 
 ## Multi‑dimensional Arrays (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/05/src/day/day.c --from 18)
+[//]: # "INCLUDE: ./c/05/src/day/day.c --from 18"
 
 ---
 
@@ -675,7 +674,7 @@ print them in order
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/05/src/day/main.c)
+[//]: # "INCLUDE: ./c/05/src/day/main.c"
 
 ---
 
@@ -683,7 +682,7 @@ print them in order
 
 - `month_name.c`
 
-[//]: # (INCLUDE: ./c/05/src/day/month_name.c)
+[//]: # "INCLUDE: ./c/05/src/day/month_name.c"
 
 ### 포인터 배열 초기화
 
@@ -696,12 +695,12 @@ print them in order
 
 ### 2차원 배열과 포인터 배열 간 차이
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 258 --to 259 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 258 --to 259 --no-comment"
 
 ![center](img/23-name.png)
 
 - 포인터 배열의 각 행 길이는 **가변**(총 4개의 포인터 변수를 연속적으로 메모리에 할당)
-  - 문자열 26(14 + 4 + 4 + 4) bytes + 포인터 32(8 * 4, if the machine is LP64) bytes 사용
+  - 문자열 26(14 + 4 + 4 + 4) bytes + 포인터 32(8 \* 4, if the machine is LP64) bytes 사용
 
 ![center](img/24-aname.png)
 
@@ -713,7 +712,7 @@ print them in order
 
 ### `main` 함수의 다른 형태
 
-[//]: # (INCLUDE: ./c/05/src/10_command_line_args.c --from 5 --to 5 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/10_command_line_args.c --from 5 --to 5 --no-comment"
 
 - 프로그램 실행 시 전달되는 데이터를 `main` 함수가 전달받을 수 있는 형태
 
@@ -737,7 +736,7 @@ print them in order
 
 ![center](img/25-command-line-args.png)
 
-[//]: # (INCLUDE: ./c/05/src/10_command_line_args.c)
+[//]: # "INCLUDE: ./c/05/src/10_command_line_args.c"
 
 ---
 
@@ -745,7 +744,7 @@ print them in order
 
 - 프로그램으로 전달한 인자를 출력하는 프로그램(두 번째 버전)
 
-[//]: # (INCLUDE: ./c/05/src/11_command_line_args_2nd.c)
+[//]: # "INCLUDE: ./c/05/src/11_command_line_args_2nd.c"
 
 ---
 
@@ -753,7 +752,7 @@ print them in order
 
 - 프로그램으로 전달한 인자를 출력하는 프로그램(세 번째 버전)
 
-[//]: # (INCLUDE: ./c/05/src/12_command_line_args_3rd.c)
+[//]: # "INCLUDE: ./c/05/src/12_command_line_args_3rd.c"
 
 ---
 
@@ -782,21 +781,20 @@ print them in order
 
 ## Command‑line Arguments (Cont'd - 5)
 
-[//]: # (INCLUDE: ./c/05/src/grep/Makefile --reference)
-
-[//]: # (INCLUDE: ./c/05/src/grep/main.c --to 13)
+[//]: # "INCLUDE: ./c/05/src/grep/Makefile --reference"
+[//]: # "INCLUDE: ./c/05/src/grep/main.c --to 13"
 
 ---
 
 ## Command‑line Arguments (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/05/src/grep/main.c --from 15 --to 31)
+[//]: # "INCLUDE: ./c/05/src/grep/main.c --from 15 --to 31"
 
 ---
 
 ## Command‑line Arguments (Cont'd - 7)
 
-[//]: # (INCLUDE: ./c/05/src/grep/main.c --from 33)
+[//]: # "INCLUDE: ./c/05/src/grep/main.c --from 33"
 
 - `strstr` 함수는 한 문자열(`line`)에서 다른 문자열(`*argv`, pattern)이 처음 나타나는 위치를 찾는 함수
 - 대상 문자열에 다른 문자열이 존재한다면 해당 위치를 가리키는 유효한 포인터를 반환하고, 존재하지 않는다면 `NULL` 반환
@@ -807,7 +805,7 @@ print them in order
 
 - .text 영역에 할당된 함수 코드의 시작 주소를 가리키는 포인터 변수
 
-[//]: # (INCLUDE: ./c/05/src/13_function_ptr.c)
+[//]: # "INCLUDE: ./c/05/src/13_function_ptr.c"
 
 ---
 
@@ -815,13 +813,13 @@ print them in order
 
 - 함수 포인터 사용 시 **반드시 괄호를 써주어야 함**
 
-[//]: # (INCLUDE: ./c/05/src/_snippet.c --from 267 --to 270 --no-comment)
+[//]: # "INCLUDE: ./c/05/src/_snippet.c --from 267 --to 270 --no-comment"
 
 ### `void *` 타입
 
 - 어떤 타입이든 가리킬 수 있는 범용 포인터(generic pointer)
 - 타입 정보가 없으므로 간접 참조는 사용할 수 없음
-  - `void *` 포인터 변수는 **순수한 주소만을 보관하는 변수**
+  - `void *` 포인터 변수는 객체 타입을 특정하지 않은 포인터 값을 저장
 - 간접 참조는 다른 타입으로의 변환이 선행되어야 가능
 
 ---
@@ -843,7 +841,7 @@ print them in order
 └── qsort.c
 ```
 
-[//]: # (INCLUDE: ./c/05/src/sort2/Makefile --reference)
+[//]: # "INCLUDE: ./c/05/src/sort2/Makefile --reference"
 
 ---
 
@@ -851,13 +849,13 @@ print them in order
 
 - `main.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort2/main.c --to 12)
+[//]: # "INCLUDE: ./c/05/src/sort2/main.c --to 12"
 
 ---
 
 ## Pointers to Functions (Cont'd - 4)
 
-[//]: # (INCLUDE: ./c/05/src/sort2/main.c --from 14)
+[//]: # "INCLUDE: ./c/05/src/sort2/main.c --from 14"
 
 ---
 
@@ -865,13 +863,13 @@ print them in order
 
 - `qsort.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort2/qsort.c --to 19)
+[//]: # "INCLUDE: ./c/05/src/sort2/qsort.c --to 19"
 
 ---
 
 ## Pointers to Functions (Cont'd - 6)
 
-[//]: # (INCLUDE: ./c/05/src/sort2/qsort.c --from 21)
+[//]: # "INCLUDE: ./c/05/src/sort2/qsort.c --from 21"
 
 ---
 
@@ -879,4 +877,4 @@ print them in order
 
 - `numcmp.c`
 
-[//]: # (INCLUDE: ./c/05/src/sort2/numcmp.c)
+[//]: # "INCLUDE: ./c/05/src/sort2/numcmp.c"
