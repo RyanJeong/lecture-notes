@@ -1,0 +1,67 @@
+# Lab 01 wiring: three LEDs and two pulled-up buttons on a breadboard.
+# Colours follow the kit convention used through the course:
+#   RD = 3.3 V, BK = ground, YE/GN/BU = signal.
+connectors:
+  RPi4:
+    type: Raspberry Pi 4
+    subtype: 40-pin header
+    pinlabels:
+      - 3.3V (Pin 1)
+      - GPIO17 (Pin 11)
+      - GPIO27 (Pin 13)
+      - GPIO22 (Pin 15)
+      - GPIO23 (Pin 16)
+      - GPIO24 (Pin 18)
+      - GND (Pin 9)
+
+  LEDs:
+    type: Breadboard
+    subtype: LED bank
+    pinlabels:
+      - Row 5 - 330R to LED1
+      - Row 10 - 330R to LED2
+      - Row 15 - 330R to LED3
+
+  Buttons:
+    type: Breadboard
+    subtype: Button bank
+    pinlabels:
+      - Rail + (3.3V)
+      - Row 25 - SW1 / 10k node
+      - Row 30 - SW2 / 10k node
+
+  GndRail:
+    type: Breadboard
+    subtype: Ground rail
+    pinlabels:
+      - Rail - (GND)
+
+cables:
+  LedWires:
+    wirecount: 3
+    colors: [YE, GN, BU]
+    category: bundle
+
+  SwWires:
+    wirecount: 3
+    colors: [RD, OG, VT]
+    category: bundle
+
+  GndWire:
+    wirecount: 1
+    colors: [BK]
+    category: bundle
+
+connections:
+  -
+    - RPi4: [2, 3, 4]
+    - LedWires: [1, 2, 3]
+    - LEDs: [1, 2, 3]
+  -
+    - RPi4: [1, 5, 6]
+    - SwWires: [1, 2, 3]
+    - Buttons: [1, 2, 3]
+  -
+    - RPi4: [7]
+    - GndWire: [1]
+    - GndRail: [1]

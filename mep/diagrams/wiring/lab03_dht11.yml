@@ -1,0 +1,30 @@
+# Lab 03 wiring: DHT11 three-pin module on a single data line.
+connectors:
+  RPi4:
+    type: Raspberry Pi 4
+    subtype: 40-pin header
+    pinlabels:
+      - 3.3V (Pin 1)
+      - GPIO4 (Pin 7)
+      - GND (Pin 9)
+
+  DHT11:
+    type: DHT11
+    subtype: 3-pin module
+    pinlabels:
+      - VCC
+      - DATA
+      - GND
+    notes: Pull-up already fitted on the module
+
+cables:
+  SensorWires:
+    wirecount: 3
+    colors: [RD, YE, BK]
+    category: bundle
+
+connections:
+  -
+    - RPi4: [1, 2, 3]
+    - SensorWires: [1, 2, 3]
+    - DHT11: [1, 2, 3]

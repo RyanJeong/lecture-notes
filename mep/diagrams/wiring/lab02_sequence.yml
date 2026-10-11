@@ -1,0 +1,61 @@
+# Lab 02 wiring: two LEDs and one button driving a state machine.
+connectors:
+  RPi4:
+    type: Raspberry Pi 4
+    subtype: 40-pin header
+    pinlabels:
+      - 3.3V (Pin 1)
+      - GPIO17 (Pin 11)
+      - GPIO27 (Pin 13)
+      - GPIO23 (Pin 16)
+      - GND (Pin 9)
+
+  LEDs:
+    type: Breadboard
+    subtype: LED bank
+    pinlabels:
+      - Row 5 - 330R to red LED
+      - Row 10 - 330R to green LED
+
+  Button:
+    type: Breadboard
+    subtype: Button
+    pinlabels:
+      - Rail + (3.3V)
+      - Row 25 - SW / 10k node
+
+  GndRail:
+    type: Breadboard
+    subtype: Ground rail
+    pinlabels:
+      - Rail - (GND)
+
+cables:
+  LedWires:
+    wirecount: 2
+    colors: [RD, GN]
+    category: bundle
+
+  SwWires:
+    wirecount: 2
+    colors: [RD, OG]
+    category: bundle
+
+  GndWire:
+    wirecount: 1
+    colors: [BK]
+    category: bundle
+
+connections:
+  -
+    - RPi4: [2, 3]
+    - LedWires: [1, 2]
+    - LEDs: [1, 2]
+  -
+    - RPi4: [1, 4]
+    - SwWires: [1, 2]
+    - Button: [1, 2]
+  -
+    - RPi4: [5]
+    - GndWire: [1]
+    - GndRail: [1]

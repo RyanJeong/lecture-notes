@@ -1,0 +1,78 @@
+# Lab 04 wiring: CdS divider read through an MCP3008 on hardware SPI0.
+connectors:
+  RPi4:
+    type: Raspberry Pi 4
+    subtype: 40-pin header
+    pinlabels:
+      - 3.3V (Pin 1)
+      - GND (Pin 9)
+      - GPIO11 / SCLK (Pin 23)
+      - GPIO9 / MISO (Pin 21)
+      - GPIO10 / MOSI (Pin 19)
+      - GPIO8 / CE0 (Pin 24)
+      - GPIO17 (Pin 11)
+
+  MCP3008:
+    type: MCP3008
+    subtype: 16-pin DIP
+    pinlabels:
+      - VDD + VREF
+      - AGND + DGND
+      - CLK
+      - DOUT
+      - DIN
+      - CS
+      - CH0
+
+  Divider:
+    type: Breadboard
+    subtype: CdS divider
+    pinlabels:
+      - Rail + (3.3V) - CdS
+      - Row 20 - CdS / 10k node
+      - Rail - (GND) - 10k
+
+  Led:
+    type: Breadboard
+    subtype: Indicator LED
+    pinlabels:
+      - Row 30 - 330R to LED
+
+cables:
+  PowerWires:
+    wirecount: 2
+    colors: [RD, BK]
+    category: bundle
+
+  SpiWires:
+    wirecount: 4
+    colors: [YE, GN, BU, VT]
+    category: bundle
+
+  SenseWire:
+    wirecount: 1
+    colors: [WH]
+    category: bundle
+
+  LedWire:
+    wirecount: 1
+    colors: [OG]
+    category: bundle
+
+connections:
+  -
+    - RPi4: [1, 2]
+    - PowerWires: [1, 2]
+    - MCP3008: [1, 2]
+  -
+    - RPi4: [3, 4, 5, 6]
+    - SpiWires: [1, 2, 3, 4]
+    - MCP3008: [3, 4, 5, 6]
+  -
+    - MCP3008: [7]
+    - SenseWire: [1]
+    - Divider: [2]
+  -
+    - RPi4: [7]
+    - LedWire: [1]
+    - Led: [1]

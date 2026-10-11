@@ -1,0 +1,75 @@
+# Lab 05 wiring: HC-SR04 sonar with a 1k/2k echo divider, plus a buzzer.
+connectors:
+  RPi4:
+    type: Raspberry Pi 4
+    subtype: 40-pin header
+    pinlabels:
+      - 5V (Pin 2)
+      - GPIO23 / Trig (Pin 16)
+      - GPIO24 / Echo (Pin 18)
+      - GPIO18 / Buzzer (Pin 12)
+      - GND (Pin 6)
+
+  Divider:
+    type: Breadboard
+    subtype: Echo level divider
+    pinlabels:
+      - Row 20 - 1k from Echo
+      - Row 20 - 1k / 2k node
+      - Rail - (GND) - 2k
+    notes: Echo is 5 V - never wire it straight to a GPIO
+
+  HCSR04:
+    type: HC-SR04
+    subtype: 4-pin module
+    pinlabels:
+      - VCC
+      - Trig
+      - Echo
+      - GND
+
+  Buzzer:
+    type: Breadboard
+    subtype: Buzzer
+    pinlabels:
+      - Row 30 - buzzer +
+    notes: Buzzer - leg goes straight to the ground rail
+
+cables:
+  SonarWires:
+    wirecount: 3
+    colors: [RD, YE, BK]
+    category: bundle
+
+  EchoWire:
+    wirecount: 1
+    colors: [GN]
+    category: bundle
+
+  SenseWire:
+    wirecount: 1
+    colors: [WH]
+    category: bundle
+
+  BuzzerWire:
+    wirecount: 1
+    colors: [OG]
+    category: bundle
+
+connections:
+  -
+    - RPi4: [1, 2, 5]
+    - SonarWires: [1, 2, 3]
+    - HCSR04: [1, 2, 4]
+  -
+    - HCSR04: [3]
+    - EchoWire: [1]
+    - Divider: [1]
+  -
+    - RPi4: [3]
+    - SenseWire: [1]
+    - Divider: [2]
+  -
+    - RPi4: [4]
+    - BuzzerWire: [1]
+    - Buzzer: [1]

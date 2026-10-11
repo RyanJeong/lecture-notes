@@ -1,0 +1,4 @@
+# Pinned so a rebuild produces byte-comparable diagrams.
+schemdraw==0.23
+wireviz==0.4.1
+matplotlib==3.10.7
