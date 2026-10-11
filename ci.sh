@@ -30,7 +30,7 @@
 #   ./ci.sh --docker c
 #
 # Dependencies:
-#   node, marp, gcc, g++, pdfinfo, pdftoppm (poppler-utils),
+#   node, marp, gcc, g++, clang++, pdfinfo, pdftoppm (poppler-utils),
 #   convert, identify (imagemagick), GNU grep
 #   With --docker: only docker is required.
 #
@@ -91,7 +91,7 @@ check_dependencies() {
   local missing=""
   local tool
 
-  for tool in node gcc g++ pdfinfo pdftoppm convert identify; do
+  for tool in node gcc g++ clang++ pdfinfo pdftoppm convert identify; do
     command -v "${tool}" >/dev/null 2>&1 || missing="${missing} ${tool}"
   done
 
@@ -133,7 +133,7 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends \
       curl ca-certificates gnupg poppler-utils imagemagick \
-      fonts-noto-cjk fonts-noto-cjk-extra gcc g++ make \
+      fonts-noto-cjk fonts-noto-cjk-extra gcc g++ clang make \
  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get install -y -qq nodejs \
  && curl -fsSL https://dl.google.com/linux/linux_signing_key.pub \
@@ -256,11 +256,19 @@ ${RESULTS}
 EOF
 
   printf '\n'
-  if [ -d "${RELEASE_DIR}" ]; then
+  local lang
+  local -a artifact_dirs=()
+  for lang in "$@"; do
+    if [ -d "${RELEASE_DIR}/${lang}" ]; then
+      artifact_dirs+=("${RELEASE_DIR}/${lang}")
+    fi
+  done
+
+  if [ "${#artifact_dirs[@]}" -gt 0 ]; then
     local count
-    count=$(find "${RELEASE_DIR}" -type f \( -name '*.pdf' -o -name '*.pptx' \) | wc -l | tr -d ' ')
-    info "Artifacts (${count} files) in: release/"
-    find "${RELEASE_DIR}" -type f \( -name '*.pdf' -o -name '*.pptx' \) |
+    count=$(find "${artifact_dirs[@]}" -type f \( -name '*.pdf' -o -name '*.pptx' \) | wc -l | tr -d ' ')
+    info "Selected-course artifacts (${count} files) in: release/"
+    find "${artifact_dirs[@]}" -type f \( -name '*.pdf' -o -name '*.pptx' \) |
       sed "s|${SCRIPT_DIR}/|  |" | sort
   else
     warn "No artifacts produced."
@@ -325,7 +333,7 @@ main() {
     run_lang "${lang}"
   done
 
-  print_summary
+  print_summary ${langs}
 }
 
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
