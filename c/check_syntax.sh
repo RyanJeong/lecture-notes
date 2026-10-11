@@ -4,7 +4,7 @@
 # check_syntax.sh
 # ============================================================================
 # Usage:
-#   ./check_syntax.sh [DIR]
+#   ./check_syntax.sh [DIR] [ERROR_FILE]
 #
 # Description:
 #   Check ANSI C syntax for all .c files under */src/
@@ -14,7 +14,9 @@
 #
 # Arguments:
 #   DIR   Optional subdirectory to scan (e.g., 00, 04).
+#         An absolute directory containing src/ is also accepted.
 #         If omitted, all numbered directories are processed.
+#   ERROR_FILE   Optional diagnostic log path; defaults to the script directory.
 #
 # Options:
 #   -h, --help   Show this help message
@@ -39,7 +41,7 @@ warn() { printf '%s\n' "$(color_yellow)[WARN]$(color_reset) ${1:-}"; }
 error() { printf '%s\n' "$(color_red)[ERROR]$(color_reset) ${1:-}" >&2; }
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly ERROR_FILE="${SCRIPT_DIR}/error_file_lists.txt"
+readonly ERROR_FILE="${2:-${SCRIPT_DIR}/error_file_lists.txt}"
 readonly GCC_FLAGS="-fsyntax-only -ansi -Wall -Wextra -Werror -Wno-trigraphs -trigraphs -fno-builtin"
 
 show_help() {
@@ -110,6 +112,10 @@ main() {
 
   if [ -n "${1:-}" ]; then
     local candidate="${SCRIPT_DIR}/${1}/src"
+    if [[ "$1" = /* ]]; then
+      candidate="${1}/src"
+      [ -d "${candidate}" ] || error_exit "src directory not found: ${candidate}"
+    fi
     if [ -d "${candidate}" ]; then
       scan_dirs+=("${candidate}")
       info "Scanning directory: ${candidate}"
