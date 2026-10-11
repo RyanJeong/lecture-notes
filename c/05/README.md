@@ -307,7 +307,7 @@ a[i] ≡ *(a + i) ≡ *(i + a) ≡ i[a]
 - 같은 배열 객체의 원소 또는 마지막 다음 위치를 가리키는 포인터끼리 뺄셈 가능(결과가 `ptrdiff_t` 범위 안이어야 함)
 - `==`, `!=`: 포인터 값의 동등성 비교, `<`, `>`, `<=`, `>=`: 같은 배열 원소 사이 등 C가 정한 경우에만 유효
 
-![h:200 center](img/11-addr-arithmetic.png)
+![h:140 center](img/11-addr-arithmetic.png)
 
 [//]: # "INCLUDE: ./c/05/src/_snippet.c --from 141 --to 150 --no-comment"
 
