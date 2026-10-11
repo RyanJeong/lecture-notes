@@ -11,7 +11,12 @@
 // program stay short.
 class Gpio {
  public:
-  enum Mode { kOutputLow, kOutputHigh, kInput, kInputPullUp };
+  enum Mode {
+    kOutputLow,
+    kOutputHigh,
+    kInput,
+    kInputPullUp
+  };
 
   Gpio(unsigned int line, Mode mode, const char* chip = "/dev/gpiochip0")
       : chip_(gpiod_chip_open(chip)), line_(line), request_(nullptr) {
@@ -30,6 +35,7 @@ class Gpio {
   // Returns 0, 1, or -1 when the line is not usable.
   int Get() const {
     if (request_ == nullptr) return -1;
+
     const gpiod_line_value value =
         gpiod_line_request_get_value(request_, line_);
     return value == GPIOD_LINE_VALUE_ERROR ? -1 : static_cast<int>(value);
@@ -37,10 +43,11 @@ class Gpio {
 
   bool Set(int value) {
     if (request_ == nullptr) return false;
+
     return gpiod_line_request_set_value(request_, line_,
-                                        value != 0 ? GPIOD_LINE_VALUE_ACTIVE
-                                                   : GPIOD_LINE_VALUE_INACTIVE)
-           == 0;
+                                        value != 0
+                                            ? GPIOD_LINE_VALUE_ACTIVE
+                                            : GPIOD_LINE_VALUE_INACTIVE) == 0;
   }
 
   // Single-wire sensors drive the line and then listen on it, so the
@@ -48,18 +55,23 @@ class Gpio {
   bool Reconfigure(Mode mode) {
     Release();
     if (chip_ == nullptr) return false;
+
     gpiod_line_settings* settings = gpiod_line_settings_new();
     gpiod_line_config* lines = gpiod_line_config_new();
     gpiod_request_config* request = gpiod_request_config_new();
+
     if (settings != nullptr && lines != nullptr && request != nullptr &&
         Apply(settings, mode) &&
         gpiod_line_config_add_line_settings(lines, &line_, 1, settings) == 0) {
       gpiod_request_config_set_consumer(request, "mep");
       request_ = gpiod_chip_request_lines(chip_, request, lines);
     }
+
+    // Free the temporary configuration objects.
     if (request != nullptr) gpiod_request_config_free(request);
     if (lines != nullptr) gpiod_line_config_free(lines);
     if (settings != nullptr) gpiod_line_settings_free(settings);
+
     return request_ != nullptr;
   }
 
@@ -78,13 +90,16 @@ class Gpio {
                              : GPIOD_LINE_DIRECTION_INPUT) != 0) {
       return false;
     }
+
     // v2 defaults to "as is", which leaves an input floating. The external
     // 10k is still the primary pull-up; this only keeps a loose one working.
     if (mode == kInputPullUp) {
-      return gpiod_line_settings_set_bias(settings,
-                                          GPIOD_LINE_BIAS_PULL_UP) == 0;
+      int res = gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_PULL_UP);
+      return res == 0;
     }
+
     if (!output) return true;
+
     return gpiod_line_settings_set_output_value(
                settings, mode == kOutputHigh ? GPIOD_LINE_VALUE_ACTIVE
                                              : GPIOD_LINE_VALUE_INACTIVE) == 0;

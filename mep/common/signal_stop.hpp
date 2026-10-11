@@ -18,11 +18,11 @@
 // Each lab program is a single translation unit, so the flag living in an
 // unnamed namespace is correct here: one program, one flag.
 
-namespace {
+namespace {  // NOLINT
 volatile sig_atomic_t g_stop_requested = 0;
 
 void HandleStopSignal(int signal_number) {
-  (void)signal_number;
+  (void) signal_number;
   g_stop_requested = 1;
 }
 }  // namespace
