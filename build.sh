@@ -10,8 +10,11 @@
 #   Build a PDF/PPTX slide deck from a chapter README.md, expanding external
 #   code placeholders, syntax-checking the included sources, and invoking
 #   marp-cli for the conversion.
+#   Internal scratch files use TMPDIR (default /tmp) and are cleaned on exit.
+#   TEMP_MARKDOWN and OUTPUT remain at the explicitly requested paths.
 #
 #   The placeholder syntax is Markdown-compatible:
+#     [//]: # "INCLUDE: filename [--from N] [--to M] [--no-comment] [--reference]"
 #     [//]: # (INCLUDE: filename [--from N] [--to M] [--no-comment] [--reference])
 #
 # Arguments:
@@ -62,6 +65,38 @@ error_exit() {
   exit "${2:-1}"
 }
 
+validate_include_range_guards() {
+  local filename="$1"
+  local range_start="$2"
+  local range_end="$3"
+  local line_count
+  local opening_guard
+  local closing_guard
+  local marker='DO NOT CONTAIN THIS LINE IN THE MARKDOWN'
+
+  if [[ ! "${range_start}" =~ ^[0-9]+$ ]] || [[ ! "${range_end}" =~ ^[0-9]+$ ]]; then
+    error "Ranged INCLUDE must specify both --from and --to: ${filename}"
+    return 1
+  fi
+
+  line_count=$(awk 'END { print NR }' "${filename}")
+  if ((range_start <= 1 || range_end >= line_count || range_start > range_end)); then
+    error "Invalid guarded range ${range_start}-${range_end}: ${filename}"
+    return 1
+  fi
+
+  opening_guard=$(sed -n "$((range_start - 1))p" "${filename}")
+  closing_guard=$(sed -n "$((range_end + 1))p" "${filename}")
+  if [[ ! "${opening_guard}" =~ ^[[:space:]]*#if[[:space:]]+[01].*${marker} ]]; then
+    error "Missing #if 0/#if 1 marker before line ${range_start}: ${filename}"
+    return 1
+  fi
+  if [[ ! "${closing_guard}" =~ ^[[:space:]]*#endif.*${marker} ]]; then
+    error "Missing #endif marker after line ${range_end}: ${filename}"
+    return 1
+  fi
+}
+
 # Determine the course directory from the source path, which is laid out as
 #   <course>/<NN>/README.md
 # so the course owning this chapter is the parent of the chapter directory.
@@ -85,7 +120,7 @@ resolve_syntax_lang() {
 process_file() {
   # Create a fresh temp directory for syntax checking (cleaned up by EXIT trap).
   [ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"
-  SYNTAX_TMP=$(mktemp -d "${SYNTAX_LANG:-.}/tmp_syntax_XXXXXX")
+  SYNTAX_TMP=$(mktemp -d "${TMPDIR:-/tmp}/lecture-notes-build.XXXXXX")
   mkdir -p "${SYNTAX_TMP}/src"
 
   info "Processing ${SRC_MD}..."
@@ -95,10 +130,14 @@ process_file() {
 
   # Read the source markdown file line by line
   while IFS= read -r line; do
-    # Check for Markdown placeholder: [//]: # (INCLUDE: filename)
-    if echo "$line" | grep -qE '^\[\/\/\]:[[:space:]]*#[[:space:]]*\(INCLUDE:'; then
-      # Extract the full argument string inside the parentheses
-      args=$(echo "$line" | sed -E 's/^\[\/\/\]:[[:space:]]*#[[:space:]]*\((INCLUDE:.*)\).*/\1/')
+    # Check for Markdown placeholders: [//]: # (INCLUDE: ...) or [//]: # "INCLUDE: ..."
+    if echo "$line" | grep -qE '^\[\/\/\]:[[:space:]]*#[[:space:]]*(\(INCLUDE:|"INCLUDE:)'; then
+      # Extract the full argument string from either supported placeholder form
+      if echo "$line" | grep -qE '^\[\/\/\]:[[:space:]]*#[[:space:]]*\(INCLUDE:'; then
+        args=$(echo "$line" | sed -E 's/^\[\/\/\]:[[:space:]]*#[[:space:]]*\((INCLUDE:.*)\).*/\1/')
+      else
+        args=$(echo "$line" | sed -E 's/^\[\/\/\]:[[:space:]]*#[[:space:]]*"(INCLUDE:.*)"/\1/')
+      fi
       # Split the argument string into an array
       read -ra tokens <<<"$args"
 
@@ -153,18 +192,35 @@ process_file() {
         range_to+=("")
       fi
 
+      if [ -f "${filename}" ] && [ "${#range_from[@]}" -gt 0 ] &&
+        [ "${no_comment}" = "true" ]; then
+        for ((r = 0; r < ${#range_from[@]}; r++)); do
+          validate_include_range_guards \
+            "${filename}" "${range_from[$r]}" "${range_to[$r]}" ||
+            error_exit "Guard validation failed for INCLUDE in ${SRC_MD}."
+        done
+      fi
+
       # Determine language based on file extension
       ext="${filename##*.}"
       lang=""
-      case "$ext" in
-      c | h | i) lang="c" ;;
-      cpp | cc | cxx | hpp) lang="cpp" ;;
-      py) lang="python" ;;
-      sh) lang="bash" ;;
-      java) lang="java" ;;
-      js) lang="javascript" ;;
-      *) lang="" ;; # No language specified
-      esac
+      if [ "$(basename "${filename}")" = "Dockerfile" ]; then
+        lang="dockerfile"
+      else
+        case "$ext" in
+        c | h | i) lang="c" ;;
+        cpp | cc | cxx | hpp) lang="cpp" ;;
+        py) lang="python" ;;
+        sh) lang="bash" ;;
+        java) lang="java" ;;
+        js) lang="javascript" ;;
+        cmake) lang="cmake" ;;
+        txt)
+          [ "$(basename "${filename}")" = "CMakeLists.txt" ] && lang="cmake"
+          ;;
+        *) lang="" ;; # No language specified
+        esac
+      fi
 
       info "Including file: ${filename} (language: ${lang})"
 
@@ -189,8 +245,8 @@ process_file() {
       if [ -f "${filename}" ] && [ -n "${lang}" ]; then
         mkdir -p "$(dirname "${syntax_dest}")"
         cp "${filename}" "${syntax_dest}"
-      elif [ "${reference}" = "true" ] && [ ! -f "${filename}" ]; then
-        warn "Reference file not found: ${filename}"
+      elif [ ! -f "${filename}" ]; then
+        error_exit "INCLUDE file not found: ${filename}"
       fi
 
       # --reference: stage only, do not add a code block to markdown.
@@ -201,7 +257,7 @@ process_file() {
 
       # Write the fenced code block start (with language hint if available)
       echo '```'"${lang}" >>"$TMP_MD"
-      # Append the content of the file (if exists); if not, create an empty file using touch.
+      # Append the content of the included file.
       if [ -f "$filename" ]; then
         num_ranges=${#range_from[@]}
 
@@ -247,8 +303,7 @@ process_file() {
           fi
         fi
       else
-        echo "// Warning: File ${filename} not found; creating empty file." >>"$TMP_MD"
-        touch "$filename"
+        error_exit "INCLUDE file not found: ${filename}"
       fi
       # Write the fenced code block end
       echo '```' >>"$TMP_MD"
@@ -260,10 +315,9 @@ process_file() {
 
   # Run syntax check on all collected source files before building.
   if [ -n "${SYNTAX_LANG}" ]; then
-    local syntax_tmp_name
-    syntax_tmp_name="$(basename "${SYNTAX_TMP}")"
     info "Running syntax check on collected files..."
-    if ! "${SYNTAX_LANG}/check_syntax.sh" "${syntax_tmp_name}"; then
+    if ! "${SYNTAX_LANG}/check_syntax.sh" "${SYNTAX_TMP}" \
+      "${SYNTAX_TMP}/error_file_lists.txt"; then
       error "Syntax check failed. Fix the errors above before building."
       exit 1
     fi
@@ -272,7 +326,7 @@ process_file() {
   TYPE="${OUTPUT##*.}"
   info "Converting to ${TYPE}..."
 
-  npx marp "$TMP_MD" \
+  TMPDIR="${SYNTAX_TMP}" npx marp "$TMP_MD" \
     --no-stdin \
     --engine engine.js \
     "--${TYPE}" \
@@ -314,7 +368,9 @@ main() {
   resolve_syntax_lang
 
   # Clean up the syntax-check temp dir on any exit path.
-  trap '[ -n "${SYNTAX_TMP}" ] && rm -rf "${SYNTAX_TMP}"' EXIT INT TERM
+  trap '[ -z "${SYNTAX_TMP}" ] || rm -rf "${SYNTAX_TMP}"' EXIT
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
 
   if [[ "${LOOP_MODE}" = "true" ]]; then
     # Infinite loop for real-time processing
