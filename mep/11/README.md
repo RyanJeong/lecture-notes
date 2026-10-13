@@ -2,314 +2,257 @@
 
 # 마이크로임베디드프로그래밍
 
-## 센서 통합과 웹 서비스
+## 실습 2 - LED와 스위치, PWM, 상태 기계
 
 ### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
 
 ---
 
-## 이 장의 구성 (Contents)
+## 실습 2 - 목표 (Goals)
 
-| 구분   | 내용                                          |
-| ------ | --------------------------------------------- |
-| 설계   | 여러 센서를 하나의 프로그램으로 통합하는 구조 |
-| 동시성 | 수집 스레드와 서비스 스레드의 분리            |
-| 서비스 | HTTP로 측정값을 제공하고 브라우저에서 확인    |
+- 디지털 **출력**으로 LED를 켜고, 디지털 **입력**으로 스위치를 읽음
+- 스위치 접점의 **바운싱**을 소프트웨어로 걸러 냄
+- **PWM**으로 디지털 핀에서 밝기를 만들어 냄
+- **상태 기계**로 시간과 이벤트가 섞인 동작을 정리함
 
-- 지금까지의 실습을 **하나의 시스템으로 합치는** 첫 단계
-
----
-
-## 왜 통합이 어려운가 (Why Integration Is Hard)
-
-- 센서 하나를 읽는 것과, 여러 센서를 동시에 운용하는 것은 다른 문제
-
-| 문제             | 설명                                             |
-| ---------------- | ------------------------------------------------ |
-| 주기가 다름      | DHT11은 1초 이상, 초음파는 훨씬 빠르게 측정 가능 |
-| 소요 시간이 다름 | 어떤 센서는 읽는 데 수십 ms가 걸림               |
-| 실패가 전파됨    | 센서 하나가 멈추면 전체가 멈출 수 있음           |
-| 소비자가 다름    | 웹 요청은 언제 올지 모름                         |
-
-### 잘못된 설계
-
-```cpp
-while (true) {
-  ReadDht11();      /* takes 20 ms or more */
-  ReadCds();
-  ReadUltrasonic();
-  HandleHttpRequest();   /* delayed by the sensor reads above */
-}
-```
-
-> 하나의 루프에 모두 넣으면 **가장 느린 센서가 전체 응답 속도를 결정**함
+| 프로그램              | 주제                     |
+| --------------------- | ------------------------ |
+| `00_led_button.cc`    | 디지털 입출력과 디바운스 |
+| `01_pwm_dimmer.cc`    | 소프트웨어 PWM           |
+| `02_state_machine.cc` | 시간·이벤트 상태 전이    |
 
 ---
 
-## 실습 06 - 센서 데이터 실시간 웹서버
+## 실습 2 - 사용 부품과 핀 배치 (Parts and Pins)
 
-<!-- IMAGE [목업] 웹 대시보드 화면 목업 - 온습도·조도·거리 실시간 표시 (img/17-dashboard-mockup.png) -->
+| 부품        | 수량 | 연결      |
+| ----------- | ---- | --------- |
+| LED         | 2    | 330Ω 직렬 |
+| 푸시버튼    | 2    | 10kΩ 풀업 |
+| 점퍼 케이블 | 다수 | —         |
 
-- 지금까지의 센서(온습도, 조도, 초음파)를 **하나의 프로그램으로 통합**
-- 측정값을 웹 대시보드로 실시간 표현
-- 센서 추상화와 모듈 분리를 경험
+| 신호      | BCM | 쓰이는 프로그램 |
+| --------- | --- | --------------- |
+| LED(빨강) | 17  | 2-A, 2-B, 2-C   |
+| LED(초록) | 27  | 2-C             |
+| 버튼 1    | 23  | 2-A, 2-C        |
+| 버튼 2    | 24  | 2-B             |
 
-### 시스템 구성
+---
+
+## 실습 2 - 풀업 회로의 동작 (Pull-Up)
+
+![h:230 center](img/05-switch.png)
+
+- 4핀 택트 스위치는 마주 보는 두 쌍이 **내부에서 이미 연결**되어 있음
+- 10kΩ으로 핀을 3.3V에 묶고, 스위치는 핀과 GND 사이에 연결
+- 평상시 **HIGH**, 누르면 **LOW** — 한 번의 누름은 HIGH→LOW 변화 하나
+- 저항 없이 연결하면 누르는 순간 3.3V와 GND가 직결되어 **단락**
+
+---
+
+## 실습 2-A - 회로도 (Schematic)
+
+![h:330 center](img/04-lab01-circuit.png)
+
+---
+
+## 실습 2-A - 브레드보드 배치 (Breadboard Layout)
+
+![h:340 center](img/20-lab01-layout.png)
+
+---
+
+## 실습 2 - 구성과 빌드 (Layout and Build)
 
 ```text
-[DHT11]  ---+
-[CdS+ADC]---+--> collector thread --> shared state --> HTTP server --> browser
-[HC-SR04]---+                          (mutex)
-```
-
-- 센서 수집과 웹 서비스는 **주기가 다르므로** 분리해야 함
-
----
-
-## 실습 06 - 설계 (Design)
-
-<!-- IMAGE [블록도] 센서 수집 스레드 - 공유 상태 - HTTP 서버 - 브라우저 구성도 (img/16-lab06-architecture.png) -->
-
-### 센서 인터페이스 추상화
-
-```cpp
-class Sensor {
- public:
-  virtual ~Sensor() = default;
-  virtual bool Read(float* out) = 0;
-  virtual const char* name() const = 0;
-};
-```
-
-- 각 센서가 이 인터페이스를 구현하면, 수집 루프는 센서 종류를 몰라도 됨
-- 센서를 추가할 때 수집 루프를 수정할 필요가 없음
-
-### 공유 상태
-
-- 수집 스레드가 쓰고 웹 스레드가 읽으므로 **`std::atomic`** 또는 뮤텍스 필요
-- `volatile`은 이 목적에 **적합하지 않음**(이론 10주차 참조)
-
----
-
-## 실습 06 - 구성과 빌드 (Layout and Build)
-
-- 실습 03~05의 센서 코드를 **공용 드라이버 헤더**로 옮기고, 하나의 프로그램이 모두 사용
-- 공용 헤더(`common/`)의 **전체 코드는 9장 부록**을 참조 — 필요한 부분은 이 장에서 발췌해 인용
-
-```text
-project/
+mep/
 ├── common/
-│   ├── gpio_helper.hpp        # RAII wrapper
-│   ├── signal_stop.hpp        # Ctrl-C stop flag
-│   ├── dht11.hpp              # lab 03: single-wire protocol
-│   ├── mcp3008.hpp            # lab 04: SPI ADC
-│   └── hcsr04.hpp             # lab 05: ultrasonic distance
-└── 11/src/
-    └── 00_sensor_hub.cc
+│   ├── gpio.hpp
+│   └── signal_stop.hpp
+└── lab02/src/
+    ├── 00_led_button.cc
+    ├── 01_pwm_dimmer.cc
+    └── 02_state_machine.cc
 ```
 
 ```bash
-cd project/11/src
-clang++ -std=c++14 -Wall -Wextra -I../../common \
-  00_sensor_hub.cc -o sensorhub -lgpiod -llgpio -pthread
-./sensorhub                    # Ctrl-C to stop
-# then open http://<pi-address>:8080/ in a browser
+cd mep/lab02/src
+clang++ -std=c++14 -Wall -Wextra -I../../common 00_led_button.cc -o led -lgpiod
+./led
 ```
 
-- 스레드를 쓰므로 `-pthread`가 추가로 필요
-- 센서 배선은 실습 03~05를 **그대로 합친 것** — 새로 옮길 배선이 없음
+- 세 프로그램 모두 같은 방식으로 빌드
 
 ---
 
-## 실습 06 - 센서 인터페이스 (Sensor Interface)
+## 실습 2-A - 핀과 상수 (Pins and Constants)
 
-- 수집 루프가 센서의 종류를 모르게 하는 것이 목적
+[//]: # "INCLUDE: ./mep/11/src/00_led_button.cc --from 10 --to 15 --no-comment"
 
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 42 --to 54"
-
-- `Describe()`는 선택 사항 — 채널이 자기 상태를 **이름**으로 설명할 수 있게 함
-- DHT11은 한 번의 변환으로 **두 값**을 주므로, 장치 하나를 두 채널이 공유
-  - `Dht11Device`가 최소 측정 간격과 캐시를 담당하고, 채널은 그 위의 얇은 껍데기
+- 핀 번호는 **BCM 번호** — 헤더의 물리적 핀 번호와 다름
 
 ---
 
-## 실습 06 - 채널 구현 (Channel Implementations)
+## 실습 2-A - 라인 확보 (Claiming the Lines)
 
-- DHT11 채널 — `Dht11Humidity`도 습도를 꺼낸다는 점만 다른 같은 모양
+[//]: # "INCLUDE: ./mep/11/src/00_led_button.cc --from 27 --to 32 --no-comment"
 
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 57 --to 70"
-
----
-
-## 실습 06 - 채널 구현 (Cont'd - 1)
-
-- 조도 — ADC의 원시 값을 전압으로 바꿔 내보냄
-
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 88 --to 98"
+- 생성자가 gpiochip 라인 오프셋을 요청; `ok()`로 성공 확인, 소멸자에서 해제
 
 ---
 
-## 실습 06 - 채널 구현 (Cont'd - 2)
+## 실습 2-A - 디바운스 규칙 (Debounce Rule)
 
-- 조도 — 전압만으로는 밝기를 알 수 없으므로 **상태 이름**을 함께 제공
-
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 99 --to 110"
-
-- 대시보드 표기는 `bright (2.41 V)` 형식 — 상태가 앞, 근거가 되는 전압은 괄호에
+[//]: # "INCLUDE: ./mep/11/src/00_led_button.cc --from 44 --to 57 --no-comment"
 
 ---
 
-## 실습 06 - 채널 구현 (Cont'd - 3)
+## 실습 2 - 스위치 바운싱 (Switch Bouncing)
 
-- 거리 — 각 채널은 자기 장치만 알고, 서로를 모름
+![h:200 center](img/09-chattering.png)
 
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 113 --to 124"
+- 금속 접점이 붙는 순간 수 ms 동안 **여러 번 붙었다 떨어짐**
+- 그대로 읽으면 한 번 눌렀는데 여러 번 눌린 것으로 처리됨
 
----
+### 걸러 내는 규칙
 
-## 실습 06 - 실패 사유 전달 (Reporting Why)
-
-- 대시보드에 `--`만 뜨면 **어느 배선이 잘못됐는지** 알 수 없음
-
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 125 --to 140"
+- 누름은 **즉시** 보고하고, 라인이 설정 시간 동안 계속 HIGH여야 다시 무장
+- 단순히 "N ms 동안 무시"는 부족함 — N보다 긴 채터는 두 번 세어짐
 
 ---
 
-## 실습 06 - 공유 상태 (Shared State)
+## 실습 2-B - 디지털 핀으로 밝기 만들기 (PWM)
 
-- 수집 스레드가 쓰고 웹 스레드가 읽으므로 **뮤텍스**로 보호
+![h:200 center](img/06-pwm.png)
 
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 143 --to 155"
-
----
-
-## 실습 06 - 스냅샷 (Snapshot)
-
-- 웹 스레드는 **한 회차 전체**를 한 번에 복사해 간 뒤 잠금을 놓음
-
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 156 --to 173"
+- GPIO는 HIGH 아니면 LOW뿐이므로, **눈보다 빠르게 전환**해 밝기를 만듦
+- 한 주기에서 HIGH인 비율이 **듀티 비(duty cycle)**이며 그것이 곧 밝기
+- 100단계 × 100µs = 10ms 주기 = **100Hz** — 깜빡임이 보이지 않는 속도
 
 ---
 
-## 실습 06 - 왜 `atomic`이 아닌가 (Why a Mutex)
+## 실습 2-B - PWM 상수 (PWM Constants)
 
-- 값이 **여러 개**이므로 각각을 `std::atomic`으로 두는 것만으로는 부족함
-
-```text
-collector: writes temp=26 ... (preempted here) ... writes distance=15
-web:                snapshot -> temp 26 (this sweep) + distance 8 (last sweep)
-```
-
-- 필드마다 원자적이어도 **함께 바뀌지는 않음** → 서로 다른 회차의 값이 섞임
-- 한 번에 한 회차만 보이게 하려면 묶어서 잠가야 함
-- `volatile`은 이 목적에 **전혀 맞지 않음** — 최적화만 막을 뿐 동기화가 아님
+[//]: # "INCLUDE: ./mep/11/src/01_pwm_dimmer.cc --from 13 --to 18 --no-comment"
 
 ---
 
-## 실습 06 - 실패 격리 (Isolating Failures)
+## 실습 2-B - 순수 함수 (Pure Functions)
 
-- 센서 하나가 빠져도 나머지는 계속 살아 있어야 함
+[//]: # "INCLUDE: ./mep/11/src/01_pwm_dimmer.cc --from 24 --to 31 --no-comment"
 
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 182 --to 194"
-
-- 각 채널의 성공 여부를 함께 저장해 두고, 대시보드는 실패한 값을 `--`로 표시
-- DHT11을 뽑아도 조도와 거리는 계속 갱신되는지 확인해 볼 것
+- 두 함수 모두 하드웨어를 건드리지 않음 — 호스트에서 시험 가능
 
 ---
 
-## 실습 06 - 두 개의 루프 (Two Loops)
+## 실습 2-B - PWM 주기 (One PWM Period)
 
-- 수집은 0.5초 주기, 웹 응답은 브라우저가 물을 때 — **주기가 다르므로 스레드도 다름**
+[//]: # "INCLUDE: ./mep/11/src/01_pwm_dimmer.cc --from 51 --to 70 --no-comment"
 
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 345 --to 355"
-
----
-
-## 실습 06 - 수락 루프와 종료 (Accept and Shutdown)
-
-[//]: # "INCLUDE: ./mep/11/src/00_sensor_hub.cc --from 361 --to 376"
-
-- `poll()`에 시간 제한을 두어 접속이 없어도 주기적으로 종료 플래그를 확인
-- `join()`으로 수집 스레드가 끝나기를 기다린 뒤에야 소켓을 닫음
+- 버튼을 PWM 주기 안에서 읽으므로 밝기를 유지한 채 입력을 받음
 
 ---
 
-## 실습 06 - 과제 (Tasks)
+## 실습 2-B - 소프트웨어 PWM과 하드웨어 PWM
 
-1. 세 센서를 연결해 대시보드에 네 채널이 모두 갱신되는지 확인
-2. DHT11의 데이터선을 뽑고, 나머지 두 센서가 계속 갱신되는지 확인
-3. `curl http://localhost:8080/api`로 JSON을 직접 확인
-4. 수집 주기를 0.1초로 줄여 보고, DHT11의 `updates` 증가 속도가 왜 그대로인지 설명
-5. 센서를 하나 더 추가 — 수집 루프를 고치지 않고도 되는지 확인
+| 구분      | 소프트웨어 PWM        | 하드웨어 PWM      |
+| --------- | --------------------- | ----------------- |
+| 생성 주체 | CPU가 직접 전환       | 전용 타이머 회로  |
+| 사용 핀   | 아무 GPIO나 가능      | 지정된 핀에서만   |
+| CPU 부담  | 주기마다 깨어나야 함  | 설정 후 부담 없음 |
+| 흔들림    | 다른 작업에 밀려 떨림 | 거의 없음         |
+
+- LED 밝기 정도는 소프트웨어로 충분하지만, 서보·모터는 **하드웨어 PWM**이 필요
+
+---
+
+## 실습 2-C - 왜 상태 기계인가 (Why a State Machine)
+
+- 시간과 이벤트가 섞이면 플래그 몇 개로는 곧 감당이 되지 않음
+- **상태에 이름을 붙이는 순간** 동작을 그림으로 그릴 수 있게 됨
+
+### 구성 요소
+
+| 요소        | 이 실습에서                      |
+| ----------- | -------------------------------- |
+| 상태        | `CAR GO`, `WARN`, `WALK`         |
+| 시간 전이   | 정해진 시간이 지나면 다음 상태로 |
+| 이벤트 전이 | 버튼이 녹색 구간을 앞당김        |
+| 출력        | 상태만으로 결정되는 LED 점등     |
+
+---
+
+## 실습 2-C - 상태 전이 (State Transition)
+
+| 상태     | 지속 | 빨강 | 초록   | 다음     |
+| -------- | ---- | ---- | ------ | -------- |
+| `CAR GO` | 10초 | off  | on     | `WARN`   |
+| `WARN`   | 3초  | off  | 깜빡임 | `WALK`   |
+| `WALK`   | 8초  | on   | off    | `CAR GO` |
+
+- 버튼은 `CAR GO` 구간만 앞당기며, **최소 녹색 시간 2초**는 보장
+- 다른 구간에서 누른 요청은 버려지지 않고 **걸려 있다가** 다음 녹색에 적용
+- 열 번 눌러도 한 번 누른 것과 같음
+
+---
+
+## 실습 2-C - 회로도 (Schematic)
+
+![h:330 center](img/08-lab02-circuit.png)
+
+---
+
+## 실습 2-C - 브레드보드 배치 (Breadboard Layout)
+
+![h:340 center](img/21-lab02-layout.png)
+
+---
+
+## 실습 2-C - 상태 정의 (Defining the States)
+
+[//]: # "INCLUDE: ./mep/11/src/02_state_machine.cc --from 20 --to 27 --no-comment"
+
+- 지속 시간과 이름을 배열로 두면 상태 추가가 한 줄로 끝남
+
+---
+
+## 실습 2-C - 출력 함수 (Output Functions)
+
+[//]: # "INCLUDE: ./mep/11/src/02_state_machine.cc --from 32 --to 37 --no-comment"
+
+- 출력이 상태만의 함수이므로 배선이 순서와 어긋날 수 없음
+
+---
+
+## 실습 2-C - 전이 규칙 (Transitions)
+
+[//]: # "INCLUDE: ./mep/11/src/02_state_machine.cc --from 74 --to 84 --no-comment"
+
+- 이벤트 전이가 먼저, 그다음 시간 전이 — 순서가 바뀌면 요청이 한 회차 늦게 반영됨
+
+---
+
+## 실습 2 - 과제 (Tasks)
+
+1. 2-A를 빌드해 버튼으로 LED가 토글되는지 확인하고, 디바운스 시간을 0으로 바꿔 차이를 관찰
+2. 2-B에서 `kPwmSteps`를 10으로 줄여 깜빡임이 보이기 시작하는 지점을 찾을 것
+3. 2-C에 노란색 LED를 추가해 `WARN` 구간을 별도 LED로 표시하도록 확장
+4. 2-C에서 버튼을 `WALK` 구간에 눌렀을 때 요청이 어떻게 처리되는지 로그로 확인
 
 ### 고찰 항목
 
-- 센서마다 측정 주기가 다를 때(DHT11은 1초 이상) 어떻게 설계했는가
-- 수집 스레드와 웹 스레드가 같은 데이터를 접근할 때의 동기화 방법
-- 센서 하나가 실패해도 전체가 멈추지 않도록 하려면
+- 디바운스를 "N ms 무시"로 구현하면 어떤 경우에 실패하는가
+- 듀티 비와 밝기가 선형으로 느껴지지 않는 이유는 무엇인가
+- 상태 기계로 바꾸기 전과 후의 코드 복잡도를 비교
 
 ---
 
-## 동시성 설계 (Concurrency Design)
+## 실습 2 정리 (Summary)
 
-<!-- IMAGE [블록도] 센서별 수집 스레드 -> 공유 상태(atomic) -> HTTP 서버 스레드 (img/17-concurrency.png) -->
+- 입력은 **풀업**으로 확정시키고, 접점 바운싱은 소프트웨어로 걸러 냄
+- PWM의 **듀티 비**가 곧 밝기이며, 주기가 충분히 짧아야 깜빡임이 보이지 않음
+- 출력을 **상태만의 함수**로 두면 배선이 순서와 어긋나지 않음
+- 시간 전이와 이벤트 전이를 나누어 두면 요청을 버리지 않고 처리할 수 있음
 
-```text
-[collector thread]  --updates periodically-->  [shared state]  <--reads--  [HTTP thread]
-                                                    mutex
-```
-
-- 수집과 서비스를 **분리**하면 서로의 지연에 영향받지 않음
-- 공유 상태 접근에는 6장에서 배운 **`std::atomic`** 또는 뮤텍스를 사용
-  - `volatile`은 이 목적에 **적합하지 않음**
-
-### 센서별 주기 관리
-
-```cpp
-struct SensorSlot {
-  const char* name;
-  int period_ms;      /* each sensor has its own period */
-  long next_due_ms;   /* when this sensor is due next */
-};
-```
-
-- 각 센서의 다음 측정 시각을 기록해 **도래한 것만** 읽음
-- 실패한 센서는 다음 주기에 재시도하고, 연속 실패 시 상태를 표시
-
----
-
-## 데이터 표현 (Data Representation)
-
-- 웹으로 내보낼 때는 **JSON**이 사실상 표준
-
-```json
-{
-  "timestamp": 1735689600,
-  "temperature": 23.4,
-  "humidity": 45.0,
-  "light": 512,
-  "distance_cm": 87.5,
-  "status": { "dht11": "ok", "cds": "ok", "hcsr04": "error" }
-}
-```
-
-### 설계 시 고려할 점
-
-- 측정 시각을 함께 보내면 **값이 언제 것인지** 알 수 있음
-- 센서별 상태를 함께 보내면 브라우저에서 고장을 표시할 수 있음
-- 실패한 센서 값은 **0이 아니라 null 또는 이전 값**으로 구분해 표현할 것
-  - 0을 쓰면 "측정값 0"과 "측정 실패"를 구분할 수 없음
-
----
-
-## 11장 정리 (Summary)
-
-- 센서를 통합할 때의 핵심 문제는 **주기·소요 시간·실패의 차이**
-- 하나의 루프에 모두 넣으면 가장 느린 센서가 전체를 지배함
-- **수집 스레드와 서비스 스레드를 분리**하고, 공유 상태는 한 회차 전체를 뮤텍스로 보호
-- 센서 인터페이스를 **추상화**하면 센서를 추가해도 수집 루프를 고치지 않아도 됨
-- 데이터에는 **측정 시각과 센서별 상태**를 함께 담을 것
-  - 실패를 0으로 표현하지 말 것
-- 이 구조가 실습 14 미니 CCTV의 뼈대가 됨
-
-> 다음 장에서는 센서 대신 카메라와 마이크를 다룸
+> 다음 실습에서는 온습도·조도·거리 센서를 읽어 물리량을 다룸
