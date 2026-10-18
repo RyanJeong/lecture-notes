@@ -10,8 +10,8 @@ namespace {
 constexpr unsigned int kLedPin = 17;
 constexpr unsigned int kButtonPin = 24;
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-// 100 steps of 100 us is a 10 ms period, or 100 Hz -- fast enough that the
-// eye sees steady brightness rather than blinking.
+// Ignoring GPIO and scheduling overhead, 100 steps of 100 us is a 10 ms
+// period. The actual software PWM period is longer and can vary.
 constexpr int kPwmSteps = 100;
 constexpr int kStepUs = 100;
 constexpr int kSampleSteps = 10;     // read the button every ~1 ms
@@ -21,8 +21,8 @@ constexpr long kSettleMs = 50;
 }  // namespace
 
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-// A GPIO is only HIGH or LOW, so brightness comes from switching faster than
-// the eye can follow. The fraction of the period spent HIGH is the duty cycle.
+// A GPIO is only HIGH or LOW, so brightness is controlled by the fraction of
+// each period spent HIGH.
 bool PwmLevel(int step, int duty_percent) { return step < duty_percent; }
 
 // Walks the brightness up and wraps back to off.
