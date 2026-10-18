@@ -181,7 +181,7 @@ sudo apt install -y \
 
 ---
 
-## GPIO 기초 - 출력 회로와 전류 (Output and Current)
+## GPIO 기초 - 출력 회로 (Output)
 
 ![h:100 center](img/01-gpio-led.png)
 
@@ -196,16 +196,11 @@ sudo apt install -y \
 
 ---
 
-## GPIO 기초 - 출력 회로와 전류 (Output and Current) (Cont'd)
+## GPIO 기초 - 출력 회로 (Output) (Cont'd)
 
 ### 저항
 
-![h:250 center](img/03-register.png)
-
-### 전류 한계
-
-- 핀당·전체 전류 한도와 권장 동작 조건은 보드 데이터시트에서 확인
-- 절대 최대 정격은 설계 목표가 아님; 모터·릴레이는 **트랜지스터나 드라이버** 사용
+![h:350 center](img/03-register.png)
 
 ---
 
@@ -304,7 +299,7 @@ sudo usermod -aG gpio,video,audio "$USER"
 
 ## 부록 - gpio.hpp (Cont'd - 6)
 
-[//]: # "INCLUDE: ./mep/common/gpio.hpp --from 100 --to 113"
+[//]: # "INCLUDE: ./mep/common/gpio.hpp --from 100"
 
 - 일반 입력 `kInput`은 바이어스를 별도로 지정하지 않으므로, 회로에 풀 저항이 없으면 입력이 플로팅될 수 있음
 - 출력 모드는 `kOutputLow` 또는 `kOutputHigh`에 따라 초기 출력값을 설정
