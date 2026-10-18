@@ -10,7 +10,7 @@
 namespace {
 constexpr unsigned int kLedPin = 17;     // BCM 17, through a 330 ohm resistor
 constexpr unsigned int kButtonPin = 23;  // BCM 23, 10k pull-up to 3.3V
-constexpr int kPollUs = 1000;
+constexpr int kPollIntervalMs = 1000;
 constexpr long kSettleMs = 50;  // line must idle HIGH this long to re-arm
 }  // namespace
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
@@ -32,7 +32,7 @@ int main() {
   }
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
 
-  bool lit = false;
+  bool led_is_on = false;
   bool armed = false;
   long last_low = 0;
   std::printf("press GPIO%u to toggle. Ctrl-C to stop\n", kButtonPin);
@@ -47,16 +47,16 @@ int main() {
       last_low = now;
       if (armed) {
         armed = false;
-        lit = !lit;
-        if (!led.Set(lit ? 1 : 0)) return 1;
-        std::printf("LED %s\n", lit ? "on" : "off");
+        led_is_on = !led_is_on;
+        if (!led.Set(led_is_on ? 1 : 0)) return 1;
+        std::printf("LED %s\n", led_is_on ? "on" : "off");
         std::fflush(stdout);
       }
     } else if (now - last_low >= kSettleMs) {
       armed = true;
     }
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-    usleep(kPollUs);
+    usleep(kPollIntervalMs);
   }
   return led.Set(0) ? 0 : 1;
 }
