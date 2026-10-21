@@ -10,15 +10,15 @@
 
 ## 실습 1 - 목표 (Goals)
 
-- 호스트 PC에서 라즈베리파이용 **arm64 바이너리** 생성
+- **핵심 목표**: 호스트 PC 환경에서 타깃 보드(라즈베리파이)용 **64비트 ARM(arm64) 바이너리** 교차 빌드 및 검증
 
-### 준비물
+### 실습 환경 및 준비 사항
 
-| 항목        | 내용                                       |
-| ----------- | ------------------------------------------ |
-| 호스트      | x86_64 리눅스(또는 **도커**가 동작하는 PC) |
-| 타깃        | 같은 네트워크에 있는 라즈베리파이          |
-| 확인할 정보 | 타깃의 IP 주소와 로그인 계정               |
+| 구분 | 요구 환경 및 상세 내용 |
+| :--- | :--------------------- |
+| **호스트 PC** | x86_64 리눅스 환경(또는 Docker 구동 가능 환경) |
+| **타깃 보드** | 동일 로컬 네트워크에 연결된 라즈베리파이(Raspberry Pi OS 64-bit) |
+| **확인 정보** | 타깃 보드의 IP 주소 및 SSH 로그인 계정/비밀번호 |
 
 ---
 
@@ -26,13 +26,13 @@
 
 ```text
 mep/lab01/
-├── CMakeLists.txt                        # build description
-├── Dockerfile                            # pinned build environment
+├── CMakeLists.txt                         # build description
+├── Dockerfile                             # pinned build environment
 ├── cmake/
 │   └── toolchains/
-│       └── aarch64-linux-gnu.cmake       # which compiler to use
+│       └── aarch64-linux-gnu.cmake        # which compiler to use
 └── src/
-    └── helloworld.cc                 # no libraries at all
+    └── helloworld.cc                      # no libraries at all
 ```
 
 ---
@@ -41,8 +41,8 @@ mep/lab01/
 
 [//]: # "INCLUDE: ./mep/10/src/helloworld.cc"
 
-- `sizeof(void*)`를 출력하는 이유: 타깃에서 **8**이 나와야 arm64 바이너리임
-- `file`을 사용해 바이너리의 아키텍처가 타깃 아키텍처인지 확인 필요
+- **포인터 크기 검증**: `sizeof(void*)` 결과가 **8바이트**로 출력되어야 64비트 타깃 아키텍처(arm64)로 정상 빌드된 상태
+- **바이너리 검증**: 빌드 직후 `file` 명령어를 통해 타깃 아키텍처 일치 여부 필수 확인
 
 ---
 
@@ -58,28 +58,28 @@ aarch64-linux-gnu-g++ -std=c++14 -Wall -Wextra \
         src/helloworld.cc -o hello_pi
 ```
 
-- 툴체인은 `aarch64-linux-gnu-` **접두사**를 가진 컴파일러 모음
-- `g++`를 사용하면 네이티브 빌드가 수행되어 **호스트용 바이너리**가 생성됨
+- **크로스 컴파일러 접두사**: `aarch64-linux-gnu-` 접두사(Prefix)가 부여된 타깃 전용 툴체인 호출
+- **네이티브 빌드 주의**: 일반 `g++` 호출 시 호스트용(x86_64) 바이너리가 생성되어 타깃 실행 불가
 
 ---
 
 ## 실습 1 - 아키텍처 확인 (Verify the Target)
 
-- 크로스 빌드에서 **가장 많이 하는 실수**: 네이티브 빌드를 수행한 후 이를 타깃 환경에서 사용하는 것
+- **빈번한 실수**: 호스트용으로 네이티브 빌드된 결과물을 타깃 보드로 복사하여 실행을 시도하는 경우
 
 ```bash
 file hello_pi
 # ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), ...
 ```
 
-| 출력 결과            | 뜻                                                     |
-| -------------------- | ------------------------------------------------------ |
-| `ARM aarch64`        | 타깃용 — 맞게 생성됨                                   |
-| `x86-64`             | 호스트용 — 크로스 컴파일이 아닌 네이티브 빌드가 수행됨 |
-| `dynamically linked` | 타깃에 해당 `.so`가 있어야 실행됨                      |
-| `statically linked`  | 단독 실행 가능                                         |
+| 출력 문자열 | 의미 및 판정 결과 |
+| :--- | :--- |
+| `ARM aarch64` | **타깃 바이너리**: 라즈베리파이 64비트 환경 전용으로 정상 생성 |
+| `x86-64` | **호스트 바이너리**: 크로스 컴파일이 아닌 네이티브 빌드가 수행된 상태 |
+| `dynamically linked` | **동적 링크**: 타깃 런타임에 일치하는 공유 라이브러리(`.so`) 존재 필요 |
+| `statically linked` | **정적 링크**: 외부 의존성 없이 독립 실행 가능 |
 
-- 아키텍처가 다르면 타깃에서 `cannot execute binary file: Exec format error` 오류가 발생함
+- **오류 증상**: 아키텍처 불일치 시 타깃에서 `cannot execute binary file: Exec format error` 발생
 
 ---
 
@@ -94,9 +94,12 @@ file hello_pi
 [//]: # "INCLUDE: ./mep/10/CMakeLists.txt"
 
 ```bash
+# Configure the build directory with the cross-toolchain file
 cmake -B build-pi \
     -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/aarch64-linux-gnu.cmake \
     -DCMAKE_BUILD_TYPE=Release
+
+# Build the target binary and inspect its architecture
 cmake --build build-pi -j
 file build-pi/hello_pi
 ```
@@ -105,8 +108,8 @@ file build-pi/hello_pi
 
 ## 실습 1 - 방법 C: 도커 (Pinned Environment)
 
-- 도커 이미지 안에 툴체인 등 빌드 환경을 관리하는 방식
-- 일관된 빌드 환경을 간편하게 설정 가능
+- **빌드 환경 고정**: 도커(Docker) 컨테이너 내부에 툴체인 및 빌드 도구를 패키징하여 환경 격리
+- **빌드 재현성 보장**: 호스트 OS 설정 차이와 무관하게 동일한 빌드 결과물 도출
 
 [//]: # "INCLUDE: ./mep/10/Dockerfile"
 
@@ -128,9 +131,8 @@ docker run --rm \
 file out/hello_pi
 ```
 
-- 소스를 **읽기 전용**(`:ro`)으로 마운트하여 컨테이너가 작업 트리를 수정하지 못하게 설정
-- 도커 이미지는 CI 파이프라인에서도 그대로 활용 가능
-  - CI 환경 구축을 빠르게 완료하고 로컬과 동일한 테스트 환경을 보장할 수 있음
+- **소스 트리 보호**: 소스 디렉터리를 **읽기 전용**(`:ro`)으로 바인드 마운트하여 컨테이너에 의한 호스트 파일 변경 방지
+- **CI/CD 파이프라인 연계**: 로컬에서 검증된 도커 이미지를 GitHub Actions 등 자동화 빌드 환경에 그대로 재사용 가능
 
 ---
 
@@ -138,47 +140,48 @@ file out/hello_pi
 
 ```bash
 # 1. Find the target's address (run on the Pi, or check the router)
-hostname -I                    # e.g. 192.168.0.42
+hostname -I                     # e.g. 192.168.0.42
 
 # 2. Copy the binary from the host to the Pi
 scp hello_pi <user>@192.168.0.42:~/
-#      ^ source       ^ destination
+#      ^ source        ^ destination
 
 # 3. Log in and run it on the target
 ssh <user>@192.168.0.42
-chmod +x hello_pi              # restore the executable bit if needed
+chmod +x hello_pi               # restore the executable bit if needed
 ./hello_pi
 # Hello, World!
 # pointer size: 8 bytes
 ```
 
-- `scp <로컬 파일> <사용자>@<주소>:<원격 경로>`
-- `ssh-copy-id <사용자>@<주소>`로 키를 등록하면 비밀번호 입력 과정을 생략할 수 있음
+- **SCP 파일 복사**: `scp <로컬 파일> <사용자>@<주소>:<원격 경로>` 형식으로 타깃 보드에 파일 배포
+- **SSH 키 기반 인증**: `ssh-copy-id <사용자>@<주소>`로 공개키를 등록하면 이후 비밀번호 입력 과정 생략 가능
 
 ---
 
 ## 실습 1 - 한 줄로 잇기 (One-Liner)
 
-- 빌드 → 전송 → 실행을 묶어 수정과 확인 과정을 간편하게 수행
+- **반복 검증 자동화**: 빌드 ➔ 파일 전송 ➔ 타깃 실행 단계를 단일 명령어로 결합하여 개발 생산성 향상
 
 ```bash
+# Build, transfer, and execute on the target in a single pipeline
 aarch64-linux-gnu-g++ -std=c++14 src/helloworld.cc -o hello_pi \
   && scp hello_pi <user>@192.168.0.42:~/ \
   && ssh <user>@192.168.0.42 './hello_pi'
 ```
 
-- `&&`로 각 명령들을 연결했을 때, **앞 단계 명령이 실패했을 때 뒤따르는 명령어는 실행되지 않고 즉시 종료됨**
+- **조건부 연계(`&&`)**: 앞선 단계가 정상 종료(종료 코드 0)된 경우에만 다음 명령을 실행하며, 오류 발생 시 즉시 중단
 
 ---
 
 ## 실습 1 - 과제 (Tasks)
 
-1. 방법 A로 빌드한 뒤 `file`로 `ARM aarch64`임을 확인
-2. `scp`로 전송해 라즈베리파이에서 실행하고, 출력이 `8 bytes`인지 확인
-3. 방법 B와 방법 C로도 빌드하여 세 결과물의 `file` 출력을 비교
-4. 라즈베리파이에서 직접 빌드한 시간과 크로스 빌드 시간을 측정해 비교
+1. **방법 A(툴체인 직접 사용)**: 바이너리 빌드 후 `file` 명령어로 `ARM aarch64` 아키텍처 확인
+2. **타깃 실행 및 검증**: `scp`로 전송 후 라즈베리파이에서 실행하여 `pointer size: 8 bytes` 출력 확인
+3. **방법 B 및 방법 C 검증**: 각 방식으로 생성된 결과물의 `file` 속성을 방법 A 결과와 상호 대조
+4. **성능 벤치마크**: 라즈베리파이 현장 네이티브 빌드 소요 시간과 호스트 PC 크로스 빌드 소요 시간 측정·비교
 
 ### 고찰 항목
 
-- 두 방식의 빌드 시간 차이를 **측정값으로** 제시
-- 방법 A(툴체인 직접 사용), B(CMake 툴체인 파일), C(도커)의 장단점을 비교하고, 각 방식이 적합한 상황을 설명
+- **빌드 성능 비교**: 네이티브 빌드와 크로스 빌드의 소요 시간 차이를 **정량적 측정값(초 단위)**으로 제시
+- **빌드 방식별 특성 분석**: 방법 A(툴체인 직접 사용), 방법 B(CMake 툴체인 파일), 방법 C(도커)의 장단점을 비교하고 각 방식이 적합한 적용 환경 설명
