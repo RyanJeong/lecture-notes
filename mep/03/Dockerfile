@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM debian:trixie-slim
+FROM ubuntu:24.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
