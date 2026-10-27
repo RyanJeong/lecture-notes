@@ -132,6 +132,8 @@ clang++ -std=c++14 -Wall -Wextra -I../../common 02_distance.cc -o distance -llgp
 [//]: # "INCLUDE: ./mep/12/src/00_dht11_read.cc --from 47 --to 64"
 
 - **체크섬 불일치 처리**: 타이밍 지터 등으로 변질된 수신 프레임은 즉시 폐기
+- 0~4번(습도 정수·소수, 온도 정수·소수, 체크섬) 중 소수부(1·3)가 항상 0이라 정수(0·2)만 취함
+  - 소수점 정밀도가 필요한 경우 상위 모델인 DHT22 사용
 
 ---
 
@@ -193,6 +195,9 @@ clang++ -std=c++14 -Wall -Wextra -I../../common 02_distance.cc -o distance -llgp
 
 [//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 26 --to 45"
 
+- **입력 모드 차이**: 싱글 엔디드(GND 기준 단일 전압) vs 차동 입력(두 핀 간 전압차 측정)
+- **`rx[0]` 가비지 데이터**: 채널 명령 송신 중 SPI 전이중(Full-Duplex) 특성으로 유입된 무의미한 값 (센서 출력 Hi-Z 상태)
+
 ---
 
 ## 실습 3-B - 예제 코드 (Cont'd - 3)
@@ -206,6 +211,11 @@ clang++ -std=c++14 -Wall -Wextra -I../../common 02_distance.cc -o distance -llgp
 ## 실습 3-B - 예제 코드 (Cont'd - 4)
 
 [//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 64 --to 80"
+
+- **SPI 모드**: CPOL(유휴 클럭 레벨)·CPHA(샘플링 시점) 조합으로 정의되는 4가지 설정
+- **유휴 클럭 차이**: LOW(모드 0)는 첫 상승 에지에서 샘플링, HIGH(모드 3)는 첫 하강 후 상승 에지에서 샘플링
+- **역할 분리**: 컨트롤러가 모드별 클럭·샘플링 처리 ➔ 프로그램은 수신 바이트를 읽음
+- **MCP3008 모드**: 0·3 지원 ➔ 예제는 모드 0 사용, 모드 3에서도 읽기·파싱 코드 동일
 
 ---
 
@@ -287,4 +297,7 @@ $$\text{Distance} = \frac{\text{Round-trip Time} \times \text{Speed of Sound}}{2
 
 - **비트뱅잉 vs SPI**: 비트뱅잉 방식이 하드웨어 SPI 대비 OS 스케줄링 타이밍에 민감한 이유 분석
 - **체크섬의 필요성**: 통신 프레임 체크섬 검증이 누락될 경우 발생할 수 있는 오동작 위험 서술
-- **Wait vs 인터럽트**: HC-SR04의 Echo 수신을 `lgpio` 엣지 콜백(Alert) 구조로 대체 구현하고, 기존 Busy-Wait 대비 프로세스 CPU 점유율([`top`](https://en.wikipedia.org/wiki/Top_(software))) 및 거리 계측 안정성 비교 분석
+- **온도에 따른 음속 보정**: 주변 온도 변화에 따른 음속 변화율과 거리 오차 영향도 계산
+- **Wait vs 인터럽트**:
+  1. HC-SR04의 Echo 수신을 `lgpio` 엣지 콜백(Alert) 구조로 대체 구현
+  2. 기존 Busy-Wait 대비 프로세스 CPU 점유율([`top`](https://en.wikipedia.org/wiki/Top_(software))) 및 거리 계측 안정성 비교 분석
