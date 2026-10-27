@@ -2,503 +2,289 @@
 
 # 마이크로임베디드프로그래밍
 
-## 멀티미디어 입출력
+## 실습 3 - 온습도·조도·거리 센서
 
 ### [munseong.jeong@daejin.ac.kr](mailto:munseong.jeong@daejin.ac.kr)
 
 ---
 
-## 이 장의 구성 (Contents)
+## 실습 3 - 목표 (Goals)
 
-| 구분    | 내용                                    |
-| ------- | --------------------------------------- |
-| 실습 07 | 웹캠 마이크 — 오디오 표본화, RMS, 녹음  |
-| 실습 08 | 웹캠 카메라 — V4L2, 영상 형식, 데이터량 |
+- **인터페이스 다양성**: 센서별 고유 통신 프로토콜의 차이점을 코드로 직접 검증
+- **통신 구현**: 단일선 **비트뱅잉**, **SPI**, **펄스 폭 측정** 기법 단계별 구현
+- **데이터 처리**: 원시 센서 신호의 물리량 변환 및 무결성 검증 로직 구현
 
-- 센서와 달리 멀티미디어는 **데이터량이 폭발적으로 커짐** — 그것이 이 장의 주제
+| 프로그램 | 대상 센서 | 통신 방식 |
+| :--- | :--- | :--- |
+| `00_dht11_read.cc` | DHT11 | 단일선 비트뱅잉 |
+| `01_cds_light.cc` | CdS + ADC | SPI(MCP3008) |
+| `02_distance.cc` | HC-SR04 | 펄스 폭 측정 |
 
----
-
-## 멀티미디어가 다른 점 (What Makes It Different)
-
-| 항목                | 센서(3~11장) | 멀티미디어                  |
-| ------------------- | ------------ | --------------------------- |
-| 한 번에 얻는 데이터 | 수 바이트    | 수백 KB ~ MB                |
-| 주기                | 초 단위      | 초당 수십 회                |
-| CPU 부하            | 무시할 수준  | 상당함                      |
-| 대역폭              | 문제 없음    | **병목이 됨**               |
-| 압축                | 불필요       | 해상도·프레임률에 따라 필요 |
-
-### 그래서 달라지는 것
-
-- 버퍼 관리와 복사 횟수가 성능을 좌우
-- 5장의 **SIMD**가 실제로 필요해지는 지점
-- 1장에서 본 **영상 전용 SoC**(Ambarella 등)가 존재하는 이유
+- 하드웨어 래퍼 라이브러리 없이 센서 인터페이스 로직을 실습 코드에 직접 구현
 
 ---
 
-## 실습 준비 (Prerequisites)
+## 실습 3 - 비트뱅잉 (What Is Bit-Banging)
 
-- 사용 장비: **Logitech C270 USB 웹캠** — 카메라와 마이크가 한 몸에 들어 있음
+- **개념 정의**: 전용 하드웨어(UART·SPI·I2C 등) 없이 CPU가 **GPIO 핀을 소프트웨어로 직접 제어**해 통신 신호를 송수신하는 기법
+- **명칭 어원**: 비트(bit) 단위로 핀 전위를 HIGH/LOW로 빠르게 두드리듯(bang) 토글하는 동작에서 유래
 
-```bash
-# Audio: ALSA development headers, plus the CLI tools for checking
-sudo apt install -y libasound2-dev alsa-utils
+| 구분 | 하드웨어 통신(SPI 등) | 비트뱅잉(소프트웨어) |
+| :--- | :--- | :--- |
+| **파형 생성** | 전용 컨트롤러 자동 생성 | 소프트웨어 루프로 직접 토글 |
+| **타이밍** | 하드웨어 클록 기준(정밀) | OS 스케줄링 영향으로 지터 발생 |
+| **CPU 부하** | 낮음(DMA/인터럽트 활용) | 높음(바쁜 대기 지속) |
+| **적용 대상** | 표준 통신 규격 장치 | 비표준 단일선 센서(DHT11 등) |
 
-# Video: V4L2 CLI tools (the headers come with the kernel package)
-sudo apt install -y v4l-utils
-
-# Permissions -- take effect after logging out and back in
-sudo usermod -aG audio,video "$USER"
-```
-
-### 실습 준비 장치 확인
-
-```bash
-arecord -l                     # capture devices: note the card,device numbers
-v4l2-ctl --list-devices        # video devices: expect /dev/video0
-v4l2-ctl -d /dev/video0 --list-formats-ext
-```
-
-- `arecord -l`이 출력한 번호가 예제의 `plughw:1,0`과 다르면 **실행 시 인자로 지정**할 것
-- C270은 `/dev/video0`과 `/dev/video1` 두 개를 만들기도 함 — 캡처 가능한 쪽은 보통 `video0`
+- **DHT11 적용**: 시작 신호 출력 ➔ 입력 모드 전환 ➔ HIGH 유지 시간(µs) 계측으로 0/1 비트 판정
 
 ---
 
-## 캡처 장치 지정 (Selecting the Capture Device)
+## 실습 3 - 세 가지 통신 방식 (Sensor Interfaces)
 
-- ALSA 장치 문자열은 `plughw:<카드 번호>,<장치 번호>` 형식
+| 통신 방식 | 타이밍 제어 주체 | 실습 적용 센서 |
+| :--- | :--- | :--- |
+| **비트뱅잉** | CPU가 소프트웨어 파형 직접 생성 | DHT11 |
+| **SPI** | 전용 하드웨어가 동기 클록 생성 | MCP3008 |
+| **펄스 폭 측정** | 센서 출력 펄스를 CPU가 계측 | HC-SR04 |
+
+- **타이밍 민감도**: 비트뱅잉과 펄스 폭 측정은 마이크로초 단위 타이밍 정밀도가 핵심
+- **하드웨어 가속**: SPI는 리눅스 커널 SPI 드라이버가 클록과 데이터를 전담 생성
+
+---
+
+## 실습 3-A - DHT11 회로 (Schematic)
+
+![h:330 center](img/09-lab03-circuit.png)
+
+- 단일 데이터 선 기반의 양방향 통신 구조 — 10kΩ 풀업 저항 필수 (모듈 내 기본 탑재)
+
+---
+
+## 실습 3-A - 브레드보드 배치 (Breadboard Layout)
+
+![h:340 center](img/16-lab03-layout.png)
+
+---
+
+## 실습 3-A - 통신 절차 (Protocol)
+
+| 단계 | 주체 | 주요 동작 |
+| :--- | :--- | :--- |
+| **시작 신호** | 호스트 | 버스 라인을 20ms 동안 LOW 구동 |
+| **응답 신호** | 센서 | LOW ➔ HIGH ➔ LOW 3단계 레벨 전환 |
+| **데이터 전송** | 센서 | 40비트 직렬 전송(HIGH 유지 시간이 값 결정) |
+| **체크섬 검증** | 호스트 | 상위 4바이트 합산값과 5번째 바이트 일치 비교 |
+
+- **비트 판정 기준**: HIGH 유지 시간(약 27µs: `0`, 약 70µs: `1`)을 50µs 기준으로 판정
+- **동적 방향 전환**: 동일 핀의 출력 ➔ 입력 전환을 위해 `Reconfigure()` 수행(실패 시 기존 자원 해제)
+
+---
+
+## 실습 3 - 구성과 빌드 (Layout and Build)
 
 ```text
-$ arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 3: U0x46d0x825 [USB Device 0x46d:0x825], device 0: USB Audio [USB Audio]
-```
-
-- 위 출력은 카드 `3`, 장치 `0` → 전달할 인자는 **`plughw:3,0`**
-
-```bash
-./00_audio_visualizer plughw:3,0
-./01_wav_record plughw:3,0
-```
-
-- 인자를 생략하면 기본값 `plughw:1,0`을 사용하므로, 번호가 다르면 반드시 전달할 것
-- USB 열거 순서에 따라 카드 번호가 바뀌므로, 실행 전 `arecord -l`로 재확인 권장
-
----
-
-## ALSA란 (Advanced Linux Sound Architecture)
-
-- 리눅스의 표준 오디오 계층. 커널 드라이버와 유저 공간 라이브러리(`libasound`)로 구성
-
-| 개념             | 뜻                                                       |
-| ---------------- | -------------------------------------------------------- |
-| PCM              | 오디오 스트림 하나. 재생용과 캡처용이 따로 있음          |
-| 카드 / 디바이스  | `hw:1,0` = 1번 카드의 0번 디바이스                       |
-| `hw` vs `plughw` | `hw`는 형식을 그대로 요구, `plughw`는 필요하면 변환해 줌 |
-| 프레임           | 모든 채널의 표본 하나 묶음. 모노는 1표본 = 1프레임       |
-| 피리어드         | 드라이버가 한 번에 넘겨주는 프레임 수                    |
-
-- 하드웨어 파라미터는 **명령이 아니라 협상** — `set_rate_near`는 가까운 값을 고르고, 실제로 채택된 값을 되돌려 줌. 그래서 예제는 요청값이 아니라 **반환값**을 사용
-
----
-
-## ALSA - 오버런과 복구 (Overruns)
-
-- 캡처 장치는 프로그램을 기다려 주지 않음. 읽어 가지 않으면 버퍼가 넘침
-- 이때 `snd_pcm_readi`가 `-EPIPE`를 돌려줌 → **오버런**(overrun)
-
-```text
-driver   [####################] full -> new samples are dropped
-program           ^ has only read up to here
-```
-
-- 오버런은 **오류가 아니라 늦었다는 신호** — `snd_pcm_recover`로 복구하고 계속하면 됨
-  - 치명적 오류로 처리하면 CPU가 잠깐 바쁠 때마다 프로그램이 죽음
-- 피리어드를 키우면 여유가 생기지만 **지연 시간**이 늘어남 — 둘은 맞바꾸는 관계
-
----
-
-## 실습 07 - 웹캠 마이크 활용
-
-- USB 웹캠의 **마이크**로 오디오를 입력받음
-- CLI 오디오 비주얼라이저 구현
-- `.wav` 형식으로 녹음
-
-### 오디오 장치 확인
-
-```bash
-arecord -l                       # list capture devices
-arecord -D plughw:1,0 -f cd -d 5 test.wav   # record 5 seconds
-aplay test.wav                   # play it back
-```
-
----
-
-## 실습 07 - 오디오 기초 (Audio Basics)
-
-<!-- IMAGE [다이어그램] 표본화와 양자화 개념도, RMS 계산 구간 표시 (img/18-audio-sampling.png) -->
-
-| 항목      | 설명                            |
-| --------- | ------------------------------- |
-| 표본화율  | 초당 표본 수(예: 44100Hz)       |
-| 비트 심도 | 표본 하나의 비트 수(예: 16비트) |
-| 채널      | 모노(1) 또는 스테레오(2)        |
-
-$$\text{Bytes per second} = \text{Sample rate} \times \frac{\text{Bit depth}}{8} \times \text{Channels}$$
-
-- 44100Hz, 16비트, 스테레오 → 약 172KB/s
-
-### 비주얼라이저 원리
-
-- 일정 구간(프레임)의 표본에서 **진폭**을 계산
-- 진폭에 비례한 길이의 막대를 터미널에 출력
-
-$$RMS = \sqrt{\frac{1}{N}\sum_{i=1}^{N} x_i^2}$$
-
----
-
-## 실습 07 - 구성과 빌드 (Layout and Build)
-
-- 예제 두 개가 같은 캡처 래퍼를 공유
-- 공용 헤더(`common/`)의 **전체 코드는 9장 부록**을 참조 — 필요한 부분은 이 장에서 발췌해 인용
-
-```text
-project/
+mep/
 ├── common/
-│   ├── alsa_capture.hpp       # RAII wrapper over PCM capture
+│   ├── gpio.hpp
 │   └── signal_stop.hpp
-└── 12/src/
-    ├── 00_audio_visualizer.cc
-    └── 01_wav_record.cc
-```
-
-- `-lasound`를 빠뜨리면 `undefined reference to snd_pcm_open`으로 링크가 실패
-
----
-
-## 실습 07 - 빌드 명령 (Build Commands)
-
-```bash
-cd project/12/src
-
-# 1) CLI visualizer
-clang++ -std=c++14 -Wall -Wextra -I../../common \
-        00_audio_visualizer.cc -o visualizer -lasound
-./visualizer                   # Ctrl-C stops it at once
-./visualizer plughw:3,0        # when `arecord -l` shows another card
-
-# 2) WAV recorder
-clang++ -std=c++14 -Wall -Wextra -I../../common \
-        01_wav_record.cc -o wavrec -lasound
-./wavrec                       # Ctrl-C finalises the file
-aplay record.wav
-```
-
----
-
-## 실습 07 - 진폭 계산 (Amplitude)
-
-- 평균이 아니라 **제곱평균제곱근** — 0을 중심으로 흔들리는 파형은 평균이 0에 가까움
-
-[//]: # "INCLUDE: ./mep/12/src/00_audio_visualizer.cc --from 20 --to 38"
-
----
-
-## 실습 07 - 막대 길이 (Bar Length)
-
-- 사람의 청각은 로그 스케일이므로 dBFS 로 펴서 막대에 대응시킴
-
-[//]: # "INCLUDE: ./mep/12/src/00_audio_visualizer.cc --from 40 --to 47"
-
-- 무음일 때 $-\infty$로 발산하지 않도록 `kFloorDb`에서 잘라 냄
-
----
-
-## 실습 07 - 비주얼라이저 루프 (Visualizer Loop)
-
-- 신호를 받으면 **즉시 종료** — 기록한 것이 없으므로 마무리할 일도 없음
-
-[//]: # "INCLUDE: ./mep/12/src/00_audio_visualizer.cc --from 67 --to 85"
-
----
-
-## 실습 07 - 즉시 종료 (Immediate Exit)
-
-[//]: # "INCLUDE: ./mep/12/src/00_audio_visualizer.cc --from 87 --to 91"
-
-- 기록한 것이 없으므로 마감할 것도 없음 — 다시 그리던 줄만 닫아 주면 끝
-
----
-
-## 실습 07 - WAV 헤더 (WAV Header)
-
-- WAV은 RIFF 컨테이너 — 44바이트 헤더 뒤에 표본이 그대로 붙음
-- 모든 다중 바이트 필드가 **리틀 엔디언**이므로 바이트 단위로 씀
-
-[//]: # "INCLUDE: ./mep/12/src/01_wav_record.cc --from 41 --to 58"
-
----
-
-## 실습 07 - 크기 필드 되메우기 (Patching the Sizes)
-
-- Ctrl-C 는 이 프로그램의 **정상 종료 경로**이므로 반드시 마감 처리를 해야 함
-
-[//]: # "INCLUDE: ./mep/12/src/01_wav_record.cc --from 116 --to 125"
-
-- 마감하지 않고 죽으면 크기 필드가 0인 채로 남아 **재생기가 파일을 거부**함
-
----
-
-## 실습 07 - 과제 (Tasks)
-
-<!-- IMAGE [캡처] CLI 오디오 비주얼라이저 실행 터미널 캡처 (img/19-visualizer.png) -->
-
-1. 비주얼라이저를 실행해 조용할 때와 말할 때의 dBFS 차이를 기록
-2. Ctrl-C로 녹음을 마치고 `aplay record.wav`로 재생되는지 확인
-3. 마감 처리를 일부러 건너뛴 뒤(`kill -9`) 파일이 재생되지 않음을 확인
-4. 표본화율을 8000Hz로 낮춰 녹음하고, 음질 차이와 파일 크기를 비교
-5. 일정 음량을 초과하면 LED를 켜는 소리 감지 기능을 추가
-
-### 실습 07 고찰 항목
-
-- 표본화율을 낮추면 어떤 소리가 사라지는가 — **나이퀴스트 정리**를 조사
-- 조용한 환경과 시끄러운 환경의 RMS 값을 비교해 임계값을 정한 근거를 설명
-
----
-
-## 실습 08 - 웹캠 카메라 활용
-
-- USB 웹캠으로 사진과 영상을 촬영
-- V4L2(Video4Linux2) 인터페이스의 개념을 이해
-- 영상 데이터의 형식과 크기를 파악
-
-### 영상 장치 확인
-
-```bash
-v4l2-ctl --list-devices
-v4l2-ctl -d /dev/video0 --list-formats-ext   # supported formats and sizes
-fswebcam -d /dev/video0 -r 640x480 shot.jpg  # capture a still
-```
-
----
-
-## 실습 08 - 영상 데이터 (Video Data)
-
-<!-- IMAGE [그래프] 해상도별 초당 데이터량 비교 그래프, YUYV/MJPEG/H.264 비교표 (img/20-video-bandwidth.png) -->
-
-| 형식  | 특징                        |
-| ----- | --------------------------- |
-| YUYV  | 무압축, 대역폭 큼           |
-| MJPEG | 프레임 단위 JPEG 압축       |
-| H.264 | 프레임 간 압축, 대역폭 작음 |
-
-### 데이터량 계산
-
-- 640×480, RGB24, 30fps 인 경우
-
-$$640 \times 480 \times 3 \times 30 \approx 27.6\,MB/s$$
-
-- USB 2.0의 실효 대역폭과 같은 버스의 다른 장치를 고려하면 여유가 작음
-- 카메라가 실제 제공하는 YUYV는 2바이트/픽셀이며 고해상도·고프레임률에서 압축 필요성이 커짐
-- 임베디드에서는 해상도와 프레임률이 곧 **CPU 부하와 전력 소비**
-
----
-
-## V4L2란 (Video4Linux2)
-
-- 리눅스의 표준 영상 입력 인터페이스. 웹캠은 `/dev/video0` 같은 **장치 파일**로 보임
-- GPIO와 SPI가 그랬듯, 여기서도 조작은 전부 `ioctl`로 이루어짐
-
-| ioctl                     | 하는 일                                     |
-| ------------------------- | ------------------------------------------- |
-| `VIDIOC_QUERYCAP`         | 이 장치가 캡처와 스트리밍을 지원하는지 확인 |
-| `VIDIOC_S_FMT`            | 해상도와 픽셀 형식을 **협상**               |
-| `VIDIOC_REQBUFS`          | 커널에 버퍼를 요청                          |
-| `VIDIOC_QUERYBUF`         | 버퍼의 위치와 크기를 조회 → `mmap`          |
-| `VIDIOC_QBUF` / `DQBUF`   | 빈 버퍼를 넣고, 채워진 버퍼를 꺼냄          |
-| `VIDIOC_STREAMON` / `OFF` | 스트림 시작과 정지                          |
-
-- 형식 역시 **협상** — 요청한 해상도를 드라이버가 바꿀 수 있으므로 반환값을 다시 읽음
-
----
-
-## V4L2 - 버퍼 주고받기 (Streaming I/O)
-
-- 프레임마다 복사하지 않기 위해 커널 버퍼를 `mmap`으로 **프로그램 주소 공간에 직접** 매핑
-
-```text
-   program                              driver
-      |  QBUF (hand over an empty)  ->  |
-      |                                 | camera fills it
-      |  <- DQBUF (a filled buffer)     |
-      |  ... use the frame ...          |
-      |  QBUF (hand it back)        ->  |
-```
-
-- **돌려주지 않으면 파이프라인이 멈춤** — 그래서 예제의 `Grab()`은 다음 호출 때 이전 버퍼를 자동으로 반납하고, 반환한 포인터는 다음 `Grab()`까지만 유효
-- 버퍼를 4개 쓰는 이유: 한 장을 처리하는 동안 다음 장이 채워지고 있어야 프레임이 끊기지 않음
-
----
-
-## V4L2 - C270과 MJPEG (Why MJPEG)
-
-- C270이 내주는 형식은 `YUYV`와 `MJPEG` 두 가지
-
-| 형식            | 640×480 30fps 대역폭 | USB 2.0 (약 35MB/s) |
-| --------------- | -------------------- | ------------------- |
-| `YUYV` (무압축) | 약 18.4MB/s          | 아슬아슬하게 가능   |
-| `MJPEG` (압축)  | 약 1~3MB/s           | 여유 있음           |
-| `YUYV` 1280×720 | 약 55MB/s            | **불가능**          |
-
-- 그래서 예제는 `MJPEG`를 요청 — 해상도를 올려도 대역폭이 감당됨
-- 부수 효과 하나: **MJPEG 프레임은 그 자체로 완전한 JPEG 파일**
-  - 사진 저장이 인코딩 없이 **바이트 복사**로 끝나는 이유
-
----
-
-## 실습 08 - 구성과 빌드 (Layout and Build)
-
-```text
-project/
-├── common/
-│   ├── v4l2_capture.hpp       # RAII wrapper over V4L2 MJPEG capture
-│   └── signal_stop.hpp
-└── 12/src/
-    ├── 02_photo_capture.cc
-    └── 03_video_record.cc
+└── lab03/src/
+    ├── 00_dht11_read.cc
+    ├── 01_cds_light.cc
+    └── 02_distance.cc
 ```
 
 ```bash
-cd project/12/src
+cd mep/lab03/src
 
-# 3) Still photo -- Ctrl-C takes the picture
-clang++ -std=c++14 -Wall -Wextra -I../../common \
-        02_photo_capture.cc -o photo
-./photo                        # Ctrl-C takes the photo
-
-# 4) Video recorder
-clang++ -std=c++14 -Wall -Wextra -I../../common \
-        03_video_record.cc -o videorec
-./videorec                     # Ctrl-C finalises the recording
+# Build each lab application with appropriate libraries
+clang++ -std=c++14 -Wall -Wextra -I../../common 00_dht11_read.cc -o dht -lgpiod
+clang++ -std=c++14 -Wall -Wextra -I../../common 01_cds_light.cc -o light
+clang++ -std=c++14 -Wall -Wextra -I../../common 02_distance.cc -o distance -llgpio
 ```
 
-- 두 예제 모두 **추가 라이브러리가 없음** — V4L2는 커널 인터페이스라 링크할 것이 없음
+- 조도 센서 실습은 커널 표준 SPI 디바이스(`/dev/spidev*`)를 직접 다루므로 별도 링크 라이브러리 없음
 
 ---
 
-## 실습 08 - 사진 촬영 (Photo Capture)
+## 실습 3-A - 예제 코드 (Example)
 
-- 신호가 올 때까지 프레임을 버리며 **노출과 화이트밸런스를 안정**시킴
-- 버려지는 프레임은 낭비가 아님 — 켜자마자 찍은 사진은 어둡고 색이 틀어져 있음
-
-[//]: # "INCLUDE: ./mep/12/src/02_photo_capture.cc --from 59 --to 71"
+[//]: # "INCLUDE: ./mep/12/src/00_dht11_read.cc --to 18"
 
 ---
 
-## 실습 08 - 셔터 (Taking the Shot)
+## 실습 3-A - 예제 코드 (Cont'd - 1)
 
-- 신호를 받은 시점의 프레임은 **중간에 잘려 있는 경우**가 잦으므로, 온전한 것이 올 때까지 재시도
+[//]: # "INCLUDE: ./mep/12/src/00_dht11_read.cc --from 19 --to 36"
 
-[//]: # "INCLUDE: ./mep/12/src/02_photo_capture.cc --from 73 --to 90"
-
----
-
-## 실습 08 - 프레임 검증 (Validating the Frame)
-
-- MJPEG 프레임이 곧 JPEG 파일이므로 **저장은 바이트 복사** — 인코딩 단계가 없음
-- 그래서 잘린 프레임도 그대로 저장되어, **열리지 않는 파일**이 만들어짐
-
-[//]: # "INCLUDE: ./mep/12/src/02_photo_capture.cc --from 24 --to 31"
-
-- JPEG은 `FF D8`(SOI)로 시작해 `FF D9`(EOI)로 끝남 — 두 표지로 온전함을 판별
-- USB 전송 오류로 프레임이 끊겨도 드라이버는 `bytesused > 0`으로 넘겨줌
+- **바쁜 대기(Busy-Wait)**: 마이크로초 단위 신호 계측을 위해 슬립 없이 루프로 핀 상태 폴링
 
 ---
 
-## 실습 08 - AVI 컨테이너 (AVI Container)
+## 실습 3-A - 예제 코드 (Cont'd - 2)
 
-- AVI 도 RIFF — WAV과 같은 구조가 한 단계 더 중첩된 형태
-
-```text
-RIFF 'AVI '
-├── LIST 'hdrl'          header: resolution, frame count, playback rate
-│   ├── avih
-│   └── LIST 'strl' -> strh + strf
-├── LIST 'movi'          frames stacked in order as '00dc' chunks
-└── idx1                 index of each frame's offset and size
-```
-
-- 프레임 수와 전체 크기는 **녹화가 끝나야 알 수 있음** → 0으로 써 두고 나중에 되메움
-- 재생 속도도 **측정해서** 기록 — 카메라가 24fps를 줬는데 30이라고 쓰면 재생이 빨라짐
+[//]: # "INCLUDE: ./mep/12/src/00_dht11_read.cc --from 37 --to 46"
 
 ---
 
-## 실습 08 - 프레임 기록 (Writing Frames)
+## 실습 3-A - 예제 코드 (Cont'd - 3)
 
-- 모든 청크는 **짝수 위치**에서 시작해야 하므로 길이가 홀수면 패딩 1바이트를 넣음
+[//]: # "INCLUDE: ./mep/12/src/00_dht11_read.cc --from 47 --to 64"
 
-[//]: # "INCLUDE: ./mep/12/src/03_video_record.cc --from 107 --to 125"
-
----
-
-## 실습 08 - 과제 (Tasks)
-
-1. `./photo`를 실행하고 Ctrl-C로 사진을 찍어 `photo.jpg`를 확인
-2. 카메라를 켜자마자 찍은 사진과 10초 뒤에 찍은 사진의 밝기를 비교
-3. `./videorec`로 10초 분량을 녹화하고 재생 — 출력된 실측 fps를 기록
-4. 해상도를 320×240, 640×480, 1280×720으로 바꾸며 CPU 사용률과 fps를 측정
-
-### 실습 08 고찰 항목
-
-- 해상도와 프레임률이 CPU 사용률에 미치는 영향을 표로 정리
-- MJPEG와 무압축(YUYV)의 데이터량 차이를 실측
-- 임베디드 장치에서 해상도를 결정할 때 고려해야 할 요소는
+- **체크섬 불일치 처리**: 타이밍 지터 등으로 변질된 수신 프레임은 즉시 폐기
 
 ---
 
-## 장치 접근의 공통 구조 (Device Access Pattern)
+## 실습 3-A - 예제 코드 (Cont'd - 4)
 
-- 카메라와 마이크 모두 리눅스에서는 **장치 파일**로 접근
-
-```text
-open -> set the format (pixel format, resolution, sample rate)
-     -> prepare buffers
-     -> start streaming
-     -> receive frames in a loop
-     -> stop streaming -> close
-```
-
-| 장치   | 경로          | 인터페이스 |
-| ------ | ------------- | ---------- |
-| 카메라 | `/dev/video0` | V4L2       |
-| 마이크 | `hw:1,0` 등   | ALSA       |
+[//]: # "INCLUDE: ./mep/12/src/00_dht11_read.cc --from 65"
 
 ---
 
-## 자주 겪는 문제 (Troubleshooting)
+## 실습 3-B - 라즈베리파이에는 ADC가 없다 (No Analog Input)
 
-| 증상                      | 원인                           | 확인                          |
-| ------------------------- | ------------------------------ | ----------------------------- |
-| `Permission denied`       | `video`·`audio` 그룹 미포함    | `groups`                      |
-| `Device or resource busy` | 다른 프로그램이 점유 중        | `fuser /dev/video0`           |
-| 지원하지 않는 형식        | 장치가 그 조합을 제공하지 않음 | `v4l2-ctl --list-formats-ext` |
-| 프레임 드롭               | USB 대역폭 부족, CPU 부하      | `top`, 해상도 낮추기          |
-| 영상이 어둡거나 흔들림    | 자동 노출·화이트밸런스         | `v4l2-ctl --list-ctrls`       |
+- **아날로그 입력 부재**: 라즈베리파이 GPIO는 디지털(0/1)만 지원하여 전압 크기 판독 불가
+- **외장 ADC 활용**: 10비트 SPI ADC(MCP3008)를 연동하여 아날로그 전압을 디지털로 변환
 
-- 문제가 생기면 **먼저 명령줄 도구로 장치가 동작하는지 확인**한 뒤 코드를 의심할 것
+### CdS 분압 회로 동작 원리
+
+- **결선 구조**: 3.3V ➔ [CdS 포토레지스터] ➔ 센싱 노드 ➔ [10kΩ 저항] ➔ GND
+- **센싱 노드**: CdS와 10kΩ 사이의 접점으로, MCP3008 CH0에 연결되는 분압 출력 지점
+- **전압 변화**: V = 3.3V × 10kΩ / (CdS 저항 + 10kΩ) ➔ 조도 증가 시 CdS 저항 감소로 전압 상승
+
+| 밝기 | CdS 저항(일반 5mm 셀) | 센싱 노드 전압 | ADC 값(10비트) |
+| :--- | :--- | :--- | :--- |
+| 어두움(암실) | 약 1MΩ | 약 0.03V | 약 10 |
+| 실내 조명 | 약 10kΩ | 약 1.65V | 약 512 |
+| 밝음(직사광) | 약 1kΩ | 약 3.0V | 약 930 |
+
+- **10kΩ 선택 이유**: 실내 CdS 저항과 같아 실내에서 중간 전압(1.65V) ➔ 밝기 변화 양방향 0~3.3V 활용
+- **계측 원리**: 절대 저항값이 아닌 저항비에 따른 분압 전압(0~3.3V)을 ADC로 계측
 
 ---
 
-## 12장 정리 (Summary)
+## 실습 3-B - 분압 회로 (Divider Schematic)
 
-- 멀티미디어는 센서 대비 데이터량이 **수천 배** 커서 대역폭과 CPU가 병목이 됨
-- **오디오**: 표본화율 × 비트 심도 × 채널 이 초당 데이터량을 결정
-  - 진폭(RMS)으로 소리 크기를 판정할 수 있음
-- **영상**: 해상도 × 색 깊이 × 프레임률 — 무압축은 USB 대역폭을 쉽게 초과
-  - 그래서 MJPEG·H.264 같은 **압축 형식**을 사용
-- 장치는 **열기 → 형식 설정 → 스트리밍 → 닫기** 패턴으로 접근
-- 해상도와 프레임률은 곧 **CPU 부하와 소비 전력** — 요구사항에 맞춰 최소로 설정
-- 권한(`video`, `audio` 그룹)과 장치 점유가 오류의 주요 원인
+![h:330 center](img/11-lab04-divider-circuit.png)
 
-> 다음 장에서는 지금까지의 코드를 타깃용으로 크로스 빌드함
+---
+
+## 실습 3-B - 브레드보드 배치 (Breadboard Layout)
+
+![h:340 center](img/17-lab04-layout.png)
+
+---
+
+## 실습 3-B - 예제 코드 (Example)
+
+[//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --to 11"
+
+---
+
+## 실습 3-B - 예제 코드 (Cont'd - 1)
+
+[//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 12 --to 25"
+
+- **SPI 디바이스 노드**: `/dev/spidev<버스>.<CE>` 형식 참조(`raspi-config`에서 SPI 활성화 필수)
+
+---
+
+## 실습 3-B - 예제 코드 (Cont'd - 2)
+
+[//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 26 --to 45"
+
+---
+
+## 실습 3-B - 예제 코드 (Cont'd - 3)
+
+[//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 46 --to 63"
+
+- **순수 함수 설계**: 하드웨어 의존성이 없는 순수 함수로 구성하여 호스트 단위 테스트 가능
+
+---
+
+## 실습 3-B - 예제 코드 (Cont'd - 4)
+
+[//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 64 --to 80"
+
+---
+
+## 실습 3-B - 예제 코드 (Cont'd - 5)
+
+[//]: # "INCLUDE: ./mep/12/src/01_cds_light.cc --from 81"
+
+---
+
+## 실습 3-C - 거리 측정의 원리 (Time of Flight)
+
+- **ToF(Time of Flight) 원리**: 초음파 발신 후 반사되어 수신될 때까지의 왕복 시간 계측
+
+$$\text{Distance} = \frac{\text{Round-trip Time} \times \text{Speed of Sound}}{2}$$
+
+- **음속 상수**: 20℃ 대기 중 음속 약 **343 m/s = 0.0343 cm/µs**(왕복 거리이므로 2로 제산)
+
+### 5V Echo 신호 분압 주의사항
+
+- **Echo 출력 전압**: HC-SR04 Echo 핀은 **5V 신호**를 출력하므로 3.3V GPIO 직결 시 손상 발생
+- **전압 분압 회로**: 1kΩ 및 2kΩ 저항 분압을 통해 5V 신호를 약 3.3V로 감압 후 GPIO 연결
+
+---
+
+## 실습 3-C - 회로도 (Schematic)
+
+![h:320 center](img/14-lab05-circuit.png)
+
+---
+
+## 실습 3-C - 브레드보드 배치 (Breadboard Layout)
+
+![h:340 center](img/18-lab05-layout.png)
+
+---
+
+## 실습 3-C - 예제 코드 (Example)
+
+[//]: # "INCLUDE: ./mep/12/src/02_distance.cc --to 21"
+
+- **`lgpio` 사용 이유**: 마이크로초 단위의 정밀 타이밍 제어 및 타임스탬프 API 활용
+
+---
+
+## 실습 3-C - 예제 코드 (Cont'd - 1)
+
+[//]: # "INCLUDE: ./mep/12/src/02_distance.cc --from 22 --to 33"
+
+- **시간 단위 주의**: `lguTimestamp()`는 **나노초(ns)를 반환**하므로 마이크로초 변환 시 단위 일치 필수
+
+---
+
+## 실습 3-C - 예제 코드 (Cont'd - 2)
+
+[//]: # "INCLUDE: ./mep/12/src/02_distance.cc --from 34 --to 49"
+
+---
+
+## 실습 3-C - 예제 코드 (Cont'd - 3)
+
+[//]: # "INCLUDE: ./mep/12/src/02_distance.cc --from 50 --to 62"
+
+---
+
+## 실습 3-C - 예제 코드 (Cont'd - 4)
+
+[//]: # "INCLUDE: ./mep/12/src/02_distance.cc --from 63"
+
+---
+
+## 실습 3 - 과제 (Tasks)
+
+1. **센서 동작 검증**: 세 센서(DHT11, CdS, HC-SR04) 개별 실행 및 터미널 출력 로그 확인
+2. **비트 판정 임계값 실험**: DHT11 임계값을 30µs 및 70µs로 변경하여 체크섬 실패율 비교
+3. **조도 계측 실험**: CdS 센서 차광 실험으로 `dark`부터 `very bright`까지 전 구간 단계 검증
+4. **거리 오차 측정**: HC-SR04 거리를 10cm, 50cm, 100cm로 조정하여 실측치와 오차 표 작성
+
+### 고찰 항목
+
+- **비트뱅잉 vs SPI**: 비트뱅잉 방식이 하드웨어 SPI 대비 OS 스케줄링 타이밍에 민감한 이유 분석
+- **체크섬의 필요성**: 통신 프레임 체크섬 검증이 누락될 경우 발생할 수 있는 오동작 위험 서술
+- **Wait vs 인터럽트**: HC-SR04의 Echo 수신을 `lgpio` 엣지 콜백(Alert) 구조로 대체 구현하고, 기존 Busy-Wait 대비 프로세스 CPU 점유율([`top`](https://en.wikipedia.org/wiki/Top_(software))) 및 거리 계측 안정성 비교 분석
