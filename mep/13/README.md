@@ -138,7 +138,7 @@ web:       reads -> temp 26 (this sweep) + distance 8 (last sweep)
 
 ## 실습 4 - 두 스레드 띄우기 (Starting the Threads)
 
-[//]: # "INCLUDE: ./mep/13/src/00_sensor_hub.cc --from 84 --to 104"
+[//]: # "INCLUDE: ./mep/13/src/00_sensor_hub.cc --from 84 --to 101"
 
 - **스레드 분기**: 백그라운드 수집 스레드(`std::thread`) 가동 후 메인은 HTTP 대기
 
@@ -146,7 +146,7 @@ web:       reads -> temp 26 (this sweep) + distance 8 (last sweep)
 
 ## 실습 4 - 수락 루프 (Accept Loop)
 
-[//]: # "INCLUDE: ./mep/13/src/00_sensor_hub.cc --from 105 --to 118"
+[//]: # "INCLUDE: ./mep/13/src/00_sensor_hub.cc --from 103 --to 118"
 
 - **비차단 폴링**: `poll()` 타임아웃을 지정하여 요청 대기 중에도 정지 플래그를 주기적 감시
 
