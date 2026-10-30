@@ -17,19 +17,34 @@ class Http {
  public:
   explicit Http(int port) : listener_(::socket(AF_INET, SOCK_STREAM, 0)) {
     if (listener_ < 0) return;
-    const int one = 1;
+
+    const int reuse_addr_enabled = 1;
     sockaddr_in addr;
     std::memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(static_cast<std::uint16_t>(port));
-    if (::setsockopt(listener_, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)) <
-            0 ||
-        ::bind(listener_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) <
-            0 ||
-        ::listen(listener_, 4) < 0) {
+    // Allow quick restarts by reusing the port while it is in TIME_WAIT.
+    if (::setsockopt(listener_, SOL_SOCKET, SO_REUSEADDR, &reuse_addr_enabled,
+                     sizeof(reuse_addr_enabled)) != 0) {
       ::close(listener_);
       listener_ = -1;
+      return;
+    }
+
+    // Attach the socket to the requested port on all interfaces.
+    if (::bind(listener_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) !=
+        0) {
+      ::close(listener_);
+      listener_ = -1;
+      return;
+    }
+
+    // Start accepting connections, queueing up to 4 pending clients.
+    if (::listen(listener_, 4) != 0) {
+      ::close(listener_);
+      listener_ = -1;
+      return;
     }
   }
 
@@ -59,6 +74,7 @@ class Http {
     char request[512];
     const ssize_t got = ::read(client, request, sizeof(request) - 1);
     if (got <= 0) return false;
+
     request[got] = '\0';
     return std::strstr(request, path) != nullptr;
   }
@@ -72,6 +88,7 @@ class Http {
         type, length);
     if (head_len < 0 || static_cast<size_t>(head_len) >= sizeof(head))
       return false;
+
     return SendAll(client, head, static_cast<size_t>(head_len)) &&
            SendAll(client, body, static_cast<size_t>(length));
   }
