@@ -12,15 +12,17 @@
 #
 # Checks:
 #   1. Each slide's content must not exceed the height threshold (77%).
-#   2. The markdown source must not contain generated empty-file warnings.
-#   3. The markdown source must not contain forbidden marker lines.
+#   2. Fenced-code font sizes must be consistent across slides.
+#   3. The markdown source must not contain generated empty-file warnings.
+#   4. The markdown source must not contain forbidden marker lines.
 #
 # Examples:
 #   ./check_and_release.sh cpp/00/temp.pdf
 #   ./check_and_release.sh c/01/temp.pdf
 #
 # Dependencies:
-#   pdfinfo, pdftoppm (poppler-utils), convert, identify (imagemagick), marp
+#   pdfinfo, pdftohtml, pdftoppm (poppler-utils), convert, identify
+#   (imagemagick), marp
 #
 # ============================================================================
 
@@ -88,6 +90,136 @@ check_content_area() {
   fi
 
   info "All pages are within the acceptable content area."
+}
+
+# -- Code font-size check ----------------------------------------------------
+
+check_code_font_size() {
+  local input="$1"
+  local md_file="$2"
+  local tmpdir="$3"
+  local code_slides="${tmpdir}/code-slides.txt"
+  local font_xml="${tmpdir}/code-fonts.xml"
+  local result
+  local line
+
+  awk '
+    BEGIN { slide = 1 }
+    /^[[:space:]]*```/ {
+      if (!in_code) {
+        language = $0
+        sub(/^[[:space:]]*```/, "", language)
+        sub(/[[:space:]].*$/, "", language)
+        if (language != "" && language != "text") has_code = 1
+      }
+      in_code = !in_code
+      next
+    }
+    !in_code && /^---[[:space:]]*$/ {
+      if (has_code) print slide
+      slide++
+      has_code = 0
+    }
+    END {
+      if (has_code) print slide
+    }
+  ' "${md_file}" >"${code_slides}"
+
+  if [[ ! -s "${code_slides}" ]]; then
+    info "No fenced-code slides found; skipping code font-size check."
+    return 0
+  fi
+
+  if ! pdftohtml -xml -stdout "${input}" >"${font_xml}" 2>/dev/null; then
+    error "Could not extract font sizes from ${input}."
+    return 1
+  fi
+
+  if result=$(awk -v code_slide_file="${code_slides}" '
+    function attribute(line, name, pattern) {
+      pattern = name "=\"[^\"]*\""
+      if (match(line, pattern))
+        return substr(line, RSTART + length(name) + 2,
+                      RLENGTH - length(name) - 3)
+      return ""
+    }
+
+    FILENAME == code_slide_file {
+      code_slides[++slide_count] = $1
+      next
+    }
+
+    /<page[[:space:]]/ {
+      page = attribute($0, "number")
+    }
+
+    /<fontspec[[:space:]]/ {
+      id = attribute($0, "id")
+      size = attribute($0, "size")
+      family = tolower(attribute($0, "family"))
+      if (family ~ /mono|courier|menlo|consolas|monaco/)
+        mono_size[id] = size
+    }
+
+    /<text[[:space:]]/ {
+      id = attribute($0, "font")
+      size = mono_size[id]
+      if (size != "")
+        font_count[page SUBSEP size]++
+    }
+
+    END {
+      for (key in font_count) {
+        split(key, fields, SUBSEP)
+        current_page = fields[1]
+        current_size = fields[2]
+        count = font_count[key]
+        if (count > best_count[current_page] ||
+            (count == best_count[current_page] &&
+             (best_size[current_page] == "" ||
+              current_size + 0 < best_size[current_page] + 0))) {
+          best_count[current_page] = count
+          best_size[current_page] = current_size
+        }
+      }
+
+      if (slide_count == 0) {
+        print "No fenced-code slides found."
+        exit 0
+      }
+
+      expected = best_size[code_slides[1]]
+      if (expected == "") {
+        printf "Slide %s: no monospace code font was detected.\n", code_slides[1]
+        mismatch = 1
+      }
+
+      for (i = 1; i <= slide_count; i++) {
+        current_page = code_slides[i]
+        actual = best_size[current_page]
+        if (actual == "") {
+          printf "Slide %s: no monospace code font was detected.\n", current_page
+          mismatch = 1
+        } else if (expected != "" && actual != expected) {
+          printf "Slide %s: code font is %s pt; expected %s pt.\n",
+            current_page, actual, expected
+          mismatch = 1
+        }
+      }
+
+      if (mismatch) exit 1
+      printf "Code font size is consistent at %s pt across %d slides.\n",
+        expected, slide_count
+    }
+  ' "${code_slides}" "${font_xml}"); then
+    info "${result}"
+    return 0
+  fi
+
+  while IFS= read -r line; do
+    error "${line}"
+  done <<<"${result}"
+  return 1
 }
 
 # -- Forbidden pattern check -------------------------------------------------
@@ -158,6 +290,9 @@ main() {
   trap '[ -n "${TMP_RENDER_DIR}" ] && rm -rf "${TMP_RENDER_DIR}"' EXIT INT TERM
 
   check_content_area "${input}" "${TMP_RENDER_DIR}"
+  if ! check_code_font_size "${input}" "${md_file}" "${TMP_RENDER_DIR}"; then
+    error_exit "Code font-size check failed. Release aborted."
+  fi
   check_forbidden_patterns "${md_file}"
   release_chapter "${input}" "${input_dir}" "${lang}" "${ch}" "${md_file}"
 }
