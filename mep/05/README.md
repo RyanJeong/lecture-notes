@@ -8,6 +8,28 @@
 
 ---
 
+## CPU의 기본 구조 (A Simple CPU Overview)
+
+![h:300 center](img/00-cpu-block.png)
+
+- **제어 장치(Control Unit)**: 명령어를 해석하고 각 구성 요소의 동작을 제어
+- **연산 장치(ALU)**: 정수·논리 연산 수행(부동소수점 연산은 FPU 전담 가능)
+- **레지스터(Register)**: 연산에 필요한 피연산자와 결과를 임시 보관하는 CPU 내부 초고속 저장 공간
+- **캐시(Cache)**: 자주 참조되는 명령어와 데이터를 메모리보다 가까운 곳에 임시 보관
+- **연산 흐름**: 메모리에서 명령어와 데이터를 인출(Fetch)하여 처리 후 결과를 레지스터나 메모리에 저장
+
+---
+
+## 레지스터와 연산 흐름 (Registers and Data Flow)
+
+![h:300 center](img/01-register-data-flow.png)
+
+- **데이터 흐름**: 레지스터 내 데이터를 피연산자로 인가받아 연산 후 결과를 레지스터에 기록
+- **적재 및 저장**: 레지스터는 극도로 빠르지만 개수가 한정되므로 데이터를 메모리에서 적재(Load)하여 작업 후 반환(Store)
+- **벡터 레지스터**: 단일 레지스터 내에 복수의 데이터를 병렬로 적재하여 동일 연산을 일괄 수행 가능
+
+---
+
 ## 병렬성의 종류 (Kinds of Parallelism)
 
 ![h:285 center](img/17-parallelism.png)
@@ -34,11 +56,26 @@
 
 ## SIMD란 (What SIMD Is) (Cont'd)
 
-- **하드웨어 벡터 확장**: CPU 아키텍처별로 128~512비트 폭의 전용 벡터 레지스터 제공
+![h:300 center](img/02-simd-datapath.png)
+
+- **명령어 형식**: `FADD Vd.T, Vn.T, Vm.T` ➔ `Vd[i] = Vn[i] + Vm[i]` (목적지 레지스터 `Vd` 선행 지정)
+- **배치 지정자(`.T`)**: 레인 수와 원소 크기 결합(B: 8비트, H: 16비트, S: 32비트, D: 64비트)
+  - 128비트 규격: `.4S` (float 4개), `.2D` (double 2개) / 64비트 규격: `.2S` (float 2개)
+- **인트린식(Intrinsic) 명명법**: `vaddq_f32` ➔ `v` (Vector) + `add` (연산) + `q` (128비트) + `_f32` (타입)
+  - 접미사 `q` 생략 시 64비트 연산 적용: `vadd_f32` ➔ `FADD Vd.2S, ...`
+- **단일 제어 흐름**: 단 1회의 명령어 인출·디코드로 동일한 제어 신호를 전 레인에 동시 인가
+- **레인 독립성**: 레인 간 캐리 전파가 없으므로 모든 원소에 완전히 동일한 연산 적용 필수
+
+---
+
+## SIMD 확장과 벡터 레지스터 (SIMD Extensions and Vector Registers)
+
+- **동작 원리**: 단일 명령으로 벡터 레지스터 내 다수의 데이터 레인에 동일 연산 병렬 수행
+- **명령어 확장 규격**: **NEON과 AVX2는 레지스터명이 아닌** ARM과 x86의 고유 SIMD 명령어 세트 확장
 
 | 하드웨어 플랫폼 | 벡터 확장 | 레지스터 규격 |
 | :--- | :--- | :--- |
-| **라즈베리파이 4(Cortex-A72)** | **NEON** | 128비트 × 32개 |
+| **라즈베리파이 4(Cortex-A72, AArch64)** | **NEON** | 128비트 × 32개 |
 | **x86_64 개발 호스트** | **AVX2** | 256비트 × 16개 |
 
 - **128비트 레지스터 레인 분할**:
@@ -51,7 +88,7 @@
 
 ## 스칼라 구현 (Scalar Implementation)
 
-- **실습 문제**: 패킹된 RGB 24비트 정수(`uint8_t`)를 `[0, 1]` 범위의 `float`로 정규화
+- **실습 문제**: 패킹된 RGB 24비트 정수(`uint8_t`) 8픽셀을 `[0, 1]` 범위의 `float`로 정규화
 
 [//]: # "INCLUDE: ./mep/05/src/00_rgb_to_float_scalar.cc --from 6 --to 14 --no-comment"
 
@@ -60,20 +97,37 @@
 
 ---
 
-## NEON 구현 (NEON Implementation)
+## NEON 구현 (Scalar Implementation)
 
-[//]: # "INCLUDE: ./mep/05/src/01_rgb_to_float_neon.cc --from 9 --to 22 --no-comment"
+[//]: # "INCLUDE: ./mep/05/src/01_rgb_to_float_neon.cc --from 9 --to 20 --no-comment"
 
-- **구조체 인터리빙 적재**: `vld3_u8` 인트린식으로 24바이트를 읽으며 R·G·B 채널 즉각 분리
+- `vld3_u8`: `v`는 vector, `ld`는 load, `3`은 3개 성분, `_u8`은 unsigned 8-bit 원소 의미
+- 반환형 `uint8x8x3_t`: 8개 레인 벡터 3개 포함(`.val[0..2]`는 각각 R·G·B 채널)
+- `vdupq_n_f32`: `1/255` 스칼라 값을 4개 float 레인에 복제하여 `[0, 1]` 정규화 준비
 
 ---
 
-## NEON 구현 (NEON Implementation) (Cont'd)
+## NEON 구현 (Scalar Implementation) (Cont'd - 1)
 
-[//]: # "INCLUDE: ./mep/05/src/01_rgb_to_float_neon.cc --from 26 --to 39 --no-comment"
+[//]: # "INCLUDE: ./mep/05/src/01_rgb_to_float_neon.cc --from 24 --to 43 --no-comment"
 
-- **벡터 병렬 연산**: `vmulq_f32` 명령 한 번으로 4개 `float` 레인을 동시에 스케일링
-- **형 변환 파이프라인**: 8비트 정수 ➔ 16비트 확장 ➔ 32비트 부동소수점 2단계 변환
+- 8개 R 값을 4개씩 두 벡터로 분할 변환하여 `r_out[0..3]`, `r_out[4..7]`에 연속 기록
+
+---
+
+## NEON 구현 (Scalar Implementation) (Cont'd - 2)
+
+[//]: # "INCLUDE: ./mep/05/src/01_rgb_to_float_neon.cc --from 47 --to 66 --no-comment"
+
+- `rgb.val[1]`의 G 값도 동일한 4+4 파이프라인으로 처리하여 `g_out[0..7]`에 저장
+
+---
+
+## NEON 구현 (Scalar Implementation) (Cont'd - 3)
+
+[//]: # "INCLUDE: ./mep/05/src/01_rgb_to_float_neon.cc --from 70 --to 90 --no-comment"
+
+- `rgb.val[2]`의 B 값까지 `b_out[0..7]`에 저장하면 RGB 8픽셀 처리 완료
 
 ---
 
@@ -111,7 +165,8 @@ clang++ -std=c++14 -O3 -mcpu=cortex-a72 \
 ```
 
 - `-fno-vectorize`: 스칼라 기준선 코드의 컴파일러 자동 벡터화 차단
-- NEON 인트린식은 명시적 벡터 호출이므로 비활성화 플래그의 영향을 받지 않음
+  - `-fno-slp-vectorize`: 기본 블록 내 [SLP(Superword-Level Parallelism)](https://www.cs.cornell.edu/courses/cs6120/2020fa/blog/slp/) 벡터화 차단
+- NEON 인트린식은 **명시적 벡터 호출**이므로 비활성화 플래그의 영향을 받지 않음
 
 ---
 
@@ -121,31 +176,31 @@ clang++ -std=c++14 -O3 -mcpu=cortex-a72 \
 
 ---
 
-## 벤치마크 구현 (Cont'd - 1)
+## 벤치마크 구현 (Benchmark Implementation) (Cont'd - 1)
 
 [//]: # "INCLUDE: ./mep/05/src/02_rgb_to_float_benchmark.cc --from 23 --to 44"
 
 ---
 
-## 벤치마크 구현 (Cont'd - 2)
+## 벤치마크 구현 (Benchmark Implementation) (Cont'd - 2)
 
 [//]: # "INCLUDE: ./mep/05/src/02_rgb_to_float_benchmark.cc --from 45 --to 66"
 
 ---
 
-## 벤치마크 구현 (Cont'd - 3)
+## 벤치마크 구현 (Benchmark Implementation) (Cont'd - 3)
 
 [//]: # "INCLUDE: ./mep/05/src/02_rgb_to_float_benchmark.cc --from 67 --to 88"
 
 ---
 
-## 벤치마크 구현 (Cont'd - 4)
+## 벤치마크 구현 (Benchmark Implementation) (Cont'd - 4)
 
 [//]: # "INCLUDE: ./mep/05/src/02_rgb_to_float_benchmark.cc --from 89 --to 110"
 
 ---
 
-## 벤치마크 구현 (Cont'd - 5)
+## 벤치마크 구현 (Benchmark Implementation) (Cont'd - 5)
 
 [//]: # "INCLUDE: ./mep/05/src/02_rgb_to_float_benchmark.cc --from 111"
 
@@ -201,7 +256,7 @@ cmake --build build-release --parallel
 
 | 기록 항목 | 실습 측정 기준값 |
 | :--- | :--- |
-| **타깃 플랫폼** | Raspberry Pi 4(Broadcom BCM2711, Cortex-A72) |
+| **타깃 플랫폼** | Raspberry Pi 4(Cortex-A72) |
 | **컴파일 옵션** | Clang `Release` 모드, `-O3 -mcpu=cortex-a72` |
 | **입력 데이터** | RGB 1920×1080 프레임 + 자투리 3픽셀 고정 데이터 |
 | **측정 지표** | 스칼라/NEON 중앙값, 가속률($\text{Time}_{\text{scalar}} / \text{Time}_{\text{NEON}}$) |
@@ -226,10 +281,10 @@ clang++ -O3 -mcpu=cortex-a72 -Rpass-missed=loop-vectorize image.cc -c
 
 | 실패 원인 | 기술적 발생 배경 |
 | :--- | :--- |
-| **포인터 별칭(Aliasing)** | 포인터 간 메모리 영역 중첩 가능성으로 의존성 발생 |
-| **데이터 의존성(RAW)** | 이전 반복 루프의 계산 결과가 다음 반복에 영향을 미침 |
-| **복잡한 내부 분기** | 루프 내 조건문 분기로 인해 일관된 벡터 레인 구성 불가 |
-| **비정형 반복 경계** | 런타임 루프 트립 카운트(Trip Count) 예측 불가 |
+| **포인터 별칭(Aliasing)** | 메모리 영역 중첩 가능성으로 의존성 발생 |
+| **데이터 의존성(RAW)** | 이전 반복 루프의 결과가 다음 반복에 영향 |
+| **복잡한 내부 분기** | 루프 내 조건문으로 일관된 벡터 레인 불가 |
+| **비정형 반복 경계** | 런타임 루프 트립 카운트 예측 불가 |
 
 ---
 
@@ -254,7 +309,7 @@ clang++ -O3 -mcpu=cortex-a72 -Rpass-missed=loop-vectorize image.cc -c
 | **`-O2`** | 안전한 표준 최적화 적용 | 일반 배포 바이너리의 시작점 |
 | **`-O3`** | 루프 언롤링 및 공격적 벡터화 | 연산 처리 속도 극대화 필요 시 |
 | **`-Os`** | 코드 크기(Footprint) 최소화 | 플래시 메모리 용량이 협소할 때 |
-| **`-flto`** | 링크 시점 전역 최적화(LTO) | 빌드 시간 증가를 감수하고 전체 최적화 |
+| **`-flto`** | 링크 시점 전역 최적화(LTO) | 빌드 시간 감수 후 전체 최적화 |
 
 ```bash
 # Enable Cortex-A72 microarchitecture pipeline scheduling
@@ -315,6 +370,6 @@ $$\text{Energy} = \text{Power} \times \text{Time}$$
 
 | 개선 효과 | 하드웨어 동작 특성 |
 | :--- | :--- |
-| **발열 억제** | 고부하 연산 시간 단축으로 칩셋 누적 발열 감소 |
-| **쓰로틀링 방지** | 다이 온도 상승을 억제하여 코어 동작 주파수 유지 |
-| **프레임률 확보** | CCTV 비전 처리 등 실시간 파이프라인의 실효 FPS 달성 |
+| **발열 억제** | 연산 시간 단축으로 칩셋 누적 발열 감소 |
+| **쓰로틀링 방지** | 다이 온도 상승 억제로 코어 주파수 유지 |
+| **프레임률 확보** | 실시간 영상 파이프라인의 실효 FPS 달성 |
