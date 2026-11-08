@@ -1,7 +1,7 @@
 #include <atomic>
 
-// std::atomic guarantees both atomicity and the memory ordering that
 #if 1 /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
+// std::atomic guarantees both atomicity and the memory ordering that
 // volatile alone cannot provide.
 std::atomic<int> g_count{0};
 
