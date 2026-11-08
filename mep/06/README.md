@@ -16,7 +16,7 @@
   - **외부 요인**: 프로그램의 실행 흐름과 무관하게 메모리의 값을 바꾸는 주체:
     - **주변장치 하드웨어**: 메모리 맵 입출력(MMIO) 레지스터의 값을 직접 갱신
     - **인터럽트 서비스 루틴(ISR)**: 메인 루프 실행 중에 끼어들어 공유 변수를 변경
-  - **컴파일러에 대한 제약**: `volatile` 객체의 읽기·쓰기를 생략·병합하지 않고 코드에 적힌 대로 수행
+  - **컴파일러에 대한 제약**: `volatile` 객체에 대한 읽기·쓰기를 생략·병합하지 않고 코드에 적힌 대로 수행
 - **보장하지 않는 것**: 연산의 원자성, CPU의 메모리 접근 순서, 스레드 간 동기화
 
 ---
@@ -26,7 +26,7 @@
 ### 메모리 맵 입출력 (MMIO, Memory-Mapped I/O)
 
 - **정의**: 주변장치의 레지스터를 CPU 메모리 주소 공간의 고정된 주소에 배치하는 방식
-  - 주변장치: GPIO, UART, SPI, I2C, PWM, 타이머 등 SoC에 내장된 입출력 장치
+  - 예: GPIO, UART, SPI, I2C, PWM, 타이머 등 SoC(System on Chip)에 내장된 입출력 장치
 - **접근 방법**: CPU가 RAM의 변수에 접근할 때와 같은 load·store 명령으로 주변장치 레지스터의 주소를 읽고 씀
   - 예: BCM2837(Raspberry Pi 3)의 GPIO 레지스터는 물리 주소 `0x3F200000`부터 배치
 
@@ -39,7 +39,7 @@ CPU --LDR/STR addr--> [Bus: address decoder]
 
 - **상태 레지스터**: 주변장치 내부 회로가 값을 갱신하므로, CPU가 같은 주소를 다시 읽으면 다른 값이 나올 수 있음
   - 예: UART 송신 버퍼가 비면 회로가 "송신 가능" 비트를 1로 설정하고, CPU는 이 비트가 1이 될 때까지 반복해서 읽음
-- **데이터·제어 레지스터**: CPU가 값을 쓰면 주변장치가 이에 반응하므로, 쓰기 한 번 한 번이 주변장치에 대한 명령
+- **데이터·제어 레지스터**: CPU가 값을 쓰면 주변장치가 이에 반응하므로, 각 쓰기가 주변장치에 대한 명령으로 동작
   - 예: UART 데이터 레지스터에 `'O'`, `'K'`를 연속으로 쓰면 문자 2개를 차례로 전송
 
 ---
@@ -62,13 +62,18 @@ CPU --LDR/STR addr--> [Bus: address decoder]
 
 ### 관찰 가능한 동작 (Observable Behavior)
 
-- **as-if 규칙**: 컴파일러는 관찰 가능한 동작이 같다면 코드를 삭제·병합·재배치할 수 있음
-- **관찰 가능한 동작**: 최적화 후에도 반드시 보존해야 하는 프로그램의 외부 효과
-  - `volatile` 객체에 대한 읽기·쓰기
-  - 프로그램 종료 시점에 파일에 기록된 데이터
-  - 대화형 장치(터미널)와의 입출력
-- **일반 변수의 읽기·쓰기**: 관찰 가능한 동작이 아니므로 최종 결과가 같다면 생략할 수 있음
-- **`volatile`의 효과**: 읽기·쓰기 자체가 관찰 가능한 동작이 되어 생략·병합·순서 변경 불가
+- **[as-if](https://en.cppreference.com/cpp/language/as_if) 규칙**: 컴파일러는 관찰 가능한 동작만 그대로 유지하면, 나머지 코드는 자유롭게 삭제·병합·재배치할 수 있음
+- **관찰 가능한 동작**: 표준이 정한 보존 대상으로, 최적화 후에도 프로그램에 적힌 그대로 일어나야 함
+  - `volatile` 객체에 대한 읽기·쓰기, 파일 기록, 터미널 입출력 등
+
+| 구분 | 일반 객체 읽기·쓰기 | `volatile` 객체 읽기·쓰기 |
+| :--- | :--- | :--- |
+| **관찰 가능한 동작** | 아님 | 해당 |
+| **as-if 변환** | 삭제·병합·재배치 가능 | 적힌 횟수·순서대로 실행 |
+| **MMIO 레지스터** | 일부가 생략되어 전달되지 않을 수 있음 | 모두 하드웨어에 전달됨 |
+
+- **`volatile`의 역할**: 최적화를 끄는 장치가 아니라, 어떤 읽기·쓰기가 보존 대상인지 컴파일러에 알리는 장치
+  - 보존되는 것은 `volatile` 객체에 대한 읽기·쓰기뿐이며, 그 밖의 코드는 계속 최적화됨
 - **근거**: C++14 (ISO/IEC 14882:2014) §1.9 — "Program execution"
 
 ---
@@ -79,7 +84,7 @@ CPU --LDR/STR addr--> [Bus: address decoder]
 
 [//]: # "INCLUDE: ./mep/06/src/09_uart_data_write.cc --from 4 --to 11 --no-comment"
 
-- **`SendOkBroken()`**: 첫 번째 쓰기는 곧바로 덮어써지므로 죽은 저장으로 삭제되어 `'K'`만 전송
+- **`SendOkBroken()`**: 첫 번째 쓰기는 다시 읽히기 전에 덮어써지므로 죽은 저장 제거로 삭제되어 `'K'`만 전송
 - **`SendOk()`**: 두 쓰기 모두 관찰 가능한 동작이므로 유지되어 `'O'`, `'K'` 순서로 전송
 - **컴파일 결과**: AArch64 Clang `-O2`에서 `SendOkBroken()`은 `str` 1개, `SendOk()`는 `str` 2개 생성
 
@@ -102,7 +107,7 @@ CPU --LDR/STR addr--> [Bus: address decoder]
 
 ## 최적화와 하드웨어의 충돌 (The Problem)
 
-<!-- IMAGE [다이어그램] 컴파일러가 값을 레지스터에 캐시해 하드웨어 갱신을 놓치는 상황 (img/24-register-caching.png) -->
+![h:350 center](img/24-register-caching.png)
 
 - **레지스터 캐싱**: 메모리 접근 횟수를 줄이기 위해 변수의 값을 레지스터에 보관하여 재사용
 - **값이 외부에서 바뀌는 경우**:
@@ -137,8 +142,8 @@ CPU --LDR/STR addr--> [Bus: address decoder]
 
 ```bash
 # Generate optimized assembly for the non-volatile and volatile examples
-clang++ -O2 -S mep/06/src/00_volatile_broken.cc -o /tmp/broken.s
-clang++ -O2 -S mep/06/src/01_volatile_correct.cc -o /tmp/volatile.s
+clang++ -O2 -S 00_volatile_broken.cc -o /tmp/broken.s
+clang++ -O2 -S 01_volatile_correct.cc -o /tmp/volatile.s
 ```
 
 | 대상 코드 | 최적화 결과 | 동작 |
@@ -192,7 +197,7 @@ WaitForTxReady:
 
 ```bash
 # Build and run the signal flag demonstration
-clang++ -O2 mep/06/src/06_signal_flag_demo.cc -o /tmp/v
+clang++ -O2 06_signal_flag_demo.cc -o /tmp/v
 /tmp/v
 ```
 
@@ -226,7 +231,55 @@ clang++ -O2 mep/06/src/06_signal_flag_demo.cc -o /tmp/v
   - **메모리 배리어**: CPU가 메모리 접근 순서를 바꾸는 것을 막지 못함
   - **스레드 안전성**: 여러 스레드가 동시에 접근하면 데이터 경쟁(Data Race)으로 미정의 동작 발생
 
+---
+
+## `volatile`이 하지 않는 것 (Cont'd - 1)
+
+### 원자성 (Atomicity)
+
+- **상황**: 두 스레드가 같은 카운터를 각각 한 번씩 증가시키므로 기대값은 2
+
 [//]: # "INCLUDE: ./mep/06/src/03_volatile_is_not_atomic.cc --from 5 --to 8 --no-comment"
+
+| 순서 | 스레드 A | 스레드 B | `g_count` |
+| :--- | :--- | :--- | :--- |
+| 1 | load → 0 | | 0 |
+| 2 | | load → 0 | 0 |
+| 3 | add, store → 1 | | 1 |
+| 4 | | add, store → 1 | 1 |
+
+- **원인**: `++g_count`는 load·add·store 3개 명령이며, 그 사이에 다른 스레드가 끼어들 수 있음
+- **결과**: 증가 하나가 유실되어 최종값이 1
+- **`volatile`의 한계**: 각 load·store를 보존할 뿐, 그 사이에 다른 스레드가 끼어드는 것은 막지 못함
+
+---
+
+## `volatile`이 하지 않는 것 (Cont'd - 2)
+
+### 메모리 배리어 (Memory Barrier)
+
+- **상황**: 생산자가 데이터를 쓴 뒤 준비 플래그를 세우고, 다른 코어의 소비자가 플래그를 확인한 뒤 데이터를 읽음
+
+[//]: # "INCLUDE: ./mep/06/src/11_volatile_no_barrier.cc --from 5 --to 18 --no-comment"
+
+- **컴파일러 수준**: 두 `volatile` 객체에 대한 쓰기 순서는 코드에 적힌 대로 유지
+- **CPU 수준**: ARM은 쓰기가 다른 코어에 보이는 순서를 바꿀 수 있어, `g_ready == 1`인데 `g_data`는 0일 수 있음
+- **메모리 배리어**: 앞뒤 메모리 접근의 순서를 CPU에 강제하는 명령(AArch64 `dmb`)으로, `volatile`은 이를 생성하지 않음
+
+---
+
+## `volatile`이 하지 않는 것 (Cont'd - 3)
+
+### 스레드 안전성 (Thread Safety)
+
+- **스레드 안전성**: 여러 스레드가 동시에 사용해도 결과가 올바르고 동작이 정의되는 성질
+- **상황**: 스레드 A는 위치를 (0, 0)에서 (1, 1)로 옮기고, 스레드 B는 `g_x == g_y`가 항상 성립함을 가정
+
+[//]: # "INCLUDE: ./mep/06/src/12_volatile_not_thread_safe.cc --from 5 --to 15 --no-comment"
+
+- **중간 상태 노출**: `g_x`만 바뀌고 `g_y`는 아직 바뀌지 않은 순간에 읽으면 (1, 0)을 관찰
+- **데이터 경쟁**: 동기화 없는 동시 읽기·쓰기는 `volatile`이어도 C++ 표준상 미정의 동작
+- **해결**: 단일 변수는 `std::atomic`, 여러 변수를 함께 바꿔야 하면 `std::mutex`로 보호
 
 ---
 
@@ -235,6 +288,10 @@ clang++ -O2 mep/06/src/06_signal_flag_demo.cc -o /tmp/v
 [//]: # "INCLUDE: ./mep/06/src/04_atomic_counter.cc --from 4 --to 9 --no-comment"
 
 - **`std::atomic`의 역할**: 원자적 읽기-수정-쓰기와 메모리 순서(Memory Ordering)를 함께 보장
+- **`volatile`과의 차이**: 관찰 가능한 동작에 해당하는지와 보장 대상이 다름
+  - `volatile`: 관찰 가능한 동작이며, 프로그램 외부의 하드웨어를 위해 읽기·쓰기를 적힌 횟수·순서대로 보존
+  - `std::atomic`: 관찰 가능한 동작이 아니며, 프로그램 내부의 다른 스레드를 위해 원자성과 순서·가시성을 보장
+  - 하드웨어는 C++ 스레드가 아니므로 `std::atomic`은 MMIO 접근에 `volatile`을 대신하지 못함
 
 ---
 
@@ -257,7 +314,7 @@ clang++ -O2 mep/06/src/06_signal_flag_demo.cc -o /tmp/v
 ```bash
 # Build and execute multi-threaded atomic counter verification
 clang++ -std=c++14 -O2 -pthread \
-  mep/06/src/07_atomic_counter_demo.cc -o /tmp/mep06-atomic
+  07_atomic_counter_demo.cc -o /tmp/mep06-atomic
 /tmp/mep06-atomic
 ```
 
@@ -282,20 +339,69 @@ clang++ -std=c++14 -O2 -pthread \
 
 ---
 
+## 메모리 순서 (Cont'd - 1)
+
+### `relaxed`: 이벤트 카운터 (Event Counter)
+
+- **상황**: 여러 스레드가 수신한 패킷 수를 세고, 모든 스레드가 끝난 뒤 합계만 보고
+
+[//]: # "INCLUDE: ./mep/06/src/13_relaxed_counter.cc --from 6 --to 14 --no-comment"
+
+- **보장**: `fetch_add`가 원자적이므로 증가가 유실되지 않고 합계가 정확함
+- **보장하지 않음**: 카운터와 다른 변수 사이의 메모리 접근 순서
+- **주의**: 카운터 값으로 다른 데이터의 준비 여부를 판단할 수 없음
+- **적합한 경우**: 통계·참조 횟수 증가처럼 값 자체만 중요하고 다른 데이터를 보호하지 않는 경우
+
+---
+
+## 메모리 순서 (Cont'd - 2)
+
+### `release`·`acquire`: 데이터 전달 (Publishing Data)
+
+- **상황**: `volatile`로는 실패했던 생산자·소비자 예제를 `std::atomic` 플래그로 수정
+
+[//]: # "INCLUDE: ./mep/06/src/14_release_acquire.cc --from 7 --to 20 --no-comment"
+
+- **`release` (2)·`acquire` (3)**: 쓰기 (1)은 (2) 뒤로 밀려나지 않고, 읽기 (4)는 (3) 앞으로 당겨지지 않음
+- **동기화**: (3)이 `true`를 읽으면 (1)이 (4)에 보이므로, `g_data`가 일반 `int`여도 항상 42를 반환
+- **생성 코드**(AArch64 Clang `-O2`): `stlrb`(Store-Release Register Byte), `ldarb`(Load-Acquire Register Byte)
+
+---
+
+## 메모리 순서 (Cont'd - 3)
+
+### `seq_cst`(Sequentially-Consistent): 서로의 플래그 확인 (Checking Each Other's Flag)
+
+- **상황**: 두 스레드가 각자 자기 플래그를 세운 뒤 상대 플래그를 확인하고, 상대가 없을 때만 임계 구역에 진입
+
+[//]: # "INCLUDE: ./mep/06/src/15_seq_cst.cc --from 8 --to 19 --no-comment"
+
+- **`release`·`acquire`일 때**: store가 뒤따르는 load보다 늦게 보일 수 있어 두 스레드 모두 `false`를 읽고 함께 진입
+- **`seq_cst`일 때**: 네 연산이 하나의 전체 순서를 가지므로 적어도 한 스레드는 상대 플래그를 확인함
+- **생성 코드**(AArch64 Clang `-O2`): 두 순서 모두 `stlrb`·`ldarb`로 같으므로 이 예제에서 `seq_cst`의 추가 비용 없음
+- **주의**: 생성 코드가 같아도 C++ 표준은 `release`·`acquire`의 동시 진입을 막지 않으므로 `seq_cst`로 작성
+
+---
+
 ## 하드웨어 레지스터 접근 패턴 (MMIO Patterns)
 
 [//]: # "INCLUDE: ./mep/06/src/10_mmio_rmw.cc --from 4 --to 12 --no-comment"
 
-- **비원자적 RMW**: `*kReg |= mask`는 읽기·수정·쓰기 3단계이므로 사이에 인터럽트가 끼면 변경이 유실될 수 있음
+- **비원자적 RMW**: `*kReg |= mask`는 읽기-수정-쓰기 3단계로 실행
+  - 읽기와 쓰기 사이에 ISR이 같은 레지스터를 바꾸면 그 변경이 유실될 수 있음
   - SoC가 제공하는 **SET/CLEAR 전용 레지스터** 사용 권장(예: BCM2837의 `GPSET0`, `GPCLR0`)
 - **읽기의 부수 효과**: 읽기만으로 값이 지워지는 Read-to-Clear 레지스터는 불필요하게 읽지 않음
-- **순서 보장 범위**: 컴파일러는 `volatile` 접근 순서를 유지하지만, CPU·버스 수준의 순서는 메모리 배리어(AArch64 `dmb`)가 필요
+- **컴파일러 수준 순서**: `volatile` 객체에 대한 읽기·쓰기 순서는 코드에 적힌 대로 유지
+- **CPU·버스 수준 순서**: 메모리 배리어(AArch64 `dmb`)가 있어야 보장됨
+  - `dmb`(Data Memory Barrier): AArch64 ISA의 기계어 명령으로, 앞뒤 메모리 접근의 순서를 강제
+  - 예: `a = *kPeriA; asm volatile("dmb sy" ::: "memory"); b = *kPeriB;`
+    - `dmb sy`: Data Memory Barrier - System
 
 ---
 
 ## 판단 기준 (Decision Guide)
 
-<!-- IMAGE [결정트리] volatile / std::atomic / 뮤텍스 선택 결정 트리 (img/25-volatile-decision.png) -->
+![h:200 center](img/25-volatile-decision.png)
 
 | 상황 | 권장 수단 |
 | :--- | :--- |
@@ -308,18 +414,3 @@ clang++ -std=c++14 -O2 -pthread \
 - `volatile`: 컴파일러가 읽기·쓰기를 생략하거나 병합하지 않도록 함
 - `std::atomic`: 원자성과 메모리 순서(Memory Ordering) 보장
 - **구분 사용**: 두 수단은 서로를 대체하지 않으며 목적에 따라 선택
-
----
-
-## 흔한 오해 (Common Misconceptions)
-
-| 오해 | 사실 |
-| :--- | :--- |
-| `volatile`이면 스레드 안전함 | 원자성과 메모리 순서를 보장하지 않아 동기화 수단이 아님 |
-| `volatile`이면 더 빨라짐 | 최적화를 억제하므로 오히려 느려질 수 있음 |
-| `std::atomic`이 `volatile`을 대체함 | MMIO 레지스터 접근에는 여전히 `volatile`이 필요 |
-| 단일 코어에서는 데이터 경쟁이 없음 | 단일 코어에서도 인터럽트·선점으로 실행이 끼어들 수 있음 |
-
-- **최소 범위 원칙**: `volatile`은 하드웨어 레지스터와 신호·ISR 플래그에만 사용
-- **스레드 간 공유 상태**: `std::atomic` 또는 `std::mutex`로 처리
-- **보수적 설계**: 판단이 어려우면 더 강한 보장(`seq_cst`, 뮤텍스)을 우선 선택
