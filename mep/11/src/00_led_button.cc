@@ -10,7 +10,7 @@
 namespace {
 constexpr unsigned int kLedPin = 17;     // BCM 17, through a 330 ohm resistor
 constexpr unsigned int kButtonPin = 23;  // BCM 23, 10k pull-up to 3.3V
-constexpr int kPollIntervalMs = 1000;
+constexpr int kPollUs = 1000;
 constexpr long kSettleMs = 50;  // line must idle HIGH this long to re-arm
 }  // namespace
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
@@ -56,7 +56,7 @@ int main() {
       armed = true;
     }
 #endif /* DO NOT CONTAIN THIS LINE IN THE MARKDOWN */
-    usleep(kPollIntervalMs);
+    usleep(kPollUs);
   }
   return led.Set(0) ? 0 : 1;
 }
