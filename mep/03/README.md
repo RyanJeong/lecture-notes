@@ -14,33 +14,45 @@
 
 | 단계 | 실행 명령 | 산출물 |
 | :--- | :--- | :--- |
-| **전처리** | `clang++ -E` | `.i` — 헤더 전개 소스 |
-| **컴파일** | `clang++ -S` | `.s` — 어셈블리 소스 |
-| **어셈블** | `clang++ -c` | `.o` — 오브젝트 파일 |
-| **링크** | `clang++` | 실행 파일 또는 라이브러리 |
+| **전처리** | `clang++ -E main.cc -o main.ii` | `.ii`: `#include`와 매크로를 전개한 소스 |
+| **컴파일** | `clang++ -S main.ii` | `.s`: 어셈블리 소스 |
+| **어셈블** | `clang++ -c main.s` | `.o`: 오브젝트 파일 |
+| **링크** | `clang++ main.o -o app` | 실행 파일 또는 라이브러리 |
 
-- **단계별 오류 원인 판별**:
-  - 헤더 탐색 실패 ➔ 전처리 단계 오류
-  - 구문·문법 오류 ➔ 컴파일 단계 오류
-  - 심볼 미정의(`undefined reference`) ➔ 링크 단계 오류
+---
+
+## 컴파일 과정 (Compilation Pipeline) (Cont'd)
+
+### 단계별 오류 구분
+
+- **번역 단위**(Translation Unit): 전처리를 마친 소스 파일 1개이며, 컴파일러는 번역 단위마다 `.o` 1개를 생성
+- **심볼**(Symbol): 링커가 오브젝트 파일 사이에서 연결하는 함수·전역 변수의 이름
+
+| 오류 메시지(Clang) | 발생 단계 | 원인 |
+| :--- | :--- | :--- |
+| `fatal error: 'sensor.hpp' file not found` | 전처리 | 헤더 탐색 경로에 파일이 없음 |
+| `error: expected ';' at end of declaration` | 컴파일 | 구문 오류 |
+| ``undefined reference to `ReadSensor()'`` | 링크 | 선언만 있고 정의가 없는 심볼 |
+
+- **예**: `undefined reference`는 링크 단계 오류이므로 헤더가 아니라 정의(`.cc`)와 링크 대상을 확인
 
 ---
 
 ## 빌드 시스템이 필요한 이유 (Why a Build System)
 
-- 단일 소스 파일은 명령줄에서 직접 빌드 가능
+- **단일 소스 파일**: 명령 한 줄로 빌드할 수 있음
 
 ```bash
 clang++ -std=c++14 main.cc -o app
 ```
 
-- **소스 규모 증가 시 관리 한계**:
-  - 변경된 소스 파일만 선별하는 재컴파일 판단 필요
-  - 모듈 간 컴파일 순서 및 복잡한 의존 관계 관리 필요
-  - 타깃 보드별 컴파일러 플래그 및 아키텍처 다변화 대응
-  - 외부 서드파티 라이브러리 탐색 및 링크 자동화 필요
+- **소스 파일이 늘어날 때 수동 빌드의 문제**:
+  - 수정된 파일만 다시 컴파일하려면 파일마다 변경 여부를 직접 확인해야 함
+  - 라이브러리를 먼저 빌드해야 실행 파일을 링크할 수 있는 순서를 직접 관리해야 함
+  - 호스트용·라즈베리파이용 빌드마다 컴파일러와 플래그를 바꿔 입력해야 함
+  - `libgpiod` 같은 외부 라이브러리의 헤더 경로와 링크 옵션을 직접 지정해야 함
 
-> 빌드 시스템은 **무엇을, 언제, 어떤 옵션으로 빌드할지** 자동으로 결정
+> 빌드 시스템: **무엇을, 언제, 어떤 옵션으로 빌드할지** 자동으로 결정하는 도구
 
 ---
 
@@ -48,22 +60,29 @@ clang++ -std=c++14 main.cc -o app
 
 ![h:200 center](img/01-cmake-two-phase.png)
 
-- **빌드 시스템 생성기(Build-System Generator)**: 네이티브 빌드 파일(Makefile, Ninja)을 자동 생성
-- `CMakeLists.txt`를 기반으로 플랫폼 독립적 빌드 명세 정의
+- **빌드 시스템 생성기**(Build-System Generator): 네이티브 빌드 파일을 생성하는 도구
+- **네이티브 빌드 도구**: 빌드 파일을 읽어 컴파일러를 호출하는 프로그램(예: `make`, `ninja`)
+- **`CMakeLists.txt`**: 타깃·소스·옵션을 플랫폼과 무관하게 기술하는 CMake 입력 파일
+
+---
+
+## CMake란 (What CMake Is) (Cont'd)
 
 ### 2단계 워크플로 (Two-Phase Workflow)
 
 1. **Configure**(`cmake -B build`): 컴파일러 검출, 옵션 평가, 네이티브 빌드 파일 생성
-2. **Build**(`cmake --build build`): 실제 빌드 도구 구동 및 바이너리 컴파일
+2. **Build**(`cmake --build build`): 네이티브 빌드 도구를 실행하여 바이너리 생성
 
-> 빌드 옵션이나 프로젝트 구조 변경 시 Configure 단계 재수행 필수
+- **Configure 산출물**: `build/` 아래의 `Makefile`(또는 `build.ninja`)과 설정값을 저장한 `CMakeCache.txt`
+- **옵션 변경**: `-D` 옵션을 바꾸려면 Configure 단계를 다시 실행
+- **`CMakeLists.txt` 수정**: Build 단계에서 변경을 감지하여 Configure를 자동으로 다시 실행
 
 ---
 
 ## 타깃 중심 설계 (Target-Centric Design)
 
-- **타깃(Target)**: 실행 파일, 라이브러리 등 명명된 빌드 산출물 단위
-- 인클루드 경로, 컴파일 플래그, 링크 속성을 **타깃 단위로 개별 바인딩**
+- **타깃**(Target): 실행 파일, 라이브러리처럼 이름이 붙은 빌드 산출물 단위
+- **타깃별 속성**: 인클루드 경로, 컴파일 플래그, 링크할 라이브러리를 타깃마다 따로 지정
 
 ```cmake
 add_library(sensors SHARED src/dht11.cc src/hcsr04.cc)
@@ -77,28 +96,25 @@ target_compile_features(sensors PUBLIC cxx_std_14)
 target_link_libraries(sensors PRIVATE gpiod)
 ```
 
-- `PUBLIC`, `PRIVATE`, `INTERFACE` 스코프로 **전이 전파(Transitive Propagation)** 제어
+- `SHARED`: 공유 라이브러리(`libsensors.so`)로 빌드
+- `PUBLIC`·`PRIVATE`·`INTERFACE`: 속성을 이 타깃을 사용하는 다른 타깃에도 전달할지 정하는 스코프
 
 ---
 
 ## 전이 전파 (Transitive Propagation)
 
-### 의존성 체인 (Dependency Chain)
+- **정의**: 타깃 B에 지정한 속성이 B를 링크하는 타깃 A에도 자동으로 적용되는 동작
+- **의존성 체인**: Consumer A → Target B → Target C
+- **전파 대상 속성**: 링크 라이브러리, 인클루드 경로, 컴파일 정의(`-D`), 언어 표준
+- **스코프의 역할**: B가 C에서 받은 속성을 A에도 전달할지 결정
 
-- **다단계 의존 구조**: Consumer A ➔ Target B ➔ Target C
-- **전파 속성**: 라이브러리 링크, Include 경로, 컴파일 정의, 언어 표준
-- **Scope 역할**: Target B가 Target C의 빌드 속성을 Consumer A로 전파할지 결정
+### 스코프별 동작
 
-### Scope 핵심 요약
-
-| Scope | 자체 빌드 | 상위 전파 | 주요 사용 목적 |
+| 스코프 | B 자체 빌드에 적용 | A로 전파 | 사용 목적 |
 | :--- | :---: | :---: | :--- |
-| **`PRIVATE`** | **O** | **X** | 내부 구현 은닉 및 캡슐화 |
-| **`INTERFACE`** | **X** | **O** | Header-only 라이브러리 전파 |
-| **`PUBLIC`** | **O** | **O** | 공개 인터페이스 규격 유지 |
-
-- **자체 빌드**: Target B 컴파일 시 Target C 속성 적용
-- **상위 전파**: Target B를 사용하는 Consumer A에게 Target C 속성 전달
+| **`PRIVATE`** | **O** | **X** | 내부 구현 숨김 |
+| **`INTERFACE`** | **X** | **O** | 헤더 전용 라이브러리 |
+| **`PUBLIC`** | **O** | **O** | 공개 헤더에 노출된 의존성 |
 
 ---
 
@@ -111,12 +127,12 @@ target_link_libraries(sensors PRIVATE gpiod)
 - **구성 요소**:
   - **`Tool`**: 최상위 응용 프로그램(Consumer)
   - **`Project`**: 라이브러리 집합(`AnotherLibrary`, `SomeLibrary`)
-  - **`Dependency`**: 하위 외부 라이브러리(`doThingy()` 제공)
+  - **`Dependency`**: `doThingy()`를 제공하는 하위 외부 라이브러리
 - **의존 구조**:
-  - 직접 의존성: `Tool` ➔ `Project`, `AnotherLibrary` ➔ `Dependency`
-  - 전이 의존성: `Tool` ➔ `Dependency`(`AnotherLibrary` 경유 구조)
+  - 직접 의존성: `Tool` → `Project`, `AnotherLibrary` → `Dependency`
+  - 전이 의존성: `AnotherLibrary`를 거친 `Tool` → `Dependency`
 
-> `AnotherLibrary`의 스코프 설정에 따라 `Tool`의 `Dependency` 접근성 결정
+> `AnotherLibrary`의 스코프 설정에 따라 `Tool`이 `Dependency`를 사용할 수 있는지 결정
 
 ---
 
@@ -126,10 +142,10 @@ target_link_libraries(sensors PRIVATE gpiod)
 
 ![h:150 center](img/03-transitive-propagation.png)
 
-- **자체 사용**: `AnotherLibrary` 내부(`doTheThing()`)에서만 `Dependency` 호출
-- **상위 차단**: `Tool`의 `Dependency` 직접 접근을 차단하여 내부 캡슐화 유지
-- **헤더 분리**: `Dependency` 헤더가 소스 파일(`.cc`)에만 포함될 때 사용
-- **빌드 최적화**: `Dependency` 변경 시 `Tool`의 불필요한 재컴파일 차단
+- **자체 사용**: `AnotherLibrary` 내부의 `doTheThing()`에서만 `Dependency`를 호출
+- **전파 차단**: `Tool`은 `Dependency`의 인클루드 경로를 받지 못해 직접 호출할 수 없음
+- **사용 조건**: `Dependency` 헤더를 소스 파일(`.cc`)에서만 포함할 때
+- **재컴파일 범위**: `Dependency` 헤더가 바뀌어도 `Tool`의 `main.cc`는 다시 컴파일되지 않음
 
 ```cmake
 add_library(AnotherLibrary AnotherLibrary.cc)
@@ -147,10 +163,10 @@ target_link_libraries(Tool PRIVATE AnotherLibrary SomeLibrary)
 
 ![h:150 center](img/04-transitive-propagation.png)
 
-- **자체 미사용**: `AnotherLibrary` 자체 빌드 시 `Dependency`를 직접 사용하지 않음
-- **상위 전파**: `Tool`이 `AnotherLibrary` 링크 시 `Dependency`가 자동 연결됨
-- **전달 전용**: 자체 컴파일 소스 없이 상위 소비자에 의존성 속성만 전달
-- **주요 활용**: Header-only 라이브러리(nlohmann/json 등) 및 공통 플래그 타깃
+- **자체 미사용**: `AnotherLibrary`는 컴파일할 소스가 없어 `Dependency`를 직접 사용하지 않음
+- **전파**: `Tool`이 `AnotherLibrary`를 링크하면 `Dependency`의 속성도 함께 적용
+- **헤더 전용 라이브러리**: `.cc` 없이 헤더만으로 구성된 라이브러리(예: nlohmann/json)
+- **활용**: 헤더 전용 라이브러리, 공통 컴파일 플래그만 묶은 타깃
 
 ```cmake
 add_library(AnotherLibrary INTERFACE)
@@ -168,10 +184,10 @@ target_link_libraries(Tool PRIVATE AnotherLibrary SomeLibrary)
 
 ![h:150 center](img/05-transitive-propagation.png)
 
-- **자체 사용 및 전파**: 내부 빌드에 사용하면서 상위 `Tool`에도 접근 권한 전파
-- **공개 헤더 노출**: `AnotherLibrary` 공개 헤더(`.h`)에 `Dependency` 타입 노출 시 채택
-- **이중 접근**: `Tool`에서 `doTheThing()` 및 `doThingy()` 직접 호출 가능
-- **주의사항**: 불필요한 남용 시 결합도 증가 및 빌드 속도 저하 유발
+- **사용과 전파**: `AnotherLibrary`가 직접 사용하면서 `Tool`에도 같은 속성을 전달
+- **사용 조건**: `AnotherLibrary`의 공개 헤더(`.h`)에 `Dependency`의 타입이 나타날 때
+- **결과**: `Tool`에서 `doTheThing()`과 `doThingy()`를 모두 직접 호출할 수 있음
+- **주의**: 불필요한 `PUBLIC`은 `Dependency`가 바뀔 때 `Tool`까지 다시 컴파일하게 만듦
 
 ```cmake
 add_library(AnotherLibrary AnotherLibrary.cc)
@@ -185,18 +201,35 @@ target_link_libraries(Tool PRIVATE AnotherLibrary SomeLibrary)
 
 ## 전이 전파 (Transitive Propagation) (Cont'd - 5)
 
-### Scope 선택 가이드
+### 예: 스코프에 따른 빌드 결과
 
-- **`PRIVATE` 우선 채택**:
-  - 의존성 헤더가 소스 파일(`.cc`)에만 포함될 때
-  - 모듈 캡슐화 유지 및 재컴파일 전파 범위를 최소화할 때
-- **`PUBLIC` 제한적 채택**:
-  - 의존성 타입이 공개 헤더(`.h`)의 함수 인자, 반환형, 멤버 변수로 노출될 때
-- **`INTERFACE` 특수 채택**:
-  - 빌드할 소스 파일이 없는 Header-only 라이브러리 연동 시
-  - 공통 플래그나 매크로 정의만 전파하는 인터페이스 타깃 구성 시
+- **실험 조건**: `Tool`의 `main.cc`가 `#include "dependency.h"` 후 `doThingy()`를 호출
+- **`Dependency`**: `target_include_directories(... INTERFACE dep/include)`로 헤더 경로만 제공
 
-> 기본값으로 **`PRIVATE`** 우선 고려 (`PUBLIC` 남용은 의존성 결합도 증가 초래)
+| `AnotherLibrary`의 링크 스코프 | `Tool`의 빌드 결과 |
+| :--- | :--- |
+| `PRIVATE` | `fatal error: dependency.h: No such file or directory` |
+| `PUBLIC` | 빌드 성공 |
+
+- **원인**: `PRIVATE`이면 `dep/include`가 `Tool`의 컴파일 명령에 `-I` 옵션으로 추가되지 않음
+- **확인 환경**: CMake 4.3, GCC 11.4
+
+---
+
+## 전이 전파 (Transitive Propagation) (Cont'd - 6)
+
+### 스코프 선택 기준
+
+- **`PRIVATE` 우선 사용**:
+  - 의존성 헤더를 소스 파일(`.cc`)에서만 포함할 때
+  - 캡슐화를 유지하고 재컴파일 범위를 줄일 때
+- **`PUBLIC` 제한적 사용**:
+  - 의존성 타입이 공개 헤더(`.h`)의 매개변수 타입, 반환 타입, 멤버 변수에 나타날 때
+- **`INTERFACE` 특수한 경우**:
+  - 빌드할 소스 파일이 없는 헤더 전용 라이브러리를 연결할 때
+  - 공통 플래그나 매크로 정의만 전달하는 타깃을 구성할 때
+
+> 기본값은 **`PRIVATE`**: `PUBLIC`을 남용하면 타깃 간 결합도가 높아짐
 
 - 출처: <https://decovar.dev/blog/2023/07/22/cmake-target-link-libraries-scopes/>
 
@@ -219,6 +252,14 @@ target_include_directories(blink PRIVATE ${GPIOD_INCLUDE_DIRS})
 target_link_libraries(blink PRIVATE ${GPIOD_LIBRARIES})
 ```
 
+- **pkg-config**: 설치된 라이브러리의 헤더 경로와 링크 옵션을 알려 주는 도구
+- `find_package(PkgConfig REQUIRED)`: CMake에서 pkg-config를 사용할 수 있게 함
+- `pkg_check_modules(GPIOD ...)`: 결과를 `GPIOD_INCLUDE_DIRS`, `GPIOD_LIBRARIES` 변수에 저장
+
+---
+
+## 최소 예제 (Minimal Example) (Cont'd)
+
 ```bash
 # Configure, build, and run application
 cmake -B build -DCMAKE_BUILD_TYPE=Release
@@ -226,13 +267,15 @@ cmake --build build -j
 ./build/blink
 ```
 
-- 빌드 시 `-v` 옵션을 추가하면 실행된 실제 상세 컴파일 명령어 확인 가능
+- `-DCMAKE_BUILD_TYPE=Release`: 최적화 플래그를 적용하는 빌드 타입 지정
+- `-j`: 여러 소스 파일을 동시에 컴파일하는 병렬 빌드
+- `-v`: `cmake --build build -v`처럼 추가하면 실제로 실행된 컴파일 명령을 출력
 
 ---
 
 ## 의존성과 증분 빌드 (Incremental Build)
 
-- **핵심 원리**: 변경이 발생한 파일 및 영향받는 타깃만 **선별 재컴파일**
+- **증분 빌드**: 마지막 빌드 이후 바뀐 파일과 그 파일에 의존하는 산출물만 다시 만드는 방식
 
 ```text
 main.cc   -> main.o   --+
@@ -242,7 +285,12 @@ sensor.cc -> sensor.o --+
 sensor.hpp (if sensor.hpp changes, you must recreate sensor.o)
 ```
 
-- CMake는 헤더 의존성을 자동 추적하여 헤더 수정 시 관련 파일만 갱신
+- **헤더 의존성 추적**: 컴파일러가 `-MD` 옵션으로 `.o`마다 포함한 헤더 목록(`.d` 파일)을 기록
+- **예**: `sensor.hpp`를 수정하면 `sensor.o`와 `app`만 다시 만들고 `main.o`는 그대로 사용
+
+---
+
+## 의존성과 증분 빌드 (Incremental Build) (Cont'd)
 
 ### 병렬 빌드 (Parallel Build)
 
@@ -250,14 +298,17 @@ sensor.hpp (if sensor.hpp changes, you must recreate sensor.o)
 cmake --build build -j        # Compile in parallel across CPU cores
 ```
 
-- 상호 의존성이 없는 번역 단위는 CPU 코어별로 병렬 빌드 수행
-- 타깃 보드는 연산 자원이 한정되어 있으므로 크로스 컴파일 병행 권장
+- **병렬 컴파일**: 서로 의존하지 않는 번역 단위(`main.cc`, `sensor.cc`)를 여러 CPU 코어에서 동시에 컴파일
+- **작업 수 지정**: `-j 4`처럼 숫자를 붙이면 동시에 실행할 컴파일 작업 수를 제한
+- **라즈베리파이에서의 한계**: 호스트보다 CPU 코어와 메모리가 적어 빌드 시간이 김
+- **대안**: 호스트에서 라즈베리파이용 바이너리를 만드는 크로스 컴파일(이 장 후반부)
 
 ---
 
 ## 빌드 옵션 (Build Options)
 
-- Configure 단계에서 `-D<OPTION>=<VALUE>` 형식으로 조건부 빌드 설정
+- **`option()`**: Configure 단계에서 `ON`/`OFF`로 바꿀 수 있는 불리언 옵션 선언
+- **SIMD**(Single Instruction, Multiple Data): 명령 하나로 여러 데이터를 동시에 처리하는 CPU 기능
 
 ```cmake
 option(MEP_SIMD "Enable SIMD kernels" ON)
@@ -273,42 +324,47 @@ endif()
 cmake -B build -DMEP_SIMD=OFF -DBUILD_TESTS=OFF
 ```
 
+- **`ON`(기본값)**: `sensors`의 컴파일 명령에 `-DMEP_SIMD=1`이 추가되어 `#if MEP_SIMD` 구간 포함
+- **`OFF`**: `MEP_SIMD` 매크로가 정의되지 않아 SIMD 코드가 빠진 구현으로 빌드
+
 ---
 
 ## 빌드 타입 (Build Types)
 
-| 타입 | GCC/Clang 플래그 | 주요 용도 |
+| 타입 | CMake 기본 플래그(GCC/Clang) | 주요 용도 |
 | :--- | :--- | :--- |
-| `Debug` | `-g -O0` | 디버깅 및 심볼 보존 |
-| `Release` | `-O3 -DNDEBUG` | 상용 배포 및 성능 최적화 |
-| `RelWithDebInfo` | `-O2 -g` | 디버그 정보 포함 배포본 |
-| `MinSizeRel` | `-Os -DNDEBUG` | 바이너리 크기 최적화 |
+| `Debug` | `-g` | 디버깅(최적화 옵션이 없으므로 `-O0`으로 동작) |
+| `Release` | `-O3 -DNDEBUG` | 실행 속도 우선 배포 |
+| `RelWithDebInfo` | `-O2 -g -DNDEBUG` | 디버그 정보를 포함한 배포 |
+| `MinSizeRel` | `-Os -DNDEBUG` | 바이너리 크기 우선 배포 |
 
 ```bash
 # Configure build tree with Release mode
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 ```
 
-- 빌드 타입 미지정 시 기본 최적화 플래그가 누락될 수 있으므로 명시 필수
-- 성능 벤치마크 수행 전 반드시 `Release` 모드 설정 여부 확인
+- `-g`: 디버거가 소스 줄과 변수를 찾을 수 있도록 디버그 정보를 바이너리에 포함
+- `-DNDEBUG`: `NDEBUG` 매크로를 정의하여 `assert()` 검사를 제거
+- **빌드 타입 미지정**: 최적화 플래그가 붙지 않아 `-O0`으로 빌드됨(Makefile·Ninja 생성기)
+- **확인 환경**: CMake 4.3, GCC 11.4의 `CMakeCache.txt`와 `cmake --build build -v` 출력
 
 ---
 
 ## 컴파일러 최적화 플래그 (Compiler Optimization Flags)
 
-- **트레이드오프**: 실행 속도, 코드 크기, 컴파일 시간, 디버깅 용이성 간 절충
+- **트레이드오프**: 실행 속도, 코드 크기, 컴파일 시간, 디버깅 용이성 사이의 절충
 
-### 옵션별 요약 비교
+### 옵션별 비교
 
 | 옵션 | 주요 목적 | 실행 속도 | 바이너리 크기 | 디버깅 | 컴파일 시간 |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **`-O0`** | 디버깅 및 개발 | 가장 느림 | 큼 | 매우 쉬움 | 가장 빠름 |
+| **`-O0`** | 디버깅과 개발 | 가장 느림 | 큼 | 매우 쉬움 | 가장 빠름 |
 | **`-O1`** | 기본 최적화 | 보통 | 보통 | 비교적 쉬움 | 빠름 |
-| **`-O2`** | 상용 배포 표준 | 빠름 | 적절함 | 어려움 | 보통 |
-| **`-O3`** | 실행 속도 극대화 | 가장 빠름 | 커질 수 있음 | 매우 어려움 | 느림 |
+| **`-O2`** | 일반 배포 | 빠름 | 적절함 | 어려움 | 보통 |
+| **`-O3`** | 실행 속도 우선 | 가장 빠름 | 커질 수 있음 | 매우 어려움 | 느림 |
 | **`-Os`** | 코드 크기 최소화 | 보통~빠름 | 가장 작음 | 어려움 | 보통 |
 
-> CMake의 `CMAKE_BUILD_TYPE` 설정에 따라 해당 최적화 플래그 자동 적용
+- **CMake 빌드 타입과의 대응**: `Debug` → `-O0`, `RelWithDebInfo` → `-O2`, `Release` → `-O3`, `MinSizeRel` → `-Os`
 
 ---
 
@@ -316,19 +372,20 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 
 ### `-O0` (최적화 미적용)
 
-- **주요 목적**: 디버깅 및 초기 기능 개발 단계(`Debug` 빌드)
-- **특징**: 코드 변형을 억제하여 변수 추적 및 중단점(Breakpoint) 설정 용이
-- **단점**: 실행 속도가 느리고 생성되는 바이너리 크기가 비대함
+- **주요 목적**: 디버깅과 초기 기능 개발(`Debug` 빌드)
+- **특징**: 소스 코드를 변형하지 않으므로 변수 값 추적과 중단점(Breakpoint) 설정이 쉬움
+- **단점**: 실행 속도가 느리고 바이너리가 큼
 
 ### `-O1` (기본 최적화)
 
-- **주요 목적**: 최소한의 컴파일 시간 증가로 기초 런타임 성능 개선
-- **특징**: 데드 코드 제거, 단순 함수 인라이닝 등 안전한 기본 최적화 수행
+- **주요 목적**: 컴파일 시간을 크게 늘리지 않고 실행 성능 개선
+- **특징**: 사용되지 않는 코드 제거, 한 번만 호출되는 함수의 인라이닝 등 기본 최적화 수행
+- **인라이닝**(Inlining): 함수 호출을 함수 본문으로 대체하여 호출 비용을 제거하는 최적화
 
-### `-O2` (권장 프로덕션 최적화)
+### `-O2` (일반 배포용 최적화)
 
-- **주요 목적**: 일반적인 상용 릴리스 표준(`Release` 빌드)
-- **특징**: 코드 크기를 과도하게 키우지 않으면서 명령어 스케줄링 및 루프 최적화 집중
+- **주요 목적**: 일반적인 배포 빌드(CMake에서는 `RelWithDebInfo` 빌드)
+- **특징**: 코드 크기를 크게 늘리지 않는 범위에서 명령어 스케줄링과 루프 최적화 수행
 
 ---
 
@@ -336,23 +393,48 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 
 ### `-O3` (최대 속도 최적화)
 
-- **주요 목적**: 실행 연산 속도 극대화
-- **특징**: 공격적인 루프 언롤링, SIMD 자동 벡터화, 대규모 인라이닝 적용
-- **유의점**: 코드 크기 급증으로 L1 I-Cache 미스 발생 시 오히려 성능 저하 가능
+- **주요 목적**: 실행 속도 우선(CMake `Release` 빌드)
+- **특징**: 루프 언롤링, 자동 벡터화, 적극적인 인라이닝 적용
+- **루프 언롤링**(Loop Unrolling): 루프 본문을 여러 번 복제하여 반복 횟수와 분기 수를 줄임
+- **자동 벡터화**(Auto-Vectorization): 루프를 SIMD 명령으로 변환(예: `int` 4개를 NEON `add` 1개로 덧셈)
+- **유의점**: 코드가 커져 명령어 캐시(I-Cache)에 다 들어가지 않으면 오히려 느려질 수 있음
 
 ### `-Os` (바이너리 크기 최적화)
 
-- **주요 목적**: 바이너리 풋프린트 최소화(`MinSizeRel` 빌드)
-- **특징**: `-O2` 기법 중 코드 크기를 증가시키는 인라이닝 및 정렬 패딩 억제
-- **활용**: Flash/RAM 용량이 엄격히 제한된 임베디드 MCU 및 펌웨어 환경
+- **주요 목적**: 바이너리 크기 최소화(`MinSizeRel` 빌드)
+- **특징**: `-O2` 최적화 중 코드 크기를 늘리는 인라이닝과 정렬 패딩을 억제
+- **활용**: 플래시·RAM 용량이 작은 MCU 펌웨어
 
-> 임베디드 실무: 디버깅 시 `-O0`, 일반 배포 시 `-O2`, 플래시 제약 시 `-Os` 채택
+> 임베디드 실무: 디버깅 시 `-O0`, 일반 배포 시 `-O2`, 플래시 용량 제약 시 `-Os`
+
+---
+
+## 컴파일러 최적화 플래그 (Compiler Optimization Flags) (Cont'd - 3)
+
+### 예: `-O2`와 `-O3`의 자동 벡터화 비교
+
+[//]: # "INCLUDE: ./mep/03/src/01_vector_add.cc --from 4 --to 9 --no-comment"
+
+```bash
+# Generate AArch64 assembly at -O2 and -O3
+aarch64-linux-gnu-g++ -std=c++14 -O2 -S mep/03/src/01_vector_add.cc -o vector_add_o2.s
+aarch64-linux-gnu-g++ -std=c++14 -O3 -S mep/03/src/01_vector_add.cc -o vector_add_o3.s
+```
+
+| 컴파일러 | `-O2`의 `AddArrays()` | `-O3`의 `AddArrays()` |
+| :--- | :--- | :--- |
+| **GCC 11.4** | 스칼라 `add w4, w4, w5`로 1개씩 덧셈 | NEON `add v0.4s, v0.4s, v1.4s`로 4개씩 덧셈 |
+| **Clang 14** | NEON `add`로 4개씩 덧셈 | NEON `add`로 4개씩 덧셈 |
+
+- **결론**: 자동 벡터화가 적용되는 최적화 수준은 컴파일러와 버전에 따라 다름
 
 ---
 
 ## 아웃오브소스 빌드 (Out-of-Source Build)
 
-- **개념**: 소스 트리와 빌드 산출물 디렉터리를 엄격히 분리
+- **정의**: 빌드 산출물을 소스 트리와 분리된 디렉터리(`build/`)에 생성하는 방식
+- **인소스 빌드**: 소스 디렉터리에서 `cmake .`를 실행하여 산출물을 소스와 같은 위치에 생성
+  - 예: `CMakeCache.txt`, `CMakeFiles/`, `Makefile`이 `CMakeLists.txt` 옆에 생김
 
 ```text
 project/
@@ -362,11 +444,15 @@ project/
 └── build/  <- Keep build artifacts separate from source tree
 ```
 
+---
+
+## 아웃오브소스 빌드 (Out-of-Source Build) (Cont'd)
+
 ### 주요 장점
 
-- **소스 트리 보호**: 소스 디렉터리를 오염시키지 않고 버전 관리 상태 청결 유지
-- **다중 빌드 유지**: 빌드 설정을 독립적으로 동시 유지(`build-debug`, `build-pi`)
-- **손쉬운 초기화**: 빌드 디렉터리 삭제만으로 클린 상태 복원
+- **소스 트리 보호**: 생성 파일이 소스와 섞이지 않아 `git status`에 빌드 산출물이 나타나지 않음
+- **다중 빌드 유지**: 설정이 다른 빌드 디렉터리를 동시에 유지(예: `build-debug`, `build-pi`)
+- **간단한 초기화**: 빌드 디렉터리를 삭제하면 처음 상태로 돌아감
 
 ```bash
 # Clean and re-configure build directory
@@ -379,29 +465,42 @@ rm -rf build && cmake -B build && cmake --build build
 
 ![h:180 center](img/06-host-target.png)
 
-- **호스트(Host)**: 컴파일러를 실행하는 개발 시스템(x86_64 워크스테이션, CI 서버)
-- **타깃(Target)**: 바이너리가 실제 배포되어 구동되는 임베디드 보드(라즈베리파이 AArch64)
+- **호스트**(Host): 컴파일러를 실행하는 개발 시스템(예: x86_64 노트북, CI 서버)
+- **타깃**(Target): 생성된 바이너리가 실행되는 시스템(예: AArch64 라즈베리파이)
+- **용어 구분**: CMake의 타깃(빌드 산출물 단위)과는 다른 의미
 
-> **크로스 컴파일**: 호스트에서 실행되어 타깃 아키텍처용 기계어 바이너리를 생성
+> **크로스 컴파일**: 호스트에서 실행되는 컴파일러로 아키텍처가 다른 타깃용 바이너리를 생성하는 방식
 
-### 크로스 컴파일 채택 이유
+---
 
-1. **빌드 성능**: 고성능 호스트 CPU와 대용량 RAM을 활용하여 컴파일 시간 단축
-2. **CI/CD 연계**: 물리 보드가 없는 클라우드 서버(GitHub Actions)에서 자동 빌드
-3. **환경 재현성**: 컨테이너 기반 빌드 환경 구축으로 일관된 결과 도출
+## 호스트와 타깃 (Host and Target) (Cont'd)
+
+### 크로스 컴파일을 사용하는 이유
+
+1. **빌드 시간**: 호스트의 더 많은 CPU 코어와 메모리로 컴파일 시간을 줄임
+2. **CI/CD 연계**: 라즈베리파이가 없는 클라우드 서버(예: GitHub Actions)에서 자동 빌드
+3. **환경 재현성**: 컨테이너로 빌드 환경을 고정하여 누가 빌드해도 같은 결과를 얻음
+
+- **CI/CD**(Continuous Integration/Delivery): 코드가 바뀔 때마다 빌드·테스트·배포를 자동 수행하는 체계
 
 ---
 
 ## 툴체인과 sysroot (Toolchain and sysroot)
 
-- **툴체인(Toolchain)**: 크로스 컴파일러, 어셈블러, 링커, 표준 라이브러리 도구 모음
-- 데비안 계열 크로스 컴파일러 패키지: `g++-aarch64-linux-gnu`
+- **툴체인**(Toolchain): 타깃용 컴파일러, 어셈블러, 링커, 표준 라이브러리를 묶은 도구 모음
+- **예**: Debian·Ubuntu의 `g++-aarch64-linux-gnu` 패키지가 `aarch64-linux-gnu-g++` 명령을 제공
 
 ```bash
 aarch64-linux-gnu-g++ -std=c++14 hello.cc -o hello_pi
 ```
 
-- **`sysroot`**: 타깃 보드의 루트 파일시스템 구조를 모방한 호스트 디렉터리
+- **툴체인의 범위**: C·C++ 표준 라이브러리만 포함하므로 표준 라이브러리만 쓰는 코드는 바로 빌드 가능
+
+---
+
+## 툴체인과 sysroot (Toolchain and sysroot) (Cont'd)
+
+- **`sysroot`**: 타깃의 헤더와 라이브러리를 타깃과 같은 디렉터리 구조로 복사해 둔 호스트 디렉터리
 
 ```text
 sysroot/
@@ -412,13 +511,14 @@ sysroot/
     └── aarch64-linux-gnu/
 ```
 
-> `sysroot`가 없으면 타깃 전용 서드파티 라이브러리(`libgpiod` 등) 링크 불가
+- **필요한 경우**: `libgpiod`처럼 타깃에만 설치된 라이브러리를 사용할 때
+- **`sysroot`가 없는 경우**: 컴파일러가 `gpiod.h`를 찾지 못하고 링커가 `-lgpiod`를 찾지 못함
 
 ---
 
 ## 툴체인 파일 (CMake Toolchain File)
 
-- CMake는 **툴체인 파일**을 통해 크로스 컴파일 파라미터를 주입받음
+- **툴체인 파일**: 크로스 컴파일에 사용할 컴파일러와 탐색 규칙을 지정하는 CMake 스크립트
 
 ```cmake
 # cmake/toolchains/aarch64-linux-gnu.cmake
@@ -433,8 +533,19 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 ```
 
-- `FIND_ROOT_PATH_MODE_*`: 호스트 빌드 도구와 타깃 라이브러리·헤더 탐색 경로 분리
-- `CMAKE_SYSROOT`: Configure 단계에서 실제 타깃 루트 디렉터리 경로 지정
+- **전달 방법**: Configure 단계에서 `-DCMAKE_TOOLCHAIN_FILE=<경로>`로 지정
+
+---
+
+## 툴체인 파일 (CMake Toolchain File) (Cont'd)
+
+- `CMAKE_SYSTEM_NAME`, `CMAKE_SYSTEM_PROCESSOR`: 타깃의 OS와 CPU 아키텍처
+- `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER`: 사용할 크로스 컴파일러 명령
+- `CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER`: 빌드 중 실행할 프로그램은 호스트에서 탐색
+- `CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY`: 라이브러리는 `sysroot` 안에서만 탐색
+- `CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY`: 헤더는 `sysroot` 안에서만 탐색
+- `CMAKE_SYSROOT`: `sysroot` 경로이며 Configure 단계에서 `-DCMAKE_SYSROOT=<경로>`로 지정
+- **탐색을 분리하는 이유**: 호스트의 x86_64 라이브러리를 AArch64 바이너리에 잘못 링크하는 오류 방지
 
 ---
 
@@ -453,13 +564,15 @@ cmake --build build-pi -j
 ```bash
 # Inspect binary architecture and machine type
 file build-pi/app
-# ELF 64-bit LSB executable, ARM aarch64 ...
+# ELF 64-bit LSB pie executable, ARM aarch64, ...
 
 readelf -h build-pi/app | grep Machine
 # Machine: AArch64
 ```
 
-> 타깃 전송 전 **바이너리 아키텍처 검증 필수**(호스트용 바이너리 오작성 방지)
+- `file`: 파일 형식을 판별하는 명령
+- `readelf -h`: ELF(Linux 실행 파일 형식)의 헤더를 출력하는 명령
+- **대조**: 호스트 컴파일러로 잘못 빌드하면 `Machine: Advanced Micro Devices X86-64` 출력
 
 ---
 
@@ -467,11 +580,12 @@ readelf -h build-pi/app | grep Machine
 
 ![h:100 center](img/07-docker.png)
 
-- **도커(Docker)**: 애플리케이션과 실행 환경을 이미지로 격리하여 컨테이너로 구동
-- **이미지(Image)**: 툴체인과 의존 패키지가 고정된 읽기 전용 템플릿
-- **컨테이너(Container)**: 이미지로부터 인스턴스화되어 격리 실행되는 프로세스
-- **볼륨 마운트**: 호스트의 소스 트리와 빌드 폴더를 컨테이너 내부로 직접 연결
-- **Dockerfile**: 호스트 OS 차이를 배제하고 동일한 빌드 환경을 완벽히 재현
+- **Docker**: 애플리케이션과 실행 환경을 컨테이너로 격리하여 실행하는 플랫폼
+- **이미지**(Image): 툴체인과 패키지가 설치된 상태를 고정한 읽기 전용 템플릿
+- **컨테이너**(Container): 이미지로부터 생성되어 격리된 환경에서 실행되는 프로세스
+- **볼륨 마운트**: 호스트의 디렉터리를 컨테이너 내부 경로에 연결(`-v 호스트경로:컨테이너경로`)
+- **Dockerfile**: 베이스 이미지와 설치 명령을 기술하여 이미지를 만드는 텍스트 파일
+- **장점**: 호스트 OS가 달라도 같은 Dockerfile로 같은 빌드 환경을 구성
 
 ---
 
@@ -483,24 +597,24 @@ readelf -h build-pi/app | grep Machine
 | **macOS** | [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) |
 | **Linux** | [Docker Engine 설치 안내](https://docs.docker.com/engine/install/) |
 
-- Windows / macOS: Docker Desktop의 가상화 Linux 환경 구동
-- Linux: Docker Engine 및 Buildx CLI 플러그인 연동
-- 정상 설치 검증: `docker run --rm hello-world`
+- **Windows·macOS**: Docker Desktop이 내부 Linux 가상 머신에서 컨테이너를 실행
+- **Linux**: Docker Engine과 Buildx 플러그인(`docker buildx` 명령)을 설치
+- **설치 확인**: `docker run --rm hello-world`가 안내 메시지를 출력하면 정상
 
 ---
 
 ## Docker 이미지와 아키텍처 (Image and Architecture)
 
-- **베이스 환경**: Ubuntu 24.04 LTS 공식 이미지 기반 구성
-- **컨테이너 아키텍처**: 호스트 CPU와 동일하게 설정하여 에뮬레이션 오버헤드 방지
-- **타깃 산출물**: 호스트 플랫폼과 무관하게 두 경우 모두 Linux AArch64 바이너리 생성
+- **베이스 이미지**: Ubuntu 24.04 LTS 공식 이미지(`ubuntu:24.04`)
+- **컨테이너 플랫폼**: 호스트 CPU와 같게 지정하여 CPU 에뮬레이션 없이 실행
+- **타깃 산출물**: 두 경우 모두 Linux AArch64 바이너리를 생성
 
 | 호스트 CPU | 컨테이너 플랫폼 | 실행 방식 |
 | :--- | :--- | :--- |
-| `x86_64` | `linux/amd64` | x86_64 네이티브 컨테이너 구동 |
-| `aarch64` | `linux/arm64` | AArch64 네이티브 컨테이너 구동 |
+| `x86_64` | `linux/amd64` | x86_64 네이티브 컨테이너 실행 |
+| `aarch64` | `linux/arm64` | AArch64 네이티브 컨테이너 실행 |
 
-- 컨테이너 빌더 플랫폼과 최종 타깃 아키텍처를 명확히 구분하여 운용
+- **구분**: 컨테이너 플랫폼은 빌드 도구가 실행되는 CPU, 타깃 아키텍처는 산출물이 실행될 CPU
 
 ---
 
@@ -508,18 +622,20 @@ readelf -h build-pi/app | grep Machine
 
 [//]: # "INCLUDE: ./mep/03/Dockerfile"
 
-- `cmake`: 빌드 파일 생성 및 컴파일 제어 총괄
+- `binutils`: ELF 헤더를 출력하는 `readelf` 명령 제공
+- `file`: 산출물의 파일 형식과 아키텍처 판별
 - `g++-aarch64-linux-gnu`: 라즈베리파이용 AArch64 크로스 컴파일러
-- `file`: 빌드 결과물의 실제 아키텍처 검증 도구
-- 이미지 내부에 CMake와 툴체인을 사전 패키징하여 빌드 환경 일관성 보장
+- `CMD`: `docker run`에서 명령을 생략하면 실행되는 기본 명령(Configure 후 Build)
 
 ---
 
 ## Docker 이미지 빌드 (Building the Image)
 
-- 작업 디렉터리: `mep/03`
-- `--platform`: 빌더 컨테이너의 CPU 아키텍처 지정
-- `--load`: 빌드 완료된 이미지를 로컬 도커 저장소에 등록
+- **작업 디렉터리**: `mep/03`
+- `docker buildx build`: 현재 디렉터리의 `Dockerfile`로 이미지를 생성
+- `--platform`: 빌드 도구를 실행할 컨테이너의 CPU 아키텍처 지정
+- `-t`: 이미지 이름과 태그 지정(`이름:태그`)
+- `--load`: 생성한 이미지를 로컬 Docker 이미지 목록에 등록
 
 ```bash
 # Build builder image on x86_64 host
@@ -529,14 +645,14 @@ docker buildx build \
   --load .
 ```
 
-- Apple Silicon 등 AArch64 호스트: `--platform linux/arm64 -t mep03-cross:arm64` 적용
+- **AArch64 호스트**(예: Apple Silicon): `--platform linux/arm64 -t mep03-cross:arm64` 적용
 
 ---
 
 ## sysroot 구성 (Preparing a sysroot)
 
-- 표준 C++ 코드: 이미지 내장 크로스 툴체인만으로 빌드 완료
-- 외장 라이브러리(`libgpiod` 등): 타깃 보드 라이브러리를 `sysroot`로 동기화
+- **표준 C++만 사용하는 코드**: 이미지에 포함된 크로스 툴체인만으로 빌드
+- **외부 라이브러리**(`libgpiod` 등): 라즈베리파이의 헤더와 라이브러리를 `sysroot`로 복사
 
 ```bash
 # Sync header files and libraries from Raspberry Pi
@@ -546,8 +662,9 @@ rsync -a pi@raspberrypi.local:/usr/lib/ sysroot/usr/lib/
 rsync -a pi@raspberrypi.local:/lib/ sysroot/lib/
 ```
 
-- 타깃 보드와 `sysroot` 간 라이브러리 바이너리 버전 일치 필수
-- 호스트의 `sysroot`를 컨테이너 내부 `/sysroot`로 읽기 전용 연결
+- `rsync -a`: 원격 디렉터리를 권한과 심볼릭 링크를 유지하며 복사
+- **버전 일치**: 라즈베리파이의 라이브러리를 갱신하면 `sysroot`도 다시 복사
+- **컨테이너 연결**: 호스트의 `sysroot`를 컨테이너 내부 `/sysroot`에 읽기 전용으로 마운트
 
 ---
 
@@ -562,15 +679,17 @@ docker run --rm --platform linux/amd64 \
   mep03-cross:amd64
 ```
 
+- `--rm`: 실행이 끝나면 컨테이너를 삭제
 - `/src`: 소스 트리를 읽기 전용(`:ro`)으로 마운트하여 원본 보호
-- `/out`: 빌드 아티팩트 및 캐시가 호스트에 기록되는 출력 경로
-- AArch64 호스트: 이미지 `mep03-cross:arm64`, 플랫폼 `linux/arm64` 지정
+- `/out`: 빌드 산출물과 CMake 캐시가 호스트에 기록되는 출력 경로
+- **명령 생략**: 이미지 이름 뒤에 명령이 없으므로 Dockerfile의 `CMD`가 실행됨
+- **AArch64 호스트**: 이미지 `mep03-cross:arm64`, 플랫폼 `linux/arm64` 지정
 
 ---
 
 ## 실습 프로젝트 (Practice Project)
 
-- 크로스 빌드 실습 프로젝트 디렉터리 구조
+- 크로스 빌드 실습 프로젝트의 디렉터리 구조
 
 ```text
 mep/03/
@@ -580,26 +699,31 @@ mep/03/
 └── Dockerfile                               # Pinned build environment
 ```
 
-- `CMakeLists.txt`: 프로젝트 및 타깃 실행 파일 정의
+- `CMakeLists.txt`: 프로젝트와 실행 타깃 정의
 - `src/00_hello_pi.cc`: 빌드 대상 C++ 소스 코드
-- `cmake/toolchains/`: 타깃 시스템 및 크로스 컴파일러 명세
-- `Dockerfile`: 격리 빌드 환경 및 실행 도구 패키징
+- `cmake/toolchains/`: 타깃 시스템과 크로스 컴파일러 지정
+- `Dockerfile`: 빌드 도구를 설치한 격리 빌드 환경
 
 ---
 
-## CMakeLists.txt
+## 빌드 정의 파일 (CMakeLists.txt)
 
 [//]: # "INCLUDE: ./mep/03/CMakeLists.txt"
 
+- `project()`: 프로젝트 이름과 사용 언어(`CXX`, C++) 선언
+- `CMAKE_CXX_STANDARD 14`: C++14 표준으로 컴파일
+- `CMAKE_CXX_STANDARD_REQUIRED ON`: C++14 미지원 컴파일러이면 이전 표준으로 낮추지 않고 오류 처리
+- `CMAKE_CXX_EXTENSIONS OFF`: `-std=gnu++14` 대신 `-std=c++14`를 사용하여 GNU 확장 문법 제외
+- `add_executable()`: 실행 타깃 `hello_pi`와 소스 파일 `src/00_hello_pi.cc` 연결
+
 ---
 
-## 소스 코드와 타깃 (Source and Target)
+## 소스 코드 (Source Code)
 
 [//]: # "INCLUDE: ./mep/03/src/00_hello_pi.cc"
 
-- `project()`: 프로젝트 명칭 및 CXX 언어 환경 선언
-- `set()`: C++14 표준 요구사항 지정
-- `add_executable()`: 실행 타깃 `hello_pi`와 입력 소스 매핑
+- **사용 라이브러리**: C++ 표준 라이브러리(`iostream`)만 사용하므로 `sysroot` 없이 빌드 가능
+- **실행 결과**: 라즈베리파이에서 실행하면 `Hello from Raspberry Pi target` 출력
 
 ---
 
@@ -607,10 +731,11 @@ mep/03/
 
 [//]: # "INCLUDE: ./mep/03/cmake/toolchains/aarch64-linux-gnu.cmake"
 
-- `CMAKE_SYSTEM_NAME` 및 `PROCESSOR`: 타깃 환경(Linux AArch64) 정의
-- `CMAKE_C/CXX_COMPILER`: 크로스 컴파일러 바이너리 지정
-- `CMAKE_FIND_ROOT_PATH_MODE_*`: 호스트 도구와 타깃 라이브러리 탐색 격리
-- `sysroot` 사용 시 Configure 단계에서 `-DCMAKE_SYSROOT=/sysroot` 추가
+- `CMAKE_SYSTEM_NAME`, `CMAKE_SYSTEM_PROCESSOR`: 타깃 환경(Linux, AArch64) 지정
+- `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER`: 크로스 컴파일러 명령 지정
+- `CACHE FILEPATH`: 캐시 변수로 저장하므로 `-DCMAKE_CXX_COMPILER=<경로>`로 지정한 값이 우선
+- `CMAKE_FIND_ROOT_PATH_MODE_*`: 호스트 도구와 타깃 라이브러리·헤더·패키지의 탐색 경로 분리
+- **`sysroot` 사용 시**: Configure 단계에서 `-DCMAKE_SYSROOT=/sysroot` 추가
 
 ---
 
@@ -624,8 +749,10 @@ cmake -S /src -B /out \
 cmake --build /out --parallel
 ```
 
-- Configure 단계: `CMakeLists.txt`를 해석하여 네이티브 빌드 파일 생성
-- Build 단계: 컨테이너 내부 `g++-aarch64-linux-gnu`로 AArch64 실행 바이너리 생성
+- `-S /src -B /out`: 소스 디렉터리와 빌드 디렉터리를 각각 지정
+- **Configure 단계**: `CMakeLists.txt`를 해석하여 네이티브 빌드 파일 생성
+- **Build 단계**: 컨테이너 내부의 `aarch64-linux-gnu-g++`로 AArch64 실행 파일 생성
+- `--parallel`: `-j`와 같은 병렬 빌드 옵션
 
 ---
 
@@ -644,8 +771,8 @@ docker run --rm --platform linux/amd64 \
     cmake --build /out --parallel'
 ```
 
-- 타깃 의존성 헤더 및 라이브러리를 `/sysroot` 마운트 경로에서 탐색
-- 표준 라이브러리만 사용하는 단일 소스는 `sysroot` 생략 가능
+- **탐색 경로**: 타깃 라이브러리의 헤더와 라이브러리를 `/sysroot` 아래에서 탐색
+- **생략 조건**: 표준 라이브러리만 사용하는 `00_hello_pi.cc`는 `sysroot` 없이 빌드 가능
 
 ---
 
@@ -663,8 +790,8 @@ docker run --rm --platform linux/amd64 \
   'readelf -h /out/hello_pi | grep Machine'
 ```
 
-- `Machine: AArch64` 출력 확인
-- 호스트용 x86_64 실행 파일이 오작성되지 않았는지 검증
+- **정상 결과**: `Machine: AArch64` 출력
+- **잘못된 결과**: `Advanced Micro Devices X86-64`가 출력되면 호스트용 컴파일러로 빌드된 것
 
 ---
 
@@ -672,14 +799,16 @@ docker run --rm --platform linux/amd64 \
 
 ```bash
 # Transfer binary to Raspberry Pi and execute
+ssh pi@raspberrypi.local 'mkdir -p ~/mep03'
 scp build-docker-amd64/hello_pi \
   pi@raspberrypi.local:~/mep03/
 ssh pi@raspberrypi.local '~/mep03/hello_pi'
 ```
 
-- `scp`: SSH 프로토콜을 통해 빌드 산출물 원격 전송
-- 타깃 보드에서 실행 권한 및 라이브러리 정상 로드 여부 확인
-- 호스트의 빌드 디렉터리와 타깃의 런타임 디렉터리 분리 운용
+- `ssh`: 원격 시스템에 접속하거나 원격에서 명령 1개를 실행
+- `scp`: SSH 연결을 통해 파일을 원격 시스템으로 복사
+- **사전 준비**: 대상 디렉터리 `~/mep03`이 없으면 `scp`가 실패하므로 먼저 생성
+- **호환성 조건**: 툴체인의 glibc·libstdc++가 타깃보다 새로우면 `GLIBC_2.xx not found` 오류가 발생할 수 있음
 
 ---
 
@@ -694,5 +823,6 @@ docker run --rm --platform linux/amd64 \
   mep03-cross:amd64
 ```
 
-- 변경된 소스 및 해당 소스에 의존하는 타깃만 선별 재컴파일
-- 격리된 컨테이너 환경에서 일관된 반복 빌드 및 생산성 보장
+- `touch`: 파일 내용은 그대로 두고 수정 시각만 갱신
+- **결과**: `00_hello_pi.cc.o`만 다시 컴파일하고 `hello_pi`를 다시 링크
+- **변경이 없는 경우**: 컴파일과 링크를 모두 생략
