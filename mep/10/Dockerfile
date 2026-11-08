@@ -15,5 +15,5 @@ WORKDIR /src
 
 CMD cmake -S /src -B /out \
   -DCMAKE_TOOLCHAIN_FILE=/src/cmake/toolchains/aarch64-linux-gnu.cmake \
-  -DCMAKE_BUILD_TYPE=Release &&
+  -DCMAKE_BUILD_TYPE=Release && \
   cmake --build /out --parallel
